@@ -111,6 +111,59 @@ DeshChain is India's first culturally-aware blockchain platform that transforms 
 - RTI compliance
 - Government audit integration
 
+## Gram Pension Scheme - India's First Blockchain Pension
+
+### Revolutionary Guaranteed Returns Program
+- **Monthly Contribution**: ₹1,000 worth of NAMO tokens
+- **Contribution Period**: 12 months
+- **Total Investment**: ₹12,000 worth of NAMO tokens
+- **Maturity Payout**: ₹18,000 worth of NAMO tokens
+- **Guaranteed Bonus**: ₹6,000 worth of NAMO tokens (50% return)
+- **Scheme Duration**: 13 months
+
+### How It Works
+1. **Enrollment**: Complete KYC and enroll in the scheme
+2. **Monthly Contributions**: Invest ₹1,000 worth of NAMO each month for 12 months
+3. **Automatic Tracking**: Blockchain tracks all contributions transparently
+4. **Maturity Payout**: Receive ₹18,000 worth of NAMO in the 13th month
+5. **Cultural Integration**: Each contribution displays an inspiring quote from Indian leaders
+
+### Financial Sustainability
+- **Revenue Source**: Transaction tax revenue (₹56.25M monthly)
+- **Cost Structure**: ₹10.9M monthly (including bonus reserves)
+- **Monthly Profit**: ₹45.3M (80.6% profit margin)
+- **Break-even**: 2,000 participants (currently targeting 10,000+)
+- **Liquidity Generation**: Creates 30% increase in trading volume
+
+### Participant Benefits
+- **Guaranteed Returns**: 50% return in 13 months
+- **Patriotic Investment**: Contributing to India's digital future
+- **Cultural Engagement**: Learn about Indian heritage with each contribution
+- **Blockchain Transparency**: All transactions publicly verifiable
+- **Referral Rewards**: Earn bonuses for referring friends
+- **Loyalty Points**: Accumulate points for additional benefits
+
+### Risk Management
+- **Reserve Fund**: 3-month payout guarantee
+- **Emergency Fund**: Additional safety buffer
+- **Regulatory Compliance**: Full RBI guideline adherence
+- **Insurance Coverage**: Participant protection fund
+- **Stress Testing**: Viable even with 50% revenue drop
+
+### Eligibility Criteria
+- **Age**: 18-65 years
+- **KYC**: Mandatory verification
+- **Minimum Commitment**: 12 monthly contributions
+- **Residency**: Indian citizens and residents
+- **Bank Account**: Verified Indian bank account
+
+### Scheme Statistics (Target for Year 1)
+- **Target Participants**: 10,000-50,000
+- **Projected Revenue**: ₹675M annually
+- **Projected Profit**: ₹544M annually
+- **Participant Satisfaction**: >90%
+- **Completion Rate**: >92%
+
 ## Smart Tax System
 
 ### Dynamic Volume-Based Tax Reduction

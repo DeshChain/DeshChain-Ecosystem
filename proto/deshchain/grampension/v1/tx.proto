@@ -1,0 +1,1077 @@
+syntax = "proto3";
+
+package deshchain.grampension.v1;
+
+import "gogoproto/gogo.proto";
+import "cosmos/msg/v1/msg.proto";
+import "cosmos_proto/cosmos.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "deshchain/grampension/v1/grampension.proto";
+import "amino/amino.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/grampension/types";
+
+// Msg defines the gram pension module Msg service
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+
+  // EnrollInGramPension allows a user to enroll in the Gram Pension scheme
+  rpc EnrollInGramPension(MsgEnrollInGramPension) returns (MsgEnrollInGramPensionResponse);
+
+  // MakeMonthlyContribution allows a participant to make monthly contribution
+  rpc MakeMonthlyContribution(MsgMakeMonthlyContribution) returns (MsgMakeMonthlyContributionResponse);
+
+  // ProcessMaturityPayout processes payout for matured participants
+  rpc ProcessMaturityPayout(MsgProcessMaturityPayout) returns (MsgProcessMaturityPayoutResponse);
+
+  // RequestEarlyWithdrawal allows early withdrawal request
+  rpc RequestEarlyWithdrawal(MsgRequestEarlyWithdrawal) returns (MsgRequestEarlyWithdrawalResponse);
+
+  // UpdateParticipantProfile updates participant profile information
+  rpc UpdateParticipantProfile(MsgUpdateParticipantProfile) returns (MsgUpdateParticipantProfileResponse);
+
+  // CreatePensionScheme creates a new pension scheme
+  rpc CreatePensionScheme(MsgCreatePensionScheme) returns (MsgCreatePensionSchemeResponse);
+
+  // UpdatePensionScheme updates an existing pension scheme
+  rpc UpdatePensionScheme(MsgUpdatePensionScheme) returns (MsgUpdatePensionSchemeResponse);
+
+  // ProcessPenaltyPayment processes penalty payment for late contributions
+  rpc ProcessPenaltyPayment(MsgProcessPenaltyPayment) returns (MsgProcessPenaltyPaymentResponse);
+
+  // UpdateNomineeDetails updates nominee information
+  rpc UpdateNomineeDetails(MsgUpdateNomineeDetails) returns (MsgUpdateNomineeDetailsResponse);
+
+  // ProcessReferralReward processes referral rewards
+  rpc ProcessReferralReward(MsgProcessReferralReward) returns (MsgProcessReferralRewardResponse);
+
+  // UpdateKYCStatus updates KYC status of a participant
+  rpc UpdateKYCStatus(MsgUpdateKYCStatus) returns (MsgUpdateKYCStatusResponse);
+
+  // UpdateParams updates the module parameters
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+}
+
+// MsgEnrollInGramPension defines a message to enroll in Gram Pension scheme
+message MsgEnrollInGramPension {
+  option (cosmos.msg.v1.signer) = "participant";
+  option (amino.name) = "deshchain/MsgEnrollInGramPension";
+
+  // participant is the address enrolling in the scheme
+  string participant = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // scheme_id is the ID of the scheme to enroll in
+  string scheme_id = 2;
+
+  // personal_details contains participant's personal information
+  PersonalDetails personal_details = 3 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // nominee_details contains nominee information
+  NomineeDetails nominee_details = 4 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // initial_contribution is the first month's contribution
+  cosmos.base.v1beta1.Coin initial_contribution = 5 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // referral_code of the person who referred this participant
+  string referral_code = 6;
+
+  // auto_renewal_enabled indicates if auto-renewal should be enabled
+  bool auto_renewal_enabled = 7;
+
+  // notification_preferences for updates
+  map<string, string> notification_preferences = 8;
+
+  // kyc_documents contains hashes of KYC documents
+  repeated string kyc_documents = 9;
+
+  // consent_given indicates consent for terms and conditions
+  bool consent_given = 10;
+
+  // consent_timestamp when consent was given
+  int64 consent_timestamp = 11;
+
+  // risk_acknowledgment indicates understanding of risks
+  bool risk_acknowledgment = 12;
+
+  // preferred_communication_language
+  string preferred_communication_language = 13;
+
+  // investment_preferences for future schemes
+  map<string, string> investment_preferences = 14;
+
+  // bank_account_verified indicates if bank account is verified
+  bool bank_account_verified = 15;
+
+  // cultural_engagement_consent for cultural activities
+  bool cultural_engagement_consent = 16;
+
+  // data_sharing_consent for analytics
+  bool data_sharing_consent = 17;
+
+  // marketing_consent for promotional content
+  bool marketing_consent = 18;
+
+  // terms_version is the version of terms accepted
+  string terms_version = 19;
+
+  // signature_hash is the hash of participant's digital signature
+  string signature_hash = 20;
+}
+
+// MsgEnrollInGramPensionResponse defines the response to MsgEnrollInGramPension
+message MsgEnrollInGramPensionResponse {
+  // participant_id is the unique identifier for the participant
+  string participant_id = 1;
+
+  // enrollment_successful indicates if enrollment was successful
+  bool enrollment_successful = 2;
+
+  // next_payment_due is the timestamp for next payment
+  int64 next_payment_due = 3;
+
+  // maturity_date is when the participant will receive full payout
+  int64 maturity_date = 4;
+
+  // kyc_status is the current KYC status
+  KYCStatus kyc_status = 5;
+
+  // welcome_bonus if any
+  cosmos.base.v1beta1.Coin welcome_bonus = 6 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // referral_bonus_earned by the referrer
+  cosmos.base.v1beta1.Coin referral_bonus_earned = 7 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // participant_referral_code for referring others
+  string participant_referral_code = 8;
+
+  // estimated_maturity_value projected value at maturity
+  cosmos.base.v1beta1.Coin estimated_maturity_value = 9 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // cultural_quote_id for enrollment completion
+  uint64 cultural_quote_id = 10;
+
+  // cultural_quote_text displayed during enrollment
+  string cultural_quote_text = 11;
+
+  // patriotism_score_earned for enrollment
+  uint32 patriotism_score_earned = 12;
+
+  // additional_benefits available
+  repeated string additional_benefits = 13;
+
+  // enrollment_receipt_hash
+  string enrollment_receipt_hash = 14;
+
+  // support_contact_info for assistance
+  string support_contact_info = 15;
+
+  // next_steps for the participant
+  repeated string next_steps = 16;
+
+  // dashboard_url for participant portal
+  string dashboard_url = 17;
+
+  // mobile_app_download_link
+  string mobile_app_download_link = 18;
+
+  // educational_content_link
+  string educational_content_link = 19;
+
+  // warning_messages if any
+  repeated string warning_messages = 20;
+}
+
+// MsgMakeMonthlyContribution defines a message to make monthly contribution
+message MsgMakeMonthlyContribution {
+  option (cosmos.msg.v1.signer) = "participant";
+  option (amino.name) = "deshchain/MsgMakeMonthlyContribution";
+
+  // participant is the address making the contribution
+  string participant = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // participant_id is the unique identifier for the participant
+  string participant_id = 2;
+
+  // month is the month number (1-12) for which contribution is made
+  uint32 month = 3;
+
+  // contribution_amount is the amount being contributed
+  cosmos.base.v1beta1.Coin contribution_amount = 4 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // transaction_hash is the hash of the contribution transaction
+  string transaction_hash = 5;
+
+  // payment_method used for the contribution
+  string payment_method = 6;
+
+  // cultural_quote_requested indicates if cultural quote is requested
+  bool cultural_quote_requested = 7;
+
+  // auto_payment indicates if this is an automatic payment
+  bool auto_payment = 8;
+
+  // late_payment_fee if contribution is late
+  cosmos.base.v1beta1.Coin late_payment_fee = 9 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // bonus_eligible indicates if participant is eligible for bonus
+  bool bonus_eligible = 10;
+
+  // exchange_rate_used for INR to NAMO conversion
+  string exchange_rate_used = 11;
+
+  // payment_source (bank, wallet, etc.)
+  string payment_source = 12;
+
+  // recurring_payment_enabled for future payments
+  bool recurring_payment_enabled = 13;
+
+  // notification_required indicates if notification is required
+  bool notification_required = 14;
+
+  // receipt_required indicates if receipt is required
+  bool receipt_required = 15;
+
+  // tax_deduction_claimed indicates if tax deduction is claimed
+  bool tax_deduction_claimed = 16;
+
+  // contribution_category (regular, bonus, penalty, etc.)
+  string contribution_category = 17;
+
+  // remarks for this contribution
+  string remarks = 18;
+
+  // metadata for additional information
+  map<string, string> metadata = 19;
+
+  // signature_hash for transaction authenticity
+  string signature_hash = 20;
+}
+
+// MsgMakeMonthlyContributionResponse defines the response to MsgMakeMonthlyContribution
+message MsgMakeMonthlyContributionResponse {
+  // contribution_successful indicates if contribution was successful
+  bool contribution_successful = 1;
+
+  // months_completed is the total months completed
+  uint32 months_completed = 2;
+
+  // next_payment_due is the timestamp for next payment
+  int64 next_payment_due = 3;
+
+  // cultural_quote_id for the contribution
+  uint64 cultural_quote_id = 4;
+
+  // cultural_quote_text displayed during contribution
+  string cultural_quote_text = 5;
+
+  // patriotism_score_earned for this contribution
+  uint32 patriotism_score_earned = 6;
+
+  // on_time_bonus if payment was made on time
+  cosmos.base.v1beta1.Coin on_time_bonus = 7 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // penalty_applied if payment was late
+  cosmos.base.v1beta1.Coin penalty_applied = 8 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // total_contributed so far
+  cosmos.base.v1beta1.Coin total_contributed = 9 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // remaining_contributions needed
+  uint32 remaining_contributions = 10;
+
+  // estimated_maturity_value projected value at maturity
+  cosmos.base.v1beta1.Coin estimated_maturity_value = 11 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // performance_score current performance score
+  uint32 performance_score = 12;
+
+  // loyalty_points_earned for this contribution
+  uint64 loyalty_points_earned = 13;
+
+  // contribution_receipt_hash
+  string contribution_receipt_hash = 14;
+
+  // transaction_confirmation_hash
+  string transaction_confirmation_hash = 15;
+
+  // gas_fee_paid for this transaction
+  cosmos.base.v1beta1.Coin gas_fee_paid = 16 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // milestone_achieved if any milestone is reached
+  string milestone_achieved = 17;
+
+  // milestone_reward if milestone reward is earned
+  cosmos.base.v1beta1.Coin milestone_reward = 18 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // recommendations for optimization
+  repeated string recommendations = 19;
+
+  // warnings if any
+  repeated string warnings = 20;
+}
+
+// MsgProcessMaturityPayout defines a message to process maturity payout
+message MsgProcessMaturityPayout {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "deshchain/MsgProcessMaturityPayout";
+
+  // authority is the address with authority to process payout
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // participant_id is the unique identifier for the participant
+  string participant_id = 2;
+
+  // maturity_amount is the total amount to be paid out
+  cosmos.base.v1beta1.Coin maturity_amount = 3 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // bonus_amount is the bonus amount included in payout
+  cosmos.base.v1beta1.Coin bonus_amount = 4 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // performance_bonus additional bonus for good performance
+  cosmos.base.v1beta1.Coin performance_bonus = 5 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // loyalty_bonus for loyalty points
+  cosmos.base.v1beta1.Coin loyalty_bonus = 6 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // cultural_engagement_bonus for cultural activities
+  cosmos.base.v1beta1.Coin cultural_engagement_bonus = 7 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // payout_method (direct transfer, bank transfer, etc.)
+  string payout_method = 8;
+
+  // auto_renewal_offer for next cycle
+  bool auto_renewal_offer = 9;
+
+  // tax_certificate_generated indicates if tax certificate is generated
+  bool tax_certificate_generated = 10;
+
+  // completion_certificate_generated indicates if completion certificate is generated
+  bool completion_certificate_generated = 11;
+
+  // maturity_date is the actual maturity date
+  int64 maturity_date = 12;
+
+  // processing_notes for internal use
+  string processing_notes = 13;
+
+  // audit_trail_required indicates if audit trail is required
+  bool audit_trail_required = 14;
+
+  // notification_required indicates if notification is required
+  bool notification_required = 15;
+
+  // congratulatory_message for the participant
+  string congratulatory_message = 16;
+
+  // success_story_consent for sharing success story
+  bool success_story_consent = 17;
+
+  // testimonial_request for testimonial
+  bool testimonial_request = 18;
+
+  // feedback_request for scheme feedback
+  bool feedback_request = 19;
+
+  // signature_hash for authorization
+  string signature_hash = 20;
+}
+
+// MsgProcessMaturityPayoutResponse defines the response to MsgProcessMaturityPayout
+message MsgProcessMaturityPayoutResponse {
+  // payout_successful indicates if payout was successful
+  bool payout_successful = 1;
+
+  // payout_transaction_hash is the hash of the payout transaction
+  string payout_transaction_hash = 2;
+
+  // total_payout_amount is the total amount paid out
+  cosmos.base.v1beta1.Coin total_payout_amount = 3 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // processing_time is the time taken to process
+  int64 processing_time = 4;
+
+  // maturity_certificate_hash is the hash of the maturity certificate
+  string maturity_certificate_hash = 5;
+
+  // tax_certificate_hash is the hash of the tax certificate
+  string tax_certificate_hash = 6;
+
+  // completion_badge_nft_id is the NFT ID of completion badge
+  string completion_badge_nft_id = 7;
+
+  // cultural_quote_id for maturity completion
+  uint64 cultural_quote_id = 8;
+
+  // cultural_quote_text displayed during maturity
+  string cultural_quote_text = 9;
+
+  // patriotism_score_earned for completing the scheme
+  uint32 patriotism_score_earned = 10;
+
+  // loyalty_points_earned for scheme completion
+  uint64 loyalty_points_earned = 11;
+
+  // performance_rating for the participant
+  string performance_rating = 12;
+
+  // renewal_offer_details for next cycle
+  string renewal_offer_details = 13;
+
+  // referral_bonus_for_renewal bonus for referring to renewal
+  cosmos.base.v1beta1.Coin referral_bonus_for_renewal = 14 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // special_recognition for exceptional performance
+  string special_recognition = 15;
+
+  // community_impact_score based on contributions
+  uint32 community_impact_score = 16;
+
+  // success_story_featured indicates if success story is featured
+  bool success_story_featured = 17;
+
+  // media_coverage_opportunity for testimonials
+  bool media_coverage_opportunity = 18;
+
+  // graduation_ceremony_invitation for celebration
+  bool graduation_ceremony_invitation = 19;
+
+  // alumni_network_access for continued engagement
+  bool alumni_network_access = 20;
+}
+
+// MsgRequestEarlyWithdrawal defines a message to request early withdrawal
+message MsgRequestEarlyWithdrawal {
+  option (cosmos.msg.v1.signer) = "participant";
+  option (amino.name) = "deshchain/MsgRequestEarlyWithdrawal";
+
+  // participant is the address requesting withdrawal
+  string participant = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // participant_id is the unique identifier for the participant
+  string participant_id = 2;
+
+  // withdrawal_amount is the amount requested for withdrawal
+  cosmos.base.v1beta1.Coin withdrawal_amount = 3 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // withdrawal_reason is the reason for early withdrawal
+  string withdrawal_reason = 4;
+
+  // emergency_withdrawal indicates if this is an emergency
+  bool emergency_withdrawal = 5;
+
+  // supporting_documents for the withdrawal request
+  repeated string supporting_documents = 6;
+
+  // consent_for_penalty indicates consent for penalty charges
+  bool consent_for_penalty = 7;
+
+  // preferred_payout_method for the withdrawal
+  string preferred_payout_method = 8;
+
+  // partial_withdrawal indicates if this is partial withdrawal
+  bool partial_withdrawal = 9;
+
+  // continuation_after_withdrawal indicates if participant wants to continue
+  bool continuation_after_withdrawal = 10;
+
+  // nominee_consent_required indicates if nominee consent is required
+  bool nominee_consent_required = 11;
+
+  // nominee_consent_hash is the hash of nominee consent
+  string nominee_consent_hash = 12;
+
+  // guardian_consent_required indicates if guardian consent is required
+  bool guardian_consent_required = 13;
+
+  // guardian_consent_hash is the hash of guardian consent
+  string guardian_consent_hash = 14;
+
+  // urgency_level of the withdrawal (low, medium, high, critical)
+  string urgency_level = 15;
+
+  // expected_processing_time requested processing time
+  int64 expected_processing_time = 16;
+
+  // counselling_requested indicates if financial counselling is requested
+  bool counselling_requested = 17;
+
+  // alternative_solutions_explored indicates if alternatives were explored
+  bool alternative_solutions_explored = 18;
+
+  // impact_acknowledgment indicates understanding of impact
+  bool impact_acknowledgment = 19;
+
+  // signature_hash for request authenticity
+  string signature_hash = 20;
+}
+
+// MsgRequestEarlyWithdrawalResponse defines the response to MsgRequestEarlyWithdrawal
+message MsgRequestEarlyWithdrawalResponse {
+  // request_id is the unique identifier for the withdrawal request
+  string request_id = 1;
+
+  // request_accepted indicates if request was accepted
+  bool request_accepted = 2;
+
+  // penalty_amount is the penalty for early withdrawal
+  cosmos.base.v1beta1.Coin penalty_amount = 3 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // net_withdrawal_amount after penalty deduction
+  cosmos.base.v1beta1.Coin net_withdrawal_amount = 4 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // processing_time_estimate for the withdrawal
+  int64 processing_time_estimate = 5;
+
+  // approval_required indicates if additional approval is required
+  bool approval_required = 6;
+
+  // required_documents list of additional documents required
+  repeated string required_documents = 7;
+
+  // cooling_off_period before withdrawal can be processed
+  int64 cooling_off_period = 8;
+
+  // counselling_session_scheduled indicates if counselling is scheduled
+  bool counselling_session_scheduled = 9;
+
+  // counselling_session_time for the scheduled session
+  int64 counselling_session_time = 10;
+
+  // alternative_solutions provided alternatives
+  repeated string alternative_solutions = 11;
+
+  // impact_analysis of the withdrawal
+  string impact_analysis = 12;
+
+  // recommendation_score for the withdrawal (0-100)
+  uint32 recommendation_score = 13;
+
+  // continuation_options for partial withdrawal
+  repeated string continuation_options = 14;
+
+  // re_enrollment_eligibility for future participation
+  bool re_enrollment_eligibility = 15;
+
+  // re_enrollment_benefits for future participation
+  repeated string re_enrollment_benefits = 16;
+
+  // financial_health_score impact on financial health
+  uint32 financial_health_score = 17;
+
+  // withdrawal_receipt_hash
+  string withdrawal_receipt_hash = 18;
+
+  // support_contact_info for assistance
+  string support_contact_info = 19;
+
+  // status_tracking_url for tracking withdrawal status
+  string status_tracking_url = 20;
+}
+
+// Additional message types for other operations...
+
+// MsgUpdateParticipantProfile defines a message to update participant profile
+message MsgUpdateParticipantProfile {
+  option (cosmos.msg.v1.signer) = "participant";
+  option (amino.name) = "deshchain/MsgUpdateParticipantProfile";
+
+  // participant is the address updating the profile
+  string participant = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // participant_id is the unique identifier for the participant
+  string participant_id = 2;
+
+  // updated_personal_details contains updated personal information
+  PersonalDetails updated_personal_details = 3;
+
+  // updated_nominee_details contains updated nominee information
+  NomineeDetails updated_nominee_details = 4;
+
+  // updated_notification_preferences
+  map<string, string> updated_notification_preferences = 5;
+
+  // updated_investment_preferences
+  map<string, string> updated_investment_preferences = 6;
+
+  // profile_update_reason reason for the update
+  string profile_update_reason = 7;
+
+  // verification_documents for profile updates
+  repeated string verification_documents = 8;
+
+  // signature_hash for update authenticity
+  string signature_hash = 9;
+}
+
+// MsgUpdateParticipantProfileResponse defines the response to MsgUpdateParticipantProfile
+message MsgUpdateParticipantProfileResponse {
+  // update_successful indicates if update was successful
+  bool update_successful = 1;
+
+  // updated_fields list of fields that were updated
+  repeated string updated_fields = 2;
+
+  // verification_required indicates if additional verification is required
+  bool verification_required = 3;
+
+  // effective_date when the updates take effect
+  int64 effective_date = 4;
+
+  // profile_version new version of the profile
+  string profile_version = 5;
+}
+
+// MsgCreatePensionScheme defines a message to create a new pension scheme
+message MsgCreatePensionScheme {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "deshchain/MsgCreatePensionScheme";
+
+  // authority is the address with authority to create scheme
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // scheme_details contains the scheme information
+  GramPensionScheme scheme_details = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // fund_allocation for the scheme
+  cosmos.base.v1beta1.Coin fund_allocation = 3 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // launch_date when the scheme should be launched
+  int64 launch_date = 4;
+
+  // marketing_budget for scheme promotion
+  cosmos.base.v1beta1.Coin marketing_budget = 5 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // signature_hash for creation authorization
+  string signature_hash = 6;
+}
+
+// MsgCreatePensionSchemeResponse defines the response to MsgCreatePensionScheme
+message MsgCreatePensionSchemeResponse {
+  // scheme_id is the unique identifier for the created scheme
+  string scheme_id = 1;
+
+  // creation_successful indicates if creation was successful
+  bool creation_successful = 2;
+
+  // launch_date when the scheme will be launched
+  int64 launch_date = 3;
+
+  // scheme_dashboard_url for management
+  string scheme_dashboard_url = 4;
+
+  // marketing_materials_url for promotion
+  string marketing_materials_url = 5;
+}
+
+// MsgUpdatePensionScheme defines a message to update an existing pension scheme
+message MsgUpdatePensionScheme {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "deshchain/MsgUpdatePensionScheme";
+
+  // authority is the address with authority to update scheme
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // scheme_id is the ID of the scheme to update
+  string scheme_id = 2;
+
+  // updated_scheme_details contains updated scheme information
+  GramPensionScheme updated_scheme_details = 3 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // update_reason reason for the update
+  string update_reason = 4;
+
+  // effective_date when the updates take effect
+  int64 effective_date = 5;
+
+  // signature_hash for update authorization
+  string signature_hash = 6;
+}
+
+// MsgUpdatePensionSchemeResponse defines the response to MsgUpdatePensionScheme
+message MsgUpdatePensionSchemeResponse {
+  // update_successful indicates if update was successful
+  bool update_successful = 1;
+
+  // updated_fields list of fields that were updated
+  repeated string updated_fields = 2;
+
+  // effective_date when the updates take effect
+  int64 effective_date = 3;
+
+  // participant_notification_sent indicates if participants were notified
+  bool participant_notification_sent = 4;
+
+  // scheme_version new version of the scheme
+  string scheme_version = 5;
+}
+
+// Remaining message types for other operations...
+
+// MsgProcessPenaltyPayment defines a message to process penalty payment
+message MsgProcessPenaltyPayment {
+  option (cosmos.msg.v1.signer) = "participant";
+  option (amino.name) = "deshchain/MsgProcessPenaltyPayment";
+
+  // participant is the address paying the penalty
+  string participant = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // participant_id is the unique identifier for the participant
+  string participant_id = 2;
+
+  // penalty_amount is the penalty amount being paid
+  cosmos.base.v1beta1.Coin penalty_amount = 3 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // penalty_reason is the reason for the penalty
+  string penalty_reason = 4;
+
+  // payment_method used for penalty payment
+  string payment_method = 5;
+
+  // signature_hash for payment authenticity
+  string signature_hash = 6;
+}
+
+// MsgProcessPenaltyPaymentResponse defines the response to MsgProcessPenaltyPayment
+message MsgProcessPenaltyPaymentResponse {
+  // payment_successful indicates if payment was successful
+  bool payment_successful = 1;
+
+  // penalty_cleared indicates if penalty is cleared
+  bool penalty_cleared = 2;
+
+  // remaining_penalty_amount if any
+  cosmos.base.v1beta1.Coin remaining_penalty_amount = 3 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // status_restored indicates if participant status is restored
+  bool status_restored = 4;
+
+  // payment_receipt_hash
+  string payment_receipt_hash = 5;
+}
+
+// MsgUpdateNomineeDetails defines a message to update nominee details
+message MsgUpdateNomineeDetails {
+  option (cosmos.msg.v1.signer) = "participant";
+  option (amino.name) = "deshchain/MsgUpdateNomineeDetails";
+
+  // participant is the address updating nominee details
+  string participant = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // participant_id is the unique identifier for the participant
+  string participant_id = 2;
+
+  // updated_nominee_details contains updated nominee information
+  NomineeDetails updated_nominee_details = 3 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // update_reason reason for the update
+  string update_reason = 4;
+
+  // verification_documents for nominee updates
+  repeated string verification_documents = 5;
+
+  // signature_hash for update authenticity
+  string signature_hash = 6;
+}
+
+// MsgUpdateNomineeDetailsResponse defines the response to MsgUpdateNomineeDetails
+message MsgUpdateNomineeDetailsResponse {
+  // update_successful indicates if update was successful
+  bool update_successful = 1;
+
+  // verification_required indicates if additional verification is required
+  bool verification_required = 2;
+
+  // effective_date when the updates take effect
+  int64 effective_date = 3;
+
+  // nominee_notification_sent indicates if nominee was notified
+  bool nominee_notification_sent = 4;
+
+  // updated_nominee_id new nominee ID if changed
+  string updated_nominee_id = 5;
+}
+
+// MsgProcessReferralReward defines a message to process referral rewards
+message MsgProcessReferralReward {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "deshchain/MsgProcessReferralReward";
+
+  // authority is the address with authority to process rewards
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // referrer_address is the address of the referrer
+  string referrer_address = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // referred_participant_id is the ID of the referred participant
+  string referred_participant_id = 3;
+
+  // reward_amount is the referral reward amount
+  cosmos.base.v1beta1.Coin reward_amount = 4 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // reward_type is the type of reward
+  string reward_type = 5;
+
+  // milestone_achieved if any milestone is reached
+  string milestone_achieved = 6;
+
+  // signature_hash for reward authorization
+  string signature_hash = 7;
+}
+
+// MsgProcessReferralRewardResponse defines the response to MsgProcessReferralReward
+message MsgProcessReferralRewardResponse {
+  // reward_processed indicates if reward was processed
+  bool reward_processed = 1;
+
+  // reward_transaction_hash is the hash of the reward transaction
+  string reward_transaction_hash = 2;
+
+  // total_referral_rewards earned by the referrer
+  cosmos.base.v1beta1.Coin total_referral_rewards = 3 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // referrer_level current level of the referrer
+  string referrer_level = 4;
+
+  // next_milestone_requirement for the next level
+  string next_milestone_requirement = 5;
+
+  // bonus_eligibility for additional bonuses
+  bool bonus_eligibility = 6;
+
+  // reward_receipt_hash
+  string reward_receipt_hash = 7;
+}
+
+// MsgUpdateKYCStatus defines a message to update KYC status
+message MsgUpdateKYCStatus {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "deshchain/MsgUpdateKYCStatus";
+
+  // authority is the address with authority to update KYC status
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // participant_id is the unique identifier for the participant
+  string participant_id = 2;
+
+  // new_kyc_status is the updated KYC status
+  KYCStatus new_kyc_status = 3;
+
+  // verification_notes for the KYC update
+  string verification_notes = 4;
+
+  // documents_verified list of verified documents
+  repeated string documents_verified = 5;
+
+  // verification_date when verification was completed
+  int64 verification_date = 6;
+
+  // verifier_id is the ID of the verifier
+  string verifier_id = 7;
+
+  // signature_hash for verification authenticity
+  string signature_hash = 8;
+}
+
+// MsgUpdateKYCStatusResponse defines the response to MsgUpdateKYCStatus
+message MsgUpdateKYCStatusResponse {
+  // update_successful indicates if update was successful
+  bool update_successful = 1;
+
+  // participant_notified indicates if participant was notified
+  bool participant_notified = 2;
+
+  // status_effective_date when the status takes effect
+  int64 status_effective_date = 3;
+
+  // additional_actions_required list of additional actions needed
+  repeated string additional_actions_required = 4;
+
+  // verification_certificate_hash if applicable
+  string verification_certificate_hash = 5;
+}
+
+// MsgUpdateParams defines a message to update module parameters
+message MsgUpdateParams {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "deshchain/MsgUpdateParams";
+
+  // authority is the address with authority to update parameters
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // params are the new parameters
+  GramPensionParams params = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
+
+// MsgUpdateParamsResponse defines the response to MsgUpdateParams
+message MsgUpdateParamsResponse {}
+
+// GramPensionParams defines the parameters for the gram pension module
+message GramPensionParams {
+  // default_monthly_contribution is the default monthly contribution amount
+  cosmos.base.v1beta1.Coin default_monthly_contribution = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // default_contribution_period is the default contribution period
+  uint32 default_contribution_period = 2;
+
+  // default_maturity_bonus is the default maturity bonus
+  cosmos.base.v1beta1.Coin default_maturity_bonus = 3 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // early_withdrawal_penalty_percentage is the penalty percentage for early withdrawal
+  string early_withdrawal_penalty_percentage = 4;
+
+  // late_payment_penalty_percentage is the penalty percentage for late payments
+  string late_payment_penalty_percentage = 5;
+
+  // grace_period_days is the grace period for late payments
+  uint32 grace_period_days = 6;
+
+  // minimum_age for participation
+  uint32 minimum_age = 7;
+
+  // maximum_age for participation
+  uint32 maximum_age = 8;
+
+  // kyc_required indicates if KYC is required
+  bool kyc_required = 9;
+
+  // referral_reward_percentage is the percentage of referral rewards
+  string referral_reward_percentage = 10;
+
+  // maximum_participants per scheme
+  uint64 maximum_participants = 11;
+
+  // fund_sustainability_ratio minimum ratio for scheme sustainability
+  string fund_sustainability_ratio = 12;
+
+  // on_time_bonus_percentage bonus for on-time payments
+  string on_time_bonus_percentage = 13;
+
+  // cultural_engagement_bonus_percentage bonus for cultural engagement
+  string cultural_engagement_bonus_percentage = 14;
+
+  // loyalty_points_multiplier for loyalty points calculation
+  string loyalty_points_multiplier = 15;
+
+  // performance_bonus_threshold threshold for performance bonus
+  uint32 performance_bonus_threshold = 16;
+
+  // scheme_admin_fee administrative fee for scheme management
+  string scheme_admin_fee = 17;
+
+  // auto_renewal_enabled indicates if auto-renewal is enabled by default
+  bool auto_renewal_enabled = 18;
+
+  // notification_enabled indicates if notifications are enabled
+  bool notification_enabled = 19;
+
+  // audit_frequency for scheme audits
+  string audit_frequency = 20;
+}
