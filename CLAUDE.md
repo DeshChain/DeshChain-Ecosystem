@@ -134,6 +134,60 @@ make deploy-mainnet
 - Voice commands in local languages
 - Simplified onboarding with cultural context
 
+## Pending Development Tasks
+
+### Founder Allocation Updates Required
+- **Task 32**: Update founder's token allocation to 20% of total supply (285,725,533 tokens)
+- **Task 33**: Add 15% founder royalty share to all revenue streams in tokenomics
+- **Task 34**: Implement 60-month vesting period for founder tokens with proper schedule
+- **Task 35**: Update README.md with new founder allocation and revenue structure
+- **Task 36**: Update CLAUDE.md with founder allocation technical documentation
+- **Task 37**: Modify tax distribution to include 15% founder royalty share
+- **Task 38**: Update all revenue stream documentation with founder's 15% share
+- **Task 39**: Create founder vesting smart contract specification
+- **Task 40**: Update tokenomics section with new distribution percentages
+- **Task 41**: Re-estimate founder's wealth projections based on new allocations
+
+### Proposed Token Distribution Changes
+```
+Current Distribution:
+- 25% Public Sale (357,156,916 tokens)
+- 15% Liquidity (214,294,149 tokens)
+- 20% Team (285,725,533 tokens) - 24-month vesting
+- 15% DeshChain Development (214,294,149 tokens)
+- 10% Community Rewards (142,862,766 tokens)
+- 5% DAO Treasury (71,431,383 tokens)
+- 10% Initial Burn (142,862,766 tokens)
+
+Proposed Distribution:
+- 25% Public Sale (357,156,916 tokens)
+- 15% Liquidity (214,294,149 tokens)
+- 20% Founder (285,725,533 tokens) - 60-month vesting
+- 15% Team (214,294,149 tokens) - 24-month vesting
+- 10% DeshChain Development (142,862,766 tokens)
+- 10% Community Rewards (142,862,766 tokens)
+- 5% DAO Treasury (71,431,383 tokens)
+- 0% Initial Burn (redirected to founder)
+```
+
+### Revenue Stream Updates Required
+All revenue streams need 15% founder royalty:
+- Transaction Tax: 2.5% → 15% to founder
+- Privacy Fees: ₹50-150 → 15% to founder
+- DEX Trading Fees: 0.3% → 15% to founder
+- NFT Marketplace: 2.5% → 15% to founder
+- Sikkebaaz Launchpad: 100 NAMO + 2% → 15% to founder
+- Gram Pension: 80.6% margin → 15% to founder
+- Kisaan Mitra: 6-9% APR → 15% to founder
+- All other revenue streams → 15% to founder
+
+### Vesting Schedule Specification
+- **Total Founder Tokens**: 285,725,533 NAMO (20% of supply)
+- **Vesting Period**: 60 months (5 years)
+- **Cliff Period**: 12 months (no tokens released in first year)
+- **Release Schedule**: Linear release over 48 months after cliff
+- **Monthly Release**: 5,952,615 tokens after cliff period
+
 ## Memories
 
 ### Development Insights
