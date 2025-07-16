@@ -1,0 +1,3724 @@
+syntax = "proto3";
+
+package deshchain.tax.v1;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "deshchain/tax/v1/tax.proto";
+import "amino/amino.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/tax/types";
+
+// Query defines the gRPC querier service for the tax module
+service Query {
+  // Params returns the module parameters
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/deshchain/tax/v1/params";
+  }
+
+  // TaxConfig returns the tax configuration
+  rpc TaxConfig(QueryTaxConfigRequest) returns (QueryTaxConfigResponse) {
+    option (google.api.http).get = "/deshchain/tax/v1/config";
+  }
+
+  // UserTaxProfile returns a user's tax profile
+  rpc UserTaxProfile(QueryUserTaxProfileRequest) returns (QueryUserTaxProfileResponse) {
+    option (google.api.http).get = "/deshchain/tax/v1/user_profile/{address}";
+  }
+
+  // TaxCalculation calculates tax for a transaction
+  rpc TaxCalculation(QueryTaxCalculationRequest) returns (QueryTaxCalculationResponse) {
+    option (google.api.http).get = "/deshchain/tax/v1/calculate";
+  }
+
+  // TaxTransaction returns a tax transaction
+  rpc TaxTransaction(QueryTaxTransactionRequest) returns (QueryTaxTransactionResponse) {
+    option (google.api.http).get = "/deshchain/tax/v1/transaction/{transaction_hash}";
+  }
+
+  // TaxTransactions returns tax transactions
+  rpc TaxTransactions(QueryTaxTransactionsRequest) returns (QueryTaxTransactionsResponse) {
+    option (google.api.http).get = "/deshchain/tax/v1/transactions";
+  }
+
+  // TaxStatistics returns tax statistics
+  rpc TaxStatistics(QueryTaxStatisticsRequest) returns (QueryTaxStatisticsResponse) {
+    option (google.api.http).get = "/deshchain/tax/v1/statistics";
+  }
+
+  // VolumeDiscounts returns volume discounts
+  rpc VolumeDiscounts(QueryVolumeDiscountsRequest) returns (QueryVolumeDiscountsResponse) {
+    option (google.api.http).get = "/deshchain/tax/v1/volume_discounts";
+  }
+
+  // TaxIncentives returns tax incentives
+  rpc TaxIncentives(QueryTaxIncentivesRequest) returns (QueryTaxIncentivesResponse) {
+    option (google.api.http).get = "/deshchain/tax/v1/incentives";
+  }
+
+  // TaxHolidays returns tax holidays
+  rpc TaxHolidays(QueryTaxHolidaysRequest) returns (QueryTaxHolidaysResponse) {
+    option (google.api.http).get = "/deshchain/tax/v1/holidays";
+  }
+
+  // TaxOptimization returns tax optimization suggestions
+  rpc TaxOptimization(QueryTaxOptimizationRequest) returns (QueryTaxOptimizationResponse) {
+    option (google.api.http).get = "/deshchain/tax/v1/optimization/{address}";
+  }
+
+  // TaxForecasting returns tax forecasting data
+  rpc TaxForecasting(QueryTaxForecastingRequest) returns (QueryTaxForecastingResponse) {
+    option (google.api.http).get = "/deshchain/tax/v1/forecasting";
+  }
+
+  // TaxCompliance returns tax compliance information
+  rpc TaxCompliance(QueryTaxComplianceRequest) returns (QueryTaxComplianceResponse) {
+    option (google.api.http).get = "/deshchain/tax/v1/compliance/{address}";
+  }
+
+  // TaxAuditTrail returns tax audit trail
+  rpc TaxAuditTrail(QueryTaxAuditTrailRequest) returns (QueryTaxAuditTrailResponse) {
+    option (google.api.http).get = "/deshchain/tax/v1/audit_trail/{address}";
+  }
+
+  // TaxPerformanceMetrics returns tax performance metrics
+  rpc TaxPerformanceMetrics(QueryTaxPerformanceMetricsRequest) returns (QueryTaxPerformanceMetricsResponse) {
+    option (google.api.http).get = "/deshchain/tax/v1/performance_metrics";
+  }
+
+  // TaxReports returns tax reports
+  rpc TaxReports(QueryTaxReportsRequest) returns (QueryTaxReportsResponse) {
+    option (google.api.http).get = "/deshchain/tax/v1/reports";
+  }
+}
+
+// QueryParamsRequest is the request type for the Query/Params RPC method
+message QueryParamsRequest {}
+
+// QueryParamsResponse is the response type for the Query/Params RPC method
+message QueryParamsResponse {
+  // params holds all the parameters of this module
+  TaxParams params = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
+
+// QueryTaxConfigRequest is the request type for the Query/TaxConfig RPC method
+message QueryTaxConfigRequest {}
+
+// QueryTaxConfigResponse is the response type for the Query/TaxConfig RPC method
+message QueryTaxConfigResponse {
+  // tax_config contains the tax configuration
+  TaxConfig tax_config = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
+
+// QueryUserTaxProfileRequest is the request type for the Query/UserTaxProfile RPC method
+message QueryUserTaxProfileRequest {
+  // address is the user address
+  string address = 1;
+}
+
+// QueryUserTaxProfileResponse is the response type for the Query/UserTaxProfile RPC method
+message QueryUserTaxProfileResponse {
+  // user_tax_profile contains the user's tax profile
+  UserTaxProfile user_tax_profile = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
+
+// QueryTaxCalculationRequest is the request type for the Query/TaxCalculation RPC method
+message QueryTaxCalculationRequest {
+  // payer_address is the payer address
+  string payer_address = 1;
+
+  // transaction_amount is the transaction amount
+  string transaction_amount = 2;
+
+  // message_type is the message type
+  string message_type = 3;
+
+  // recipient_address is the recipient address
+  string recipient_address = 4;
+
+  // is_donation indicates if this is a donation
+  bool is_donation = 5;
+
+  // calculation_date is the calculation date
+  int64 calculation_date = 6;
+
+  // optimization_requested indicates if optimization is requested
+  bool optimization_requested = 7;
+
+  // cultural_quote_id is the cultural quote ID
+  uint64 cultural_quote_id = 8;
+
+  // patriotism_score is the patriotism score
+  int32 patriotism_score = 9;
+
+  // include_forecast indicates if forecast should be included
+  bool include_forecast = 10;
+
+  // include_alternatives indicates if alternatives should be included
+  bool include_alternatives = 11;
+
+  // simulation_parameters are simulation parameters
+  map<string, string> simulation_parameters = 12;
+}
+
+// QueryTaxCalculationResponse is the response type for the Query/TaxCalculation RPC method
+message QueryTaxCalculationResponse {
+  // base_tax_amount is the base tax amount
+  string base_tax_amount = 1;
+
+  // final_tax_amount is the final tax amount after discounts
+  string final_tax_amount = 2;
+
+  // base_tax_rate is the base tax rate
+  string base_tax_rate = 3;
+
+  // effective_tax_rate is the effective tax rate
+  string effective_tax_rate = 4;
+
+  // volume_discount is the volume discount
+  string volume_discount = 5;
+
+  // loyalty_discount is the loyalty discount
+  string loyalty_discount = 6;
+
+  // patriotism_discount is the patriotism discount
+  string patriotism_discount = 7;
+
+  // total_discounts is the total discounts
+  string total_discounts = 8;
+
+  // tax_cap_applied indicates if tax cap was applied
+  bool tax_cap_applied = 9;
+
+  // tax_cap_amount is the tax cap amount
+  string tax_cap_amount = 10;
+
+  // remaining_tax_cap is the remaining tax cap
+  string remaining_tax_cap = 11;
+
+  // savings_amount is the savings amount
+  string savings_amount = 12;
+
+  // savings_percentage is the savings percentage
+  string savings_percentage = 13;
+
+  // calculation_method is the calculation method used
+  string calculation_method = 14;
+
+  // optimization_applied indicates if optimization was applied
+  bool optimization_applied = 15;
+
+  // optimization_score is the optimization score
+  string optimization_score = 16;
+
+  // tax_distribution is the tax distribution
+  map<string, string> tax_distribution = 17;
+
+  // burned_amount is the amount to be burned
+  string burned_amount = 18;
+
+  // treasury_amount is the amount for treasury
+  string treasury_amount = 19;
+
+  // validator_amount is the amount for validators
+  string validator_amount = 20;
+
+  // community_amount is the amount for community pool
+  string community_amount = 21;
+
+  // applicable_incentives are applicable incentives
+  repeated TaxIncentive applicable_incentives = 22;
+
+  // applicable_holidays are applicable holidays
+  repeated TaxHolidayPeriod applicable_holidays = 23;
+
+  // recommendations are optimization recommendations
+  repeated string recommendations = 24;
+
+  // warnings are any warnings
+  repeated string warnings = 25;
+
+  // alternative_calculations are alternative calculations
+  repeated AlternativeCalculation alternative_calculations = 26;
+
+  // forecast_data is forecast data
+  TaxForecastData forecast_data = 27;
+
+  // compliance_check is compliance check result
+  string compliance_check = 28;
+
+  // audit_required indicates if audit is required
+  bool audit_required = 29;
+
+  // cultural_quote_bonus is the cultural quote bonus
+  string cultural_quote_bonus = 30;
+
+  // patriotism_score_earned is the patriotism score earned
+  int32 patriotism_score_earned = 31;
+
+  // calculation_time is the calculation time
+  int64 calculation_time = 32;
+
+  // calculation_complexity is the calculation complexity
+  string calculation_complexity = 33;
+
+  // confidence_level is the confidence level
+  string confidence_level = 34;
+
+  // validation_errors are validation errors
+  repeated string validation_errors = 35;
+}
+
+// AlternativeCalculation represents an alternative tax calculation
+message AlternativeCalculation {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // calculation_method is the calculation method
+  string calculation_method = 1;
+
+  // tax_amount is the tax amount
+  string tax_amount = 2;
+
+  // tax_rate is the tax rate
+  string tax_rate = 3;
+
+  // discounts_applied are discounts applied
+  repeated string discounts_applied = 4;
+
+  // savings_compared_to_base is savings compared to base
+  string savings_compared_to_base = 5;
+
+  // pros are the pros
+  repeated string pros = 6;
+
+  // cons are the cons
+  repeated string cons = 7;
+
+  // suitability_score is the suitability score
+  string suitability_score = 8;
+
+  // risk_level is the risk level
+  string risk_level = 9;
+
+  // complexity_level is the complexity level
+  string complexity_level = 10;
+
+  // recommendation_score is the recommendation score
+  string recommendation_score = 11;
+
+  // conditions are conditions for this calculation
+  repeated string conditions = 12;
+
+  // prerequisites are prerequisites
+  repeated string prerequisites = 13;
+
+  // validity_period is the validity period
+  int64 validity_period = 14;
+
+  // effectiveness_rating is the effectiveness rating
+  string effectiveness_rating = 15;
+}
+
+// QueryTaxTransactionRequest is the request type for the Query/TaxTransaction RPC method
+message QueryTaxTransactionRequest {
+  // transaction_hash is the transaction hash
+  string transaction_hash = 1;
+}
+
+// QueryTaxTransactionResponse is the response type for the Query/TaxTransaction RPC method
+message QueryTaxTransactionResponse {
+  // tax_transaction contains the tax transaction
+  TaxTransaction tax_transaction = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
+
+// QueryTaxTransactionsRequest is the request type for the Query/TaxTransactions RPC method
+message QueryTaxTransactionsRequest {
+  // pagination defines an optional pagination for the request
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+
+  // payer_address filters by payer address
+  string payer_address = 2;
+
+  // start_time filters from this time
+  int64 start_time = 3;
+
+  // end_time filters until this time
+  int64 end_time = 4;
+
+  // min_amount filters by minimum amount
+  string min_amount = 5;
+
+  // max_amount filters by maximum amount
+  string max_amount = 6;
+
+  // message_type filters by message type
+  string message_type = 7;
+
+  // tax_cap_applied filters by tax cap applied
+  bool tax_cap_applied = 8;
+
+  // optimization_applied filters by optimization applied
+  bool optimization_applied = 9;
+
+  // include_statistics indicates if statistics should be included
+  bool include_statistics = 10;
+
+  // include_trends indicates if trends should be included
+  bool include_trends = 11;
+
+  // order_by is the field to order by
+  string order_by = 12;
+
+  // order_direction is the order direction
+  string order_direction = 13;
+
+  // group_by is the field to group by
+  string group_by = 14;
+
+  // aggregate_functions are aggregate functions to apply
+  repeated string aggregate_functions = 15;
+}
+
+// QueryTaxTransactionsResponse is the response type for the Query/TaxTransactions RPC method
+message QueryTaxTransactionsResponse {
+  // tax_transactions contains the tax transactions
+  repeated TaxTransaction tax_transactions = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // pagination defines the pagination in the response
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+
+  // statistics contains transaction statistics
+  TransactionStatistics statistics = 3;
+
+  // trends contains trend data
+  repeated TrendData trends = 4;
+
+  // aggregates contains aggregate data
+  map<string, string> aggregates = 5;
+
+  // summary contains summary information
+  TransactionSummary summary = 6;
+}
+
+// TransactionStatistics represents transaction statistics
+message TransactionStatistics {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // total_count is the total count
+  uint64 total_count = 1;
+
+  // total_tax_amount is the total tax amount
+  string total_tax_amount = 2;
+
+  // average_tax_amount is the average tax amount
+  string average_tax_amount = 3;
+
+  // median_tax_amount is the median tax amount
+  string median_tax_amount = 4;
+
+  // min_tax_amount is the minimum tax amount
+  string min_tax_amount = 5;
+
+  // max_tax_amount is the maximum tax amount
+  string max_tax_amount = 6;
+
+  // standard_deviation is the standard deviation
+  string standard_deviation = 7;
+
+  // unique_payers is the number of unique payers
+  uint64 unique_payers = 8;
+
+  // average_tax_rate is the average tax rate
+  string average_tax_rate = 9;
+
+  // optimization_rate is the optimization rate
+  string optimization_rate = 10;
+
+  // cap_utilization_rate is the cap utilization rate
+  string cap_utilization_rate = 11;
+
+  // discount_utilization_rate is the discount utilization rate
+  string discount_utilization_rate = 12;
+
+  // compliance_rate is the compliance rate
+  string compliance_rate = 13;
+
+  // error_rate is the error rate
+  string error_rate = 14;
+
+  // processing_time_avg is the average processing time
+  int64 processing_time_avg = 15;
+}
+
+// TrendData represents trend data
+message TrendData {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // period is the period
+  string period = 1;
+
+  // value is the value
+  string value = 2;
+
+  // change_from_previous is the change from previous period
+  string change_from_previous = 3;
+
+  // change_percentage is the change percentage
+  string change_percentage = 4;
+
+  // trend_direction is the trend direction
+  string trend_direction = 5;
+
+  // confidence_level is the confidence level
+  string confidence_level = 6;
+
+  // seasonal_adjustment is the seasonal adjustment
+  string seasonal_adjustment = 7;
+
+  // anomaly_detected indicates if anomaly was detected
+  bool anomaly_detected = 8;
+
+  // forecast_value is the forecast value
+  string forecast_value = 9;
+
+  // forecast_confidence is the forecast confidence
+  string forecast_confidence = 10;
+}
+
+// TransactionSummary represents transaction summary
+message TransactionSummary {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // period_start is the period start
+  int64 period_start = 1;
+
+  // period_end is the period end
+  int64 period_end = 2;
+
+  // total_transactions is the total transactions
+  uint64 total_transactions = 3;
+
+  // total_tax_collected is the total tax collected
+  string total_tax_collected = 4;
+
+  // total_tax_burned is the total tax burned
+  string total_tax_burned = 5;
+
+  // total_discounts_given is the total discounts given
+  string total_discounts_given = 6;
+
+  // efficiency_score is the efficiency score
+  string efficiency_score = 7;
+
+  // performance_score is the performance score
+  string performance_score = 8;
+
+  // growth_rate is the growth rate
+  string growth_rate = 9;
+
+  // key_insights are key insights
+  repeated string key_insights = 10;
+
+  // recommendations are recommendations
+  repeated string recommendations = 11;
+
+  // alerts are alerts
+  repeated string alerts = 12;
+
+  // achievements are achievements
+  repeated string achievements = 13;
+
+  // challenges are challenges
+  repeated string challenges = 14;
+
+  // opportunities are opportunities
+  repeated string opportunities = 15;
+}
+
+// QueryTaxStatisticsRequest is the request type for the Query/TaxStatistics RPC method
+message QueryTaxStatisticsRequest {
+  // period is the statistics period
+  string period = 1;
+
+  // start_date is the start date
+  int64 start_date = 2;
+
+  // end_date is the end date
+  int64 end_date = 3;
+
+  // granularity is the granularity (daily, weekly, monthly)
+  string granularity = 4;
+
+  // include_trends indicates if trends should be included
+  bool include_trends = 5;
+
+  // include_forecasts indicates if forecasts should be included
+  bool include_forecasts = 6;
+
+  // include_benchmarks indicates if benchmarks should be included
+  bool include_benchmarks = 7;
+
+  // include_breakdowns indicates if breakdowns should be included
+  bool include_breakdowns = 8;
+
+  // categories are categories to filter by
+  repeated string categories = 9;
+
+  // user_types are user types to filter by
+  repeated string user_types = 10;
+
+  // transaction_types are transaction types to filter by
+  repeated string transaction_types = 11;
+
+  // metrics are specific metrics to include
+  repeated string metrics = 12;
+
+  // comparison_periods are comparison periods
+  repeated string comparison_periods = 13;
+
+  // benchmark_comparisons are benchmark comparisons
+  repeated string benchmark_comparisons = 14;
+
+  // export_format is the export format
+  string export_format = 15;
+}
+
+// QueryTaxStatisticsResponse is the response type for the Query/TaxStatistics RPC method
+message QueryTaxStatisticsResponse {
+  // tax_statistics contains the tax statistics
+  TaxStatistics tax_statistics = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // comparative_statistics contains comparative statistics
+  repeated ComparativeStatistics comparative_statistics = 2;
+
+  // benchmark_data contains benchmark data
+  repeated BenchmarkData benchmark_data = 3;
+
+  // export_url is the export URL
+  string export_url = 4;
+
+  // report_generation_time is the report generation time
+  int64 report_generation_time = 5;
+
+  // data_freshness is the data freshness
+  string data_freshness = 6;
+
+  // quality_score is the quality score
+  string quality_score = 7;
+
+  // completeness_percentage is the completeness percentage
+  string completeness_percentage = 8;
+
+  // accuracy_score is the accuracy score
+  string accuracy_score = 9;
+
+  // reliability_score is the reliability score
+  string reliability_score = 10;
+}
+
+// ComparativeStatistics represents comparative statistics
+message ComparativeStatistics {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // period is the period
+  string period = 1;
+
+  // base_value is the base value
+  string base_value = 2;
+
+  // comparison_value is the comparison value
+  string comparison_value = 3;
+
+  // absolute_change is the absolute change
+  string absolute_change = 4;
+
+  // percentage_change is the percentage change
+  string percentage_change = 5;
+
+  // significance_level is the significance level
+  string significance_level = 6;
+
+  // statistical_significance is the statistical significance
+  bool statistical_significance = 7;
+
+  // trend_direction is the trend direction
+  string trend_direction = 8;
+
+  // volatility is the volatility
+  string volatility = 9;
+
+  // correlation_coefficient is the correlation coefficient
+  string correlation_coefficient = 10;
+
+  // confidence_interval is the confidence interval
+  string confidence_interval = 11;
+
+  // p_value is the p-value
+  string p_value = 12;
+
+  // effect_size is the effect size
+  string effect_size = 13;
+
+  // interpretation is the interpretation
+  string interpretation = 14;
+
+  // recommendations are recommendations
+  repeated string recommendations = 15;
+}
+
+// BenchmarkData represents benchmark data
+message BenchmarkData {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // benchmark_name is the benchmark name
+  string benchmark_name = 1;
+
+  // benchmark_value is the benchmark value
+  string benchmark_value = 2;
+
+  // current_value is the current value
+  string current_value = 3;
+
+  // performance_ratio is the performance ratio
+  string performance_ratio = 4;
+
+  // performance_category is the performance category
+  string performance_category = 5;
+
+  // percentile_rank is the percentile rank
+  string percentile_rank = 6;
+
+  // standard_deviations_from_mean is standard deviations from mean
+  string standard_deviations_from_mean = 7;
+
+  // benchmark_source is the benchmark source
+  string benchmark_source = 8;
+
+  // benchmark_methodology is the benchmark methodology
+  string benchmark_methodology = 9;
+
+  // benchmark_date is the benchmark date
+  int64 benchmark_date = 10;
+
+  // validity_period is the validity period
+  int64 validity_period = 11;
+
+  // reliability_score is the reliability score
+  string reliability_score = 12;
+
+  // applicability_score is the applicability score
+  string applicability_score = 13;
+
+  // adjustment_factors are adjustment factors
+  repeated string adjustment_factors = 14;
+
+  // limitations are limitations
+  repeated string limitations = 15;
+}
+
+// QueryVolumeDiscountsRequest is the request type for the Query/VolumeDiscounts RPC method
+message QueryVolumeDiscountsRequest {
+  // address is the user address
+  string address = 1;
+
+  // time_period is the time period
+  string time_period = 2;
+
+  // include_projections indicates if projections should be included
+  bool include_projections = 3;
+
+  // include_comparison indicates if comparison should be included
+  bool include_comparison = 4;
+
+  // calculation_date is the calculation date
+  int64 calculation_date = 5;
+}
+
+// QueryVolumeDiscountsResponse is the response type for the Query/VolumeDiscounts RPC method
+message QueryVolumeDiscountsResponse {
+  // volume_thresholds contains the volume thresholds
+  repeated VolumeThreshold volume_thresholds = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // current_volume is the current volume
+  string current_volume = 2;
+
+  // current_discount_rate is the current discount rate
+  string current_discount_rate = 3;
+
+  // next_threshold is the next threshold
+  VolumeThreshold next_threshold = 4;
+
+  // volume_needed_for_next_tier is the volume needed for next tier
+  string volume_needed_for_next_tier = 5;
+
+  // projected_discount_rate is the projected discount rate
+  string projected_discount_rate = 6;
+
+  // savings_achieved is the savings achieved
+  string savings_achieved = 7;
+
+  // potential_additional_savings is the potential additional savings
+  string potential_additional_savings = 8;
+
+  // tier_progression is the tier progression
+  repeated TierProgression tier_progression = 9;
+
+  // optimization_suggestions are optimization suggestions
+  repeated string optimization_suggestions = 10;
+
+  // historical_performance is the historical performance
+  repeated HistoricalPerformance historical_performance = 11;
+
+  // benchmark_comparison is the benchmark comparison
+  BenchmarkComparison benchmark_comparison = 12;
+
+  // roi_analysis is the ROI analysis
+  ROIAnalysis roi_analysis = 13;
+
+  // risk_assessment is the risk assessment
+  RiskAssessment risk_assessment = 14;
+
+  // strategic_recommendations are strategic recommendations
+  repeated string strategic_recommendations = 15;
+}
+
+// TierProgression represents tier progression
+message TierProgression {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // tier_name is the tier name
+  string tier_name = 1;
+
+  // volume_requirement is the volume requirement
+  string volume_requirement = 2;
+
+  // discount_rate is the discount rate
+  string discount_rate = 3;
+
+  // estimated_savings is the estimated savings
+  string estimated_savings = 4;
+
+  // achievement_probability is the achievement probability
+  string achievement_probability = 5;
+
+  // time_to_achievement is the time to achievement
+  int64 time_to_achievement = 6;
+
+  // difficulty_level is the difficulty level
+  string difficulty_level = 7;
+
+  // strategic_value is the strategic value
+  string strategic_value = 8;
+
+  // maintenance_requirements are maintenance requirements
+  repeated string maintenance_requirements = 9;
+
+  // benefits are benefits
+  repeated string benefits = 10;
+
+  // risks are risks
+  repeated string risks = 11;
+
+  // prerequisites are prerequisites
+  repeated string prerequisites = 12;
+
+  // success_factors are success factors
+  repeated string success_factors = 13;
+
+  // milestone_markers are milestone markers
+  repeated string milestone_markers = 14;
+
+  // performance_indicators are performance indicators
+  repeated string performance_indicators = 15;
+}
+
+// HistoricalPerformance represents historical performance
+message HistoricalPerformance {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // period is the period
+  string period = 1;
+
+  // volume is the volume
+  string volume = 2;
+
+  // discount_rate is the discount rate
+  string discount_rate = 3;
+
+  // savings is the savings
+  string savings = 4;
+
+  // tier_achieved is the tier achieved
+  string tier_achieved = 5;
+
+  // performance_score is the performance score
+  string performance_score = 6;
+
+  // growth_rate is the growth rate
+  string growth_rate = 7;
+
+  // consistency_score is the consistency score
+  string consistency_score = 8;
+
+  // volatility is the volatility
+  string volatility = 9;
+
+  // trend_direction is the trend direction
+  string trend_direction = 10;
+
+  // seasonal_patterns are seasonal patterns
+  repeated string seasonal_patterns = 11;
+
+  // anomalies are anomalies
+  repeated string anomalies = 12;
+
+  // key_events are key events
+  repeated string key_events = 13;
+
+  // lessons_learned are lessons learned
+  repeated string lessons_learned = 14;
+
+  // improvement_opportunities are improvement opportunities
+  repeated string improvement_opportunities = 15;
+}
+
+// BenchmarkComparison represents benchmark comparison
+message BenchmarkComparison {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // peer_group is the peer group
+  string peer_group = 1;
+
+  // peer_average is the peer average
+  string peer_average = 2;
+
+  // peer_median is the peer median
+  string peer_median = 3;
+
+  // percentile_rank is the percentile rank
+  string percentile_rank = 4;
+
+  // relative_performance is the relative performance
+  string relative_performance = 5;
+
+  // performance_gap is the performance gap
+  string performance_gap = 6;
+
+  // improvement_potential is the improvement potential
+  string improvement_potential = 7;
+
+  // best_practices are best practices
+  repeated string best_practices = 8;
+
+  // competitive_advantages are competitive advantages
+  repeated string competitive_advantages = 9;
+
+  // weaknesses are weaknesses
+  repeated string weaknesses = 10;
+
+  // opportunities are opportunities
+  repeated string opportunities = 11;
+
+  // threats are threats
+  repeated string threats = 12;
+
+  // strategic_positioning is the strategic positioning
+  string strategic_positioning = 13;
+
+  // market_share is the market share
+  string market_share = 14;
+
+  // growth_potential is the growth potential
+  string growth_potential = 15;
+}
+
+// ROIAnalysis represents ROI analysis
+message ROIAnalysis {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // investment_required is the investment required
+  string investment_required = 1;
+
+  // expected_returns is the expected returns
+  string expected_returns = 2;
+
+  // roi_percentage is the ROI percentage
+  string roi_percentage = 3;
+
+  // payback_period is the payback period
+  int64 payback_period = 4;
+
+  // net_present_value is the net present value
+  string net_present_value = 5;
+
+  // internal_rate_of_return is the internal rate of return
+  string internal_rate_of_return = 6;
+
+  // break_even_point is the break even point
+  string break_even_point = 7;
+
+  // sensitivity_analysis is the sensitivity analysis
+  map<string, string> sensitivity_analysis = 8;
+
+  // scenario_analysis is the scenario analysis
+  map<string, string> scenario_analysis = 9;
+
+  // risk_adjusted_return is the risk adjusted return
+  string risk_adjusted_return = 10;
+
+  // probability_of_success is the probability of success
+  string probability_of_success = 11;
+
+  // confidence_interval is the confidence interval
+  string confidence_interval = 12;
+
+  // assumptions are assumptions
+  repeated string assumptions = 13;
+
+  // limitations are limitations
+  repeated string limitations = 14;
+
+  // recommendations are recommendations
+  repeated string recommendations = 15;
+}
+
+// RiskAssessment represents risk assessment
+message RiskAssessment {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // overall_risk_score is the overall risk score
+  string overall_risk_score = 1;
+
+  // risk_category is the risk category
+  string risk_category = 2;
+
+  // risk_tolerance is the risk tolerance
+  string risk_tolerance = 3;
+
+  // risk_factors are risk factors
+  repeated RiskFactor risk_factors = 4;
+
+  // mitigation_strategies are mitigation strategies
+  repeated string mitigation_strategies = 5;
+
+  // contingency_plans are contingency plans
+  repeated string contingency_plans = 6;
+
+  // monitoring_indicators are monitoring indicators
+  repeated string monitoring_indicators = 7;
+
+  // early_warning_signals are early warning signals
+  repeated string early_warning_signals = 8;
+
+  // risk_appetite is the risk appetite
+  string risk_appetite = 9;
+
+  // risk_capacity is the risk capacity
+  string risk_capacity = 10;
+
+  // diversification_opportunities are diversification opportunities
+  repeated string diversification_opportunities = 11;
+
+  // insurance_recommendations are insurance recommendations
+  repeated string insurance_recommendations = 12;
+
+  // compliance_risks are compliance risks
+  repeated string compliance_risks = 13;
+
+  // regulatory_changes are regulatory changes
+  repeated string regulatory_changes = 14;
+
+  // market_risks are market risks
+  repeated string market_risks = 15;
+}
+
+// RiskFactor represents a risk factor
+message RiskFactor {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // risk_name is the risk name
+  string risk_name = 1;
+
+  // risk_description is the risk description
+  string risk_description = 2;
+
+  // probability is the probability
+  string probability = 3;
+
+  // impact is the impact
+  string impact = 4;
+
+  // severity is the severity
+  string severity = 5;
+
+  // risk_score is the risk score
+  string risk_score = 6;
+
+  // risk_category is the risk category
+  string risk_category = 7;
+
+  // risk_source is the risk source
+  string risk_source = 8;
+
+  // time_horizon is the time horizon
+  string time_horizon = 9;
+
+  // controllability is the controllability
+  string controllability = 10;
+
+  // predictability is the predictability
+  string predictability = 11;
+
+  // velocity is the velocity
+  string velocity = 12;
+
+  // persistence is the persistence
+  string persistence = 13;
+
+  // reversibility is the reversibility
+  string reversibility = 14;
+
+  // correlation_with_other_risks is the correlation with other risks
+  string correlation_with_other_risks = 15;
+}
+
+// QueryTaxIncentivesRequest is the request type for the Query/TaxIncentives RPC method
+message QueryTaxIncentivesRequest {
+  // pagination defines an optional pagination for the request
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+
+  // address is the user address
+  string address = 2;
+
+  // incentive_type is the incentive type
+  string incentive_type = 3;
+
+  // is_active filters by active status
+  bool is_active = 4;
+
+  // valid_date is the date for validity check
+  int64 valid_date = 5;
+
+  // include_expired indicates if expired incentives should be included
+  bool include_expired = 6;
+
+  // include_usage_statistics indicates if usage statistics should be included
+  bool include_usage_statistics = 7;
+
+  // include_performance_metrics indicates if performance metrics should be included
+  bool include_performance_metrics = 8;
+
+  // sort_by is the field to sort by
+  string sort_by = 9;
+
+  // sort_order is the sort order
+  string sort_order = 10;
+}
+
+// QueryTaxIncentivesResponse is the response type for the Query/TaxIncentives RPC method
+message QueryTaxIncentivesResponse {
+  // tax_incentives contains the tax incentives
+  repeated TaxIncentive tax_incentives = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // pagination defines the pagination in the response
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+
+  // applicable_incentives are incentives applicable to the address
+  repeated TaxIncentive applicable_incentives = 3;
+
+  // usage_statistics are usage statistics
+  IncentiveUsageStatistics usage_statistics = 4;
+
+  // performance_metrics are performance metrics
+  IncentivePerformanceMetrics performance_metrics = 5;
+
+  // recommendations are recommendations
+  repeated string recommendations = 6;
+
+  // optimization_opportunities are optimization opportunities
+  repeated string optimization_opportunities = 7;
+
+  // upcoming_incentives are upcoming incentives
+  repeated TaxIncentive upcoming_incentives = 8;
+
+  // expiring_incentives are expiring incentives
+  repeated TaxIncentive expiring_incentives = 9;
+
+  // trending_incentives are trending incentives
+  repeated TaxIncentive trending_incentives = 10;
+}
+
+// IncentiveUsageStatistics represents incentive usage statistics
+message IncentiveUsageStatistics {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // total_incentives is the total incentives
+  uint64 total_incentives = 1;
+
+  // active_incentives is the active incentives
+  uint64 active_incentives = 2;
+
+  // expired_incentives is the expired incentives
+  uint64 expired_incentives = 3;
+
+  // most_popular_incentives are the most popular incentives
+  repeated string most_popular_incentives = 4;
+
+  // least_popular_incentives are the least popular incentives
+  repeated string least_popular_incentives = 5;
+
+  // usage_rate is the usage rate
+  string usage_rate = 6;
+
+  // success_rate is the success rate
+  string success_rate = 7;
+
+  // average_benefit is the average benefit
+  string average_benefit = 8;
+
+  // total_benefits_distributed is the total benefits distributed
+  string total_benefits_distributed = 9;
+
+  // user_satisfaction_score is the user satisfaction score
+  string user_satisfaction_score = 10;
+
+  // completion_rate is the completion rate
+  string completion_rate = 11;
+
+  // renewal_rate is the renewal rate
+  string renewal_rate = 12;
+
+  // referral_rate is the referral rate
+  string referral_rate = 13;
+
+  // fraud_rate is the fraud rate
+  string fraud_rate = 14;
+
+  // dispute_rate is the dispute rate
+  string dispute_rate = 15;
+}
+
+// IncentivePerformanceMetrics represents incentive performance metrics
+message IncentivePerformanceMetrics {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // roi is the return on investment
+  string roi = 1;
+
+  // cost_per_acquisition is the cost per acquisition
+  string cost_per_acquisition = 2;
+
+  // lifetime_value is the lifetime value
+  string lifetime_value = 3;
+
+  // engagement_rate is the engagement rate
+  string engagement_rate = 4;
+
+  // retention_rate is the retention rate
+  string retention_rate = 5;
+
+  // conversion_rate is the conversion rate
+  string conversion_rate = 6;
+
+  // churn_rate is the churn rate
+  string churn_rate = 7;
+
+  // viral_coefficient is the viral coefficient
+  string viral_coefficient = 8;
+
+  // net_promoter_score is the net promoter score
+  string net_promoter_score = 9;
+
+  // customer_satisfaction_score is the customer satisfaction score
+  string customer_satisfaction_score = 10;
+
+  // market_penetration is the market penetration
+  string market_penetration = 11;
+
+  // brand_awareness is the brand awareness
+  string brand_awareness = 12;
+
+  // competitive_advantage is the competitive advantage
+  string competitive_advantage = 13;
+
+  // innovation_index is the innovation index
+  string innovation_index = 14;
+
+  // sustainability_score is the sustainability score
+  string sustainability_score = 15;
+}
+
+// QueryTaxHolidaysRequest is the request type for the Query/TaxHolidays RPC method
+message QueryTaxHolidaysRequest {
+  // pagination defines an optional pagination for the request
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+
+  // is_active filters by active status
+  bool is_active = 2;
+
+  // date is the date for validity check
+  int64 date = 3;
+
+  // category is the category
+  string category = 4;
+
+  // include_upcoming indicates if upcoming holidays should be included
+  bool include_upcoming = 5;
+
+  // include_historical indicates if historical holidays should be included
+  bool include_historical = 6;
+
+  // include_impact_analysis indicates if impact analysis should be included
+  bool include_impact_analysis = 7;
+
+  // sort_by is the field to sort by
+  string sort_by = 8;
+
+  // sort_order is the sort order
+  string sort_order = 9;
+}
+
+// QueryTaxHolidaysResponse is the response type for the Query/TaxHolidays RPC method
+message QueryTaxHolidaysResponse {
+  // tax_holidays contains the tax holidays
+  repeated TaxHolidayPeriod tax_holidays = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // pagination defines the pagination in the response
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+
+  // current_holidays are currently active holidays
+  repeated TaxHolidayPeriod current_holidays = 3;
+
+  // upcoming_holidays are upcoming holidays
+  repeated TaxHolidayPeriod upcoming_holidays = 4;
+
+  // impact_analysis is the impact analysis
+  HolidayImpactAnalysis impact_analysis = 5;
+
+  // recommendations are recommendations
+  repeated string recommendations = 6;
+
+  // calendar_view is the calendar view
+  repeated CalendarEntry calendar_view = 7;
+
+  // statistical_summary is the statistical summary
+  HolidayStatisticalSummary statistical_summary = 8;
+
+  // economic_impact is the economic impact
+  EconomicImpact economic_impact = 9;
+
+  // behavioral_insights are behavioral insights
+  repeated string behavioral_insights = 10;
+}
+
+// HolidayImpactAnalysis represents holiday impact analysis
+message HolidayImpactAnalysis {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // revenue_impact is the revenue impact
+  string revenue_impact = 1;
+
+  // transaction_volume_impact is the transaction volume impact
+  string transaction_volume_impact = 2;
+
+  // user_behavior_impact is the user behavior impact
+  string user_behavior_impact = 3;
+
+  // market_sentiment_impact is the market sentiment impact
+  string market_sentiment_impact = 4;
+
+  // compliance_impact is the compliance impact
+  string compliance_impact = 5;
+
+  // operational_impact is the operational impact
+  string operational_impact = 6;
+
+  // competitive_impact is the competitive impact
+  string competitive_impact = 7;
+
+  // long_term_effects are long term effects
+  repeated string long_term_effects = 8;
+
+  // short_term_effects are short term effects
+  repeated string short_term_effects = 9;
+
+  // unintended_consequences are unintended consequences
+  repeated string unintended_consequences = 10;
+
+  // success_factors are success factors
+  repeated string success_factors = 11;
+
+  // failure_factors are failure factors
+  repeated string failure_factors = 12;
+
+  // lessons_learned are lessons learned
+  repeated string lessons_learned = 13;
+
+  // improvement_opportunities are improvement opportunities
+  repeated string improvement_opportunities = 14;
+
+  // stakeholder_feedback is stakeholder feedback
+  repeated string stakeholder_feedback = 15;
+}
+
+// CalendarEntry represents a calendar entry
+message CalendarEntry {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // date is the date
+  int64 date = 1;
+
+  // event_type is the event type
+  string event_type = 2;
+
+  // event_name is the event name
+  string event_name = 3;
+
+  // event_description is the event description
+  string event_description = 4;
+
+  // impact_level is the impact level
+  string impact_level = 5;
+
+  // affected_categories are affected categories
+  repeated string affected_categories = 6;
+
+  // estimated_impact is the estimated impact
+  string estimated_impact = 7;
+
+  // preparation_required is preparation required
+  bool preparation_required = 8;
+
+  // notification_sent is notification sent
+  bool notification_sent = 9;
+
+  // stakeholders are stakeholders
+  repeated string stakeholders = 10;
+
+  // action_items are action items
+  repeated string action_items = 11;
+
+  // dependencies are dependencies
+  repeated string dependencies = 12;
+
+  // success_criteria are success criteria
+  repeated string success_criteria = 13;
+
+  // risk_factors are risk factors
+  repeated string risk_factors = 14;
+
+  // mitigation_strategies are mitigation strategies
+  repeated string mitigation_strategies = 15;
+}
+
+// HolidayStatisticalSummary represents holiday statistical summary
+message HolidayStatisticalSummary {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // total_holidays is the total holidays
+  uint64 total_holidays = 1;
+
+  // active_holidays is the active holidays
+  uint64 active_holidays = 2;
+
+  // upcoming_holidays is the upcoming holidays
+  uint64 upcoming_holidays = 3;
+
+  // recurring_holidays is the recurring holidays
+  uint64 recurring_holidays = 4;
+
+  // average_duration is the average duration
+  int64 average_duration = 5;
+
+  // average_discount is the average discount
+  string average_discount = 6;
+
+  // total_savings_provided is the total savings provided
+  string total_savings_provided = 7;
+
+  // participation_rate is the participation rate
+  string participation_rate = 8;
+
+  // effectiveness_score is the effectiveness score
+  string effectiveness_score = 9;
+
+  // popularity_ranking is the popularity ranking
+  repeated string popularity_ranking = 10;
+
+  // seasonal_patterns are seasonal patterns
+  repeated string seasonal_patterns = 11;
+
+  // geographic_distribution is the geographic distribution
+  map<string, string> geographic_distribution = 12;
+
+  // demographic_breakdown is the demographic breakdown
+  map<string, string> demographic_breakdown = 13;
+
+  // success_rate is the success rate
+  string success_rate = 14;
+
+  // improvement_trends are improvement trends
+  repeated string improvement_trends = 15;
+}
+
+// EconomicImpact represents economic impact
+message EconomicImpact {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // gdp_impact is the GDP impact
+  string gdp_impact = 1;
+
+  // employment_impact is the employment impact
+  string employment_impact = 2;
+
+  // inflation_impact is the inflation impact
+  string inflation_impact = 3;
+
+  // investment_impact is the investment impact
+  string investment_impact = 4;
+
+  // consumption_impact is the consumption impact
+  string consumption_impact = 5;
+
+  // savings_impact is the savings impact
+  string savings_impact = 6;
+
+  // productivity_impact is the productivity impact
+  string productivity_impact = 7;
+
+  // competitiveness_impact is the competitiveness impact
+  string competitiveness_impact = 8;
+
+  // innovation_impact is the innovation impact
+  string innovation_impact = 9;
+
+  // sustainability_impact is the sustainability impact
+  string sustainability_impact = 10;
+
+  // social_impact is the social impact
+  string social_impact = 11;
+
+  // environmental_impact is the environmental impact
+  string environmental_impact = 12;
+
+  // regional_impact is the regional impact
+  map<string, string> regional_impact = 13;
+
+  // sector_impact is the sector impact
+  map<string, string> sector_impact = 14;
+
+  // multiplier_effects are multiplier effects
+  repeated string multiplier_effects = 15;
+}
+
+// QueryTaxOptimizationRequest is the request type for the Query/TaxOptimization RPC method
+message QueryTaxOptimizationRequest {
+  // address is the user address
+  string address = 1;
+
+  // optimization_type is the optimization type
+  string optimization_type = 2;
+
+  // time_horizon is the time horizon
+  string time_horizon = 3;
+
+  // risk_tolerance is the risk tolerance
+  string risk_tolerance = 4;
+
+  // constraints are constraints
+  repeated string constraints = 5;
+
+  // objectives are objectives
+  repeated string objectives = 6;
+
+  // preferences are preferences
+  map<string, string> preferences = 7;
+
+  // scenario_parameters are scenario parameters
+  map<string, string> scenario_parameters = 8;
+
+  // include_alternatives indicates if alternatives should be included
+  bool include_alternatives = 9;
+
+  // include_sensitivity_analysis indicates if sensitivity analysis should be included
+  bool include_sensitivity_analysis = 10;
+
+  // include_monte_carlo indicates if Monte Carlo simulation should be included
+  bool include_monte_carlo = 11;
+
+  // include_benchmarking indicates if benchmarking should be included
+  bool include_benchmarking = 12;
+
+  // optimization_depth is the optimization depth
+  string optimization_depth = 13;
+
+  // computational_budget is the computational budget
+  string computational_budget = 14;
+
+  // precision_level is the precision level
+  string precision_level = 15;
+}
+
+// QueryTaxOptimizationResponse is the response type for the Query/TaxOptimization RPC method
+message QueryTaxOptimizationResponse {
+  // optimization_results are the optimization results
+  repeated OptimizationResult optimization_results = 1;
+
+  // recommended_strategy is the recommended strategy
+  OptimizationResult recommended_strategy = 2;
+
+  // alternative_strategies are alternative strategies
+  repeated OptimizationResult alternative_strategies = 3;
+
+  // sensitivity_analysis is the sensitivity analysis
+  map<string, string> sensitivity_analysis = 4;
+
+  // monte_carlo_results are Monte Carlo results
+  MonteCarloResults monte_carlo_results = 5;
+
+  // benchmark_comparison is the benchmark comparison
+  BenchmarkComparison benchmark_comparison = 6;
+
+  // risk_assessment is the risk assessment
+  RiskAssessment risk_assessment = 7;
+
+  // implementation_plan is the implementation plan
+  ImplementationPlan implementation_plan = 8;
+
+  // monitoring_plan is the monitoring plan
+  MonitoringPlan monitoring_plan = 9;
+
+  // success_metrics are success metrics
+  repeated string success_metrics = 10;
+
+  // optimization_score is the optimization score
+  string optimization_score = 11;
+
+  // confidence_level is the confidence level
+  string confidence_level = 12;
+
+  // optimization_time is the optimization time
+  int64 optimization_time = 13;
+
+  // computational_complexity is the computational complexity
+  string computational_complexity = 14;
+
+  // recommendations are recommendations
+  repeated string recommendations = 15;
+}
+
+// OptimizationResult represents an optimization result
+message OptimizationResult {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // strategy_name is the strategy name
+  string strategy_name = 1;
+
+  // strategy_description is the strategy description
+  string strategy_description = 2;
+
+  // expected_savings is the expected savings
+  string expected_savings = 3;
+
+  // savings_percentage is the savings percentage
+  string savings_percentage = 4;
+
+  // implementation_effort is the implementation effort
+  string implementation_effort = 5;
+
+  // risk_level is the risk level
+  string risk_level = 6;
+
+  // success_probability is the success probability
+  string success_probability = 7;
+
+  // time_to_benefit is the time to benefit
+  int64 time_to_benefit = 8;
+
+  // sustainability_score is the sustainability score
+  string sustainability_score = 9;
+
+  // complexity_score is the complexity score
+  string complexity_score = 10;
+
+  // resource_requirements are resource requirements
+  repeated string resource_requirements = 11;
+
+  // prerequisites are prerequisites
+  repeated string prerequisites = 12;
+
+  // benefits are benefits
+  repeated string benefits = 13;
+
+  // drawbacks are drawbacks
+  repeated string drawbacks = 14;
+
+  // suitability_score is the suitability score
+  string suitability_score = 15;
+}
+
+// MonteCarloResults represents Monte Carlo results
+message MonteCarloResults {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // simulation_count is the simulation count
+  uint64 simulation_count = 1;
+
+  // mean_outcome is the mean outcome
+  string mean_outcome = 2;
+
+  // median_outcome is the median outcome
+  string median_outcome = 3;
+
+  // standard_deviation is the standard deviation
+  string standard_deviation = 4;
+
+  // confidence_intervals are confidence intervals
+  map<string, string> confidence_intervals = 5;
+
+  // percentiles are percentiles
+  map<string, string> percentiles = 6;
+
+  // best_case_scenario is the best case scenario
+  string best_case_scenario = 7;
+
+  // worst_case_scenario is the worst case scenario
+  string worst_case_scenario = 8;
+
+  // probability_of_success is the probability of success
+  string probability_of_success = 9;
+
+  // probability_of_loss is the probability of loss
+  string probability_of_loss = 10;
+
+  // value_at_risk is the value at risk
+  string value_at_risk = 11;
+
+  // expected_shortfall is the expected shortfall
+  string expected_shortfall = 12;
+
+  // correlation_matrix is the correlation matrix
+  map<string, string> correlation_matrix = 13;
+
+  // sensitivity_indices are sensitivity indices
+  map<string, string> sensitivity_indices = 14;
+
+  // convergence_diagnostics are convergence diagnostics
+  repeated string convergence_diagnostics = 15;
+}
+
+// ImplementationPlan represents an implementation plan
+message ImplementationPlan {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // phases are phases
+  repeated Phase phases = 1;
+
+  // timeline is the timeline
+  string timeline = 2;
+
+  // resource_allocation is the resource allocation
+  map<string, string> resource_allocation = 3;
+
+  // milestones are milestones
+  repeated Milestone milestones = 4;
+
+  // dependencies are dependencies
+  repeated string dependencies = 5;
+
+  // critical_path is the critical path
+  repeated string critical_path = 6;
+
+  // risk_factors are risk factors
+  repeated string risk_factors = 7;
+
+  // mitigation_strategies are mitigation strategies
+  repeated string mitigation_strategies = 8;
+
+  // success_criteria are success criteria
+  repeated string success_criteria = 9;
+
+  // quality_assurance is the quality assurance
+  string quality_assurance = 10;
+
+  // testing_strategy is the testing strategy
+  string testing_strategy = 11;
+
+  // rollback_plan is the rollback plan
+  string rollback_plan = 12;
+
+  // communication_plan is the communication plan
+  string communication_plan = 13;
+
+  // training_plan is the training plan
+  string training_plan = 14;
+
+  // support_plan is the support plan
+  string support_plan = 15;
+}
+
+// Phase represents a phase
+message Phase {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // phase_name is the phase name
+  string phase_name = 1;
+
+  // phase_description is the phase description
+  string phase_description = 2;
+
+  // start_date is the start date
+  int64 start_date = 3;
+
+  // end_date is the end date
+  int64 end_date = 4;
+
+  // duration is the duration
+  int64 duration = 5;
+
+  // activities are activities
+  repeated string activities = 6;
+
+  // deliverables are deliverables
+  repeated string deliverables = 7;
+
+  // resources_required are resources required
+  repeated string resources_required = 8;
+
+  // dependencies are dependencies
+  repeated string dependencies = 9;
+
+  // risks are risks
+  repeated string risks = 10;
+
+  // success_criteria are success criteria
+  repeated string success_criteria = 11;
+
+  // completion_percentage is the completion percentage
+  string completion_percentage = 12;
+
+  // status is the status
+  string status = 13;
+
+  // responsible_party is the responsible party
+  string responsible_party = 14;
+
+  // budget_allocation is the budget allocation
+  string budget_allocation = 15;
+}
+
+// Milestone represents a milestone
+message Milestone {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // milestone_name is the milestone name
+  string milestone_name = 1;
+
+  // milestone_description is the milestone description
+  string milestone_description = 2;
+
+  // target_date is the target date
+  int64 target_date = 3;
+
+  // actual_date is the actual date
+  int64 actual_date = 4;
+
+  // status is the status
+  string status = 5;
+
+  // completion_criteria are completion criteria
+  repeated string completion_criteria = 6;
+
+  // dependencies are dependencies
+  repeated string dependencies = 7;
+
+  // impact_if_delayed is the impact if delayed
+  string impact_if_delayed = 8;
+
+  // responsible_party is the responsible party
+  string responsible_party = 9;
+
+  // approval_required is approval required
+  bool approval_required = 10;
+
+  // approvers are approvers
+  repeated string approvers = 11;
+
+  // documentation_required is documentation required
+  bool documentation_required = 12;
+
+  // testing_required is testing required
+  bool testing_required = 13;
+
+  // communication_required is communication required
+  bool communication_required = 14;
+
+  // celebration_planned is celebration planned
+  bool celebration_planned = 15;
+}
+
+// MonitoringPlan represents a monitoring plan
+message MonitoringPlan {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // monitoring_frequency is the monitoring frequency
+  string monitoring_frequency = 1;
+
+  // key_performance_indicators are key performance indicators
+  repeated string key_performance_indicators = 2;
+
+  // thresholds are thresholds
+  map<string, string> thresholds = 3;
+
+  // alerts are alerts
+  repeated string alerts = 4;
+
+  // reporting_schedule is the reporting schedule
+  string reporting_schedule = 5;
+
+  // dashboard_url is the dashboard URL
+  string dashboard_url = 6;
+
+  // stakeholders are stakeholders
+  repeated string stakeholders = 7;
+
+  // escalation_procedures are escalation procedures
+  repeated string escalation_procedures = 8;
+
+  // corrective_actions are corrective actions
+  repeated string corrective_actions = 9;
+
+  // review_schedule is the review schedule
+  string review_schedule = 10;
+
+  // optimization_opportunities are optimization opportunities
+  repeated string optimization_opportunities = 11;
+
+  // data_sources are data sources
+  repeated string data_sources = 12;
+
+  // analysis_methods are analysis methods
+  repeated string analysis_methods = 13;
+
+  // quality_assurance is the quality assurance
+  string quality_assurance = 14;
+
+  // continuous_improvement is the continuous improvement
+  string continuous_improvement = 15;
+}
+
+// QueryTaxForecastingRequest is the request type for the Query/TaxForecasting RPC method
+message QueryTaxForecastingRequest {
+  // forecast_period is the forecast period
+  string forecast_period = 1;
+
+  // forecast_type is the forecast type
+  string forecast_type = 2;
+
+  // granularity is the granularity
+  string granularity = 3;
+
+  // include_scenarios indicates if scenarios should be included
+  bool include_scenarios = 4;
+
+  // include_confidence_intervals indicates if confidence intervals should be included
+  bool include_confidence_intervals = 5;
+
+  // include_assumptions indicates if assumptions should be included
+  bool include_assumptions = 6;
+
+  // model_selection is the model selection
+  string model_selection = 7;
+
+  // historical_data_period is the historical data period
+  string historical_data_period = 8;
+
+  // external_factors are external factors
+  repeated string external_factors = 9;
+
+  // adjustment_factors are adjustment factors
+  map<string, string> adjustment_factors = 10;
+
+  // validation_method is the validation method
+  string validation_method = 11;
+
+  // accuracy_requirements are accuracy requirements
+  string accuracy_requirements = 12;
+
+  // update_frequency is the update frequency
+  string update_frequency = 13;
+
+  // stakeholder_requirements are stakeholder requirements
+  repeated string stakeholder_requirements = 14;
+
+  // output_format is the output format
+  string output_format = 15;
+}
+
+// QueryTaxForecastingResponse is the response type for the Query/TaxForecasting RPC method
+message QueryTaxForecastingResponse {
+  // forecast_data is the forecast data
+  TaxForecastData forecast_data = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // scenario_analysis is the scenario analysis
+  repeated ScenarioAnalysis scenario_analysis = 2;
+
+  // confidence_intervals are confidence intervals
+  map<string, string> confidence_intervals = 3;
+
+  // model_performance is the model performance
+  ModelPerformance model_performance = 4;
+
+  // assumptions are assumptions
+  repeated string assumptions = 5;
+
+  // limitations are limitations
+  repeated string limitations = 6;
+
+  // recommendations are recommendations
+  repeated string recommendations = 7;
+
+  // sensitivity_analysis is the sensitivity analysis
+  map<string, string> sensitivity_analysis = 8;
+
+  // risk_factors are risk factors
+  repeated string risk_factors = 9;
+
+  // opportunities are opportunities
+  repeated string opportunities = 10;
+
+  // external_factors_impact is the external factors impact
+  map<string, string> external_factors_impact = 11;
+
+  // model_diagnostics are model diagnostics
+  ModelDiagnostics model_diagnostics = 12;
+
+  // forecast_accuracy is the forecast accuracy
+  string forecast_accuracy = 13;
+
+  // update_schedule is the update schedule
+  string update_schedule = 14;
+
+  // export_options are export options
+  repeated string export_options = 15;
+}
+
+// ScenarioAnalysis represents scenario analysis
+message ScenarioAnalysis {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // scenario_name is the scenario name
+  string scenario_name = 1;
+
+  // scenario_description is the scenario description
+  string scenario_description = 2;
+
+  // probability is the probability
+  string probability = 3;
+
+  // forecast_values are forecast values
+  map<string, string> forecast_values = 4;
+
+  // impact_analysis is the impact analysis
+  string impact_analysis = 5;
+
+  // risk_assessment is the risk assessment
+  string risk_assessment = 6;
+
+  // mitigation_strategies are mitigation strategies
+  repeated string mitigation_strategies = 7;
+
+  // preparation_actions are preparation actions
+  repeated string preparation_actions = 8;
+
+  // monitoring_indicators are monitoring indicators
+  repeated string monitoring_indicators = 9;
+
+  // trigger_conditions are trigger conditions
+  repeated string trigger_conditions = 10;
+
+  // response_plan is the response plan
+  string response_plan = 11;
+
+  // stakeholder_impact is the stakeholder impact
+  map<string, string> stakeholder_impact = 12;
+
+  // resource_requirements are resource requirements
+  repeated string resource_requirements = 13;
+
+  // timeline is the timeline
+  string timeline = 14;
+
+  // success_factors are success factors
+  repeated string success_factors = 15;
+}
+
+// ModelPerformance represents model performance
+message ModelPerformance {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // model_name is the model name
+  string model_name = 1;
+
+  // accuracy_score is the accuracy score
+  string accuracy_score = 2;
+
+  // precision_score is the precision score
+  string precision_score = 3;
+
+  // recall_score is the recall score
+  string recall_score = 4;
+
+  // f1_score is the F1 score
+  string f1_score = 5;
+
+  // rmse is the root mean square error
+  string rmse = 6;
+
+  // mae is the mean absolute error
+  string mae = 7;
+
+  // mape is the mean absolute percentage error
+  string mape = 8;
+
+  // r_squared is the R-squared
+  string r_squared = 9;
+
+  // adjusted_r_squared is the adjusted R-squared
+  string adjusted_r_squared = 10;
+
+  // auc is the area under the curve
+  string auc = 11;
+
+  // cross_validation_score is the cross validation score
+  string cross_validation_score = 12;
+
+  // overfitting_score is the overfitting score
+  string overfitting_score = 13;
+
+  // generalization_score is the generalization score
+  string generalization_score = 14;
+
+  // robustness_score is the robustness score
+  string robustness_score = 15;
+}
+
+// ModelDiagnostics represents model diagnostics
+message ModelDiagnostics {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // residual_analysis is the residual analysis
+  string residual_analysis = 1;
+
+  // normality_test is the normality test
+  string normality_test = 2;
+
+  // heteroscedasticity_test is the heteroscedasticity test
+  string heteroscedasticity_test = 3;
+
+  // autocorrelation_test is the autocorrelation test
+  string autocorrelation_test = 4;
+
+  // multicollinearity_test is the multicollinearity test
+  string multicollinearity_test = 5;
+
+  // linearity_test is the linearity test
+  string linearity_test = 6;
+
+  // outlier_detection is the outlier detection
+  string outlier_detection = 7;
+
+  // feature_importance is the feature importance
+  map<string, string> feature_importance = 8;
+
+  // model_stability is the model stability
+  string model_stability = 9;
+
+  // parameter_significance is the parameter significance
+  map<string, string> parameter_significance = 10;
+
+  // goodness_of_fit is the goodness of fit
+  string goodness_of_fit = 11;
+
+  // model_complexity is the model complexity
+  string model_complexity = 12;
+
+  // interpretability_score is the interpretability score
+  string interpretability_score = 13;
+
+  // bias_analysis is the bias analysis
+  string bias_analysis = 14;
+
+  // fairness_metrics are fairness metrics
+  map<string, string> fairness_metrics = 15;
+}
+
+// QueryTaxComplianceRequest is the request type for the Query/TaxCompliance RPC method
+message QueryTaxComplianceRequest {
+  // address is the user address
+  string address = 1;
+
+  // compliance_period is the compliance period
+  string compliance_period = 2;
+
+  // compliance_type is the compliance type
+  string compliance_type = 3;
+
+  // include_recommendations indicates if recommendations should be included
+  bool include_recommendations = 4;
+
+  // include_action_items indicates if action items should be included
+  bool include_action_items = 5;
+
+  // include_risk_assessment indicates if risk assessment should be included
+  bool include_risk_assessment = 6;
+
+  // include_benchmarking indicates if benchmarking should be included
+  bool include_benchmarking = 7;
+
+  // detail_level is the detail level
+  string detail_level = 8;
+
+  // report_format is the report format
+  string report_format = 9;
+
+  // stakeholder_view is the stakeholder view
+  string stakeholder_view = 10;
+
+  // regulatory_framework is the regulatory framework
+  string regulatory_framework = 11;
+
+  // jurisdiction is the jurisdiction
+  string jurisdiction = 12;
+
+  // assessment_criteria are assessment criteria
+  repeated string assessment_criteria = 13;
+
+  // weighting_factors are weighting factors
+  map<string, string> weighting_factors = 14;
+
+  // validation_level is the validation level
+  string validation_level = 15;
+}
+
+// QueryTaxComplianceResponse is the response type for the Query/TaxCompliance RPC method
+message QueryTaxComplianceResponse {
+  // compliance_score is the compliance score
+  string compliance_score = 1;
+
+  // compliance_grade is the compliance grade
+  string compliance_grade = 2;
+
+  // compliance_status is the compliance status
+  string compliance_status = 3;
+
+  // compliance_areas are compliance areas
+  repeated ComplianceArea compliance_areas = 4;
+
+  // violations are violations
+  repeated Violation violations = 5;
+
+  // recommendations are recommendations
+  repeated string recommendations = 6;
+
+  // action_items are action items
+  repeated ActionItem action_items = 7;
+
+  // risk_assessment is the risk assessment
+  RiskAssessment risk_assessment = 8;
+
+  // benchmark_comparison is the benchmark comparison
+  BenchmarkComparison benchmark_comparison = 9;
+
+  // improvement_plan is the improvement plan
+  ImprovementPlan improvement_plan = 10;
+
+  // monitoring_plan is the monitoring plan
+  MonitoringPlan monitoring_plan = 11;
+
+  // certification_status is the certification status
+  string certification_status = 12;
+
+  // audit_readiness is the audit readiness
+  string audit_readiness = 13;
+
+  // next_review_date is the next review date
+  int64 next_review_date = 14;
+
+  // compliance_trends are compliance trends
+  repeated ComplianceTrend compliance_trends = 15;
+}
+
+// ComplianceArea represents a compliance area
+message ComplianceArea {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // area_name is the area name
+  string area_name = 1;
+
+  // area_description is the area description
+  string area_description = 2;
+
+  // compliance_score is the compliance score
+  string compliance_score = 3;
+
+  // weight is the weight
+  string weight = 4;
+
+  // requirements are requirements
+  repeated string requirements = 5;
+
+  // current_status is the current status
+  string current_status = 6;
+
+  // gaps are gaps
+  repeated string gaps = 7;
+
+  // strengths are strengths
+  repeated string strengths = 8;
+
+  // improvement_opportunities are improvement opportunities
+  repeated string improvement_opportunities = 9;
+
+  // priority_level is the priority level
+  string priority_level = 10;
+
+  // deadline is the deadline
+  int64 deadline = 11;
+
+  // responsible_party is the responsible party
+  string responsible_party = 12;
+
+  // resources_required are resources required
+  repeated string resources_required = 13;
+
+  // success_criteria are success criteria
+  repeated string success_criteria = 14;
+
+  // progress_tracking is the progress tracking
+  string progress_tracking = 15;
+}
+
+// Violation represents a violation
+message Violation {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // violation_id is the violation ID
+  string violation_id = 1;
+
+  // violation_type is the violation type
+  string violation_type = 2;
+
+  // severity is the severity
+  string severity = 3;
+
+  // description is the description
+  string description = 4;
+
+  // date_identified is the date identified
+  int64 date_identified = 5;
+
+  // status is the status
+  string status = 6;
+
+  // penalty is the penalty
+  string penalty = 7;
+
+  // corrective_action is the corrective action
+  string corrective_action = 8;
+
+  // deadline is the deadline
+  int64 deadline = 9;
+
+  // responsible_party is the responsible party
+  string responsible_party = 10;
+
+  // resolution_plan is the resolution plan
+  string resolution_plan = 11;
+
+  // prevention_measures are prevention measures
+  repeated string prevention_measures = 12;
+
+  // lessons_learned are lessons learned
+  repeated string lessons_learned = 13;
+
+  // impact_assessment is the impact assessment
+  string impact_assessment = 14;
+
+  // stakeholder_notification is the stakeholder notification
+  string stakeholder_notification = 15;
+}
+
+// ActionItem represents an action item
+message ActionItem {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // action_id is the action ID
+  string action_id = 1;
+
+  // action_type is the action type
+  string action_type = 2;
+
+  // priority is the priority
+  string priority = 3;
+
+  // description is the description
+  string description = 4;
+
+  // deadline is the deadline
+  int64 deadline = 5;
+
+  // responsible_party is the responsible party
+  string responsible_party = 6;
+
+  // status is the status
+  string status = 7;
+
+  // progress is the progress
+  string progress = 8;
+
+  // dependencies are dependencies
+  repeated string dependencies = 9;
+
+  // resources_required are resources required
+  repeated string resources_required = 10;
+
+  // success_criteria are success criteria
+  repeated string success_criteria = 11;
+
+  // risks are risks
+  repeated string risks = 12;
+
+  // mitigation_strategies are mitigation strategies
+  repeated string mitigation_strategies = 13;
+
+  // completion_date is the completion date
+  int64 completion_date = 14;
+
+  // verification_method is the verification method
+  string verification_method = 15;
+}
+
+// ImprovementPlan represents an improvement plan
+message ImprovementPlan {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // plan_name is the plan name
+  string plan_name = 1;
+
+  // plan_description is the plan description
+  string plan_description = 2;
+
+  // objectives are objectives
+  repeated string objectives = 3;
+
+  // initiatives are initiatives
+  repeated Initiative initiatives = 4;
+
+  // timeline is the timeline
+  string timeline = 5;
+
+  // budget is the budget
+  string budget = 6;
+
+  // success_metrics are success metrics
+  repeated string success_metrics = 7;
+
+  // milestones are milestones
+  repeated Milestone milestones = 8;
+
+  // stakeholders are stakeholders
+  repeated string stakeholders = 9;
+
+  // governance_structure is the governance structure
+  string governance_structure = 10;
+
+  // communication_plan is the communication plan
+  string communication_plan = 11;
+
+  // risk_management is the risk management
+  string risk_management = 12;
+
+  // change_management is the change management
+  string change_management = 13;
+
+  // quality_assurance is the quality assurance
+  string quality_assurance = 14;
+
+  // continuous_improvement is the continuous improvement
+  string continuous_improvement = 15;
+}
+
+// Initiative represents an initiative
+message Initiative {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // initiative_name is the initiative name
+  string initiative_name = 1;
+
+  // initiative_description is the initiative description
+  string initiative_description = 2;
+
+  // objectives are objectives
+  repeated string objectives = 3;
+
+  // activities are activities
+  repeated string activities = 4;
+
+  // timeline is the timeline
+  string timeline = 5;
+
+  // budget is the budget
+  string budget = 6;
+
+  // responsible_party is the responsible party
+  string responsible_party = 7;
+
+  // stakeholders are stakeholders
+  repeated string stakeholders = 8;
+
+  // success_criteria are success criteria
+  repeated string success_criteria = 9;
+
+  // risks are risks
+  repeated string risks = 10;
+
+  // dependencies are dependencies
+  repeated string dependencies = 11;
+
+  // resources_required are resources required
+  repeated string resources_required = 12;
+
+  // expected_outcomes are expected outcomes
+  repeated string expected_outcomes = 13;
+
+  // measurement_plan is the measurement plan
+  string measurement_plan = 14;
+
+  // communication_strategy is the communication strategy
+  string communication_strategy = 15;
+}
+
+// ComplianceTrend represents a compliance trend
+message ComplianceTrend {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // period is the period
+  string period = 1;
+
+  // compliance_score is the compliance score
+  string compliance_score = 2;
+
+  // trend_direction is the trend direction
+  string trend_direction = 3;
+
+  // change_rate is the change rate
+  string change_rate = 4;
+
+  // key_drivers are key drivers
+  repeated string key_drivers = 5;
+
+  // improvement_areas are improvement areas
+  repeated string improvement_areas = 6;
+
+  // challenges are challenges
+  repeated string challenges = 7;
+
+  // achievements are achievements
+  repeated string achievements = 8;
+
+  // forecast is the forecast
+  string forecast = 9;
+
+  // action_taken is the action taken
+  repeated string action_taken = 10;
+
+  // lessons_learned are lessons learned
+  repeated string lessons_learned = 11;
+
+  // best_practices are best practices
+  repeated string best_practices = 12;
+
+  // recommendations are recommendations
+  repeated string recommendations = 13;
+
+  // next_steps are next steps
+  repeated string next_steps = 14;
+
+  // stakeholder_feedback is stakeholder feedback
+  repeated string stakeholder_feedback = 15;
+}
+
+// QueryTaxAuditTrailRequest is the request type for the Query/TaxAuditTrail RPC method
+message QueryTaxAuditTrailRequest {
+  // address is the user address
+  string address = 1;
+
+  // pagination defines an optional pagination for the request
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+
+  // start_date is the start date
+  int64 start_date = 3;
+
+  // end_date is the end date
+  int64 end_date = 4;
+
+  // audit_type is the audit type
+  string audit_type = 5;
+
+  // include_details indicates if details should be included
+  bool include_details = 6;
+
+  // include_recommendations indicates if recommendations should be included
+  bool include_recommendations = 7;
+
+  // filter_by_status filters by status
+  string filter_by_status = 8;
+
+  // filter_by_severity filters by severity
+  string filter_by_severity = 9;
+
+  // search_query is the search query
+  string search_query = 10;
+
+  // sort_by is the field to sort by
+  string sort_by = 11;
+
+  // sort_order is the sort order
+  string sort_order = 12;
+
+  // export_format is the export format
+  string export_format = 13;
+
+  // include_related_data indicates if related data should be included
+  bool include_related_data = 14;
+
+  // anonymize_data indicates if data should be anonymized
+  bool anonymize_data = 15;
+}
+
+// QueryTaxAuditTrailResponse is the response type for the Query/TaxAuditTrail RPC method
+message QueryTaxAuditTrailResponse {
+  // audit_records are the audit records
+  repeated TaxAuditRecord audit_records = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // pagination defines the pagination in the response
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+
+  // summary is the summary
+  AuditSummary summary = 3;
+
+  // recommendations are recommendations
+  repeated string recommendations = 4;
+
+  // compliance_status is the compliance status
+  string compliance_status = 5;
+
+  // risk_assessment is the risk assessment
+  RiskAssessment risk_assessment = 6;
+
+  // trends are trends
+  repeated AuditTrend trends = 7;
+
+  // export_url is the export URL
+  string export_url = 8;
+
+  // report_generation_time is the report generation time
+  int64 report_generation_time = 9;
+
+  // data_quality_score is the data quality score
+  string data_quality_score = 10;
+
+  // completeness_score is the completeness score
+  string completeness_score = 11;
+
+  // security_level is the security level
+  string security_level = 12;
+
+  // access_log is the access log
+  repeated string access_log = 13;
+
+  // retention_policy is the retention policy
+  string retention_policy = 14;
+
+  // privacy_compliance is the privacy compliance
+  string privacy_compliance = 15;
+}
+
+// AuditSummary represents audit summary
+message AuditSummary {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // total_audits is the total audits
+  uint64 total_audits = 1;
+
+  // successful_audits is the successful audits
+  uint64 successful_audits = 2;
+
+  // failed_audits is the failed audits
+  uint64 failed_audits = 3;
+
+  // pending_audits is the pending audits
+  uint64 pending_audits = 4;
+
+  // average_compliance_score is the average compliance score
+  string average_compliance_score = 5;
+
+  // total_penalties is the total penalties
+  string total_penalties = 6;
+
+  // total_refunds is the total refunds
+  string total_refunds = 7;
+
+  // resolution_rate is the resolution rate
+  string resolution_rate = 8;
+
+  // average_resolution_time is the average resolution time
+  int64 average_resolution_time = 9;
+
+  // critical_issues is the critical issues
+  uint64 critical_issues = 10;
+
+  // improvement_rate is the improvement rate
+  string improvement_rate = 11;
+
+  // repeat_violations is the repeat violations
+  uint64 repeat_violations = 12;
+
+  // best_performers are the best performers
+  repeated string best_performers = 13;
+
+  // areas_for_improvement are areas for improvement
+  repeated string areas_for_improvement = 14;
+
+  // key_insights are key insights
+  repeated string key_insights = 15;
+}
+
+// AuditTrend represents audit trend
+message AuditTrend {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // period is the period
+  string period = 1;
+
+  // audit_count is the audit count
+  uint64 audit_count = 2;
+
+  // success_rate is the success rate
+  string success_rate = 3;
+
+  // average_score is the average score
+  string average_score = 4;
+
+  // trend_direction is the trend direction
+  string trend_direction = 5;
+
+  // improvement_rate is the improvement rate
+  string improvement_rate = 6;
+
+  // key_issues are key issues
+  repeated string key_issues = 7;
+
+  // resolutions are resolutions
+  repeated string resolutions = 8;
+
+  // performance_indicators are performance indicators
+  map<string, string> performance_indicators = 9;
+
+  // comparative_analysis is the comparative analysis
+  string comparative_analysis = 10;
+
+  // forecast is the forecast
+  string forecast = 11;
+
+  // action_plans are action plans
+  repeated string action_plans = 12;
+
+  // stakeholder_feedback is stakeholder feedback
+  repeated string stakeholder_feedback = 13;
+
+  // lessons_learned are lessons learned
+  repeated string lessons_learned = 14;
+
+  // best_practices are best practices
+  repeated string best_practices = 15;
+}
+
+// QueryTaxPerformanceMetricsRequest is the request type for the Query/TaxPerformanceMetrics RPC method
+message QueryTaxPerformanceMetricsRequest {
+  // time_period is the time period
+  string time_period = 1;
+
+  // metric_categories are metric categories
+  repeated string metric_categories = 2;
+
+  // include_benchmarks indicates if benchmarks should be included
+  bool include_benchmarks = 3;
+
+  // include_forecasts indicates if forecasts should be included
+  bool include_forecasts = 4;
+
+  // include_recommendations indicates if recommendations should be included
+  bool include_recommendations = 5;
+
+  // granularity is the granularity
+  string granularity = 6;
+
+  // comparison_periods are comparison periods
+  repeated string comparison_periods = 7;
+
+  // stakeholder_view is the stakeholder view
+  string stakeholder_view = 8;
+
+  // detail_level is the detail level
+  string detail_level = 9;
+
+  // report_format is the report format
+  string report_format = 10;
+
+  // real_time_data indicates if real time data should be included
+  bool real_time_data = 11;
+
+  // data_quality_threshold is the data quality threshold
+  string data_quality_threshold = 12;
+
+  // confidence_level is the confidence level
+  string confidence_level = 13;
+
+  // statistical_significance is the statistical significance
+  string statistical_significance = 14;
+
+  // export_options are export options
+  repeated string export_options = 15;
+}
+
+// QueryTaxPerformanceMetricsResponse is the response type for the Query/TaxPerformanceMetrics RPC method
+message QueryTaxPerformanceMetricsResponse {
+  // system_performance_metrics are system performance metrics
+  SystemPerformanceMetrics system_performance_metrics = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // business_metrics are business metrics
+  BusinessMetrics business_metrics = 2;
+
+  // operational_metrics are operational metrics
+  OperationalMetrics operational_metrics = 3;
+
+  // financial_metrics are financial metrics
+  FinancialMetrics financial_metrics = 4;
+
+  // user_experience_metrics are user experience metrics
+  UserExperienceMetrics user_experience_metrics = 5;
+
+  // compliance_metrics are compliance metrics
+  ComplianceMetrics compliance_metrics = 6;
+
+  // benchmark_comparisons are benchmark comparisons
+  repeated BenchmarkComparison benchmark_comparisons = 7;
+
+  // forecasts are forecasts
+  repeated MetricForecast forecasts = 8;
+
+  // trends are trends
+  repeated MetricTrend trends = 9;
+
+  // recommendations are recommendations
+  repeated string recommendations = 10;
+
+  // alerts are alerts
+  repeated string alerts = 11;
+
+  // achievements are achievements
+  repeated string achievements = 12;
+
+  // improvement_opportunities are improvement opportunities
+  repeated string improvement_opportunities = 13;
+
+  // data_quality_score is the data quality score
+  string data_quality_score = 14;
+
+  // report_generation_time is the report generation time
+  int64 report_generation_time = 15;
+}
+
+// BusinessMetrics represents business metrics
+message BusinessMetrics {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // revenue_metrics are revenue metrics
+  map<string, string> revenue_metrics = 1;
+
+  // growth_metrics are growth metrics
+  map<string, string> growth_metrics = 2;
+
+  // profitability_metrics are profitability metrics
+  map<string, string> profitability_metrics = 3;
+
+  // efficiency_metrics are efficiency metrics
+  map<string, string> efficiency_metrics = 4;
+
+  // market_metrics are market metrics
+  map<string, string> market_metrics = 5;
+
+  // customer_metrics are customer metrics
+  map<string, string> customer_metrics = 6;
+
+  // innovation_metrics are innovation metrics
+  map<string, string> innovation_metrics = 7;
+
+  // sustainability_metrics are sustainability metrics
+  map<string, string> sustainability_metrics = 8;
+
+  // risk_metrics are risk metrics
+  map<string, string> risk_metrics = 9;
+
+  // quality_metrics are quality metrics
+  map<string, string> quality_metrics = 10;
+
+  // competitive_metrics are competitive metrics
+  map<string, string> competitive_metrics = 11;
+
+  // strategic_metrics are strategic metrics
+  map<string, string> strategic_metrics = 12;
+
+  // operational_excellence_metrics are operational excellence metrics
+  map<string, string> operational_excellence_metrics = 13;
+
+  // digital_transformation_metrics are digital transformation metrics
+  map<string, string> digital_transformation_metrics = 14;
+
+  // stakeholder_value_metrics are stakeholder value metrics
+  map<string, string> stakeholder_value_metrics = 15;
+}
+
+// OperationalMetrics represents operational metrics
+message OperationalMetrics {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // processing_metrics are processing metrics
+  map<string, string> processing_metrics = 1;
+
+  // capacity_metrics are capacity metrics
+  map<string, string> capacity_metrics = 2;
+
+  // availability_metrics are availability metrics
+  map<string, string> availability_metrics = 3;
+
+  // reliability_metrics are reliability metrics
+  map<string, string> reliability_metrics = 4;
+
+  // scalability_metrics are scalability metrics
+  map<string, string> scalability_metrics = 5;
+
+  // security_metrics are security metrics
+  map<string, string> security_metrics = 6;
+
+  // maintenance_metrics are maintenance metrics
+  map<string, string> maintenance_metrics = 7;
+
+  // resource_utilization_metrics are resource utilization metrics
+  map<string, string> resource_utilization_metrics = 8;
+
+  // automation_metrics are automation metrics
+  map<string, string> automation_metrics = 9;
+
+  // integration_metrics are integration metrics
+  map<string, string> integration_metrics = 10;
+
+  // workflow_metrics are workflow metrics
+  map<string, string> workflow_metrics = 11;
+
+  // collaboration_metrics are collaboration metrics
+  map<string, string> collaboration_metrics = 12;
+
+  // communication_metrics are communication metrics
+  map<string, string> communication_metrics = 13;
+
+  // training_metrics are training metrics
+  map<string, string> training_metrics = 14;
+
+  // knowledge_management_metrics are knowledge management metrics
+  map<string, string> knowledge_management_metrics = 15;
+}
+
+// FinancialMetrics represents financial metrics
+message FinancialMetrics {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // cost_metrics are cost metrics
+  map<string, string> cost_metrics = 1;
+
+  // revenue_metrics are revenue metrics
+  map<string, string> revenue_metrics = 2;
+
+  // margin_metrics are margin metrics
+  map<string, string> margin_metrics = 3;
+
+  // cash_flow_metrics are cash flow metrics
+  map<string, string> cash_flow_metrics = 4;
+
+  // investment_metrics are investment metrics
+  map<string, string> investment_metrics = 5;
+
+  // valuation_metrics are valuation metrics
+  map<string, string> valuation_metrics = 6;
+
+  // liquidity_metrics are liquidity metrics
+  map<string, string> liquidity_metrics = 7;
+
+  // leverage_metrics are leverage metrics
+  map<string, string> leverage_metrics = 8;
+
+  // efficiency_metrics are efficiency metrics
+  map<string, string> efficiency_metrics = 9;
+
+  // risk_metrics are risk metrics
+  map<string, string> risk_metrics = 10;
+
+  // performance_metrics are performance metrics
+  map<string, string> performance_metrics = 11;
+
+  // budget_metrics are budget metrics
+  map<string, string> budget_metrics = 12;
+
+  // forecast_metrics are forecast metrics
+  map<string, string> forecast_metrics = 13;
+
+  // variance_metrics are variance metrics
+  map<string, string> variance_metrics = 14;
+
+  // benchmark_metrics are benchmark metrics
+  map<string, string> benchmark_metrics = 15;
+}
+
+// UserExperienceMetrics represents user experience metrics
+message UserExperienceMetrics {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // satisfaction_metrics are satisfaction metrics
+  map<string, string> satisfaction_metrics = 1;
+
+  // usability_metrics are usability metrics
+  map<string, string> usability_metrics = 2;
+
+  // accessibility_metrics are accessibility metrics
+  map<string, string> accessibility_metrics = 3;
+
+  // performance_metrics are performance metrics
+  map<string, string> performance_metrics = 4;
+
+  // engagement_metrics are engagement metrics
+  map<string, string> engagement_metrics = 5;
+
+  // retention_metrics are retention metrics
+  map<string, string> retention_metrics = 6;
+
+  // conversion_metrics are conversion metrics
+  map<string, string> conversion_metrics = 7;
+
+  // support_metrics are support metrics
+  map<string, string> support_metrics = 8;
+
+  // feedback_metrics are feedback metrics
+  map<string, string> feedback_metrics = 9;
+
+  // loyalty_metrics are loyalty metrics
+  map<string, string> loyalty_metrics = 10;
+
+  // advocacy_metrics are advocacy metrics
+  map<string, string> advocacy_metrics = 11;
+
+  // personalization_metrics are personalization metrics
+  map<string, string> personalization_metrics = 12;
+
+  // onboarding_metrics are onboarding metrics
+  map<string, string> onboarding_metrics = 13;
+
+  // education_metrics are education metrics
+  map<string, string> education_metrics = 14;
+
+  // community_metrics are community metrics
+  map<string, string> community_metrics = 15;
+}
+
+// ComplianceMetrics represents compliance metrics
+message ComplianceMetrics {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // regulatory_compliance_metrics are regulatory compliance metrics
+  map<string, string> regulatory_compliance_metrics = 1;
+
+  // policy_compliance_metrics are policy compliance metrics
+  map<string, string> policy_compliance_metrics = 2;
+
+  // audit_compliance_metrics are audit compliance metrics
+  map<string, string> audit_compliance_metrics = 3;
+
+  // security_compliance_metrics are security compliance metrics
+  map<string, string> security_compliance_metrics = 4;
+
+  // privacy_compliance_metrics are privacy compliance metrics
+  map<string, string> privacy_compliance_metrics = 5;
+
+  // data_compliance_metrics are data compliance metrics
+  map<string, string> data_compliance_metrics = 6;
+
+  // operational_compliance_metrics are operational compliance metrics
+  map<string, string> operational_compliance_metrics = 7;
+
+  // financial_compliance_metrics are financial compliance metrics
+  map<string, string> financial_compliance_metrics = 8;
+
+  // ethical_compliance_metrics are ethical compliance metrics
+  map<string, string> ethical_compliance_metrics = 9;
+
+  // environmental_compliance_metrics are environmental compliance metrics
+  map<string, string> environmental_compliance_metrics = 10;
+
+  // social_compliance_metrics are social compliance metrics
+  map<string, string> social_compliance_metrics = 11;
+
+  // governance_compliance_metrics are governance compliance metrics
+  map<string, string> governance_compliance_metrics = 12;
+
+  // reporting_compliance_metrics are reporting compliance metrics
+  map<string, string> reporting_compliance_metrics = 13;
+
+  // training_compliance_metrics are training compliance metrics
+  map<string, string> training_compliance_metrics = 14;
+
+  // certification_compliance_metrics are certification compliance metrics
+  map<string, string> certification_compliance_metrics = 15;
+}
+
+// MetricForecast represents metric forecast
+message MetricForecast {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // metric_name is the metric name
+  string metric_name = 1;
+
+  // current_value is the current value
+  string current_value = 2;
+
+  // forecast_values are forecast values
+  map<string, string> forecast_values = 3;
+
+  // confidence_intervals are confidence intervals
+  map<string, string> confidence_intervals = 4;
+
+  // accuracy_score is the accuracy score
+  string accuracy_score = 5;
+
+  // model_used is the model used
+  string model_used = 6;
+
+  // assumptions are assumptions
+  repeated string assumptions = 7;
+
+  // risk_factors are risk factors
+  repeated string risk_factors = 8;
+
+  // scenarios are scenarios
+  repeated string scenarios = 9;
+
+  // sensitivity_analysis is the sensitivity analysis
+  map<string, string> sensitivity_analysis = 10;
+
+  // trend_analysis is the trend analysis
+  string trend_analysis = 11;
+
+  // seasonal_patterns are seasonal patterns
+  repeated string seasonal_patterns = 12;
+
+  // external_factors are external factors
+  repeated string external_factors = 13;
+
+  // update_frequency is the update frequency
+  string update_frequency = 14;
+
+  // validation_method is the validation method
+  string validation_method = 15;
+}
+
+// MetricTrend represents metric trend
+message MetricTrend {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // metric_name is the metric name
+  string metric_name = 1;
+
+  // trend_direction is the trend direction
+  string trend_direction = 2;
+
+  // trend_strength is the trend strength
+  string trend_strength = 3;
+
+  // trend_duration is the trend duration
+  int64 trend_duration = 4;
+
+  // historical_values are historical values
+  map<string, string> historical_values = 5;
+
+  // moving_averages are moving averages
+  map<string, string> moving_averages = 6;
+
+  // volatility is the volatility
+  string volatility = 7;
+
+  // correlation_with_other_metrics is the correlation with other metrics
+  map<string, string> correlation_with_other_metrics = 8;
+
+  // seasonal_adjustment is the seasonal adjustment
+  string seasonal_adjustment = 9;
+
+  // outlier_detection is the outlier detection
+  repeated string outlier_detection = 10;
+
+  // change_points are change points
+  repeated string change_points = 11;
+
+  // statistical_significance is the statistical significance
+  string statistical_significance = 12;
+
+  // forecast_trend is the forecast trend
+  string forecast_trend = 13;
+
+  // trend_drivers are trend drivers
+  repeated string trend_drivers = 14;
+
+  // implications are implications
+  repeated string implications = 15;
+}
+
+// QueryTaxReportsRequest is the request type for the Query/TaxReports RPC method
+message QueryTaxReportsRequest {
+  // pagination defines an optional pagination for the request
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+
+  // report_type is the report type
+  string report_type = 2;
+
+  // time_period is the time period
+  string time_period = 3;
+
+  // address is the user address
+  string address = 4;
+
+  // include_charts indicates if charts should be included
+  bool include_charts = 5;
+
+  // include_raw_data indicates if raw data should be included
+  bool include_raw_data = 6;
+
+  // format is the format
+  string format = 7;
+
+  // detail_level is the detail level
+  string detail_level = 8;
+
+  // custom_filters are custom filters
+  map<string, string> custom_filters = 9;
+
+  // sort_by is the field to sort by
+  string sort_by = 10;
+
+  // sort_order is the sort order
+  string sort_order = 11;
+
+  // export_format is the export format
+  string export_format = 12;
+
+  // delivery_method is the delivery method
+  string delivery_method = 13;
+
+  // recipients are recipients
+  repeated string recipients = 14;
+
+  // schedule is the schedule
+  string schedule = 15;
+}
+
+// QueryTaxReportsResponse is the response type for the Query/TaxReports RPC method
+message QueryTaxReportsResponse {
+  // reports are the reports
+  repeated TaxReport reports = 1;
+
+  // pagination defines the pagination in the response
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+
+  // report_catalog is the report catalog
+  repeated ReportCatalogEntry report_catalog = 3;
+
+  // templates are templates
+  repeated ReportTemplate templates = 4;
+
+  // export_options are export options
+  repeated string export_options = 5;
+
+  // delivery_options are delivery options
+  repeated string delivery_options = 6;
+
+  // scheduling_options are scheduling options
+  repeated string scheduling_options = 7;
+
+  // customization_options are customization options
+  repeated string customization_options = 8;
+
+  // access_permissions are access permissions
+  map<string, string> access_permissions = 9;
+
+  // data_retention_policy is the data retention policy
+  string data_retention_policy = 10;
+
+  // security_level is the security level
+  string security_level = 11;
+
+  // compliance_certifications are compliance certifications
+  repeated string compliance_certifications = 12;
+
+  // audit_trail is the audit trail
+  repeated string audit_trail = 13;
+
+  // quality_assurance is the quality assurance
+  string quality_assurance = 14;
+
+  // support_information is the support information
+  string support_information = 15;
+}
+
+// TaxReport represents a tax report
+message TaxReport {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // report_id is the report ID
+  string report_id = 1;
+
+  // report_name is the report name
+  string report_name = 2;
+
+  // report_type is the report type
+  string report_type = 3;
+
+  // report_description is the report description
+  string report_description = 4;
+
+  // generation_date is the generation date
+  int64 generation_date = 5;
+
+  // report_period is the report period
+  string report_period = 6;
+
+  // report_data is the report data
+  map<string, string> report_data = 7;
+
+  // charts are charts
+  repeated Chart charts = 8;
+
+  // tables are tables
+  repeated Table tables = 9;
+
+  // summary is the summary
+  string summary = 10;
+
+  // recommendations are recommendations
+  repeated string recommendations = 11;
+
+  // insights are insights
+  repeated string insights = 12;
+
+  // export_urls are export URLs
+  map<string, string> export_urls = 13;
+
+  // metadata is metadata
+  map<string, string> metadata = 14;
+
+  // quality_score is the quality score
+  string quality_score = 15;
+}
+
+// ReportCatalogEntry represents a report catalog entry
+message ReportCatalogEntry {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // report_id is the report ID
+  string report_id = 1;
+
+  // report_name is the report name
+  string report_name = 2;
+
+  // report_description is the report description
+  string report_description = 3;
+
+  // category is the category
+  string category = 4;
+
+  // subcategory is the subcategory
+  string subcategory = 5;
+
+  // tags are tags
+  repeated string tags = 6;
+
+  // complexity_level is the complexity level
+  string complexity_level = 7;
+
+  // data_sources are data sources
+  repeated string data_sources = 8;
+
+  // refresh_frequency is the refresh frequency
+  string refresh_frequency = 9;
+
+  // access_level is the access level
+  string access_level = 10;
+
+  // popularity_score is the popularity score
+  string popularity_score = 11;
+
+  // rating is the rating
+  string rating = 12;
+
+  // usage_count is the usage count
+  uint64 usage_count = 13;
+
+  // creation_date is the creation date
+  int64 creation_date = 14;
+
+  // last_modified is the last modified date
+  int64 last_modified = 15;
+}
+
+// ReportTemplate represents a report template
+message ReportTemplate {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // template_id is the template ID
+  string template_id = 1;
+
+  // template_name is the template name
+  string template_name = 2;
+
+  // template_description is the template description
+  string template_description = 3;
+
+  // template_type is the template type
+  string template_type = 4;
+
+  // layout is the layout
+  string layout = 5;
+
+  // styling is the styling
+  string styling = 6;
+
+  // parameters are parameters
+  map<string, string> parameters = 7;
+
+  // sections are sections
+  repeated string sections = 8;
+
+  // charts_config is the charts config
+  map<string, string> charts_config = 9;
+
+  // tables_config is the tables config
+  map<string, string> tables_config = 10;
+
+  // filters_config is the filters config
+  map<string, string> filters_config = 11;
+
+  // customization_options are customization options
+  repeated string customization_options = 12;
+
+  // access_permissions are access permissions
+  map<string, string> access_permissions = 13;
+
+  // version is the version
+  string version = 14;
+
+  // compatibility is the compatibility
+  string compatibility = 15;
+}
+
+// Chart represents a chart
+message Chart {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // chart_id is the chart ID
+  string chart_id = 1;
+
+  // chart_type is the chart type
+  string chart_type = 2;
+
+  // title is the title
+  string title = 3;
+
+  // description is the description
+  string description = 4;
+
+  // data is the data
+  map<string, string> data = 5;
+
+  // configuration is the configuration
+  map<string, string> configuration = 6;
+
+  // styling is the styling
+  map<string, string> styling = 7;
+
+  // interactivity is the interactivity
+  map<string, string> interactivity = 8;
+
+  // export_options are export options
+  repeated string export_options = 9;
+
+  // accessibility is the accessibility
+  map<string, string> accessibility = 10;
+
+  // responsiveness is the responsiveness
+  map<string, string> responsiveness = 11;
+
+  // annotations are annotations
+  repeated string annotations = 12;
+
+  // legends are legends
+  repeated string legends = 13;
+
+  // tooltips are tooltips
+  repeated string tooltips = 14;
+
+  // drill_down_options are drill down options
+  repeated string drill_down_options = 15;
+}
+
+// Table represents a table
+message Table {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // table_id is the table ID
+  string table_id = 1;
+
+  // title is the title
+  string title = 2;
+
+  // description is the description
+  string description = 3;
+
+  // headers are headers
+  repeated string headers = 4;
+
+  // rows are rows
+  repeated TableRow rows = 5;
+
+  // formatting is the formatting
+  map<string, string> formatting = 6;
+
+  // sorting is the sorting
+  map<string, string> sorting = 7;
+
+  // filtering is the filtering
+  map<string, string> filtering = 8;
+
+  // pagination is the pagination
+  map<string, string> pagination = 9;
+
+  // export_options are export options
+  repeated string export_options = 10;
+
+  // search_options are search options
+  map<string, string> search_options = 11;
+
+  // grouping_options are grouping options
+  map<string, string> grouping_options = 12;
+
+  // aggregation_options are aggregation options
+  map<string, string> aggregation_options = 13;
+
+  // styling is the styling
+  map<string, string> styling = 14;
+
+  // interactivity is the interactivity
+  map<string, string> interactivity = 15;
+}
+
+// TableRow represents a table row
+message TableRow {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // row_id is the row ID
+  string row_id = 1;
+
+  // cells are cells
+  repeated TableCell cells = 2;
+
+  // metadata is metadata
+  map<string, string> metadata = 3;
+
+  // styling is the styling
+  map<string, string> styling = 4;
+
+  // actions are actions
+  repeated string actions = 5;
+
+  // status is the status
+  string status = 6;
+
+  // priority is the priority
+  string priority = 7;
+
+  // tags are tags
+  repeated string tags = 8;
+
+  // links are links
+  repeated string links = 9;
+
+  // tooltips are tooltips
+  repeated string tooltips = 10;
+
+  // validations are validations
+  repeated string validations = 11;
+
+  // permissions are permissions
+  map<string, string> permissions = 12;
+
+  // audit_info is the audit info
+  map<string, string> audit_info = 13;
+
+  // version is the version
+  string version = 14;
+
+  // history is the history
+  repeated string history = 15;
+}
+
+// TableCell represents a table cell
+message TableCell {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // cell_id is the cell ID
+  string cell_id = 1;
+
+  // value is the value
+  string value = 2;
+
+  // display_value is the display value
+  string display_value = 3;
+
+  // data_type is the data type
+  string data_type = 4;
+
+  // formatting is the formatting
+  map<string, string> formatting = 5;
+
+  // validation is the validation
+  map<string, string> validation = 6;
+
+  // links are links
+  repeated string links = 7;
+
+  // actions are actions
+  repeated string actions = 8;
+
+  // tooltip is the tooltip
+  string tooltip = 9;
+
+  // styling is the styling
+  map<string, string> styling = 10;
+
+  // metadata is metadata
+  map<string, string> metadata = 11;
+
+  // permissions are permissions
+  map<string, string> permissions = 12;
+
+  // editable is editable
+  bool editable = 13;
+
+  // sortable is sortable
+  bool sortable = 14;
+
+  // filterable is filterable
+  bool filterable = 15;
+}

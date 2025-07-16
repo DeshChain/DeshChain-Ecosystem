@@ -1,0 +1,332 @@
+syntax = "proto3";
+
+package deshchain.cultural.v1;
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+import "amino/amino.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/cultural/types";
+
+// Quote represents a cultural quote or wisdom
+message Quote {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // id is the unique identifier for the quote
+  uint64 id = 1;
+
+  // text is the actual quote text
+  string text = 2;
+
+  // author is the person who said/wrote the quote
+  string author = 3;
+
+  // source is the source of the quote (book, speech, etc.)
+  string source = 4;
+
+  // language is the language of the quote
+  string language = 5;
+
+  // category defines the type of wisdom
+  string category = 6;
+
+  // tags are searchable tags for the quote
+  repeated string tags = 7;
+
+  // region is the geographical region associated with the quote
+  string region = 8;
+
+  // historical_period is the time period when the quote was made
+  string historical_period = 9;
+
+  // difficulty_level for educational purposes (1-10)
+  int32 difficulty_level = 10;
+
+  // translation contains translations in different languages
+  map<string, string> translation = 11;
+
+  // created_at is the timestamp when the quote was added
+  int64 created_at = 12;
+
+  // verified indicates if the quote has been fact-checked
+  bool verified = 13;
+
+  // usage_count tracks how many times this quote has been used
+  uint64 usage_count = 14;
+
+  // cultural_significance score (1-10)
+  int32 cultural_significance = 15;
+}
+
+// HistoricalEvent represents a significant Indian historical event
+message HistoricalEvent {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // id is the unique identifier for the event
+  uint64 id = 1;
+
+  // title is the name of the event
+  string title = 2;
+
+  // description is a detailed description of the event
+  string description = 3;
+
+  // date is the date when the event occurred
+  string date = 4;
+
+  // year is the year when the event occurred
+  int32 year = 5;
+
+  // category defines the type of event
+  string category = 6;
+
+  // location is where the event took place
+  string location = 7;
+
+  // key_figures are the important people involved
+  repeated string key_figures = 8;
+
+  // significance explains why this event is important
+  string significance = 9;
+
+  // tags are searchable tags for the event
+  repeated string tags = 10;
+
+  // created_at is the timestamp when the event was added
+  int64 created_at = 11;
+
+  // verified indicates if the event has been fact-checked
+  bool verified = 12;
+
+  // usage_count tracks how many times this event has been used
+  uint64 usage_count = 13;
+
+  // educational_level for appropriate age groups
+  string educational_level = 14;
+
+  // images are IPFS hashes of related images
+  repeated string images = 15;
+}
+
+// CulturalWisdom represents traditional wisdom from various Indian traditions
+message CulturalWisdom {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // id is the unique identifier for the wisdom
+  uint64 id = 1;
+
+  // text is the actual wisdom text
+  string text = 2;
+
+  // tradition is the cultural tradition this belongs to
+  string tradition = 3;
+
+  // language is the original language
+  string language = 4;
+
+  // transliteration is the English transliteration
+  string transliteration = 5;
+
+  // translation is the English translation
+  string translation = 6;
+
+  // meaning provides deeper explanation
+  string meaning = 7;
+
+  // context provides historical/cultural context
+  string context = 8;
+
+  // scripture is the source scripture if applicable
+  string scripture = 9;
+
+  // verse_reference is the specific verse reference
+  string verse_reference = 10;
+
+  // tags are searchable tags
+  repeated string tags = 11;
+
+  // created_at is the timestamp when added
+  int64 created_at = 12;
+
+  // verified indicates if verified by experts
+  bool verified = 13;
+
+  // usage_count tracks usage
+  uint64 usage_count = 14;
+
+  // spiritual_significance score (1-10)
+  int32 spiritual_significance = 15;
+}
+
+// TransactionQuote represents a quote selected for a transaction
+message TransactionQuote {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // transaction_hash is the hash of the transaction
+  string transaction_hash = 1;
+
+  // quote_id is the ID of the selected quote
+  uint64 quote_id = 2;
+
+  // quote_type indicates the type of content (quote, event, wisdom)
+  string quote_type = 3;
+
+  // amount is the transaction amount that influenced selection
+  string amount = 4 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+
+  // sender is the transaction sender
+  string sender = 5 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // recipient is the transaction recipient
+  string recipient = 6 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // timestamp is when the transaction occurred
+  int64 timestamp = 7;
+
+  // user_region is the user's region for localization
+  string user_region = 8;
+
+  // selection_algorithm describes how the quote was selected
+  string selection_algorithm = 9;
+
+  // nft_created indicates if an NFT was created for this quote
+  bool nft_created = 10;
+
+  // nft_id is the NFT ID if created
+  uint64 nft_id = 11;
+
+  // user_rating is the user's rating of the quote (1-5)
+  int32 user_rating = 12;
+
+  // shared indicates if the user shared this quote
+  bool shared = 13;
+
+  // favorited indicates if the user favorited this quote
+  bool favorited = 14;
+}
+
+// QuoteSelection represents the parameters for quote selection
+message QuoteSelection {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // amount_ranges define different quote categories based on amount
+  repeated AmountRange amount_ranges = 1;
+
+  // time_based_selection enables time-based quote selection
+  bool time_based_selection = 2;
+
+  // region_based_selection enables region-based quote selection
+  bool region_based_selection = 3;
+
+  // difficulty_adjustment adjusts quotes based on user level
+  bool difficulty_adjustment = 4;
+
+  // seasonal_quotes enables seasonal quote selection
+  bool seasonal_quotes = 5;
+
+  // festival_quotes enables festival-specific quotes
+  bool festival_quotes = 6;
+
+  // enable_translations enables multi-language support
+  bool enable_translations = 7;
+
+  // default_language is the default language for quotes
+  string default_language = 8;
+
+  // supported_languages are the supported languages
+  repeated string supported_languages = 9;
+}
+
+// AmountRange defines quote selection based on transaction amount
+message AmountRange {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // min_amount is the minimum amount for this range
+  string min_amount = 1 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+
+  // max_amount is the maximum amount for this range
+  string max_amount = 2 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+
+  // categories are the preferred categories for this range
+  repeated string categories = 3;
+
+  // significance_threshold is the minimum significance required
+  int32 significance_threshold = 4;
+
+  // description describes this amount range
+  string description = 5;
+}
+
+// Params defines the parameters for the cultural module
+message Params {
+  option (gogoproto.equal) = true;
+  option (gogoproto.goproto_stringer) = false;
+  option (amino.name) = "deshchain/x/cultural/Params";
+
+  // enable_quotes enables quote display in transactions
+  bool enable_quotes = 1;
+
+  // enable_events enables historical event display
+  bool enable_events = 2;
+
+  // enable_wisdom enables cultural wisdom display
+  bool enable_wisdom = 3;
+
+  // quote_selection contains quote selection parameters
+  QuoteSelection quote_selection = 4;
+
+  // max_quotes_per_transaction limits quotes per transaction
+  int32 max_quotes_per_transaction = 5;
+
+  // enable_nft_creation enables NFT creation from quotes
+  bool enable_nft_creation = 6;
+
+  // nft_creation_fee is the fee for creating quote NFTs
+  string nft_creation_fee = 7 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+
+  // enable_user_ratings enables user rating of quotes
+  bool enable_user_ratings = 8;
+
+  // enable_sharing enables social sharing of quotes
+  bool enable_sharing = 9;
+
+  // content_moderation enables content moderation
+  bool content_moderation = 10;
+
+  // auto_fact_check enables automatic fact checking
+  bool auto_fact_check = 11;
+
+  // cultural_experts are addresses of cultural content experts
+  repeated string cultural_experts = 12;
+
+  // supported_regions are the supported geographical regions
+  repeated string supported_regions = 13;
+
+  // enable_educational_mode enables educational features
+  bool enable_educational_mode = 14;
+
+  // daily_wisdom_enabled enables daily wisdom feature
+  bool daily_wisdom_enabled = 15;
+}

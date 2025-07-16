@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package deshchain.namo.v1;
+
+import "gogoproto/gogo.proto";
+import "deshchain/namo/v1/namo.proto";
+import "amino/amino.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/namo/types";
+
+// GenesisState defines the NAMO module genesis state
+message GenesisState {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // params defines the parameters of the module
+  Params params = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // token_supply defines the total token supply configuration
+  TokenSupply token_supply = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // vesting_schedules defines all active vesting schedules
+  repeated VestingSchedule vesting_schedules = 3 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // distribution_events defines historical distribution events
+  repeated TokenDistributionEvent distribution_events = 4 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}

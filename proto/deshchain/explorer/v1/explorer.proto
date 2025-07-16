@@ -1,0 +1,674 @@
+syntax = "proto3";
+
+package deshchain.explorer.v1;
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos_proto/cosmos.proto";
+import "amino/amino.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/explorer/types";
+
+// BlockInfo represents blockchain block information
+message BlockInfo {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // height is the block height
+  int64 height = 1;
+
+  // hash is the block hash
+  string hash = 2;
+
+  // timestamp is when the block was created
+  int64 timestamp = 3;
+
+  // proposer_address is the address of the block proposer
+  string proposer_address = 4 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // transaction_count is the number of transactions in the block
+  uint64 transaction_count = 5;
+
+  // gas_used is the total gas used in the block
+  uint64 gas_used = 6;
+
+  // gas_limit is the gas limit for the block
+  uint64 gas_limit = 7;
+
+  // size is the block size in bytes
+  uint64 size = 8;
+
+  // reward is the block reward
+  cosmos.base.v1beta1.Coin reward = 9 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // cultural_quote_id is the ID of the cultural quote featured in this block
+  uint64 cultural_quote_id = 10;
+
+  // tax_collected is the tax collected in this block
+  cosmos.base.v1beta1.Coin tax_collected = 11 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // donations_count is the number of donations in this block
+  uint64 donations_count = 12;
+
+  // total_donations is the total donation amount in this block
+  cosmos.base.v1beta1.Coin total_donations = 13 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // burned_amount is the amount of tokens burned in this block
+  cosmos.base.v1beta1.Coin burned_amount = 14 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
+
+// TransactionInfo represents transaction information
+message TransactionInfo {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // hash is the transaction hash
+  string hash = 1;
+
+  // height is the block height containing this transaction
+  int64 height = 2;
+
+  // timestamp is when the transaction was included
+  int64 timestamp = 3;
+
+  // from_address is the sender address
+  string from_address = 4 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // to_address is the recipient address
+  string to_address = 5 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // amount is the transaction amount
+  cosmos.base.v1beta1.Coin amount = 6 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // fee is the transaction fee
+  cosmos.base.v1beta1.Coin fee = 7 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // gas_used is the gas used by this transaction
+  uint64 gas_used = 8;
+
+  // gas_limit is the gas limit for this transaction
+  uint64 gas_limit = 9;
+
+  // status is the transaction status
+  string status = 10;
+
+  // message_type is the type of message
+  string message_type = 11;
+
+  // memo is the transaction memo
+  string memo = 12;
+
+  // cultural_quote_id is the ID of the cultural quote shown with this transaction
+  uint64 cultural_quote_id = 13;
+
+  // cultural_quote_text is the text of the cultural quote
+  string cultural_quote_text = 14;
+
+  // cultural_quote_author is the author of the cultural quote
+  string cultural_quote_author = 15;
+
+  // tax_amount is the tax amount for this transaction
+  cosmos.base.v1beta1.Coin tax_amount = 16 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // is_donation indicates if this is a donation transaction
+  bool is_donation = 17;
+
+  // donation_ngo_name is the name of the NGO (if donation)
+  string donation_ngo_name = 18;
+
+  // donation_purpose is the purpose of the donation
+  string donation_purpose = 19;
+
+  // patriotism_score is the patriotism score impact
+  int32 patriotism_score = 20;
+
+  // burn_amount is the amount burned in this transaction
+  cosmos.base.v1beta1.Coin burn_amount = 21 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
+
+// ValidatorInfo represents validator information
+message ValidatorInfo {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // operator_address is the validator operator address
+  string operator_address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // consensus_pubkey is the validator's consensus public key
+  string consensus_pubkey = 2;
+
+  // jailed indicates if the validator is jailed
+  bool jailed = 3;
+
+  // status is the validator status
+  string status = 4;
+
+  // tokens is the amount of tokens bonded to this validator
+  string tokens = 5;
+
+  // delegator_shares is the total delegator shares
+  string delegator_shares = 6;
+
+  // moniker is the validator name
+  string moniker = 7;
+
+  // identity is the validator identity
+  string identity = 8;
+
+  // website is the validator website
+  string website = 9;
+
+  // security_contact is the security contact
+  string security_contact = 10;
+
+  // details are additional details about the validator
+  string details = 11;
+
+  // commission_rate is the commission rate
+  string commission_rate = 12;
+
+  // commission_max_rate is the maximum commission rate
+  string commission_max_rate = 13;
+
+  // commission_max_change_rate is the maximum commission change rate
+  string commission_max_change_rate = 14;
+
+  // min_self_delegation is the minimum self delegation
+  string min_self_delegation = 15;
+
+  // unbonding_height is the height at which the validator unbonds
+  int64 unbonding_height = 16;
+
+  // unbonding_time is the time at which the validator unbonds
+  int64 unbonding_time = 17;
+
+  // uptime is the validator uptime percentage
+  string uptime = 18;
+
+  // missed_blocks is the number of missed blocks
+  uint64 missed_blocks = 19;
+
+  // voting_power is the voting power
+  string voting_power = 20;
+
+  // rank is the validator rank by voting power
+  uint32 rank = 21;
+
+  // total_delegations is the total number of delegations
+  uint64 total_delegations = 22;
+
+  // average_delegation_size is the average delegation size
+  cosmos.base.v1beta1.Coin average_delegation_size = 23 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // blocks_proposed is the number of blocks proposed
+  uint64 blocks_proposed = 24;
+
+  // last_seen is when the validator was last seen
+  int64 last_seen = 25;
+}
+
+// NetworkStats represents network statistics
+message NetworkStats {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // current_height is the current block height
+  int64 current_height = 1;
+
+  // total_transactions is the total number of transactions
+  uint64 total_transactions = 2;
+
+  // total_addresses is the total number of addresses
+  uint64 total_addresses = 3;
+
+  // total_validators is the total number of validators
+  uint64 total_validators = 4;
+
+  // active_validators is the number of active validators
+  uint64 active_validators = 5;
+
+  // total_supply is the total token supply
+  cosmos.base.v1beta1.Coin total_supply = 6 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // circulating_supply is the circulating token supply
+  cosmos.base.v1beta1.Coin circulating_supply = 7 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // burned_supply is the total burned supply
+  cosmos.base.v1beta1.Coin burned_supply = 8 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // bonded_tokens is the total bonded tokens
+  cosmos.base.v1beta1.Coin bonded_tokens = 9 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // average_block_time is the average block time in seconds
+  string average_block_time = 10;
+
+  // transactions_per_second is the current TPS
+  string transactions_per_second = 11;
+
+  // total_donations is the total donation amount
+  cosmos.base.v1beta1.Coin total_donations = 12 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // total_tax_collected is the total tax collected
+  cosmos.base.v1beta1.Coin total_tax_collected = 13 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // current_tax_rate is the current tax rate
+  string current_tax_rate = 14;
+
+  // total_cultural_quotes is the total number of cultural quotes
+  uint64 total_cultural_quotes = 15;
+
+  // quotes_displayed_today is the number of quotes displayed today
+  uint64 quotes_displayed_today = 16;
+
+  // average_patriotism_score is the average patriotism score
+  string average_patriotism_score = 17;
+
+  // market_cap is the market cap (if available)
+  string market_cap = 18;
+
+  // price_usd is the current price in USD (if available)
+  string price_usd = 19;
+
+  // price_change_24h is the 24-hour price change percentage
+  string price_change_24h = 20;
+
+  // volume_24h is the 24-hour trading volume
+  cosmos.base.v1beta1.Coin volume_24h = 21 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
+
+// AddressInfo represents address information
+message AddressInfo {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // address is the address
+  string address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // balance is the current balance
+  cosmos.base.v1beta1.Coin balance = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // transaction_count is the number of transactions
+  uint64 transaction_count = 3;
+
+  // first_seen is when the address was first seen
+  int64 first_seen = 4;
+
+  // last_seen is when the address was last seen
+  int64 last_seen = 5;
+
+  // total_sent is the total amount sent
+  cosmos.base.v1beta1.Coin total_sent = 6 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // total_received is the total amount received
+  cosmos.base.v1beta1.Coin total_received = 7 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // total_fees_paid is the total fees paid
+  cosmos.base.v1beta1.Coin total_fees_paid = 8 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // total_donations is the total donated amount
+  cosmos.base.v1beta1.Coin total_donations = 9 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // total_tax_paid is the total tax paid
+  cosmos.base.v1beta1.Coin total_tax_paid = 10 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // patriotism_score is the patriotism score
+  int32 patriotism_score = 11;
+
+  // patriotism_rank is the patriotism rank
+  uint64 patriotism_rank = 12;
+
+  // holder_rank is the holder rank by balance
+  uint64 holder_rank = 13;
+
+  // is_validator indicates if this address is a validator
+  bool is_validator = 14;
+
+  // is_ngo indicates if this address is an NGO
+  bool is_ngo = 15;
+
+  // ngo_name is the NGO name (if applicable)
+  string ngo_name = 16;
+
+  // account_type is the type of account
+  string account_type = 17;
+
+  // cultural_quotes_received is the number of cultural quotes received
+  uint64 cultural_quotes_received = 18;
+
+  // favorite_quote_categories are the favorite quote categories
+  repeated string favorite_quote_categories = 19;
+}
+
+// TokenBurnInfo represents token burn information
+message TokenBurnInfo {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // id is the burn record ID
+  uint64 id = 1;
+
+  // transaction_hash is the transaction hash
+  string transaction_hash = 2;
+
+  // burner_address is the address that initiated the burn
+  string burner_address = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // amount is the amount burned
+  cosmos.base.v1beta1.Coin amount = 4 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // timestamp is when the burn occurred
+  int64 timestamp = 5;
+
+  // height is the block height
+  int64 height = 6;
+
+  // reason is the reason for the burn
+  string reason = 7;
+
+  // burn_type is the type of burn
+  string burn_type = 8;
+
+  // cultural_quote_id is the associated cultural quote
+  uint64 cultural_quote_id = 9;
+}
+
+// PatriotismLeaderboard represents the patriotism leaderboard
+message PatriotismLeaderboard {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // address is the address
+  string address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // patriotism_score is the patriotism score
+  int32 patriotism_score = 2;
+
+  // rank is the rank on the leaderboard
+  uint64 rank = 3;
+
+  // total_donations is the total donations
+  cosmos.base.v1beta1.Coin total_donations = 4 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // donation_count is the number of donations
+  uint64 donation_count = 5;
+
+  // cultural_engagement is the cultural engagement score
+  int32 cultural_engagement = 6;
+
+  // consistency_score is the consistency score
+  int32 consistency_score = 7;
+
+  // last_donation_time is the last donation time
+  int64 last_donation_time = 8;
+
+  // badge_level is the badge level
+  string badge_level = 9;
+
+  // achievements are the achievements earned
+  repeated string achievements = 10;
+}
+
+// HolderRanking represents holder rankings
+message HolderRanking {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // address is the address
+  string address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // balance is the current balance
+  cosmos.base.v1beta1.Coin balance = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // rank is the rank by balance
+  uint64 rank = 3;
+
+  // percentage_of_supply is the percentage of total supply
+  string percentage_of_supply = 4;
+
+  // account_type is the type of account
+  string account_type = 5;
+
+  // first_seen is when the address was first seen
+  int64 first_seen = 6;
+
+  // is_active indicates if the address is active
+  bool is_active = 7;
+
+  // last_transaction_time is the last transaction time
+  int64 last_transaction_time = 8;
+}
+
+// DonationTracker represents donation tracking information
+message DonationTracker {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // total_donations is the total donations
+  cosmos.base.v1beta1.Coin total_donations = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // donation_count is the total number of donations
+  uint64 donation_count = 2;
+
+  // active_ngos is the number of active NGOs
+  uint64 active_ngos = 3;
+
+  // total_beneficiaries is the total number of beneficiaries
+  uint64 total_beneficiaries = 4;
+
+  // funds_distributed is the total funds distributed
+  cosmos.base.v1beta1.Coin funds_distributed = 5 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // average_donation_size is the average donation size
+  cosmos.base.v1beta1.Coin average_donation_size = 6 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // transparency_score is the average transparency score
+  string transparency_score = 7;
+
+  // top_donation_categories are the top donation categories
+  repeated CategoryStats top_donation_categories = 8;
+
+  // recent_donations are the recent donations
+  repeated RecentDonation recent_donations = 9;
+
+  // donation_growth_rate is the donation growth rate
+  string donation_growth_rate = 10;
+}
+
+// CategoryStats represents category statistics
+message CategoryStats {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // category is the category name
+  string category = 1;
+
+  // amount is the total amount for this category
+  cosmos.base.v1beta1.Coin amount = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // percentage is the percentage of total donations
+  string percentage = 3;
+
+  // donation_count is the number of donations in this category
+  uint64 donation_count = 4;
+
+  // growth_rate is the growth rate for this category
+  string growth_rate = 5;
+}
+
+// RecentDonation represents recent donation information
+message RecentDonation {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // transaction_hash is the transaction hash
+  string transaction_hash = 1;
+
+  // amount is the donation amount
+  cosmos.base.v1beta1.Coin amount = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // ngo_name is the NGO name
+  string ngo_name = 3;
+
+  // purpose is the donation purpose
+  string purpose = 4;
+
+  // timestamp is when the donation was made
+  int64 timestamp = 5;
+
+  // is_anonymous indicates if the donation is anonymous
+  bool is_anonymous = 6;
+
+  // cultural_quote_text is the cultural quote text
+  string cultural_quote_text = 7;
+}
+
+// SearchResult represents search results
+message SearchResult {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // result_type is the type of result
+  string result_type = 1;
+
+  // title is the result title
+  string title = 2;
+
+  // description is the result description
+  string description = 3;
+
+  // url is the URL to the result
+  string url = 4;
+
+  // relevance_score is the relevance score
+  int32 relevance_score = 5;
+
+  // additional_info contains additional information
+  map<string, string> additional_info = 6;
+}
+
+// ExplorerParams defines the parameters for the explorer module
+message ExplorerParams {
+  option (gogoproto.equal) = true;
+  option (gogoproto.goproto_stringer) = false;
+  option (amino.name) = "deshchain/x/explorer/ExplorerParams";
+
+  // enable_real_time_updates enables real-time updates
+  bool enable_real_time_updates = 1;
+
+  // enable_cultural_quotes enables cultural quotes display
+  bool enable_cultural_quotes = 2;
+
+  // enable_patriotism_scores enables patriotism scoring
+  bool enable_patriotism_scores = 3;
+
+  // enable_holder_rankings enables holder rankings
+  bool enable_holder_rankings = 4;
+
+  // enable_donation_tracking enables donation tracking
+  bool enable_donation_tracking = 5;
+
+  // max_search_results is the maximum number of search results
+  uint32 max_search_results = 6;
+
+  // cache_duration is the cache duration in seconds
+  uint64 cache_duration = 7;
+
+  // indexing_batch_size is the batch size for indexing
+  uint32 indexing_batch_size = 8;
+
+  // enable_analytics enables analytics features
+  bool enable_analytics = 9;
+
+  // enable_notifications enables notifications
+  bool enable_notifications = 10;
+}

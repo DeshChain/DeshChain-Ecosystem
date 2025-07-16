@@ -1,0 +1,146 @@
+syntax = "proto3";
+
+package deshchain.namo.v1;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "deshchain/namo/v1/namo.proto";
+import "amino/amino.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/namo/types";
+
+// Query defines the gRPC querier service for the NAMO module
+service Query {
+  // Params returns the module parameters
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/deshchain/namo/v1/params";
+  }
+
+  // TokenSupply returns the token supply information
+  rpc TokenSupply(QueryTokenSupplyRequest) returns (QueryTokenSupplyResponse) {
+    option (google.api.http).get = "/deshchain/namo/v1/token_supply";
+  }
+
+  // VestingSchedule returns a specific vesting schedule
+  rpc VestingSchedule(QueryVestingScheduleRequest) returns (QueryVestingScheduleResponse) {
+    option (google.api.http).get = "/deshchain/namo/v1/vesting_schedule/{schedule_id}";
+  }
+
+  // VestingSchedules returns all vesting schedules
+  rpc VestingSchedules(QueryVestingSchedulesRequest) returns (QueryVestingSchedulesResponse) {
+    option (google.api.http).get = "/deshchain/namo/v1/vesting_schedules";
+  }
+
+  // VestingSchedulesByRecipient returns vesting schedules for a specific recipient
+  rpc VestingSchedulesByRecipient(QueryVestingSchedulesByRecipientRequest) returns (QueryVestingSchedulesByRecipientResponse) {
+    option (google.api.http).get = "/deshchain/namo/v1/vesting_schedules/recipient/{recipient}";
+  }
+
+  // DistributionEvents returns distribution events
+  rpc DistributionEvents(QueryDistributionEventsRequest) returns (QueryDistributionEventsResponse) {
+    option (google.api.http).get = "/deshchain/namo/v1/distribution_events";
+  }
+}
+
+// QueryParamsRequest is the request type for the Query/Params RPC method
+message QueryParamsRequest {}
+
+// QueryParamsResponse is the response type for the Query/Params RPC method
+message QueryParamsResponse {
+  // params holds all the parameters of this module
+  Params params = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
+
+// QueryTokenSupplyRequest is the request type for the Query/TokenSupply RPC method
+message QueryTokenSupplyRequest {}
+
+// QueryTokenSupplyResponse is the response type for the Query/TokenSupply RPC method
+message QueryTokenSupplyResponse {
+  // token_supply contains the token supply information
+  TokenSupply token_supply = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
+
+// QueryVestingScheduleRequest is the request type for the Query/VestingSchedule RPC method
+message QueryVestingScheduleRequest {
+  // schedule_id is the ID of the vesting schedule to query
+  uint64 schedule_id = 1;
+}
+
+// QueryVestingScheduleResponse is the response type for the Query/VestingSchedule RPC method
+message QueryVestingScheduleResponse {
+  // vesting_schedule contains the vesting schedule information
+  VestingSchedule vesting_schedule = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
+
+// QueryVestingSchedulesRequest is the request type for the Query/VestingSchedules RPC method
+message QueryVestingSchedulesRequest {
+  // pagination defines an optional pagination for the request
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+// QueryVestingSchedulesResponse is the response type for the Query/VestingSchedules RPC method
+message QueryVestingSchedulesResponse {
+  // vesting_schedules contains all vesting schedules
+  repeated VestingSchedule vesting_schedules = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // pagination defines the pagination in the response
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryVestingSchedulesByRecipientRequest is the request type for the Query/VestingSchedulesByRecipient RPC method
+message QueryVestingSchedulesByRecipientRequest {
+  // recipient is the address of the recipient
+  string recipient = 1;
+
+  // pagination defines an optional pagination for the request
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+// QueryVestingSchedulesByRecipientResponse is the response type for the Query/VestingSchedulesByRecipient RPC method
+message QueryVestingSchedulesByRecipientResponse {
+  // vesting_schedules contains all vesting schedules for the recipient
+  repeated VestingSchedule vesting_schedules = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // pagination defines the pagination in the response
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryDistributionEventsRequest is the request type for the Query/DistributionEvents RPC method
+message QueryDistributionEventsRequest {
+  // pagination defines an optional pagination for the request
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+
+  // event_type filters events by type
+  string event_type = 2;
+
+  // recipient filters events by recipient
+  string recipient = 3;
+}
+
+// QueryDistributionEventsResponse is the response type for the Query/DistributionEvents RPC method
+message QueryDistributionEventsResponse {
+  // distribution_events contains the distribution events
+  repeated TokenDistributionEvent distribution_events = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // pagination defines the pagination in the response
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}

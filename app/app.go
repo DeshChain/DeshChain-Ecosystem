@@ -1,0 +1,640 @@
+package app
+
+import (
+	"encoding/json"
+	"fmt"
+	"io"
+	"os"
+	"path/filepath"
+
+	"cosmossdk.io/store/types"
+	storetypes "cosmossdk.io/store/types"
+	"cosmossdk.io/x/evidence"
+	evidencekeeper "cosmossdk.io/x/evidence/keeper"
+	evidencetypes "cosmossdk.io/x/evidence/types"
+	"cosmossdk.io/x/feegrant"
+	feegrantkeeper "cosmossdk.io/x/feegrant/keeper"
+	feegrantmodule "cosmossdk.io/x/feegrant/module"
+	"cosmossdk.io/x/upgrade"
+	upgradeclient "cosmossdk.io/x/upgrade/client"
+	upgradekeeper "cosmossdk.io/x/upgrade/keeper"
+	upgradetypes "cosmossdk.io/x/upgrade/types"
+
+	"github.com/cosmos/cosmos-sdk/baseapp"
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/grpc/cmtservice"
+	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/codec/types"
+	"github.com/cosmos/cosmos-sdk/runtime"
+	"github.com/cosmos/cosmos-sdk/server/api"
+	"github.com/cosmos/cosmos-sdk/server/config"
+	servertypes "github.com/cosmos/cosmos-sdk/server/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/module"
+	"github.com/cosmos/cosmos-sdk/version"
+	"github.com/cosmos/cosmos-sdk/x/auth"
+	"github.com/cosmos/cosmos-sdk/x/auth/ante"
+	authcodec "github.com/cosmos/cosmos-sdk/x/auth/codec"
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
+	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/cosmos/cosmos-sdk/x/auth/vesting"
+	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
+	"github.com/cosmos/cosmos-sdk/x/authz"
+	authzkeeper "github.com/cosmos/cosmos-sdk/x/authz/keeper"
+	authzmodule "github.com/cosmos/cosmos-sdk/x/authz/module"
+	"github.com/cosmos/cosmos-sdk/x/bank"
+	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	"github.com/cosmos/cosmos-sdk/x/consensus"
+	consensusparamkeeper "github.com/cosmos/cosmos-sdk/x/consensus/keeper"
+	consensusparamtypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
+	"github.com/cosmos/cosmos-sdk/x/crisis"
+	crisiskeeper "github.com/cosmos/cosmos-sdk/x/crisis/keeper"
+	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
+	distr "github.com/cosmos/cosmos-sdk/x/distribution"
+	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
+	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
+	"github.com/cosmos/cosmos-sdk/x/genutil"
+	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
+	"github.com/cosmos/cosmos-sdk/x/gov"
+	govclient "github.com/cosmos/cosmos-sdk/x/gov/client"
+	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
+	"github.com/cosmos/cosmos-sdk/x/mint"
+	mintkeeper "github.com/cosmos/cosmos-sdk/x/mint/keeper"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
+	"github.com/cosmos/cosmos-sdk/x/params"
+	paramsclient "github.com/cosmos/cosmos-sdk/x/params/client"
+	paramskeeper "github.com/cosmos/cosmos-sdk/x/params/keeper"
+	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
+	paramproposal "github.com/cosmos/cosmos-sdk/x/params/types/proposal"
+	"github.com/cosmos/cosmos-sdk/x/slashing"
+	slashingkeeper "github.com/cosmos/cosmos-sdk/x/slashing/keeper"
+	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
+	"github.com/cosmos/cosmos-sdk/x/staking"
+	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+
+	"github.com/cometbft/cometbft/libs/log"
+	tmos "github.com/cometbft/cometbft/libs/os"
+	dbm "github.com/cometbft/cometbft-db"
+	abci "github.com/cometbft/cometbft/abci/types"
+	nodeservice "github.com/cosmos/cosmos-sdk/client/grpc/node"
+)
+
+const (
+	AccountAddressPrefix = "desh"
+	Name                 = "deshchain"
+)
+
+// These constants are derived from the above variables.
+// These are the ones we will want to use in the code.
+var (
+	// DefaultNodeHome default home directories for the application daemon
+	DefaultNodeHome string
+
+	// ModuleBasics defines the module BasicManager that is in charge of setting up basic,
+	// non-dependant module elements, such as codec registration
+	// and genesis verification.
+	ModuleBasics = module.NewBasicManager(
+		auth.AppModuleBasic{},
+		genutil.NewAppModuleBasic(genutiltypes.DefaultMessageValidator),
+		bank.AppModuleBasic{},
+		staking.AppModuleBasic{},
+		mint.AppModuleBasic{},
+		distr.AppModuleBasic{},
+		gov.NewAppModuleBasic(
+			[]govclient.ProposalHandler{
+				paramsclient.ProposalHandler,
+				upgradeclient.LegacyProposalHandler,
+				upgradeclient.LegacyCancelProposalHandler,
+			},
+		),
+		params.AppModuleBasic{},
+		crisis.AppModuleBasic{},
+		slashing.AppModuleBasic{},
+		feegrantmodule.AppModuleBasic{},
+		upgrade.AppModuleBasic{},
+		evidence.AppModuleBasic{},
+		authzmodule.AppModuleBasic{},
+		vesting.AppModuleBasic{},
+		consensus.AppModuleBasic{},
+	)
+
+	// module account permissions
+	maccPerms = map[string][]string{
+		authtypes.FeeCollectorName:     nil,
+		distrtypes.ModuleName:          nil,
+		minttypes.ModuleName:           {authtypes.Minter},
+		stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},
+		stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
+		govtypes.ModuleName:            {authtypes.Burner},
+		"army_ngo":                     nil, // Army NGO wallet
+		"war_relief":                   nil, // War Relief wallet
+		"development_fund":             nil, // Development fund wallet
+		"operations_fund":              nil, // Operations fund wallet
+		"burn_address":                 {authtypes.Burner}, // Token burn address
+	}
+)
+
+var (
+	_ runtime.AppI            = (*DeshChainApp)(nil)
+	_ servertypes.Application = (*DeshChainApp)(nil)
+)
+
+func init() {
+	userHomeDir, err := os.UserHomeDir()
+	if err != nil {
+		panic(err)
+	}
+
+	DefaultNodeHome = filepath.Join(userHomeDir, "."+Name)
+}
+
+// DeshChainApp extends an ABCI application, but with most of its parameters exported.
+// They are exported for convenience in creating helper functions, as object
+// capabilities aren't needed for testing.
+type DeshChainApp struct {
+	*baseapp.BaseApp
+
+	cdc               *codec.LegacyAmino
+	appCodec          codec.Codec
+	interfaceRegistry types.InterfaceRegistry
+	txConfig          client.TxConfig
+
+	invCheckPeriod uint
+
+	// keys to access the substores
+	keys    map[string]*storetypes.KVStoreKey
+	tkeys   map[string]*storetypes.TransientStoreKey
+	memKeys map[string]*storetypes.MemoryStoreKey
+
+	// keepers
+	AccountKeeper         authkeeper.AccountKeeper
+	BankKeeper            bankkeeper.Keeper
+	StakingKeeper         *stakingkeeper.Keeper
+	SlashingKeeper        slashingkeeper.Keeper
+	MintKeeper            mintkeeper.Keeper
+	DistrKeeper           distrkeeper.Keeper
+	GovKeeper             govkeeper.Keeper
+	CrisisKeeper          *crisiskeeper.Keeper
+	UpgradeKeeper         *upgradekeeper.Keeper
+	ParamsKeeper          paramskeeper.Keeper
+	AuthzKeeper           authzkeeper.Keeper
+	EvidenceKeeper        evidencekeeper.Keeper
+	FeeGrantKeeper        feegrantkeeper.Keeper
+	ConsensusParamsKeeper consensusparamkeeper.Keeper
+
+	// the module manager
+	mm *module.Manager
+
+	// simulation manager
+	sm *module.SimulationManager
+
+	// module configurator
+	configurator module.Configurator
+}
+
+// New returns a reference to an initialized DeshChainApp.
+func New(
+	logger log.Logger,
+	db dbm.DB,
+	traceStore io.Writer,
+	loadLatest bool,
+	skipUpgradeHeights map[int64]bool,
+	homePath string,
+	invCheckPeriod uint,
+	encodingConfig EncodingConfig,
+	appOpts servertypes.AppOptions,
+	baseAppOptions ...func(*baseapp.BaseApp),
+) *DeshChainApp {
+	appCodec := encodingConfig.Codec
+	cdc := encodingConfig.Amino
+	interfaceRegistry := encodingConfig.InterfaceRegistry
+	txConfig := encodingConfig.TxConfig
+
+	bApp := baseapp.NewBaseApp(Name, logger, db, txConfig.TxDecoder(), baseAppOptions...)
+	bApp.SetCommitMultiStoreTracer(traceStore)
+	bApp.SetVersion(version.Version)
+	bApp.SetInterfaceRegistry(interfaceRegistry)
+	bApp.SetTxEncoder(txConfig.TxEncoder())
+
+	keys := storetypes.NewKVStoreKeys(
+		authtypes.StoreKey, banktypes.StoreKey, stakingtypes.StoreKey, crisistypes.StoreKey,
+		minttypes.StoreKey, distrtypes.StoreKey, slashingtypes.StoreKey,
+		govtypes.StoreKey, paramstypes.StoreKey, upgradetypes.StoreKey, feegrant.StoreKey,
+		evidencetypes.StoreKey, authzkeeper.StoreKey, consensusparamtypes.StoreKey,
+	)
+	tkeys := storetypes.NewTransientStoreKeys(paramstypes.TStoreKey)
+	memKeys := storetypes.NewMemoryStoreKeys()
+
+	app := &DeshChainApp{
+		BaseApp:           bApp,
+		cdc:               cdc,
+		appCodec:          appCodec,
+		interfaceRegistry: interfaceRegistry,
+		txConfig:          txConfig,
+		invCheckPeriod:    invCheckPeriod,
+		keys:              keys,
+		tkeys:             tkeys,
+		memKeys:           memKeys,
+	}
+
+	app.ParamsKeeper = initParamsKeeper(appCodec, cdc, keys[paramstypes.StoreKey], tkeys[paramstypes.TStoreKey])
+
+	// set the BaseApp's parameter store
+	app.ConsensusParamsKeeper = consensusparamkeeper.NewKeeper(appCodec, runtime.NewKVStoreService(keys[consensusparamtypes.StoreKey]), authtypes.NewModuleAddress(govtypes.ModuleName).String(), runtime.EventService{})
+	bApp.SetParamStore(app.ConsensusParamsKeeper.ParamsStore)
+
+	// add keepers
+	app.AccountKeeper = authkeeper.NewAccountKeeper(
+		appCodec, runtime.NewKVStoreService(keys[authtypes.StoreKey]), authtypes.ProtoBaseAccount, maccPerms, AccountAddressPrefix, authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
+	app.BankKeeper = bankkeeper.NewBaseKeeper(
+		appCodec, runtime.NewKVStoreService(keys[banktypes.StoreKey]), app.AccountKeeper, BlockedAddresses(), authtypes.NewModuleAddress(govtypes.ModuleName).String(), logger,
+	)
+
+	app.StakingKeeper = stakingkeeper.NewKeeper(
+		appCodec, runtime.NewKVStoreService(keys[stakingtypes.StoreKey]), app.AccountKeeper, app.BankKeeper, authtypes.NewModuleAddress(govtypes.ModuleName).String(), authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ValidatorAddrPrefix()), authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ConsensusAddrPrefix()),
+	)
+
+	app.MintKeeper = mintkeeper.NewKeeper(
+		appCodec, runtime.NewKVStoreService(keys[minttypes.StoreKey]), app.StakingKeeper,
+		app.AccountKeeper, app.BankKeeper, authtypes.FeeCollectorName, authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
+	app.DistrKeeper = distrkeeper.NewKeeper(
+		appCodec, runtime.NewKVStoreService(keys[distrtypes.StoreKey]), app.AccountKeeper, app.BankKeeper,
+		app.StakingKeeper, authtypes.FeeCollectorName, authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
+	app.SlashingKeeper = slashingkeeper.NewKeeper(
+		appCodec, codec.NewLegacyAmino(), runtime.NewKVStoreService(keys[slashingtypes.StoreKey]), app.StakingKeeper, authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
+	app.CrisisKeeper = crisiskeeper.NewKeeper(
+		appCodec, runtime.NewKVStoreService(keys[crisistypes.StoreKey]), invCheckPeriod, app.BankKeeper, authtypes.FeeCollectorName, authtypes.NewModuleAddress(govtypes.ModuleName).String(), app.AccountKeeper.AddressCodec(),
+	)
+
+	app.FeeGrantKeeper = feegrantkeeper.NewKeeper(appCodec, runtime.NewKVStoreService(keys[feegrant.StoreKey]), app.AccountKeeper)
+
+	// register the staking hooks
+	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
+	app.StakingKeeper.SetHooks(
+		stakingtypes.NewMultiStakingHooks(app.DistrKeeper.Hooks(), app.SlashingKeeper.Hooks()),
+	)
+
+	app.AuthzKeeper = authzkeeper.NewKeeper(runtime.NewKVStoreService(keys[authzkeeper.StoreKey]), appCodec, app.MsgServiceRouter(), app.AccountKeeper)
+
+	app.UpgradeKeeper = upgradekeeper.NewKeeper(skipUpgradeHeights, runtime.NewKVStoreService(keys[upgradetypes.StoreKey]), appCodec, homePath, app.BaseApp, authtypes.NewModuleAddress(govtypes.ModuleName).String())
+
+	// register the proposal types
+	govRouter := govv1beta1.NewRouter()
+	govRouter.AddRoute(govtypes.RouterKey, govv1beta1.ProposalHandler).
+		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(app.ParamsKeeper))
+
+	govConfig := govtypes.DefaultConfig()
+	govKeeper := govkeeper.NewKeeper(
+		appCodec, runtime.NewKVStoreService(keys[govtypes.StoreKey]), app.AccountKeeper, app.BankKeeper,
+		app.StakingKeeper, app.DistrKeeper, app.MsgServiceRouter(), govConfig, authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
+	app.GovKeeper = *govKeeper.SetHooks(
+		govtypes.NewMultiGovHooks(
+		// register the governance hooks
+		),
+	)
+
+	// Create evidence Keeper for to register the IBC light client misbehaviour evidence route
+	evidenceKeeper := evidencekeeper.NewKeeper(
+		appCodec, runtime.NewKVStoreService(keys[evidencetypes.StoreKey]), app.StakingKeeper, app.SlashingKeeper, app.AccountKeeper.AddressCodec(),
+	)
+	app.EvidenceKeeper = *evidenceKeeper
+
+	// NOTE: we may consider parsing `appOpts` inside module constructors. For the moment
+	// we prefer to be more strict in what arguments the modules expect.
+	skipGenesisInvariants := cast.ToBool(appOpts.Get(crisis.FlagSkipGenesisInvariants))
+
+	// NOTE: Any module instantiated in the module manager that is later modified
+	// must be passed by reference here.
+
+	app.mm = module.NewManager(
+		genutil.NewAppModule(
+			app.AccountKeeper, app.StakingKeeper, app,
+			encodingConfig.TxConfig,
+		),
+		auth.NewAppModule(appCodec, app.AccountKeeper, nil, app.GetSubspace(authtypes.ModuleName)),
+		vesting.NewAppModule(app.AccountKeeper, app.BankKeeper),
+		bank.NewAppModule(appCodec, app.BankKeeper, app.AccountKeeper, app.GetSubspace(banktypes.ModuleName)),
+		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)),
+		feegrantmodule.NewAppModule(appCodec, app.AccountKeeper, app.BankKeeper, app.FeeGrantKeeper, app.interfaceRegistry),
+		gov.NewAppModule(appCodec, &app.GovKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(govtypes.ModuleName)),
+		mint.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper, nil, app.GetSubspace(minttypes.ModuleName)),
+		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.GetSubspace(slashingtypes.ModuleName), app.interfaceRegistry),
+		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.GetSubspace(distrtypes.ModuleName)),
+		staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
+		upgrade.NewAppModule(app.UpgradeKeeper, app.AccountKeeper.AddressCodec()),
+		evidence.NewAppModule(app.EvidenceKeeper),
+		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
+		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
+	)
+
+	// During begin block slashing happens after distr.BeginBlocker so that
+	// there is nothing left over in the validator fee pool, so as to keep the
+	// CanWithdrawInvariant invariant.
+	// NOTE: staking module is required if HistoricalEntries param > 0
+	app.mm.SetOrderBeginBlockers(
+		upgradetypes.ModuleName,
+		minttypes.ModuleName,
+		distrtypes.ModuleName,
+		slashingtypes.ModuleName,
+		evidencetypes.ModuleName,
+		stakingtypes.ModuleName,
+		authz.ModuleName,
+		genutiltypes.ModuleName,
+	)
+
+	app.mm.SetOrderEndBlockers(
+		crisistypes.ModuleName,
+		govtypes.ModuleName,
+		stakingtypes.ModuleName,
+		feegrant.ModuleName,
+		genutiltypes.ModuleName,
+	)
+
+	// NOTE: The genutils module must occur after staking so that pools are
+	// properly initialized with tokens from genesis accounts.
+	// NOTE: Capability module must occur first so that it can initialize any capabilities
+	// so that other modules that want to create or claim capabilities afterwards in InitChain
+	// can do so safely.
+	genesisModuleOrder := []string{
+		authtypes.ModuleName,
+		banktypes.ModuleName,
+		distrtypes.ModuleName,
+		stakingtypes.ModuleName,
+		slashingtypes.ModuleName,
+		govtypes.ModuleName,
+		minttypes.ModuleName,
+		crisistypes.ModuleName,
+		genutiltypes.ModuleName,
+		evidencetypes.ModuleName,
+		authz.ModuleName,
+		feegrant.ModuleName,
+		paramstypes.ModuleName,
+		upgradetypes.ModuleName,
+		vestingtypes.ModuleName,
+		consensusparamtypes.ModuleName,
+	}
+	app.mm.SetOrderInitGenesis(genesisModuleOrder...)
+	app.mm.SetOrderExportGenesis(genesisModuleOrder...)
+
+	// Uncomment if you want to set a custom migration order here.
+	// app.mm.SetOrderMigrations(custom order)
+
+	app.mm.RegisterInvariants(app.CrisisKeeper)
+	app.configurator = module.NewConfigurator(app.appCodec, app.MsgServiceRouter(), app.GRPCQueryRouter())
+	err := app.mm.RegisterServices(app.configurator)
+	if err != nil {
+		panic(err)
+	}
+
+	// initialize stores
+	app.MountKVStores(keys)
+	app.MountTransientStores(tkeys)
+	app.MountMemoryStores(memKeys)
+
+	// initialize BaseApp
+	app.SetInitChainer(app.InitChainer)
+	app.SetBeginBlocker(app.BeginBlocker)
+
+	anteHandler, err := ante.NewAnteHandler(
+		ante.HandlerOptions{
+			AccountKeeper:   app.AccountKeeper,
+			BankKeeper:      app.BankKeeper,
+			SignModeHandler: txConfig.SignModeHandler(),
+			FeegrantKeeper:  app.FeeGrantKeeper,
+			SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
+		},
+	)
+	if err != nil {
+		panic(err)
+	}
+
+	app.SetAnteHandler(anteHandler)
+	app.SetEndBlocker(app.EndBlocker)
+
+	if loadLatest {
+		if err := app.LoadLatestVersion(); err != nil {
+			tmos.Exit(err.Error())
+		}
+	}
+
+	return app
+}
+
+// Name returns the name of the App
+func (app *DeshChainApp) Name() string { return app.BaseApp.Name() }
+
+// GetBaseApp returns the base app of the application
+func (app *DeshChainApp) GetBaseApp() *baseapp.BaseApp { return app.BaseApp }
+
+// BeginBlocker application updates every begin block
+func (app *DeshChainApp) BeginBlocker(ctx sdk.Context) (sdk.BeginBlock, error) {
+	return app.mm.BeginBlock(ctx)
+}
+
+// EndBlocker application updates every end block
+func (app *DeshChainApp) EndBlocker(ctx sdk.Context) (sdk.EndBlock, error) {
+	return app.mm.EndBlock(ctx)
+}
+
+// InitChainer application update at chain initialization
+func (app *DeshChainApp) InitChainer(ctx sdk.Context, req abci.RequestInitChain) abci.ResponseInitChain {
+	var genesisState GenesisState
+	if err := json.Unmarshal(req.AppStateBytes, &genesisState); err != nil {
+		panic(err)
+	}
+	app.UpgradeKeeper.SetModuleVersionMap(ctx, app.mm.GetVersionMap())
+	return app.mm.InitGenesis(ctx, app.appCodec, genesisState)
+}
+
+// LoadHeight loads a particular height
+func (app *DeshChainApp) LoadHeight(height int64) error {
+	return app.LoadVersion(height)
+}
+
+// ModuleAccountAddrs returns all the app's module account addresses.
+func (app *DeshChainApp) ModuleAccountAddrs() map[string]bool {
+	modAccAddrs := make(map[string]bool)
+	for acc := range maccPerms {
+		modAccAddrs[authtypes.NewModuleAddress(acc).String()] = true
+	}
+
+	return modAccAddrs
+}
+
+// LegacyAmino returns DeshChainApp's amino codec.
+//
+// NOTE: This is solely to be used for testing purposes as it may be desirable
+// for modules to register their own custom testing types.
+func (app *DeshChainApp) LegacyAmino() *codec.LegacyAmino {
+	return app.cdc
+}
+
+// AppCodec returns DeshChainApp's app codec.
+//
+// NOTE: This is solely to be used for testing purposes as it may be desirable
+// for modules to register their own custom testing types.
+func (app *DeshChainApp) AppCodec() codec.Codec {
+	return app.appCodec
+}
+
+// InterfaceRegistry returns DeshChainApp's InterfaceRegistry
+func (app *DeshChainApp) InterfaceRegistry() types.InterfaceRegistry {
+	return app.interfaceRegistry
+}
+
+// TxConfig returns DeshChainApp's TxConfig
+func (app *DeshChainApp) TxConfig() client.TxConfig {
+	return app.txConfig
+}
+
+// GetKey returns the KVStoreKey for the provided store key.
+//
+// NOTE: This is solely to be used for testing purposes.
+func (app *DeshChainApp) GetKey(storeKey string) *storetypes.KVStoreKey {
+	return app.keys[storeKey]
+}
+
+// GetTKey returns the TransientStoreKey for the provided store key.
+//
+// NOTE: This is solely to be used for testing purposes.
+func (app *DeshChainApp) GetTKey(storeKey string) *storetypes.TransientStoreKey {
+	return app.tkeys[storeKey]
+}
+
+// GetMemKey returns the MemStoreKey for the provided mem key.
+//
+// NOTE: This is solely used for testing purposes.
+func (app *DeshChainApp) GetMemKey(storeKey string) *storetypes.MemoryStoreKey {
+	return app.memKeys[storeKey]
+}
+
+// GetSubspace returns a param subspace for a given module name.
+//
+// NOTE: This is solely to be used for testing purposes.
+func (app *DeshChainApp) GetSubspace(moduleName string) paramstypes.Subspace {
+	subspace, _ := app.ParamsKeeper.GetSubspace(moduleName)
+	return subspace
+}
+
+// RegisterAPIRoutes registers all application module routes with the provided
+// API server.
+func (app *DeshChainApp) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig) {
+	clientCtx := apiSvr.ClientCtx
+	// Register new tx routes from grpc-gateway.
+	authtx.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
+	// Register new tendermint queries routes from grpc-gateway.
+	cmtservice.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
+
+	// Register legacy and grpc-gateway routes for all modules.
+	ModuleBasics.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
+
+	// register app's OpenAPI routes.
+	if apiConfig.Swagger {
+		RegisterOpenAPIService(Name, apiSvr.Router)
+	}
+}
+
+// RegisterTxService implements the Application.RegisterTxService method.
+func (app *DeshChainApp) RegisterTxService(clientCtx client.Context) {
+	authtx.RegisterTxService(app.BaseApp.GRPCQueryRouter(), clientCtx, app.BaseApp.Simulate, app.interfaceRegistry)
+}
+
+// RegisterTendermintService implements the Application.RegisterTendermintService method.
+func (app *DeshChainApp) RegisterTendermintService(clientCtx client.Context) {
+	cmtservice.RegisterTendermintService(
+		clientCtx,
+		app.BaseApp.GRPCQueryRouter(),
+		app.interfaceRegistry,
+		app.Query,
+	)
+}
+
+func (app *DeshChainApp) RegisterNodeService(clientCtx client.Context, cfg config.Config) {
+	nodeservice.RegisterNodeService(clientCtx, app.GRPCQueryRouter(), cfg)
+}
+
+// SimulationManager implements the SimulationApp interface
+func (app *DeshChainApp) SimulationManager() *module.SimulationManager {
+	return app.sm
+}
+
+// configure store loader that checks if version == upgradeHeight and applies store upgrades
+func (app *DeshChainApp) setupUpgradeStoreLoaders() {
+	upgradeInfo, err := app.UpgradeKeeper.ReadUpgradeInfoFromDisk()
+	if err != nil {
+		panic(fmt.Sprintf("failed to read upgrade info from disk %s", err))
+	}
+
+	if app.UpgradeKeeper.IsSkipHeight(upgradeInfo.Height) {
+		return
+	}
+
+	for _, upgrade := range Upgrades {
+		if upgradeInfo.Name == upgrade.UpgradeName {
+			storeUpgrades := upgrade.StoreUpgrades
+			app.SetStoreLoader(upgradetypes.UpgradeStoreLoader(upgradeInfo.Height, &storeUpgrades))
+		}
+	}
+}
+
+func (app *DeshChainApp) setupUpgradeHandlers() {
+	for _, upgrade := range Upgrades {
+		app.UpgradeKeeper.SetUpgradeHandler(
+			upgrade.UpgradeName,
+			upgrade.CreateUpgradeHandler(app.mm, app.configurator),
+		)
+	}
+}
+
+// BlockedAddresses returns all the app's blocked account addresses.
+func BlockedAddresses() map[string]bool {
+	modAccAddrs := make(map[string]bool)
+	for acc := range maccPerms {
+		modAccAddrs[authtypes.NewModuleAddress(acc).String()] = true
+	}
+
+	// Allow the following addresses to receive funds
+	delete(modAccAddrs, authtypes.NewModuleAddress(govtypes.ModuleName).String())
+
+	return modAccAddrs
+}
+
+// GetMaccPerms returns a copy of the module account permissions
+func GetMaccPerms() map[string][]string {
+	dupMaccPerms := make(map[string][]string)
+	for k, v := range maccPerms {
+		dupMaccPerms[k] = v
+	}
+	return dupMaccPerms
+}
+
+// initParamsKeeper init params keeper and its subspaces
+func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino, key, tkey storetypes.StoreKey) paramskeeper.Keeper {
+	paramsKeeper := paramskeeper.NewKeeper(appCodec, legacyAmino, key, tkey)
+
+	paramsKeeper.Subspace(authtypes.ModuleName)
+	paramsKeeper.Subspace(banktypes.ModuleName)
+	paramsKeeper.Subspace(stakingtypes.ModuleName)
+	paramsKeeper.Subspace(minttypes.ModuleName)
+	paramsKeeper.Subspace(distrtypes.ModuleName)
+	paramsKeeper.Subspace(slashingtypes.ModuleName)
+	paramsKeeper.Subspace(govtypes.ModuleName)
+	paramsKeeper.Subspace(crisistypes.ModuleName)
+
+	return paramsKeeper
+}

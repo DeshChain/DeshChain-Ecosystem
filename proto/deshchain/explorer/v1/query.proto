@@ -1,0 +1,605 @@
+syntax = "proto3";
+
+package deshchain.explorer.v1;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "deshchain/explorer/v1/explorer.proto";
+import "amino/amino.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/explorer/types";
+
+// Query defines the gRPC querier service for the explorer module
+service Query {
+  // Params returns the module parameters
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/deshchain/explorer/v1/params";
+  }
+
+  // Block returns information about a specific block
+  rpc Block(QueryBlockRequest) returns (QueryBlockResponse) {
+    option (google.api.http).get = "/deshchain/explorer/v1/block/{height}";
+  }
+
+  // Blocks returns information about multiple blocks
+  rpc Blocks(QueryBlocksRequest) returns (QueryBlocksResponse) {
+    option (google.api.http).get = "/deshchain/explorer/v1/blocks";
+  }
+
+  // Transaction returns information about a specific transaction
+  rpc Transaction(QueryTransactionRequest) returns (QueryTransactionResponse) {
+    option (google.api.http).get = "/deshchain/explorer/v1/transaction/{hash}";
+  }
+
+  // Transactions returns information about multiple transactions
+  rpc Transactions(QueryTransactionsRequest) returns (QueryTransactionsResponse) {
+    option (google.api.http).get = "/deshchain/explorer/v1/transactions";
+  }
+
+  // Validator returns information about a specific validator
+  rpc Validator(QueryValidatorRequest) returns (QueryValidatorResponse) {
+    option (google.api.http).get = "/deshchain/explorer/v1/validator/{operator_address}";
+  }
+
+  // Validators returns information about all validators
+  rpc Validators(QueryValidatorsRequest) returns (QueryValidatorsResponse) {
+    option (google.api.http).get = "/deshchain/explorer/v1/validators";
+  }
+
+  // NetworkStats returns network statistics
+  rpc NetworkStats(QueryNetworkStatsRequest) returns (QueryNetworkStatsResponse) {
+    option (google.api.http).get = "/deshchain/explorer/v1/network_stats";
+  }
+
+  // Address returns information about a specific address
+  rpc Address(QueryAddressRequest) returns (QueryAddressResponse) {
+    option (google.api.http).get = "/deshchain/explorer/v1/address/{address}";
+  }
+
+  // AddressTransactions returns transactions for a specific address
+  rpc AddressTransactions(QueryAddressTransactionsRequest) returns (QueryAddressTransactionsResponse) {
+    option (google.api.http).get = "/deshchain/explorer/v1/address/{address}/transactions";
+  }
+
+  // TokenBurns returns information about token burns
+  rpc TokenBurns(QueryTokenBurnsRequest) returns (QueryTokenBurnsResponse) {
+    option (google.api.http).get = "/deshchain/explorer/v1/token_burns";
+  }
+
+  // PatriotismLeaderboard returns the patriotism leaderboard
+  rpc PatriotismLeaderboard(QueryPatriotismLeaderboardRequest) returns (QueryPatriotismLeaderboardResponse) {
+    option (google.api.http).get = "/deshchain/explorer/v1/patriotism_leaderboard";
+  }
+
+  // HolderRankings returns holder rankings
+  rpc HolderRankings(QueryHolderRankingsRequest) returns (QueryHolderRankingsResponse) {
+    option (google.api.http).get = "/deshchain/explorer/v1/holder_rankings";
+  }
+
+  // DonationTracking returns donation tracking information
+  rpc DonationTracking(QueryDonationTrackingRequest) returns (QueryDonationTrackingResponse) {
+    option (google.api.http).get = "/deshchain/explorer/v1/donation_tracking";
+  }
+
+  // Search performs a search across the blockchain
+  rpc Search(QuerySearchRequest) returns (QuerySearchResponse) {
+    option (google.api.http).get = "/deshchain/explorer/v1/search";
+  }
+
+  // CulturalQuotes returns cultural quotes associated with transactions
+  rpc CulturalQuotes(QueryCulturalQuotesRequest) returns (QueryCulturalQuotesResponse) {
+    option (google.api.http).get = "/deshchain/explorer/v1/cultural_quotes";
+  }
+
+  // RecentActivity returns recent blockchain activity
+  rpc RecentActivity(QueryRecentActivityRequest) returns (QueryRecentActivityResponse) {
+    option (google.api.http).get = "/deshchain/explorer/v1/recent_activity";
+  }
+
+  // TaxStatistics returns tax-related statistics
+  rpc TaxStatistics(QueryTaxStatisticsRequest) returns (QueryTaxStatisticsResponse) {
+    option (google.api.http).get = "/deshchain/explorer/v1/tax_statistics";
+  }
+}
+
+// QueryParamsRequest is the request type for the Query/Params RPC method
+message QueryParamsRequest {}
+
+// QueryParamsResponse is the response type for the Query/Params RPC method
+message QueryParamsResponse {
+  // params holds all the parameters of this module
+  ExplorerParams params = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
+
+// QueryBlockRequest is the request type for the Query/Block RPC method
+message QueryBlockRequest {
+  // height is the block height to query
+  int64 height = 1;
+}
+
+// QueryBlockResponse is the response type for the Query/Block RPC method
+message QueryBlockResponse {
+  // block contains the block information
+  BlockInfo block = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
+
+// QueryBlocksRequest is the request type for the Query/Blocks RPC method
+message QueryBlocksRequest {
+  // pagination defines an optional pagination for the request
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+
+  // start_height is the starting block height
+  int64 start_height = 2;
+
+  // end_height is the ending block height
+  int64 end_height = 3;
+
+  // order is the order of results ("asc" or "desc")
+  string order = 4;
+}
+
+// QueryBlocksResponse is the response type for the Query/Blocks RPC method
+message QueryBlocksResponse {
+  // blocks contains the block information
+  repeated BlockInfo blocks = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // pagination defines the pagination in the response
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryTransactionRequest is the request type for the Query/Transaction RPC method
+message QueryTransactionRequest {
+  // hash is the transaction hash to query
+  string hash = 1;
+}
+
+// QueryTransactionResponse is the response type for the Query/Transaction RPC method
+message QueryTransactionResponse {
+  // transaction contains the transaction information
+  TransactionInfo transaction = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
+
+// QueryTransactionsRequest is the request type for the Query/Transactions RPC method
+message QueryTransactionsRequest {
+  // pagination defines an optional pagination for the request
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+
+  // start_height is the starting block height
+  int64 start_height = 2;
+
+  // end_height is the ending block height
+  int64 end_height = 3;
+
+  // message_type filters by message type
+  string message_type = 4;
+
+  // from_address filters by sender address
+  string from_address = 5;
+
+  // to_address filters by recipient address
+  string to_address = 6;
+
+  // min_amount filters by minimum amount
+  string min_amount = 7;
+
+  // max_amount filters by maximum amount
+  string max_amount = 8;
+
+  // order is the order of results ("asc" or "desc")
+  string order = 9;
+}
+
+// QueryTransactionsResponse is the response type for the Query/Transactions RPC method
+message QueryTransactionsResponse {
+  // transactions contains the transaction information
+  repeated TransactionInfo transactions = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // pagination defines the pagination in the response
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryValidatorRequest is the request type for the Query/Validator RPC method
+message QueryValidatorRequest {
+  // operator_address is the validator operator address
+  string operator_address = 1;
+}
+
+// QueryValidatorResponse is the response type for the Query/Validator RPC method
+message QueryValidatorResponse {
+  // validator contains the validator information
+  ValidatorInfo validator = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
+
+// QueryValidatorsRequest is the request type for the Query/Validators RPC method
+message QueryValidatorsRequest {
+  // pagination defines an optional pagination for the request
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+
+  // status filters by validator status
+  string status = 2;
+
+  // order is the order of results ("asc" or "desc")
+  string order = 3;
+
+  // sort_by is the field to sort by
+  string sort_by = 4;
+}
+
+// QueryValidatorsResponse is the response type for the Query/Validators RPC method
+message QueryValidatorsResponse {
+  // validators contains the validator information
+  repeated ValidatorInfo validators = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // pagination defines the pagination in the response
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryNetworkStatsRequest is the request type for the Query/NetworkStats RPC method
+message QueryNetworkStatsRequest {}
+
+// QueryNetworkStatsResponse is the response type for the Query/NetworkStats RPC method
+message QueryNetworkStatsResponse {
+  // stats contains the network statistics
+  NetworkStats stats = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
+
+// QueryAddressRequest is the request type for the Query/Address RPC method
+message QueryAddressRequest {
+  // address is the address to query
+  string address = 1;
+}
+
+// QueryAddressResponse is the response type for the Query/Address RPC method
+message QueryAddressResponse {
+  // address_info contains the address information
+  AddressInfo address_info = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
+
+// QueryAddressTransactionsRequest is the request type for the Query/AddressTransactions RPC method
+message QueryAddressTransactionsRequest {
+  // address is the address to query
+  string address = 1;
+
+  // pagination defines an optional pagination for the request
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+
+  // start_height is the starting block height
+  int64 start_height = 3;
+
+  // end_height is the ending block height
+  int64 end_height = 4;
+
+  // message_type filters by message type
+  string message_type = 5;
+
+  // order is the order of results ("asc" or "desc")
+  string order = 6;
+}
+
+// QueryAddressTransactionsResponse is the response type for the Query/AddressTransactions RPC method
+message QueryAddressTransactionsResponse {
+  // transactions contains the transaction information
+  repeated TransactionInfo transactions = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // pagination defines the pagination in the response
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryTokenBurnsRequest is the request type for the Query/TokenBurns RPC method
+message QueryTokenBurnsRequest {
+  // pagination defines an optional pagination for the request
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+
+  // start_height is the starting block height
+  int64 start_height = 2;
+
+  // end_height is the ending block height
+  int64 end_height = 3;
+
+  // burn_type filters by burn type
+  string burn_type = 4;
+
+  // order is the order of results ("asc" or "desc")
+  string order = 5;
+}
+
+// QueryTokenBurnsResponse is the response type for the Query/TokenBurns RPC method
+message QueryTokenBurnsResponse {
+  // burns contains the token burn information
+  repeated TokenBurnInfo burns = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // pagination defines the pagination in the response
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+
+  // total_burned is the total amount burned
+  string total_burned = 3;
+}
+
+// QueryPatriotismLeaderboardRequest is the request type for the Query/PatriotismLeaderboard RPC method
+message QueryPatriotismLeaderboardRequest {
+  // pagination defines an optional pagination for the request
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+
+  // time_period filters by time period ("24h", "7d", "30d", "all")
+  string time_period = 2;
+
+  // min_score filters by minimum patriotism score
+  int32 min_score = 3;
+}
+
+// QueryPatriotismLeaderboardResponse is the response type for the Query/PatriotismLeaderboard RPC method
+message QueryPatriotismLeaderboardResponse {
+  // leaderboard contains the patriotism leaderboard
+  repeated PatriotismLeaderboard leaderboard = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // pagination defines the pagination in the response
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryHolderRankingsRequest is the request type for the Query/HolderRankings RPC method
+message QueryHolderRankingsRequest {
+  // pagination defines an optional pagination for the request
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+
+  // min_balance filters by minimum balance
+  string min_balance = 2;
+
+  // account_type filters by account type
+  string account_type = 3;
+
+  // active_only filters for active accounts only
+  bool active_only = 4;
+}
+
+// QueryHolderRankingsResponse is the response type for the Query/HolderRankings RPC method
+message QueryHolderRankingsResponse {
+  // rankings contains the holder rankings
+  repeated HolderRanking rankings = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // pagination defines the pagination in the response
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryDonationTrackingRequest is the request type for the Query/DonationTracking RPC method
+message QueryDonationTrackingRequest {
+  // time_period filters by time period ("24h", "7d", "30d", "all")
+  string time_period = 1;
+
+  // category filters by donation category
+  string category = 2;
+}
+
+// QueryDonationTrackingResponse is the response type for the Query/DonationTracking RPC method
+message QueryDonationTrackingResponse {
+  // tracking contains the donation tracking information
+  DonationTracker tracking = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
+
+// QuerySearchRequest is the request type for the Query/Search RPC method
+message QuerySearchRequest {
+  // query is the search query
+  string query = 1;
+
+  // search_type is the type of search ("all", "transactions", "blocks", "addresses", "validators")
+  string search_type = 2;
+
+  // limit is the maximum number of results
+  uint32 limit = 3;
+}
+
+// QuerySearchResponse is the response type for the Query/Search RPC method
+message QuerySearchResponse {
+  // results contains the search results
+  repeated SearchResult results = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // total_results is the total number of results
+  uint64 total_results = 2;
+
+  // search_time is the time taken for the search
+  string search_time = 3;
+}
+
+// QueryCulturalQuotesRequest is the request type for the Query/CulturalQuotes RPC method
+message QueryCulturalQuotesRequest {
+  // pagination defines an optional pagination for the request
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+
+  // start_height is the starting block height
+  int64 start_height = 2;
+
+  // end_height is the ending block height
+  int64 end_height = 3;
+
+  // category filters by quote category
+  string category = 4;
+
+  // author filters by quote author
+  string author = 5;
+}
+
+// QueryCulturalQuotesResponse is the response type for the Query/CulturalQuotes RPC method
+message QueryCulturalQuotesResponse {
+  // quotes contains the cultural quotes with transaction context
+  repeated CulturalQuoteDisplay quotes = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // pagination defines the pagination in the response
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// CulturalQuoteDisplay represents a cultural quote with transaction context
+message CulturalQuoteDisplay {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // quote_id is the cultural quote ID
+  uint64 quote_id = 1;
+
+  // quote_text is the quote text
+  string quote_text = 2;
+
+  // quote_author is the quote author
+  string quote_author = 3;
+
+  // transaction_hash is the associated transaction hash
+  string transaction_hash = 4;
+
+  // block_height is the block height
+  int64 block_height = 5;
+
+  // timestamp is when the quote was displayed
+  int64 timestamp = 6;
+
+  // category is the quote category
+  string category = 7;
+
+  // language is the quote language
+  string language = 8;
+}
+
+// QueryRecentActivityRequest is the request type for the Query/RecentActivity RPC method
+message QueryRecentActivityRequest {
+  // limit is the maximum number of activities to return
+  uint32 limit = 1;
+
+  // activity_type filters by activity type
+  string activity_type = 2;
+}
+
+// QueryRecentActivityResponse is the response type for the Query/RecentActivity RPC method
+message QueryRecentActivityResponse {
+  // activities contains the recent activities
+  repeated RecentActivity activities = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
+
+// RecentActivity represents recent blockchain activity
+message RecentActivity {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // activity_type is the type of activity
+  string activity_type = 1;
+
+  // description is the activity description
+  string description = 2;
+
+  // timestamp is when the activity occurred
+  int64 timestamp = 3;
+
+  // transaction_hash is the associated transaction hash
+  string transaction_hash = 4;
+
+  // block_height is the block height
+  int64 block_height = 5;
+
+  // amount is the amount involved (if applicable)
+  string amount = 6;
+
+  // from_address is the source address
+  string from_address = 7;
+
+  // to_address is the destination address
+  string to_address = 8;
+
+  // additional_info contains additional information
+  map<string, string> additional_info = 9;
+}
+
+// QueryTaxStatisticsRequest is the request type for the Query/TaxStatistics RPC method
+message QueryTaxStatisticsRequest {
+  // time_period filters by time period ("24h", "7d", "30d", "all")
+  string time_period = 1;
+}
+
+// QueryTaxStatisticsResponse is the response type for the Query/TaxStatistics RPC method
+message QueryTaxStatisticsResponse {
+  // statistics contains the tax statistics
+  TaxStatistics statistics = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
+
+// TaxStatistics represents tax-related statistics
+message TaxStatistics {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // total_tax_collected is the total tax collected
+  string total_tax_collected = 1;
+
+  // current_tax_rate is the current tax rate
+  string current_tax_rate = 2;
+
+  // tax_transactions_count is the number of tax transactions
+  uint64 tax_transactions_count = 3;
+
+  // average_tax_per_transaction is the average tax per transaction
+  string average_tax_per_transaction = 4;
+
+  // tax_distribution contains tax distribution by category
+  map<string, string> tax_distribution = 5;
+
+  // tax_burn_percentage is the percentage of tax burned
+  string tax_burn_percentage = 6;
+
+  // tax_growth_rate is the tax growth rate
+  string tax_growth_rate = 7;
+
+  // volume_based_reductions is the total volume-based reductions
+  string volume_based_reductions = 8;
+
+  // users_with_tax_cap is the number of users with tax cap
+  uint64 users_with_tax_cap = 9;
+}

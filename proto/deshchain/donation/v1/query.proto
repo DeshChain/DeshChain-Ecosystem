@@ -1,0 +1,810 @@
+syntax = "proto3";
+
+package deshchain.donation.v1;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "deshchain/donation/v1/donation.proto";
+import "amino/amino.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/donation/types";
+
+// Query defines the gRPC querier service for the donation module
+service Query {
+  // Params returns the module parameters
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/deshchain/donation/v1/params";
+  }
+
+  // NGOWallet returns information about a specific NGO wallet
+  rpc NGOWallet(QueryNGOWalletRequest) returns (QueryNGOWalletResponse) {
+    option (google.api.http).get = "/deshchain/donation/v1/ngo_wallet/{ngo_wallet_id}";
+  }
+
+  // NGOWallets returns all NGO wallets
+  rpc NGOWallets(QueryNGOWalletsRequest) returns (QueryNGOWalletsResponse) {
+    option (google.api.http).get = "/deshchain/donation/v1/ngo_wallets";
+  }
+
+  // DonationRecord returns a specific donation record
+  rpc DonationRecord(QueryDonationRecordRequest) returns (QueryDonationRecordResponse) {
+    option (google.api.http).get = "/deshchain/donation/v1/donation_record/{donation_id}";
+  }
+
+  // DonationRecords returns donation records
+  rpc DonationRecords(QueryDonationRecordsRequest) returns (QueryDonationRecordsResponse) {
+    option (google.api.http).get = "/deshchain/donation/v1/donation_records";
+  }
+
+  // DonationsByNGO returns donations for a specific NGO
+  rpc DonationsByNGO(QueryDonationsByNGORequest) returns (QueryDonationsByNGOResponse) {
+    option (google.api.http).get = "/deshchain/donation/v1/donations/ngo/{ngo_wallet_id}";
+  }
+
+  // DonationsByDonor returns donations by a specific donor
+  rpc DonationsByDonor(QueryDonationsByDonorRequest) returns (QueryDonationsByDonorResponse) {
+    option (google.api.http).get = "/deshchain/donation/v1/donations/donor/{donor_address}";
+  }
+
+  // DistributionRecord returns a specific distribution record
+  rpc DistributionRecord(QueryDistributionRecordRequest) returns (QueryDistributionRecordResponse) {
+    option (google.api.http).get = "/deshchain/donation/v1/distribution_record/{distribution_id}";
+  }
+
+  // DistributionRecords returns distribution records
+  rpc DistributionRecords(QueryDistributionRecordsRequest) returns (QueryDistributionRecordsResponse) {
+    option (google.api.http).get = "/deshchain/donation/v1/distribution_records";
+  }
+
+  // DistributionsByNGO returns distributions by a specific NGO
+  rpc DistributionsByNGO(QueryDistributionsByNGORequest) returns (QueryDistributionsByNGOResponse) {
+    option (google.api.http).get = "/deshchain/donation/v1/distributions/ngo/{ngo_wallet_id}";
+  }
+
+  // AuditReport returns a specific audit report
+  rpc AuditReport(QueryAuditReportRequest) returns (QueryAuditReportResponse) {
+    option (google.api.http).get = "/deshchain/donation/v1/audit_report/{audit_report_id}";
+  }
+
+  // AuditReports returns audit reports
+  rpc AuditReports(QueryAuditReportsRequest) returns (QueryAuditReportsResponse) {
+    option (google.api.http).get = "/deshchain/donation/v1/audit_reports";
+  }
+
+  // AuditReportsByNGO returns audit reports for a specific NGO
+  rpc AuditReportsByNGO(QueryAuditReportsByNGORequest) returns (QueryAuditReportsByNGOResponse) {
+    option (google.api.http).get = "/deshchain/donation/v1/audit_reports/ngo/{ngo_wallet_id}";
+  }
+
+  // BeneficiaryTestimonials returns beneficiary testimonials
+  rpc BeneficiaryTestimonials(QueryBeneficiaryTestimonialsRequest) returns (QueryBeneficiaryTestimonialsResponse) {
+    option (google.api.http).get = "/deshchain/donation/v1/beneficiary_testimonials";
+  }
+
+  // BeneficiaryTestimonialsByNGO returns testimonials for a specific NGO
+  rpc BeneficiaryTestimonialsByNGO(QueryBeneficiaryTestimonialsByNGORequest) returns (QueryBeneficiaryTestimonialsByNGOResponse) {
+    option (google.api.http).get = "/deshchain/donation/v1/beneficiary_testimonials/ngo/{ngo_wallet_id}";
+  }
+
+  // TransparencyDashboard returns transparency dashboard data
+  rpc TransparencyDashboard(QueryTransparencyDashboardRequest) returns (QueryTransparencyDashboardResponse) {
+    option (google.api.http).get = "/deshchain/donation/v1/transparency_dashboard";
+  }
+
+  // NGOTransparencyDashboard returns transparency data for a specific NGO
+  rpc NGOTransparencyDashboard(QueryNGOTransparencyDashboardRequest) returns (QueryNGOTransparencyDashboardResponse) {
+    option (google.api.http).get = "/deshchain/donation/v1/transparency_dashboard/ngo/{ngo_wallet_id}";
+  }
+
+  // ImpactMetrics returns impact metrics for an NGO
+  rpc ImpactMetrics(QueryImpactMetricsRequest) returns (QueryImpactMetricsResponse) {
+    option (google.api.http).get = "/deshchain/donation/v1/impact_metrics/{ngo_wallet_id}";
+  }
+
+  // DonationStatistics returns donation statistics
+  rpc DonationStatistics(QueryDonationStatisticsRequest) returns (QueryDonationStatisticsResponse) {
+    option (google.api.http).get = "/deshchain/donation/v1/donation_statistics";
+  }
+
+  // FundFlow returns fund flow information
+  rpc FundFlow(QueryFundFlowRequest) returns (QueryFundFlowResponse) {
+    option (google.api.http).get = "/deshchain/donation/v1/fund_flow";
+  }
+}
+
+// QueryParamsRequest is the request type for the Query/Params RPC method
+message QueryParamsRequest {}
+
+// QueryParamsResponse is the response type for the Query/Params RPC method
+message QueryParamsResponse {
+  // params holds all the parameters of this module
+  Params params = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
+
+// QueryNGOWalletRequest is the request type for the Query/NGOWallet RPC method
+message QueryNGOWalletRequest {
+  // ngo_wallet_id is the ID of the NGO wallet to query
+  uint64 ngo_wallet_id = 1;
+}
+
+// QueryNGOWalletResponse is the response type for the Query/NGOWallet RPC method
+message QueryNGOWalletResponse {
+  // ngo_wallet contains the NGO wallet information
+  NGOWallet ngo_wallet = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
+
+// QueryNGOWalletsRequest is the request type for the Query/NGOWallets RPC method
+message QueryNGOWalletsRequest {
+  // pagination defines an optional pagination for the request
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+
+  // category filters NGOs by category
+  string category = 2;
+
+  // is_verified filters by verification status
+  bool is_verified = 3;
+
+  // is_active filters by active status
+  bool is_active = 4;
+
+  // region filters by region served
+  string region = 5;
+
+  // min_transparency_score filters by minimum transparency score
+  int32 min_transparency_score = 6;
+}
+
+// QueryNGOWalletsResponse is the response type for the Query/NGOWallets RPC method
+message QueryNGOWalletsResponse {
+  // ngo_wallets contains all NGO wallets
+  repeated NGOWallet ngo_wallets = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // pagination defines the pagination in the response
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryDonationRecordRequest is the request type for the Query/DonationRecord RPC method
+message QueryDonationRecordRequest {
+  // donation_id is the ID of the donation record to query
+  uint64 donation_id = 1;
+}
+
+// QueryDonationRecordResponse is the response type for the Query/DonationRecord RPC method
+message QueryDonationRecordResponse {
+  // donation_record contains the donation record information
+  DonationRecord donation_record = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
+
+// QueryDonationRecordsRequest is the request type for the Query/DonationRecords RPC method
+message QueryDonationRecordsRequest {
+  // pagination defines an optional pagination for the request
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+
+  // start_time filters donations from this time
+  int64 start_time = 2;
+
+  // end_time filters donations until this time
+  int64 end_time = 3;
+
+  // min_amount filters by minimum amount
+  string min_amount = 4;
+
+  // max_amount filters by maximum amount
+  string max_amount = 5;
+
+  // purpose filters by purpose
+  string purpose = 6;
+}
+
+// QueryDonationRecordsResponse is the response type for the Query/DonationRecords RPC method
+message QueryDonationRecordsResponse {
+  // donation_records contains all donation records
+  repeated DonationRecord donation_records = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // pagination defines the pagination in the response
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryDonationsByNGORequest is the request type for the Query/DonationsByNGO RPC method
+message QueryDonationsByNGORequest {
+  // ngo_wallet_id is the ID of the NGO wallet
+  uint64 ngo_wallet_id = 1;
+
+  // pagination defines an optional pagination for the request
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+
+  // start_time filters donations from this time
+  int64 start_time = 3;
+
+  // end_time filters donations until this time
+  int64 end_time = 4;
+}
+
+// QueryDonationsByNGOResponse is the response type for the Query/DonationsByNGO RPC method
+message QueryDonationsByNGOResponse {
+  // donation_records contains donation records for the NGO
+  repeated DonationRecord donation_records = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // pagination defines the pagination in the response
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+
+  // total_amount is the total amount donated to this NGO
+  string total_amount = 3;
+
+  // donation_count is the number of donations
+  uint64 donation_count = 4;
+}
+
+// QueryDonationsByDonorRequest is the request type for the Query/DonationsByDonor RPC method
+message QueryDonationsByDonorRequest {
+  // donor_address is the address of the donor
+  string donor_address = 1;
+
+  // pagination defines an optional pagination for the request
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+
+  // start_time filters donations from this time
+  int64 start_time = 3;
+
+  // end_time filters donations until this time
+  int64 end_time = 4;
+}
+
+// QueryDonationsByDonorResponse is the response type for the Query/DonationsByDonor RPC method
+message QueryDonationsByDonorResponse {
+  // donation_records contains donation records by the donor
+  repeated DonationRecord donation_records = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // pagination defines the pagination in the response
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+
+  // total_donated is the total amount donated by this donor
+  string total_donated = 3;
+
+  // donation_count is the number of donations
+  uint64 donation_count = 4;
+}
+
+// QueryDistributionRecordRequest is the request type for the Query/DistributionRecord RPC method
+message QueryDistributionRecordRequest {
+  // distribution_id is the ID of the distribution record to query
+  uint64 distribution_id = 1;
+}
+
+// QueryDistributionRecordResponse is the response type for the Query/DistributionRecord RPC method
+message QueryDistributionRecordResponse {
+  // distribution_record contains the distribution record information
+  DistributionRecord distribution_record = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
+
+// QueryDistributionRecordsRequest is the request type for the Query/DistributionRecords RPC method
+message QueryDistributionRecordsRequest {
+  // pagination defines an optional pagination for the request
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+
+  // start_time filters distributions from this time
+  int64 start_time = 2;
+
+  // end_time filters distributions until this time
+  int64 end_time = 3;
+
+  // category filters by distribution category
+  string category = 4;
+
+  // region filters by region
+  string region = 5;
+}
+
+// QueryDistributionRecordsResponse is the response type for the Query/DistributionRecords RPC method
+message QueryDistributionRecordsResponse {
+  // distribution_records contains all distribution records
+  repeated DistributionRecord distribution_records = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // pagination defines the pagination in the response
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryDistributionsByNGORequest is the request type for the Query/DistributionsByNGO RPC method
+message QueryDistributionsByNGORequest {
+  // ngo_wallet_id is the ID of the NGO wallet
+  uint64 ngo_wallet_id = 1;
+
+  // pagination defines an optional pagination for the request
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+
+  // start_time filters distributions from this time
+  int64 start_time = 3;
+
+  // end_time filters distributions until this time
+  int64 end_time = 4;
+}
+
+// QueryDistributionsByNGOResponse is the response type for the Query/DistributionsByNGO RPC method
+message QueryDistributionsByNGOResponse {
+  // distribution_records contains distribution records by the NGO
+  repeated DistributionRecord distribution_records = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // pagination defines the pagination in the response
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+
+  // total_distributed is the total amount distributed by this NGO
+  string total_distributed = 3;
+
+  // distribution_count is the number of distributions
+  uint64 distribution_count = 4;
+}
+
+// QueryAuditReportRequest is the request type for the Query/AuditReport RPC method
+message QueryAuditReportRequest {
+  // audit_report_id is the ID of the audit report to query
+  uint64 audit_report_id = 1;
+}
+
+// QueryAuditReportResponse is the response type for the Query/AuditReport RPC method
+message QueryAuditReportResponse {
+  // audit_report contains the audit report information
+  AuditReport audit_report = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
+
+// QueryAuditReportsRequest is the request type for the Query/AuditReports RPC method
+message QueryAuditReportsRequest {
+  // pagination defines an optional pagination for the request
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+
+  // audit_type filters by audit type
+  string audit_type = 2;
+
+  // min_rating filters by minimum rating
+  int32 min_rating = 3;
+
+  // is_public filters by public status
+  bool is_public = 4;
+}
+
+// QueryAuditReportsResponse is the response type for the Query/AuditReports RPC method
+message QueryAuditReportsResponse {
+  // audit_reports contains all audit reports
+  repeated AuditReport audit_reports = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // pagination defines the pagination in the response
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryAuditReportsByNGORequest is the request type for the Query/AuditReportsByNGO RPC method
+message QueryAuditReportsByNGORequest {
+  // ngo_wallet_id is the ID of the NGO wallet
+  uint64 ngo_wallet_id = 1;
+
+  // pagination defines an optional pagination for the request
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+// QueryAuditReportsByNGOResponse is the response type for the Query/AuditReportsByNGO RPC method
+message QueryAuditReportsByNGOResponse {
+  // audit_reports contains audit reports for the NGO
+  repeated AuditReport audit_reports = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // pagination defines the pagination in the response
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryBeneficiaryTestimonialsRequest is the request type for the Query/BeneficiaryTestimonials RPC method
+message QueryBeneficiaryTestimonialsRequest {
+  // pagination defines an optional pagination for the request
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+
+  // is_public filters by public status
+  bool is_public = 2;
+
+  // min_rating filters by minimum rating
+  int32 min_rating = 3;
+
+  // location filters by location
+  string location = 4;
+
+  // language filters by language
+  string language = 5;
+}
+
+// QueryBeneficiaryTestimonialsResponse is the response type for the Query/BeneficiaryTestimonials RPC method
+message QueryBeneficiaryTestimonialsResponse {
+  // beneficiary_testimonials contains all beneficiary testimonials
+  repeated BeneficiaryTestimonial beneficiary_testimonials = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // pagination defines the pagination in the response
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryBeneficiaryTestimonialsByNGORequest is the request type for the Query/BeneficiaryTestimonialsByNGO RPC method
+message QueryBeneficiaryTestimonialsByNGORequest {
+  // ngo_wallet_id is the ID of the NGO wallet
+  uint64 ngo_wallet_id = 1;
+
+  // pagination defines an optional pagination for the request
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+// QueryBeneficiaryTestimonialsByNGOResponse is the response type for the Query/BeneficiaryTestimonialsByNGO RPC method
+message QueryBeneficiaryTestimonialsByNGOResponse {
+  // beneficiary_testimonials contains testimonials for the NGO
+  repeated BeneficiaryTestimonial beneficiary_testimonials = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // pagination defines the pagination in the response
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryTransparencyDashboardRequest is the request type for the Query/TransparencyDashboard RPC method
+message QueryTransparencyDashboardRequest {
+  // time_range filters by time range (e.g., "24h", "7d", "30d", "1y")
+  string time_range = 1;
+
+  // category filters by NGO category
+  string category = 2;
+
+  // region filters by region
+  string region = 3;
+}
+
+// QueryTransparencyDashboardResponse is the response type for the Query/TransparencyDashboard RPC method
+message QueryTransparencyDashboardResponse {
+  // total_donations is the total amount donated
+  string total_donations = 1;
+
+  // total_distributions is the total amount distributed
+  string total_distributions = 2;
+
+  // total_ngos is the number of NGOs
+  uint64 total_ngos = 3;
+
+  // verified_ngos is the number of verified NGOs
+  uint64 verified_ngos = 4;
+
+  // active_ngos is the number of active NGOs
+  uint64 active_ngos = 5;
+
+  // total_beneficiaries is the total number of beneficiaries
+  uint64 total_beneficiaries = 6;
+
+  // donation_count is the total number of donations
+  uint64 donation_count = 7;
+
+  // distribution_count is the total number of distributions
+  uint64 distribution_count = 8;
+
+  // average_transparency_score is the average transparency score
+  string average_transparency_score = 9;
+
+  // funds_utilization_rate is the rate of fund utilization
+  string funds_utilization_rate = 10;
+
+  // category_breakdown breaks down donations by category
+  map<string, string> category_breakdown = 11;
+
+  // region_breakdown breaks down donations by region
+  map<string, string> region_breakdown = 12;
+
+  // monthly_trend shows monthly donation trends
+  repeated MonthlyTrend monthly_trend = 13;
+
+  // top_ngos shows top NGOs by various metrics
+  repeated TopNGO top_ngos = 14;
+}
+
+// MonthlyTrend represents monthly trend data
+message MonthlyTrend {
+  // month is the month (YYYY-MM format)
+  string month = 1;
+
+  // donations is the total donations for the month
+  string donations = 2;
+
+  // distributions is the total distributions for the month
+  string distributions = 3;
+
+  // donation_count is the number of donations
+  uint64 donation_count = 4;
+
+  // distribution_count is the number of distributions
+  uint64 distribution_count = 5;
+}
+
+// TopNGO represents top NGO data
+message TopNGO {
+  // ngo_wallet_id is the ID of the NGO wallet
+  uint64 ngo_wallet_id = 1;
+
+  // name is the name of the NGO
+  string name = 2;
+
+  // metric_name is the name of the metric (e.g., "total_donations")
+  string metric_name = 3;
+
+  // metric_value is the value of the metric
+  string metric_value = 4;
+
+  // transparency_score is the transparency score
+  int32 transparency_score = 5;
+}
+
+// QueryNGOTransparencyDashboardRequest is the request type for the Query/NGOTransparencyDashboard RPC method
+message QueryNGOTransparencyDashboardRequest {
+  // ngo_wallet_id is the ID of the NGO wallet
+  uint64 ngo_wallet_id = 1;
+
+  // time_range filters by time range
+  string time_range = 2;
+}
+
+// QueryNGOTransparencyDashboardResponse is the response type for the Query/NGOTransparencyDashboard RPC method
+message QueryNGOTransparencyDashboardResponse {
+  // ngo_wallet contains the NGO wallet information
+  NGOWallet ngo_wallet = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // total_donations_received is the total donations received
+  string total_donations_received = 2;
+
+  // total_funds_distributed is the total funds distributed
+  string total_funds_distributed = 3;
+
+  // current_balance is the current balance
+  string current_balance = 4;
+
+  // donation_count is the number of donations received
+  uint64 donation_count = 5;
+
+  // distribution_count is the number of distributions made
+  uint64 distribution_count = 6;
+
+  // beneficiary_count is the number of beneficiaries served
+  uint64 beneficiary_count = 7;
+
+  // utilization_rate is the fund utilization rate
+  string utilization_rate = 8;
+
+  // average_donation_size is the average donation size
+  string average_donation_size = 9;
+
+  // average_distribution_size is the average distribution size
+  string average_distribution_size = 10;
+
+  // recent_donations contains recent donations
+  repeated DonationRecord recent_donations = 11;
+
+  // recent_distributions contains recent distributions
+  repeated DistributionRecord recent_distributions = 12;
+
+  // impact_metrics contains impact metrics
+  repeated ImpactMetric impact_metrics = 13;
+
+  // latest_audit_report contains the latest audit report
+  AuditReport latest_audit_report = 14;
+}
+
+// QueryImpactMetricsRequest is the request type for the Query/ImpactMetrics RPC method
+message QueryImpactMetricsRequest {
+  // ngo_wallet_id is the ID of the NGO wallet
+  uint64 ngo_wallet_id = 1;
+
+  // metric_name filters by metric name
+  string metric_name = 2;
+
+  // time_range filters by time range
+  string time_range = 3;
+}
+
+// QueryImpactMetricsResponse is the response type for the Query/ImpactMetrics RPC method
+message QueryImpactMetricsResponse {
+  // impact_metrics contains the impact metrics
+  repeated ImpactMetric impact_metrics = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // beneficiary_count is the current beneficiary count
+  uint64 beneficiary_count = 2;
+
+  // regions_served are the regions served
+  repeated string regions_served = 3;
+
+  // priority_areas are the priority areas
+  repeated string priority_areas = 4;
+}
+
+// QueryDonationStatisticsRequest is the request type for the Query/DonationStatistics RPC method
+message QueryDonationStatisticsRequest {
+  // time_range filters by time range
+  string time_range = 1;
+
+  // group_by groups statistics by field (e.g., "day", "month", "category")
+  string group_by = 2;
+}
+
+// QueryDonationStatisticsResponse is the response type for the Query/DonationStatistics RPC method
+message QueryDonationStatisticsResponse {
+  // total_donations is the total donation amount
+  string total_donations = 1;
+
+  // total_distributions is the total distribution amount
+  string total_distributions = 2;
+
+  // donation_count is the total number of donations
+  uint64 donation_count = 3;
+
+  // distribution_count is the total number of distributions
+  uint64 distribution_count = 4;
+
+  // average_donation_size is the average donation size
+  string average_donation_size = 5;
+
+  // average_distribution_size is the average distribution size
+  string average_distribution_size = 6;
+
+  // largest_donation is the largest single donation
+  string largest_donation = 7;
+
+  // largest_distribution is the largest single distribution
+  string largest_distribution = 8;
+
+  // statistics contains grouped statistics
+  repeated StatisticEntry statistics = 9;
+}
+
+// StatisticEntry represents a statistic entry
+message StatisticEntry {
+  // key is the grouping key
+  string key = 1;
+
+  // donation_amount is the donation amount for this group
+  string donation_amount = 2;
+
+  // distribution_amount is the distribution amount for this group
+  string distribution_amount = 3;
+
+  // donation_count is the donation count for this group
+  uint64 donation_count = 4;
+
+  // distribution_count is the distribution count for this group
+  uint64 distribution_count = 5;
+}
+
+// QueryFundFlowRequest is the request type for the Query/FundFlow RPC method
+message QueryFundFlowRequest {
+  // ngo_wallet_id is the ID of the NGO wallet (optional)
+  uint64 ngo_wallet_id = 1;
+
+  // start_time filters from this time
+  int64 start_time = 2;
+
+  // end_time filters until this time
+  int64 end_time = 3;
+
+  // trace_amount traces a specific amount
+  string trace_amount = 4;
+
+  // trace_donor traces donations from a specific donor
+  string trace_donor = 5;
+
+  // trace_recipient traces distributions to a specific recipient
+  string trace_recipient = 6;
+}
+
+// QueryFundFlowResponse is the response type for the Query/FundFlow RPC method
+message QueryFundFlowResponse {
+  // fund_flow_entries contains the fund flow entries
+  repeated FundFlowEntry fund_flow_entries = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // summary contains fund flow summary
+  FundFlowSummary summary = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
+
+// FundFlowEntry represents a fund flow entry
+message FundFlowEntry {
+  // timestamp is when the flow occurred
+  int64 timestamp = 1;
+
+  // flow_type is the type of flow (donation, distribution)
+  string flow_type = 2;
+
+  // amount is the amount of the flow
+  string amount = 3;
+
+  // from_address is the source address
+  string from_address = 4;
+
+  // to_address is the destination address
+  string to_address = 5;
+
+  // purpose is the purpose of the flow
+  string purpose = 6;
+
+  // transaction_hash is the transaction hash
+  string transaction_hash = 7;
+
+  // block_height is the block height
+  int64 block_height = 8;
+
+  // related_id is the related donation or distribution ID
+  uint64 related_id = 9;
+
+  // ngo_wallet_id is the related NGO wallet ID
+  uint64 ngo_wallet_id = 10;
+}
+
+// FundFlowSummary represents a fund flow summary
+message FundFlowSummary {
+  // total_inflow is the total amount flowing in
+  string total_inflow = 1;
+
+  // total_outflow is the total amount flowing out
+  string total_outflow = 2;
+
+  // net_flow is the net flow (inflow - outflow)
+  string net_flow = 3;
+
+  // inflow_count is the number of inflow transactions
+  uint64 inflow_count = 4;
+
+  // outflow_count is the number of outflow transactions
+  uint64 outflow_count = 5;
+
+  // average_inflow_size is the average inflow size
+  string average_inflow_size = 6;
+
+  // average_outflow_size is the average outflow size
+  string average_outflow_size = 7;
+}

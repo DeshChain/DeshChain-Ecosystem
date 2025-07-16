@@ -1,0 +1,554 @@
+syntax = "proto3";
+
+package deshchain.donation.v1;
+
+import "gogoproto/gogo.proto";
+import "cosmos/msg/v1/msg.proto";
+import "cosmos_proto/cosmos.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "deshchain/donation/v1/donation.proto";
+import "amino/amino.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/donation/types";
+
+// Msg defines the donation module Msg service
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+
+  // RegisterNGO registers a new NGO wallet
+  rpc RegisterNGO(MsgRegisterNGO) returns (MsgRegisterNGOResponse);
+
+  // VerifyNGO verifies an NGO wallet
+  rpc VerifyNGO(MsgVerifyNGO) returns (MsgVerifyNGOResponse);
+
+  // UpdateNGO updates NGO information
+  rpc UpdateNGO(MsgUpdateNGO) returns (MsgUpdateNGOResponse);
+
+  // Donate makes a donation to an NGO
+  rpc Donate(MsgDonate) returns (MsgDonateResponse);
+
+  // DistributeFunds distributes funds from an NGO wallet
+  rpc DistributeFunds(MsgDistributeFunds) returns (MsgDistributeFundsResponse);
+
+  // SubmitAuditReport submits an audit report
+  rpc SubmitAuditReport(MsgSubmitAuditReport) returns (MsgSubmitAuditReportResponse);
+
+  // AddBeneficiaryTestimonial adds a beneficiary testimonial
+  rpc AddBeneficiaryTestimonial(MsgAddBeneficiaryTestimonial) returns (MsgAddBeneficiaryTestimonialResponse);
+
+  // UpdateImpactMetrics updates impact metrics for an NGO
+  rpc UpdateImpactMetrics(MsgUpdateImpactMetrics) returns (MsgUpdateImpactMetricsResponse);
+
+  // CreateCampaign creates a fundraising campaign
+  rpc CreateCampaign(MsgCreateCampaign) returns (MsgCreateCampaignResponse);
+
+  // EmergencyPause pauses the donation system
+  rpc EmergencyPause(MsgEmergencyPause) returns (MsgEmergencyPauseResponse);
+
+  // UpdateParams updates the module parameters
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+}
+
+// MsgRegisterNGO defines a message to register a new NGO
+message MsgRegisterNGO {
+  option (cosmos.msg.v1.signer) = "registrar";
+  option (amino.name) = "deshchain/MsgRegisterNGO";
+
+  // registrar is the address registering the NGO
+  string registrar = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // name is the name of the NGO
+  string name = 2;
+
+  // category is the category of NGO work
+  string category = 3;
+
+  // description is the description of the NGO
+  string description = 4;
+
+  // registration_number is the official registration number
+  string registration_number = 5;
+
+  // website is the NGO website
+  string website = 6;
+
+  // contact_email is the contact email
+  string contact_email = 7;
+
+  // signers are the multi-sig wallet signers
+  repeated string signers = 8;
+
+  // required_signatures is the number of required signatures
+  uint32 required_signatures = 9;
+
+  // verification_documents are IPFS hashes of verification documents
+  repeated string verification_documents = 10;
+
+  // tax_exempt_number is the tax exemption number
+  string tax_exempt_number = 11;
+
+  // eighty_g_number is the 80G certificate number
+  string eighty_g_number = 12;
+
+  // fcra_number is the FCRA number (if applicable)
+  string fcra_number = 13;
+
+  // regions_served are the regions this NGO serves
+  repeated string regions_served = 14;
+
+  // priority_areas are the focus areas
+  repeated string priority_areas = 15;
+}
+
+// MsgRegisterNGOResponse defines the response to MsgRegisterNGO
+message MsgRegisterNGOResponse {
+  // ngo_wallet_id is the ID of the registered NGO wallet
+  uint64 ngo_wallet_id = 1;
+
+  // wallet_address is the generated multi-sig wallet address
+  string wallet_address = 2;
+}
+
+// MsgVerifyNGO defines a message to verify an NGO
+message MsgVerifyNGO {
+  option (cosmos.msg.v1.signer) = "verifier";
+  option (amino.name) = "deshchain/MsgVerifyNGO";
+
+  // verifier is the address of the verifier
+  string verifier = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // ngo_wallet_id is the ID of the NGO to verify
+  uint64 ngo_wallet_id = 2;
+
+  // verification_notes are notes from the verifier
+  string verification_notes = 3;
+
+  // transparency_score is the assigned transparency score
+  int32 transparency_score = 4;
+
+  // verification_documents are additional verification documents
+  repeated string verification_documents = 5;
+}
+
+// MsgVerifyNGOResponse defines the response to MsgVerifyNGO
+message MsgVerifyNGOResponse {
+  // verification_successful indicates if verification was successful
+  bool verification_successful = 1;
+}
+
+// MsgUpdateNGO defines a message to update NGO information
+message MsgUpdateNGO {
+  option (cosmos.msg.v1.signer) = "updater";
+  option (amino.name) = "deshchain/MsgUpdateNGO";
+
+  // updater is the address updating the NGO (must be a signer)
+  string updater = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // ngo_wallet_id is the ID of the NGO to update
+  uint64 ngo_wallet_id = 2;
+
+  // name is the updated name (optional)
+  string name = 3;
+
+  // description is the updated description (optional)
+  string description = 4;
+
+  // website is the updated website (optional)
+  string website = 5;
+
+  // contact_email is the updated contact email (optional)
+  string contact_email = 6;
+
+  // additional_documents are additional documents (optional)
+  repeated string additional_documents = 7;
+
+  // regions_served are the updated regions served (optional)
+  repeated string regions_served = 8;
+
+  // priority_areas are the updated priority areas (optional)
+  repeated string priority_areas = 9;
+}
+
+// MsgUpdateNGOResponse defines the response to MsgUpdateNGO
+message MsgUpdateNGOResponse {
+  // update_successful indicates if update was successful
+  bool update_successful = 1;
+}
+
+// MsgDonate defines a message to make a donation
+message MsgDonate {
+  option (cosmos.msg.v1.signer) = "donor";
+  option (amino.name) = "deshchain/MsgDonate";
+
+  // donor is the address making the donation
+  string donor = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // ngo_wallet_id is the ID of the NGO receiving the donation
+  uint64 ngo_wallet_id = 2;
+
+  // amount is the donation amount
+  cosmos.base.v1beta1.Coin amount = 3 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // purpose is the purpose of the donation
+  string purpose = 4;
+
+  // is_anonymous indicates if the donation should be anonymous
+  bool is_anonymous = 5;
+
+  // donor_message is an optional message from the donor
+  string donor_message = 6;
+
+  // campaign_id is the campaign ID if donating to a campaign
+  uint64 campaign_id = 7;
+
+  // recurring_donation_id is for recurring donations
+  uint64 recurring_donation_id = 8;
+
+  // request_receipt indicates if a receipt is requested
+  bool request_receipt = 9;
+
+  // preferred_cultural_category is the preferred cultural quote category
+  string preferred_cultural_category = 10;
+}
+
+// MsgDonateResponse defines the response to MsgDonate
+message MsgDonateResponse {
+  // donation_id is the ID of the donation record
+  uint64 donation_id = 1;
+
+  // receipt_ipfs_hash is the IPFS hash of the receipt (if requested)
+  string receipt_ipfs_hash = 2;
+
+  // cultural_quote_id is the ID of the cultural quote shown
+  uint64 cultural_quote_id = 3;
+
+  // cultural_quote_text is the text of the cultural quote
+  string cultural_quote_text = 4;
+
+  // tax_benefit_amount is the tax benefit amount
+  cosmos.base.v1beta1.Coin tax_benefit_amount = 5 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // nft_receipt_id is the NFT receipt ID (if NFT receipts are enabled)
+  uint64 nft_receipt_id = 6;
+}
+
+// MsgDistributeFunds defines a message to distribute funds
+message MsgDistributeFunds {
+  option (cosmos.msg.v1.signer) = "distributor";
+  option (amino.name) = "deshchain/MsgDistributeFunds";
+
+  // distributor is the address distributing the funds (must be a signer)
+  string distributor = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // ngo_wallet_id is the ID of the NGO distributing funds
+  uint64 ngo_wallet_id = 2;
+
+  // recipient_address is the address receiving the distribution
+  string recipient_address = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // amount is the distribution amount
+  cosmos.base.v1beta1.Coin amount = 4 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // purpose is the purpose of the distribution
+  string purpose = 5;
+
+  // category is the category of distribution
+  string category = 6;
+
+  // beneficiary_name is the name of the beneficiary
+  string beneficiary_name = 7;
+
+  // beneficiary_details are additional beneficiary details
+  string beneficiary_details = 8;
+
+  // project_name is the name of the associated project
+  string project_name = 9;
+
+  // project_description is the description of the project
+  string project_description = 10;
+
+  // documentation_ipfs_hash is the IPFS hash of documentation
+  string documentation_ipfs_hash = 11;
+
+  // photos_ipfs_hash is the IPFS hash of photos
+  string photos_ipfs_hash = 12;
+
+  // video_ipfs_hash is the IPFS hash of video proof
+  string video_ipfs_hash = 13;
+
+  // gps_coordinates are the GPS coordinates of distribution
+  string gps_coordinates = 14;
+
+  // region is the region of distribution
+  string region = 15;
+
+  // public_visibility indicates if this distribution should be public
+  bool public_visibility = 16;
+
+  // expected_impact describes the expected impact
+  string expected_impact = 17;
+}
+
+// MsgDistributeFundsResponse defines the response to MsgDistributeFunds
+message MsgDistributeFundsResponse {
+  // distribution_id is the ID of the distribution record
+  uint64 distribution_id = 1;
+
+  // approval_required indicates if additional approvals are needed
+  bool approval_required = 2;
+
+  // approvals_needed is the number of additional approvals needed
+  uint32 approvals_needed = 3;
+}
+
+// MsgSubmitAuditReport defines a message to submit an audit report
+message MsgSubmitAuditReport {
+  option (cosmos.msg.v1.signer) = "auditor";
+  option (amino.name) = "deshchain/MsgSubmitAuditReport";
+
+  // auditor is the address of the auditor
+  string auditor = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // ngo_wallet_id is the ID of the NGO being audited
+  uint64 ngo_wallet_id = 2;
+
+  // audit_period_start is the start of the audit period
+  int64 audit_period_start = 3;
+
+  // audit_period_end is the end of the audit period
+  int64 audit_period_end = 4;
+
+  // auditor_name is the name of the auditor
+  string auditor_name = 5;
+
+  // audit_type is the type of audit
+  string audit_type = 6;
+
+  // overall_rating is the overall rating
+  int32 overall_rating = 7;
+
+  // compliance_score is the compliance score
+  int32 compliance_score = 8;
+
+  // transparency_score is the transparency score
+  int32 transparency_score = 9;
+
+  // audit_report_ipfs_hash is the IPFS hash of the full report
+  string audit_report_ipfs_hash = 10;
+
+  // summary is the audit summary
+  string summary = 11;
+
+  // recommendations are the audit recommendations
+  repeated string recommendations = 12;
+
+  // issues_identified are the identified issues
+  repeated string issues_identified = 13;
+
+  // is_public indicates if the audit should be public
+  bool is_public = 14;
+}
+
+// MsgSubmitAuditReportResponse defines the response to MsgSubmitAuditReport
+message MsgSubmitAuditReportResponse {
+  // audit_report_id is the ID of the audit report
+  uint64 audit_report_id = 1;
+
+  // certification_valid_until is when the certification expires
+  int64 certification_valid_until = 2;
+}
+
+// MsgAddBeneficiaryTestimonial defines a message to add a beneficiary testimonial
+message MsgAddBeneficiaryTestimonial {
+  option (cosmos.msg.v1.signer) = "submitter";
+  option (amino.name) = "deshchain/MsgAddBeneficiaryTestimonial";
+
+  // submitter is the address submitting the testimonial
+  string submitter = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // ngo_wallet_id is the ID of the NGO
+  uint64 ngo_wallet_id = 2;
+
+  // distribution_id is the ID of the related distribution
+  uint64 distribution_id = 3;
+
+  // beneficiary_name is the name of the beneficiary
+  string beneficiary_name = 4;
+
+  // testimonial_text is the testimonial content
+  string testimonial_text = 5;
+
+  // rating is the beneficiary's rating
+  int32 rating = 6;
+
+  // photo_ipfs_hash is the IPFS hash of the photo
+  string photo_ipfs_hash = 7;
+
+  // video_ipfs_hash is the IPFS hash of the video
+  string video_ipfs_hash = 8;
+
+  // location is the location of the beneficiary
+  string location = 9;
+
+  // impact_description describes the impact
+  string impact_description = 10;
+
+  // is_public indicates if the testimonial should be public
+  bool is_public = 11;
+
+  // language is the language of the testimonial
+  string language = 12;
+}
+
+// MsgAddBeneficiaryTestimonialResponse defines the response to MsgAddBeneficiaryTestimonial
+message MsgAddBeneficiaryTestimonialResponse {
+  // testimonial_id is the ID of the testimonial
+  uint64 testimonial_id = 1;
+
+  // verification_required indicates if verification is required
+  bool verification_required = 2;
+}
+
+// MsgUpdateImpactMetrics defines a message to update impact metrics
+message MsgUpdateImpactMetrics {
+  option (cosmos.msg.v1.signer) = "updater";
+  option (amino.name) = "deshchain/MsgUpdateImpactMetrics";
+
+  // updater is the address updating the metrics (must be NGO signer)
+  string updater = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // ngo_wallet_id is the ID of the NGO
+  uint64 ngo_wallet_id = 2;
+
+  // impact_metrics are the updated impact metrics
+  repeated ImpactMetric impact_metrics = 3;
+
+  // beneficiary_count is the updated beneficiary count
+  uint64 beneficiary_count = 4;
+
+  // measurement_period is the measurement period
+  string measurement_period = 5;
+
+  // supporting_documentation is the IPFS hash of supporting documents
+  string supporting_documentation = 6;
+}
+
+// MsgUpdateImpactMetricsResponse defines the response to MsgUpdateImpactMetrics
+message MsgUpdateImpactMetricsResponse {
+  // update_successful indicates if the update was successful
+  bool update_successful = 1;
+
+  // verification_required indicates if verification is required
+  bool verification_required = 2;
+}
+
+// MsgCreateCampaign defines a message to create a fundraising campaign
+message MsgCreateCampaign {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "deshchain/MsgCreateCampaign";
+
+  // creator is the address creating the campaign
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // ngo_wallet_id is the ID of the NGO running the campaign
+  uint64 ngo_wallet_id = 2;
+
+  // campaign_name is the name of the campaign
+  string campaign_name = 3;
+
+  // campaign_description is the description of the campaign
+  string campaign_description = 4;
+
+  // target_amount is the fundraising target
+  cosmos.base.v1beta1.Coin target_amount = 5 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // start_date is when the campaign starts
+  int64 start_date = 6;
+
+  // end_date is when the campaign ends
+  int64 end_date = 7;
+
+  // campaign_image_ipfs_hash is the IPFS hash of the campaign image
+  string campaign_image_ipfs_hash = 8;
+
+  // campaign_video_ipfs_hash is the IPFS hash of the campaign video
+  string campaign_video_ipfs_hash = 9;
+
+  // beneficiary_story is the story of the beneficiaries
+  string beneficiary_story = 10;
+
+  // expected_impact describes the expected impact
+  string expected_impact = 11;
+
+  // matching_funds_available indicates if matching funds are available
+  bool matching_funds_available = 12;
+
+  // matching_ratio is the matching ratio (if applicable)
+  string matching_ratio = 13;
+}
+
+// MsgCreateCampaignResponse defines the response to MsgCreateCampaign
+message MsgCreateCampaignResponse {
+  // campaign_id is the ID of the created campaign
+  uint64 campaign_id = 1;
+
+  // campaign_address is the address for the campaign
+  string campaign_address = 2;
+}
+
+// MsgEmergencyPause defines a message to pause the donation system
+message MsgEmergencyPause {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "deshchain/MsgEmergencyPause";
+
+  // authority is the address with emergency pause authority
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // reason is the reason for the emergency pause
+  string reason = 2;
+
+  // affected_ngos are the NGOs affected by the pause (empty for all)
+  repeated uint64 affected_ngos = 3;
+
+  // pause_duration is the duration of the pause in seconds
+  int64 pause_duration = 4;
+}
+
+// MsgEmergencyPauseResponse defines the response to MsgEmergencyPause
+message MsgEmergencyPauseResponse {
+  // pause_successful indicates if the pause was successful
+  bool pause_successful = 1;
+
+  // pause_end_time is when the pause will end
+  int64 pause_end_time = 2;
+}
+
+// MsgUpdateParams defines a message to update module parameters
+message MsgUpdateParams {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "deshchain/MsgUpdateParams";
+
+  // authority is the address with authority to update parameters
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // params are the new parameters
+  Params params = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
+
+// MsgUpdateParamsResponse defines the response to MsgUpdateParams
+message MsgUpdateParamsResponse {}

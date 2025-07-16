@@ -1,0 +1,1283 @@
+syntax = "proto3";
+
+package deshchain.tax.v1;
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos_proto/cosmos.proto";
+import "amino/amino.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/tax/types";
+
+// TaxConfig defines the tax configuration for the system
+message TaxConfig {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // base_tax_rate is the base tax rate (2.5%)
+  string base_tax_rate = 1;
+
+  // max_tax_amount is the maximum tax amount per transaction (₹1,000)
+  cosmos.base.v1beta1.Coin max_tax_amount = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // volume_thresholds define the volume-based reduction thresholds
+  repeated VolumeThreshold volume_thresholds = 3;
+
+  // tax_exemption_categories define categories exempt from tax
+  repeated string tax_exemption_categories = 4;
+
+  // tax_distribution defines how tax is distributed
+  TaxDistribution tax_distribution = 5;
+
+  // burn_percentage is the percentage of tax that is burned
+  string burn_percentage = 6;
+
+  // treasury_percentage is the percentage of tax that goes to treasury
+  string treasury_percentage = 7;
+
+  // validator_percentage is the percentage of tax that goes to validators
+  string validator_percentage = 8;
+
+  // community_percentage is the percentage of tax that goes to community pool
+  string community_percentage = 9;
+
+  // minimum_transaction_amount is the minimum amount for tax calculation
+  cosmos.base.v1beta1.Coin minimum_transaction_amount = 10 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // tax_calculation_method defines how tax is calculated
+  string tax_calculation_method = 11;
+
+  // enable_dynamic_rates enables dynamic tax rate adjustments
+  bool enable_dynamic_rates = 12;
+
+  // enable_volume_discounts enables volume-based discounts
+  bool enable_volume_discounts = 13;
+
+  // enable_tax_cap enables the tax cap functionality
+  bool enable_tax_cap = 14;
+
+  // grace_period_days is the grace period for new users
+  uint32 grace_period_days = 15;
+
+  // whale_threshold is the threshold for whale tax rates
+  cosmos.base.v1beta1.Coin whale_threshold = 16 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // whale_tax_multiplier is the multiplier for whale transactions
+  string whale_tax_multiplier = 17;
+
+  // micro_transaction_threshold is the threshold for micro transactions
+  cosmos.base.v1beta1.Coin micro_transaction_threshold = 18 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // micro_transaction_rate is the reduced rate for micro transactions
+  string micro_transaction_rate = 19;
+
+  // loyalty_discount_rate is the discount rate for loyal users
+  string loyalty_discount_rate = 20;
+
+  // loyalty_threshold_days is the threshold for loyalty discounts
+  uint32 loyalty_threshold_days = 21;
+
+  // ngo_discount_rate is the discount rate for NGO donations
+  string ngo_discount_rate = 22;
+
+  // emergency_tax_rate is the emergency tax rate
+  string emergency_tax_rate = 23;
+
+  // emergency_mode_enabled indicates if emergency mode is active
+  bool emergency_mode_enabled = 24;
+
+  // tax_holiday_periods define tax holiday periods
+  repeated TaxHolidayPeriod tax_holiday_periods = 25;
+
+  // patriotism_discount_rate is the discount rate based on patriotism score
+  string patriotism_discount_rate = 26;
+
+  // patriotism_threshold is the threshold for patriotism discounts
+  int32 patriotism_threshold = 27;
+
+  // cultural_engagement_discount is the discount for cultural engagement
+  string cultural_engagement_discount = 28;
+
+  // donation_tax_credit is the tax credit for donations
+  string donation_tax_credit = 29;
+
+  // validator_tax_reduction is the tax reduction for validators
+  string validator_tax_reduction = 30;
+
+  // staking_tax_benefit is the tax benefit for staking
+  string staking_tax_benefit = 31;
+
+  // governance_participation_benefit is the benefit for governance participation
+  string governance_participation_benefit = 32;
+}
+
+// VolumeThreshold defines volume-based tax reduction thresholds
+message VolumeThreshold {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // min_volume is the minimum volume for this threshold
+  cosmos.base.v1beta1.Coin min_volume = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // max_volume is the maximum volume for this threshold
+  cosmos.base.v1beta1.Coin max_volume = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // reduction_percentage is the tax reduction percentage
+  string reduction_percentage = 3;
+
+  // threshold_name is the name of this threshold
+  string threshold_name = 4;
+
+  // description is the description of this threshold
+  string description = 5;
+
+  // is_active indicates if this threshold is active
+  bool is_active = 6;
+
+  // effective_from is when this threshold becomes effective
+  int64 effective_from = 7;
+
+  // effective_until is when this threshold expires
+  int64 effective_until = 8;
+
+  // minimum_transactions is the minimum number of transactions required
+  uint64 minimum_transactions = 9;
+
+  // time_period_days is the time period for volume calculation
+  uint32 time_period_days = 10;
+}
+
+// TaxDistribution defines how tax is distributed
+message TaxDistribution {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // burn_allocation is the allocation for burning
+  string burn_allocation = 1;
+
+  // treasury_allocation is the allocation for treasury
+  string treasury_allocation = 2;
+
+  // validator_allocation is the allocation for validators
+  string validator_allocation = 3;
+
+  // community_allocation is the allocation for community pool
+  string community_allocation = 4;
+
+  // development_allocation is the allocation for development
+  string development_allocation = 5;
+
+  // marketing_allocation is the allocation for marketing
+  string marketing_allocation = 6;
+
+  // security_allocation is the allocation for security
+  string security_allocation = 7;
+
+  // governance_allocation is the allocation for governance
+  string governance_allocation = 8;
+
+  // reserve_allocation is the allocation for reserves
+  string reserve_allocation = 9;
+
+  // emergency_allocation is the allocation for emergency fund
+  string emergency_allocation = 10;
+}
+
+// TaxHolidayPeriod defines tax holiday periods
+message TaxHolidayPeriod {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // name is the name of the tax holiday
+  string name = 1;
+
+  // description is the description of the tax holiday
+  string description = 2;
+
+  // start_date is when the tax holiday starts
+  int64 start_date = 3;
+
+  // end_date is when the tax holiday ends
+  int64 end_date = 4;
+
+  // reduction_percentage is the tax reduction percentage
+  string reduction_percentage = 5;
+
+  // applicable_categories are the categories this applies to
+  repeated string applicable_categories = 6;
+
+  // is_active indicates if this holiday is active
+  bool is_active = 7;
+
+  // created_by is who created this holiday
+  string created_by = 8;
+
+  // approved_by is who approved this holiday
+  string approved_by = 9;
+
+  // approval_date is when this was approved
+  int64 approval_date = 10;
+
+  // recurring indicates if this is a recurring holiday
+  bool recurring = 11;
+
+  // recurrence_pattern is the pattern for recurring holidays
+  string recurrence_pattern = 12;
+}
+
+// UserTaxProfile defines individual user tax profile
+message UserTaxProfile {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // address is the user address
+  string address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // total_tax_paid is the total tax paid by this user
+  cosmos.base.v1beta1.Coin total_tax_paid = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // monthly_volume is the monthly transaction volume
+  cosmos.base.v1beta1.Coin monthly_volume = 3 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // yearly_volume is the yearly transaction volume
+  cosmos.base.v1beta1.Coin yearly_volume = 4 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // current_tax_rate is the current effective tax rate
+  string current_tax_rate = 5;
+
+  // volume_discount_rate is the volume-based discount rate
+  string volume_discount_rate = 6;
+
+  // loyalty_discount_rate is the loyalty-based discount rate
+  string loyalty_discount_rate = 7;
+
+  // patriotism_discount_rate is the patriotism-based discount rate
+  string patriotism_discount_rate = 8;
+
+  // total_discounts_earned is the total discounts earned
+  cosmos.base.v1beta1.Coin total_discounts_earned = 9 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // tax_cap_reached indicates if tax cap has been reached
+  bool tax_cap_reached = 10;
+
+  // tax_cap_amount is the tax cap amount for this user
+  cosmos.base.v1beta1.Coin tax_cap_amount = 11 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // remaining_tax_cap is the remaining tax cap
+  cosmos.base.v1beta1.Coin remaining_tax_cap = 12 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // first_transaction_date is the date of first transaction
+  int64 first_transaction_date = 13;
+
+  // last_transaction_date is the date of last transaction
+  int64 last_transaction_date = 14;
+
+  // transaction_count is the total number of transactions
+  uint64 transaction_count = 15;
+
+  // average_transaction_size is the average transaction size
+  cosmos.base.v1beta1.Coin average_transaction_size = 16 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // is_whale indicates if this user is a whale
+  bool is_whale = 17;
+
+  // is_validator indicates if this user is a validator
+  bool is_validator = 18;
+
+  // is_ngo indicates if this user is an NGO
+  bool is_ngo = 19;
+
+  // account_type is the type of account
+  string account_type = 20;
+
+  // kyc_status is the KYC status
+  string kyc_status = 21;
+
+  // patriotism_score is the patriotism score
+  int32 patriotism_score = 22;
+
+  // cultural_engagement_score is the cultural engagement score
+  int32 cultural_engagement_score = 23;
+
+  // donation_history is the donation history
+  repeated DonationRecord donation_history = 24;
+
+  // tax_optimization_enabled indicates if tax optimization is enabled
+  bool tax_optimization_enabled = 25;
+
+  // preferred_payment_method is the preferred payment method
+  string preferred_payment_method = 26;
+
+  // tax_calculation_method is the tax calculation method
+  string tax_calculation_method = 27;
+
+  // notifications_enabled indicates if notifications are enabled
+  bool notifications_enabled = 28;
+
+  // tax_reports_enabled indicates if tax reports are enabled
+  bool tax_reports_enabled = 29;
+
+  // privacy_level is the privacy level
+  string privacy_level = 30;
+
+  // created_at is when this profile was created
+  int64 created_at = 31;
+
+  // updated_at is when this profile was last updated
+  int64 updated_at = 32;
+
+  // last_tax_calculation_date is the last tax calculation date
+  int64 last_tax_calculation_date = 33;
+
+  // next_tax_reset_date is the next tax reset date
+  int64 next_tax_reset_date = 34;
+
+  // tax_calendar_year is the tax calendar year
+  uint32 tax_calendar_year = 35;
+
+  // grace_period_active indicates if grace period is active
+  bool grace_period_active = 36;
+
+  // grace_period_expires is when grace period expires
+  int64 grace_period_expires = 37;
+
+  // loyalty_tier is the loyalty tier
+  string loyalty_tier = 38;
+
+  // loyalty_points is the loyalty points
+  uint64 loyalty_points = 39;
+
+  // referral_count is the number of referrals
+  uint32 referral_count = 40;
+
+  // referral_bonus is the referral bonus earned
+  cosmos.base.v1beta1.Coin referral_bonus = 41 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // tax_incentives are the tax incentives applicable
+  repeated TaxIncentive tax_incentives = 42;
+
+  // compliance_score is the compliance score
+  int32 compliance_score = 43;
+
+  // audit_history is the audit history
+  repeated TaxAuditRecord audit_history = 44;
+
+  // appeals_history is the appeals history
+  repeated TaxAppealRecord appeals_history = 45;
+
+  // estimated_annual_tax is the estimated annual tax
+  cosmos.base.v1beta1.Coin estimated_annual_tax = 46 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // tax_planning_enabled indicates if tax planning is enabled
+  bool tax_planning_enabled = 47;
+
+  // auto_optimization_enabled indicates if auto optimization is enabled
+  bool auto_optimization_enabled = 48;
+
+  // tax_advisor_assigned indicates if tax advisor is assigned
+  bool tax_advisor_assigned = 49;
+
+  // tax_advisor_contact is the tax advisor contact
+  string tax_advisor_contact = 50;
+}
+
+// DonationRecord represents a donation for tax purposes
+message DonationRecord {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // donation_id is the donation ID
+  uint64 donation_id = 1;
+
+  // amount is the donation amount
+  cosmos.base.v1beta1.Coin amount = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // ngo_address is the NGO address
+  string ngo_address = 3;
+
+  // ngo_name is the NGO name
+  string ngo_name = 4;
+
+  // tax_benefit_claimed is the tax benefit claimed
+  cosmos.base.v1beta1.Coin tax_benefit_claimed = 5 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // donation_date is the donation date
+  int64 donation_date = 6;
+
+  // receipt_hash is the receipt hash
+  string receipt_hash = 7;
+
+  // is_recurring indicates if this is a recurring donation
+  bool is_recurring = 8;
+
+  // patriotism_bonus is the patriotism bonus earned
+  int32 patriotism_bonus = 9;
+}
+
+// TaxIncentive represents a tax incentive
+message TaxIncentive {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // incentive_id is the incentive ID
+  string incentive_id = 1;
+
+  // incentive_type is the type of incentive
+  string incentive_type = 2;
+
+  // incentive_name is the name of the incentive
+  string incentive_name = 3;
+
+  // incentive_description is the description of the incentive
+  string incentive_description = 4;
+
+  // discount_percentage is the discount percentage
+  string discount_percentage = 5;
+
+  // maximum_benefit is the maximum benefit
+  cosmos.base.v1beta1.Coin maximum_benefit = 6 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // valid_from is when this incentive is valid from
+  int64 valid_from = 7;
+
+  // valid_until is when this incentive expires
+  int64 valid_until = 8;
+
+  // is_active indicates if this incentive is active
+  bool is_active = 9;
+
+  // conditions are the conditions for this incentive
+  repeated string conditions = 10;
+
+  // usage_count is the number of times this incentive has been used
+  uint64 usage_count = 11;
+
+  // usage_limit is the usage limit for this incentive
+  uint64 usage_limit = 12;
+}
+
+// TaxAuditRecord represents a tax audit record
+message TaxAuditRecord {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // audit_id is the audit ID
+  string audit_id = 1;
+
+  // audit_type is the type of audit
+  string audit_type = 2;
+
+  // audit_date is the audit date
+  int64 audit_date = 3;
+
+  // auditor is the auditor
+  string auditor = 4;
+
+  // audit_result is the audit result
+  string audit_result = 5;
+
+  // findings are the audit findings
+  repeated string findings = 6;
+
+  // recommendations are the audit recommendations
+  repeated string recommendations = 7;
+
+  // compliance_score is the compliance score
+  int32 compliance_score = 8;
+
+  // penalty_amount is the penalty amount
+  cosmos.base.v1beta1.Coin penalty_amount = 9 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // is_resolved indicates if the audit is resolved
+  bool is_resolved = 10;
+
+  // resolution_date is the resolution date
+  int64 resolution_date = 11;
+}
+
+// TaxAppealRecord represents a tax appeal record
+message TaxAppealRecord {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // appeal_id is the appeal ID
+  string appeal_id = 1;
+
+  // appeal_type is the type of appeal
+  string appeal_type = 2;
+
+  // appeal_date is the appeal date
+  int64 appeal_date = 3;
+
+  // appeal_reason is the reason for appeal
+  string appeal_reason = 4;
+
+  // disputed_amount is the disputed amount
+  cosmos.base.v1beta1.Coin disputed_amount = 5 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // supporting_documents are the supporting documents
+  repeated string supporting_documents = 6;
+
+  // status is the appeal status
+  string status = 7;
+
+  // reviewer is the reviewer
+  string reviewer = 8;
+
+  // decision is the decision
+  string decision = 9;
+
+  // decision_date is the decision date
+  int64 decision_date = 10;
+
+  // refund_amount is the refund amount
+  cosmos.base.v1beta1.Coin refund_amount = 11 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
+
+// TaxTransaction represents a tax transaction
+message TaxTransaction {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // transaction_hash is the transaction hash
+  string transaction_hash = 1;
+
+  // payer_address is the payer address
+  string payer_address = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // transaction_amount is the transaction amount
+  cosmos.base.v1beta1.Coin transaction_amount = 3 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // base_tax_amount is the base tax amount
+  cosmos.base.v1beta1.Coin base_tax_amount = 4 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // final_tax_amount is the final tax amount after discounts
+  cosmos.base.v1beta1.Coin final_tax_amount = 5 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // base_tax_rate is the base tax rate applied
+  string base_tax_rate = 6;
+
+  // effective_tax_rate is the effective tax rate after discounts
+  string effective_tax_rate = 7;
+
+  // volume_discount is the volume discount applied
+  cosmos.base.v1beta1.Coin volume_discount = 8 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // loyalty_discount is the loyalty discount applied
+  cosmos.base.v1beta1.Coin loyalty_discount = 9 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // patriotism_discount is the patriotism discount applied
+  cosmos.base.v1beta1.Coin patriotism_discount = 10 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // other_discounts are other discounts applied
+  cosmos.base.v1beta1.Coin other_discounts = 11 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // total_discounts is the total discounts applied
+  cosmos.base.v1beta1.Coin total_discounts = 12 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // tax_cap_applied indicates if tax cap was applied
+  bool tax_cap_applied = 13;
+
+  // tax_cap_amount is the tax cap amount
+  cosmos.base.v1beta1.Coin tax_cap_amount = 14 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // calculation_method is the calculation method used
+  string calculation_method = 15;
+
+  // timestamp is the transaction timestamp
+  int64 timestamp = 16;
+
+  // block_height is the block height
+  int64 block_height = 17;
+
+  // tax_distribution is how the tax was distributed
+  map<string, string> tax_distribution = 18;
+
+  // burned_amount is the amount burned
+  cosmos.base.v1beta1.Coin burned_amount = 19 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // treasury_amount is the amount sent to treasury
+  cosmos.base.v1beta1.Coin treasury_amount = 20 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // validator_amount is the amount sent to validators
+  cosmos.base.v1beta1.Coin validator_amount = 21 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // community_amount is the amount sent to community pool
+  cosmos.base.v1beta1.Coin community_amount = 22 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // gas_used is the gas used for this transaction
+  uint64 gas_used = 23;
+
+  // gas_limit is the gas limit for this transaction
+  uint64 gas_limit = 24;
+
+  // message_type is the message type
+  string message_type = 25;
+
+  // is_exempted indicates if this transaction is exempted
+  bool is_exempted = 26;
+
+  // exemption_reason is the reason for exemption
+  string exemption_reason = 27;
+
+  // cultural_quote_id is the cultural quote ID
+  uint64 cultural_quote_id = 28;
+
+  // patriotism_score_earned is the patriotism score earned
+  int32 patriotism_score_earned = 29;
+
+  // optimization_applied indicates if optimization was applied
+  bool optimization_applied = 30;
+
+  // optimization_savings is the optimization savings
+  cosmos.base.v1beta1.Coin optimization_savings = 31 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // validation_status is the validation status
+  string validation_status = 32;
+
+  // validation_errors are the validation errors
+  repeated string validation_errors = 33;
+
+  // recalculation_required indicates if recalculation is required
+  bool recalculation_required = 34;
+
+  // audit_trail is the audit trail
+  repeated string audit_trail = 35;
+
+  // compliance_notes are compliance notes
+  repeated string compliance_notes = 36;
+
+  // reviewer_notes are reviewer notes
+  repeated string reviewer_notes = 37;
+
+  // dispute_status is the dispute status
+  string dispute_status = 38;
+
+  // dispute_id is the dispute ID
+  string dispute_id = 39;
+
+  // related_transactions are related transactions
+  repeated string related_transactions = 40;
+
+  // batch_id is the batch ID for batch processing
+  string batch_id = 41;
+
+  // processing_time is the processing time
+  int64 processing_time = 42;
+
+  // calculation_complexity is the calculation complexity
+  string calculation_complexity = 43;
+
+  // version is the calculation version
+  string version = 44;
+
+  // metadata contains additional metadata
+  map<string, string> metadata = 45;
+}
+
+// TaxStatistics represents tax statistics
+message TaxStatistics {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // period is the statistics period
+  string period = 1;
+
+  // total_tax_collected is the total tax collected
+  cosmos.base.v1beta1.Coin total_tax_collected = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // total_tax_burned is the total tax burned
+  cosmos.base.v1beta1.Coin total_tax_burned = 3 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // total_tax_distributed is the total tax distributed
+  cosmos.base.v1beta1.Coin total_tax_distributed = 4 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // average_tax_rate is the average tax rate
+  string average_tax_rate = 5;
+
+  // effective_tax_rate is the effective tax rate
+  string effective_tax_rate = 6;
+
+  // total_discounts_given is the total discounts given
+  cosmos.base.v1beta1.Coin total_discounts_given = 7 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // total_transactions is the total number of transactions
+  uint64 total_transactions = 8;
+
+  // taxable_transactions is the number of taxable transactions
+  uint64 taxable_transactions = 9;
+
+  // exempt_transactions is the number of exempt transactions
+  uint64 exempt_transactions = 10;
+
+  // users_with_tax_cap is the number of users with tax cap
+  uint64 users_with_tax_cap = 11;
+
+  // total_tax_cap_savings is the total tax cap savings
+  cosmos.base.v1beta1.Coin total_tax_cap_savings = 12 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // volume_discount_savings is the volume discount savings
+  cosmos.base.v1beta1.Coin volume_discount_savings = 13 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // loyalty_discount_savings is the loyalty discount savings
+  cosmos.base.v1beta1.Coin loyalty_discount_savings = 14 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // patriotism_discount_savings is the patriotism discount savings
+  cosmos.base.v1beta1.Coin patriotism_discount_savings = 15 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // tax_by_category is the tax breakdown by category
+  map<string, string> tax_by_category = 16;
+
+  // tax_by_user_type is the tax breakdown by user type
+  map<string, string> tax_by_user_type = 17;
+
+  // tax_by_transaction_type is the tax breakdown by transaction type
+  map<string, string> tax_by_transaction_type = 18;
+
+  // monthly_trends are the monthly trends
+  repeated MonthlyTaxTrend monthly_trends = 19;
+
+  // top_taxpayers are the top taxpayers
+  repeated TopTaxpayer top_taxpayers = 20;
+
+  // tax_efficiency_score is the tax efficiency score
+  string tax_efficiency_score = 21;
+
+  // compliance_rate is the compliance rate
+  string compliance_rate = 22;
+
+  // audit_success_rate is the audit success rate
+  string audit_success_rate = 23;
+
+  // appeal_success_rate is the appeal success rate
+  string appeal_success_rate = 24;
+
+  // system_performance_metrics are the system performance metrics
+  SystemPerformanceMetrics system_performance_metrics = 25;
+
+  // forecast_data is the forecast data
+  TaxForecastData forecast_data = 26;
+
+  // optimization_opportunities are optimization opportunities
+  repeated OptimizationOpportunity optimization_opportunities = 27;
+
+  // created_at is when this statistics was created
+  int64 created_at = 28;
+
+  // updated_at is when this statistics was last updated
+  int64 updated_at = 29;
+
+  // data_quality_score is the data quality score
+  string data_quality_score = 30;
+
+  // completeness_percentage is the completeness percentage
+  string completeness_percentage = 31;
+
+  // accuracy_percentage is the accuracy percentage
+  string accuracy_percentage = 32;
+
+  // timeliness_score is the timeliness score
+  string timeliness_score = 33;
+
+  // consistency_score is the consistency score
+  string consistency_score = 34;
+
+  // reliability_score is the reliability score
+  string reliability_score = 35;
+}
+
+// MonthlyTaxTrend represents monthly tax trends
+message MonthlyTaxTrend {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // month is the month (YYYY-MM format)
+  string month = 1;
+
+  // tax_collected is the tax collected for the month
+  cosmos.base.v1beta1.Coin tax_collected = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // tax_burned is the tax burned for the month
+  cosmos.base.v1beta1.Coin tax_burned = 3 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // average_tax_rate is the average tax rate for the month
+  string average_tax_rate = 4;
+
+  // transaction_count is the number of transactions
+  uint64 transaction_count = 5;
+
+  // unique_taxpayers is the number of unique taxpayers
+  uint64 unique_taxpayers = 6;
+
+  // growth_rate is the growth rate compared to previous month
+  string growth_rate = 7;
+
+  // efficiency_score is the efficiency score for the month
+  string efficiency_score = 8;
+}
+
+// TopTaxpayer represents a top taxpayer
+message TopTaxpayer {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // address is the taxpayer address
+  string address = 1;
+
+  // total_tax_paid is the total tax paid
+  cosmos.base.v1beta1.Coin total_tax_paid = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // rank is the rank
+  uint64 rank = 3;
+
+  // percentage_of_total is the percentage of total tax
+  string percentage_of_total = 4;
+
+  // account_type is the account type
+  string account_type = 5;
+
+  // effective_tax_rate is the effective tax rate
+  string effective_tax_rate = 6;
+
+  // transaction_count is the number of transactions
+  uint64 transaction_count = 7;
+
+  // average_transaction_size is the average transaction size
+  cosmos.base.v1beta1.Coin average_transaction_size = 8 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // is_compliant indicates if the taxpayer is compliant
+  bool is_compliant = 9;
+
+  // compliance_score is the compliance score
+  int32 compliance_score = 10;
+}
+
+// SystemPerformanceMetrics represents system performance metrics
+message SystemPerformanceMetrics {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // calculation_time_avg is the average calculation time
+  int64 calculation_time_avg = 1;
+
+  // calculation_time_max is the maximum calculation time
+  int64 calculation_time_max = 2;
+
+  // calculation_time_min is the minimum calculation time
+  int64 calculation_time_min = 3;
+
+  // throughput_tps is the throughput in transactions per second
+  string throughput_tps = 4;
+
+  // error_rate is the error rate
+  string error_rate = 5;
+
+  // success_rate is the success rate
+  string success_rate = 6;
+
+  // system_uptime is the system uptime
+  string system_uptime = 7;
+
+  // memory_usage is the memory usage
+  string memory_usage = 8;
+
+  // cpu_usage is the CPU usage
+  string cpu_usage = 9;
+
+  // disk_usage is the disk usage
+  string disk_usage = 10;
+
+  // network_io is the network I/O
+  string network_io = 11;
+
+  // cache_hit_rate is the cache hit rate
+  string cache_hit_rate = 12;
+
+  // database_performance is the database performance
+  string database_performance = 13;
+
+  // concurrent_users is the number of concurrent users
+  uint64 concurrent_users = 14;
+
+  // peak_load_time is the peak load time
+  int64 peak_load_time = 15;
+
+  // load_distribution is the load distribution
+  map<string, string> load_distribution = 16;
+
+  // bottlenecks are the identified bottlenecks
+  repeated string bottlenecks = 17;
+
+  // optimization_suggestions are optimization suggestions
+  repeated string optimization_suggestions = 18;
+
+  // alerts_triggered are the alerts triggered
+  repeated string alerts_triggered = 19;
+
+  // health_score is the overall health score
+  string health_score = 20;
+}
+
+// TaxForecastData represents tax forecast data
+message TaxForecastData {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // forecast_period is the forecast period
+  string forecast_period = 1;
+
+  // predicted_tax_collection is the predicted tax collection
+  cosmos.base.v1beta1.Coin predicted_tax_collection = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // confidence_level is the confidence level
+  string confidence_level = 3;
+
+  // forecast_accuracy is the forecast accuracy
+  string forecast_accuracy = 4;
+
+  // factors_considered are the factors considered
+  repeated string factors_considered = 5;
+
+  // assumptions are the assumptions made
+  repeated string assumptions = 6;
+
+  // risks are the identified risks
+  repeated string risks = 7;
+
+  // opportunities are the identified opportunities
+  repeated string opportunities = 8;
+
+  // seasonal_adjustments are the seasonal adjustments
+  map<string, string> seasonal_adjustments = 9;
+
+  // trend_analysis is the trend analysis
+  string trend_analysis = 10;
+
+  // model_version is the model version
+  string model_version = 11;
+
+  // last_updated is when this forecast was last updated
+  int64 last_updated = 12;
+
+  // next_update is when the next update is scheduled
+  int64 next_update = 13;
+
+  // data_sources are the data sources used
+  repeated string data_sources = 14;
+
+  // methodology is the methodology used
+  string methodology = 15;
+}
+
+// OptimizationOpportunity represents an optimization opportunity
+message OptimizationOpportunity {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // opportunity_id is the opportunity ID
+  string opportunity_id = 1;
+
+  // opportunity_type is the type of opportunity
+  string opportunity_type = 2;
+
+  // title is the title of the opportunity
+  string title = 3;
+
+  // description is the description of the opportunity
+  string description = 4;
+
+  // potential_savings is the potential savings
+  cosmos.base.v1beta1.Coin potential_savings = 5 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // implementation_effort is the implementation effort
+  string implementation_effort = 6;
+
+  // priority is the priority level
+  string priority = 7;
+
+  // impact_level is the impact level
+  string impact_level = 8;
+
+  // feasibility_score is the feasibility score
+  string feasibility_score = 9;
+
+  // roi_estimate is the ROI estimate
+  string roi_estimate = 10;
+
+  // timeline is the implementation timeline
+  string timeline = 11;
+
+  // prerequisites are the prerequisites
+  repeated string prerequisites = 12;
+
+  // risks are the risks
+  repeated string risks = 13;
+
+  // benefits are the benefits
+  repeated string benefits = 14;
+
+  // stakeholders are the stakeholders
+  repeated string stakeholders = 15;
+
+  // resources_required are the resources required
+  repeated string resources_required = 16;
+
+  // success_metrics are the success metrics
+  repeated string success_metrics = 17;
+
+  // status is the status
+  string status = 18;
+
+  // assigned_to is who it's assigned to
+  string assigned_to = 19;
+
+  // created_at is when this opportunity was created
+  int64 created_at = 20;
+
+  // updated_at is when this opportunity was last updated
+  int64 updated_at = 21;
+
+  // due_date is the due date
+  int64 due_date = 22;
+
+  // completion_date is the completion date
+  int64 completion_date = 23;
+
+  // actual_savings is the actual savings achieved
+  cosmos.base.v1beta1.Coin actual_savings = 24 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // lessons_learned are the lessons learned
+  repeated string lessons_learned = 25;
+
+  // follow_up_actions are the follow-up actions
+  repeated string follow_up_actions = 26;
+
+  // related_opportunities are related opportunities
+  repeated string related_opportunities = 27;
+
+  // approval_status is the approval status
+  string approval_status = 28;
+
+  // approved_by is who approved it
+  string approved_by = 29;
+
+  // approval_date is the approval date
+  int64 approval_date = 30;
+}
+
+// TaxParams defines the parameters for the tax module
+message TaxParams {
+  option (gogoproto.equal) = true;
+  option (gogoproto.goproto_stringer) = false;
+  option (amino.name) = "deshchain/x/tax/TaxParams";
+
+  // tax_config is the tax configuration
+  TaxConfig tax_config = 1;
+
+  // enable_tax_system enables the tax system
+  bool enable_tax_system = 2;
+
+  // enable_volume_discounts enables volume discounts
+  bool enable_volume_discounts = 3;
+
+  // enable_loyalty_discounts enables loyalty discounts
+  bool enable_loyalty_discounts = 4;
+
+  // enable_patriotism_discounts enables patriotism discounts
+  bool enable_patriotism_discounts = 5;
+
+  // enable_tax_cap enables tax cap
+  bool enable_tax_cap = 6;
+
+  // enable_tax_optimization enables tax optimization
+  bool enable_tax_optimization = 7;
+
+  // enable_real_time_calculation enables real-time calculation
+  bool enable_real_time_calculation = 8;
+
+  // enable_batch_processing enables batch processing
+  bool enable_batch_processing = 9;
+
+  // enable_audit_trail enables audit trail
+  bool enable_audit_trail = 10;
+
+  // enable_compliance_monitoring enables compliance monitoring
+  bool enable_compliance_monitoring = 11;
+
+  // enable_performance_monitoring enables performance monitoring
+  bool enable_performance_monitoring = 12;
+
+  // enable_forecasting enables forecasting
+  bool enable_forecasting = 13;
+
+  // enable_notifications enables notifications
+  bool enable_notifications = 14;
+
+  // enable_reporting enables reporting
+  bool enable_reporting = 15;
+
+  // max_batch_size is the maximum batch size
+  uint32 max_batch_size = 16;
+
+  // calculation_timeout is the calculation timeout
+  uint64 calculation_timeout = 17;
+
+  // cache_ttl is the cache time-to-live
+  uint64 cache_ttl = 18;
+
+  // audit_retention_days is the audit retention period
+  uint32 audit_retention_days = 19;
+
+  // performance_threshold is the performance threshold
+  string performance_threshold = 20;
+}

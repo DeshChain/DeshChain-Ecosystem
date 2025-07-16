@@ -1,0 +1,533 @@
+syntax = "proto3";
+
+package deshchain.donation.v1;
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos_proto/cosmos.proto";
+import "amino/amino.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/donation/types";
+
+// NGOWallet represents a verified NGO wallet for donations
+message NGOWallet {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // id is the unique identifier for the NGO wallet
+  uint64 id = 1;
+
+  // name is the name of the NGO
+  string name = 2;
+
+  // address is the multi-signature wallet address
+  string address = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // category defines the type of NGO work
+  string category = 4;
+
+  // description provides details about the NGO's mission
+  string description = 5;
+
+  // registration_number is the official registration number
+  string registration_number = 6;
+
+  // website is the official website URL
+  string website = 7;
+
+  // contact_email is the official contact email
+  string contact_email = 8;
+
+  // signers are the authorized signers for the multi-sig wallet
+  repeated string signers = 9;
+
+  // required_signatures is the minimum number of signatures required
+  uint32 required_signatures = 10;
+
+  // is_verified indicates if the NGO has been verified
+  bool is_verified = 11;
+
+  // is_active indicates if the NGO is currently active
+  bool is_active = 12;
+
+  // total_received is the total amount received by this NGO
+  cosmos.base.v1beta1.Coin total_received = 13 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // total_distributed is the total amount distributed by this NGO
+  cosmos.base.v1beta1.Coin total_distributed = 14 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // current_balance is the current balance in the wallet
+  cosmos.base.v1beta1.Coin current_balance = 15 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // verification_documents are IPFS hashes of verification documents
+  repeated string verification_documents = 16;
+
+  // tax_exempt_number is the tax exemption certificate number
+  string tax_exempt_number = 17;
+
+  // eighty_g_number is the 80G tax benefit certificate number
+  string eighty_g_number = 18;
+
+  // fcra_number is the FCRA registration number for foreign donations
+  string fcra_number = 19;
+
+  // created_at is the timestamp when the NGO was registered
+  int64 created_at = 20;
+
+  // updated_at is the timestamp when the NGO was last updated
+  int64 updated_at = 21;
+
+  // verified_by is the address of the verifier
+  string verified_by = 22 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // audit_frequency defines how often audits are required (in months)
+  uint32 audit_frequency = 23;
+
+  // last_audit_date is the timestamp of the last audit
+  int64 last_audit_date = 24;
+
+  // next_audit_due is the timestamp when the next audit is due
+  int64 next_audit_due = 25;
+
+  // transparency_score is the transparency score (1-10)
+  int32 transparency_score = 26;
+
+  // impact_metrics contains key performance indicators
+  repeated ImpactMetric impact_metrics = 27;
+
+  // beneficiary_count is the number of beneficiaries served
+  uint64 beneficiary_count = 28;
+
+  // regions_served are the geographical regions served
+  repeated string regions_served = 29;
+
+  // priority_areas are the focus areas of the NGO
+  repeated string priority_areas = 30;
+}
+
+// ImpactMetric represents a measurable impact metric
+message ImpactMetric {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // metric_name is the name of the metric
+  string metric_name = 1;
+
+  // metric_value is the current value
+  string metric_value = 2;
+
+  // metric_unit is the unit of measurement
+  string metric_unit = 3;
+
+  // target_value is the target value for this metric
+  string target_value = 4;
+
+  // measurement_period is the time period for this measurement
+  string measurement_period = 5;
+
+  // last_updated is when this metric was last updated
+  int64 last_updated = 6;
+}
+
+// DonationRecord represents a donation transaction
+message DonationRecord {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // id is the unique identifier for the donation
+  uint64 id = 1;
+
+  // transaction_hash is the hash of the donation transaction
+  string transaction_hash = 2;
+
+  // donor_address is the address of the donor
+  string donor_address = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // ngo_wallet_id is the ID of the NGO wallet that received the donation
+  uint64 ngo_wallet_id = 4;
+
+  // amount is the donated amount
+  cosmos.base.v1beta1.Coin amount = 5 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // timestamp is when the donation was made
+  int64 timestamp = 6;
+
+  // purpose is the stated purpose of the donation
+  string purpose = 7;
+
+  // is_anonymous indicates if the donor wishes to remain anonymous
+  bool is_anonymous = 8;
+
+  // tax_benefit_claimed indicates if tax benefit was claimed
+  bool tax_benefit_claimed = 9;
+
+  // receipt_generated indicates if a receipt was generated
+  bool receipt_generated = 10;
+
+  // receipt_ipfs_hash is the IPFS hash of the receipt
+  string receipt_ipfs_hash = 11;
+
+  // donor_message is an optional message from the donor
+  string donor_message = 12;
+
+  // campaign_id is the ID of the fundraising campaign (if applicable)
+  uint64 campaign_id = 13;
+
+  // recurring_donation_id is the ID for recurring donations
+  uint64 recurring_donation_id = 14;
+
+  // matching_funds_applied indicates if matching funds were applied
+  bool matching_funds_applied = 15;
+
+  // matching_amount is the amount matched by other sources
+  cosmos.base.v1beta1.Coin matching_amount = 16 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // verification_status is the verification status of the donation
+  string verification_status = 17;
+
+  // cultural_quote_id is the ID of the cultural quote shown with this donation
+  uint64 cultural_quote_id = 18;
+}
+
+// DistributionRecord represents a distribution of funds by an NGO
+message DistributionRecord {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // id is the unique identifier for the distribution
+  uint64 id = 1;
+
+  // transaction_hash is the hash of the distribution transaction
+  string transaction_hash = 2;
+
+  // ngo_wallet_id is the ID of the NGO wallet making the distribution
+  uint64 ngo_wallet_id = 3;
+
+  // recipient_address is the address of the recipient
+  string recipient_address = 4 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // amount is the distributed amount
+  cosmos.base.v1beta1.Coin amount = 5 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // timestamp is when the distribution was made
+  int64 timestamp = 6;
+
+  // purpose is the purpose of the distribution
+  string purpose = 7;
+
+  // category is the category of distribution
+  string category = 8;
+
+  // beneficiary_name is the name of the beneficiary (if not anonymous)
+  string beneficiary_name = 9;
+
+  // beneficiary_details provides additional details about the beneficiary
+  string beneficiary_details = 10;
+
+  // project_name is the name of the project this distribution is for
+  string project_name = 11;
+
+  // project_description describes the project
+  string project_description = 12;
+
+  // documentation_ipfs_hash is the IPFS hash of supporting documents
+  string documentation_ipfs_hash = 13;
+
+  // photos_ipfs_hash is the IPFS hash of photos/proof
+  string photos_ipfs_hash = 14;
+
+  // video_ipfs_hash is the IPFS hash of video proof
+  string video_ipfs_hash = 15;
+
+  // gps_coordinates are the GPS coordinates of the distribution location
+  string gps_coordinates = 16;
+
+  // region is the geographical region of distribution
+  string region = 17;
+
+  // approved_by contains the addresses of approvers
+  repeated string approved_by = 18;
+
+  // approval_timestamp is when the distribution was approved
+  int64 approval_timestamp = 19;
+
+  // execution_timestamp is when the distribution was executed
+  int64 execution_timestamp = 20;
+
+  // verification_status is the verification status
+  string verification_status = 21;
+
+  // impact_measurement describes the measured impact
+  string impact_measurement = 22;
+
+  // follow_up_required indicates if follow-up is needed
+  bool follow_up_required = 23;
+
+  // follow_up_date is when follow-up is scheduled
+  int64 follow_up_date = 24;
+
+  // beneficiary_feedback is feedback from the beneficiary
+  string beneficiary_feedback = 25;
+
+  // public_visibility indicates if this distribution is publicly visible
+  bool public_visibility = 26;
+}
+
+// AuditReport represents an audit report for an NGO
+message AuditReport {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // id is the unique identifier for the audit report
+  uint64 id = 1;
+
+  // ngo_wallet_id is the ID of the NGO wallet being audited
+  uint64 ngo_wallet_id = 2;
+
+  // audit_period_start is the start of the audit period
+  int64 audit_period_start = 3;
+
+  // audit_period_end is the end of the audit period
+  int64 audit_period_end = 4;
+
+  // auditor_address is the address of the auditor
+  string auditor_address = 5 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // auditor_name is the name of the auditing firm/individual
+  string auditor_name = 6;
+
+  // auditor_credentials are the credentials of the auditor
+  string auditor_credentials = 7;
+
+  // audit_type is the type of audit (financial, impact, compliance)
+  string audit_type = 8;
+
+  // findings are the key findings of the audit
+  repeated AuditFinding findings = 9;
+
+  // recommendations are the recommendations from the audit
+  repeated string recommendations = 10;
+
+  // overall_rating is the overall rating (1-10)
+  int32 overall_rating = 11;
+
+  // compliance_score is the compliance score (1-10)
+  int32 compliance_score = 12;
+
+  // transparency_score is the transparency score (1-10)
+  int32 transparency_score = 13;
+
+  // efficiency_score is the efficiency score (1-10)
+  int32 efficiency_score = 14;
+
+  // impact_score is the impact score (1-10)
+  int32 impact_score = 15;
+
+  // audit_report_ipfs_hash is the IPFS hash of the full audit report
+  string audit_report_ipfs_hash = 16;
+
+  // summary is a summary of the audit
+  string summary = 17;
+
+  // issues_identified are the issues identified during audit
+  repeated string issues_identified = 18;
+
+  // corrective_actions are the corrective actions taken
+  repeated string corrective_actions = 19;
+
+  // next_audit_recommendations are recommendations for the next audit
+  repeated string next_audit_recommendations = 20;
+
+  // audit_completed_at is when the audit was completed
+  int64 audit_completed_at = 21;
+
+  // published_at is when the audit was published
+  int64 published_at = 22;
+
+  // is_public indicates if the audit is public
+  bool is_public = 23;
+
+  // certification_valid_until is when the certification expires
+  int64 certification_valid_until = 24;
+}
+
+// AuditFinding represents a specific finding in an audit
+message AuditFinding {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // category is the category of the finding
+  string category = 1;
+
+  // severity is the severity level (low, medium, high, critical)
+  string severity = 2;
+
+  // description describes the finding
+  string description = 3;
+
+  // evidence is supporting evidence for the finding
+  string evidence = 4;
+
+  // recommendation is the recommendation to address the finding
+  string recommendation = 5;
+
+  // status is the current status of addressing the finding
+  string status = 6;
+
+  // due_date is when the finding should be addressed
+  int64 due_date = 7;
+
+  // responsible_party is who is responsible for addressing the finding
+  string responsible_party = 8;
+}
+
+// BeneficiaryTestimonial represents a testimonial from a beneficiary
+message BeneficiaryTestimonial {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // id is the unique identifier for the testimonial
+  uint64 id = 1;
+
+  // ngo_wallet_id is the ID of the NGO wallet
+  uint64 ngo_wallet_id = 2;
+
+  // distribution_id is the ID of the related distribution
+  uint64 distribution_id = 3;
+
+  // beneficiary_name is the name of the beneficiary (if not anonymous)
+  string beneficiary_name = 4;
+
+  // testimonial_text is the testimonial content
+  string testimonial_text = 5;
+
+  // rating is the beneficiary's rating (1-5)
+  int32 rating = 6;
+
+  // photo_ipfs_hash is the IPFS hash of the beneficiary's photo
+  string photo_ipfs_hash = 7;
+
+  // video_ipfs_hash is the IPFS hash of video testimonial
+  string video_ipfs_hash = 8;
+
+  // location is the location of the beneficiary
+  string location = 9;
+
+  // program_name is the name of the program that helped the beneficiary
+  string program_name = 10;
+
+  // impact_description describes the impact on the beneficiary
+  string impact_description = 11;
+
+  // verified indicates if the testimonial has been verified
+  bool verified = 12;
+
+  // verification_method describes how the testimonial was verified
+  string verification_method = 13;
+
+  // created_at is when the testimonial was created
+  int64 created_at = 14;
+
+  // is_public indicates if the testimonial is public
+  bool is_public = 15;
+
+  // language is the language of the testimonial
+  string language = 16;
+
+  // translation contains translations in different languages
+  map<string, string> translation = 17;
+}
+
+// Params defines the parameters for the donation module
+message Params {
+  option (gogoproto.equal) = true;
+  option (gogoproto.goproto_stringer) = false;
+  option (amino.name) = "deshchain/x/donation/Params";
+
+  // min_donation_amount is the minimum amount for a donation
+  cosmos.base.v1beta1.Coin min_donation_amount = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // max_donation_amount is the maximum amount for a single donation
+  cosmos.base.v1beta1.Coin max_donation_amount = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // enable_anonymous_donations allows anonymous donations
+  bool enable_anonymous_donations = 3;
+
+  // enable_recurring_donations allows recurring donations
+  bool enable_recurring_donations = 4;
+
+  // enable_matching_funds allows matching fund programs
+  bool enable_matching_funds = 5;
+
+  // default_audit_frequency is the default audit frequency in months
+  uint32 default_audit_frequency = 6;
+
+  // required_transparency_score is the minimum transparency score required
+  int32 required_transparency_score = 7;
+
+  // enable_public_dashboards allows public transparency dashboards
+  bool enable_public_dashboards = 8;
+
+  // enable_beneficiary_testimonials allows beneficiary testimonials
+  bool enable_beneficiary_testimonials = 9;
+
+  // enable_real_time_tracking enables real-time donation tracking
+  bool enable_real_time_tracking = 10;
+
+  // enable_impact_measurement enables impact measurement features
+  bool enable_impact_measurement = 11;
+
+  // verification_authorities are the authorized verification addresses
+  repeated string verification_authorities = 12;
+
+  // audit_authorities are the authorized audit addresses
+  repeated string audit_authorities = 13;
+
+  // emergency_pause_authorities can pause the donation system
+  repeated string emergency_pause_authorities = 14;
+
+  // tax_benefit_percentage is the tax benefit percentage for donations
+  string tax_benefit_percentage = 15;
+
+  // receipt_generation_fee is the fee for generating receipts
+  cosmos.base.v1beta1.Coin receipt_generation_fee = 16 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // enable_cultural_integration enables cultural quote integration
+  bool enable_cultural_integration = 17;
+
+  // enable_nft_receipts enables NFT receipt generation
+  bool enable_nft_receipts = 18;
+
+  // donation_fee_percentage is the fee percentage for donations
+  string donation_fee_percentage = 19;
+
+  // distribution_approval_threshold is the minimum approvals needed
+  uint32 distribution_approval_threshold = 20;
+}

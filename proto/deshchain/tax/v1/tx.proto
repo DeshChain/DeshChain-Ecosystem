@@ -1,0 +1,788 @@
+syntax = "proto3";
+
+package deshchain.tax.v1;
+
+import "gogoproto/gogo.proto";
+import "cosmos/msg/v1/msg.proto";
+import "cosmos_proto/cosmos.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "deshchain/tax/v1/tax.proto";
+import "amino/amino.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/tax/types";
+
+// Msg defines the tax module Msg service
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+
+  // UpdateTaxConfig updates the tax configuration
+  rpc UpdateTaxConfig(MsgUpdateTaxConfig) returns (MsgUpdateTaxConfigResponse);
+
+  // ProcessTaxPayment processes a tax payment
+  rpc ProcessTaxPayment(MsgProcessTaxPayment) returns (MsgProcessTaxPaymentResponse);
+
+  // ApplyTaxDiscount applies a tax discount
+  rpc ApplyTaxDiscount(MsgApplyTaxDiscount) returns (MsgApplyTaxDiscountResponse);
+
+  // RegisterTaxIncentive registers a tax incentive
+  rpc RegisterTaxIncentive(MsgRegisterTaxIncentive) returns (MsgRegisterTaxIncentiveResponse);
+
+  // ProcessTaxRefund processes a tax refund
+  rpc ProcessTaxRefund(MsgProcessTaxRefund) returns (MsgProcessTaxRefundResponse);
+
+  // UpdateUserTaxProfile updates a user's tax profile
+  rpc UpdateUserTaxProfile(MsgUpdateUserTaxProfile) returns (MsgUpdateUserTaxProfileResponse);
+
+  // CreateTaxHoliday creates a tax holiday
+  rpc CreateTaxHoliday(MsgCreateTaxHoliday) returns (MsgCreateTaxHolidayResponse);
+
+  // OptimizeTaxCalculation optimizes tax calculation
+  rpc OptimizeTaxCalculation(MsgOptimizeTaxCalculation) returns (MsgOptimizeTaxCalculationResponse);
+
+  // UpdateParams updates the module parameters
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+}
+
+// MsgUpdateTaxConfig defines a message to update tax configuration
+message MsgUpdateTaxConfig {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "deshchain/MsgUpdateTaxConfig";
+
+  // authority is the address with authority to update tax config
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // tax_config is the new tax configuration
+  TaxConfig tax_config = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
+
+// MsgUpdateTaxConfigResponse defines the response to MsgUpdateTaxConfig
+message MsgUpdateTaxConfigResponse {
+  // success indicates if the update was successful
+  bool success = 1;
+}
+
+// MsgProcessTaxPayment defines a message to process tax payment
+message MsgProcessTaxPayment {
+  option (cosmos.msg.v1.signer) = "payer";
+  option (amino.name) = "deshchain/MsgProcessTaxPayment";
+
+  // payer is the address making the payment
+  string payer = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // transaction_hash is the transaction hash
+  string transaction_hash = 2;
+
+  // transaction_amount is the transaction amount
+  cosmos.base.v1beta1.Coin transaction_amount = 3 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // message_type is the message type
+  string message_type = 4;
+
+  // recipient_address is the recipient address
+  string recipient_address = 5 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // is_donation indicates if this is a donation
+  bool is_donation = 6;
+
+  // cultural_quote_id is the cultural quote ID
+  uint64 cultural_quote_id = 7;
+
+  // optimization_requested indicates if optimization is requested
+  bool optimization_requested = 8;
+
+  // preferred_calculation_method is the preferred calculation method
+  string preferred_calculation_method = 9;
+
+  // tax_period is the tax period
+  string tax_period = 10;
+
+  // additional_metadata contains additional metadata
+  map<string, string> additional_metadata = 11;
+}
+
+// MsgProcessTaxPaymentResponse defines the response to MsgProcessTaxPayment
+message MsgProcessTaxPaymentResponse {
+  // tax_transaction is the tax transaction details
+  TaxTransaction tax_transaction = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // optimization_applied indicates if optimization was applied
+  bool optimization_applied = 2;
+
+  // savings_amount is the savings amount
+  cosmos.base.v1beta1.Coin savings_amount = 3 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // patriotism_score_earned is the patriotism score earned
+  int32 patriotism_score_earned = 4;
+
+  // cultural_quote_text is the cultural quote text
+  string cultural_quote_text = 5;
+
+  // tax_receipt_hash is the tax receipt hash
+  string tax_receipt_hash = 6;
+
+  // next_tax_cap_reset is when the tax cap resets
+  int64 next_tax_cap_reset = 7;
+
+  // remaining_tax_cap is the remaining tax cap
+  cosmos.base.v1beta1.Coin remaining_tax_cap = 8 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // recommendations are tax optimization recommendations
+  repeated string recommendations = 9;
+
+  // warnings are any warnings
+  repeated string warnings = 10;
+
+  // compliance_status is the compliance status
+  string compliance_status = 11;
+
+  // audit_required indicates if audit is required
+  bool audit_required = 12;
+}
+
+// MsgApplyTaxDiscount defines a message to apply tax discount
+message MsgApplyTaxDiscount {
+  option (cosmos.msg.v1.signer) = "applicant";
+  option (amino.name) = "deshchain/MsgApplyTaxDiscount";
+
+  // applicant is the address applying for discount
+  string applicant = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // discount_type is the type of discount
+  string discount_type = 2;
+
+  // transaction_hash is the transaction hash
+  string transaction_hash = 3;
+
+  // discount_amount is the discount amount requested
+  cosmos.base.v1beta1.Coin discount_amount = 4 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // justification is the justification for the discount
+  string justification = 5;
+
+  // supporting_documents are supporting documents
+  repeated string supporting_documents = 6;
+
+  // patriotism_score is the patriotism score
+  int32 patriotism_score = 7;
+
+  // volume_data is the volume data
+  map<string, string> volume_data = 8;
+
+  // loyalty_data is the loyalty data
+  map<string, string> loyalty_data = 9;
+
+  // cultural_engagement_data is the cultural engagement data
+  map<string, string> cultural_engagement_data = 10;
+
+  // donation_data is the donation data
+  map<string, string> donation_data = 11;
+
+  // automatic_application indicates if this is automatic
+  bool automatic_application = 12;
+
+  // expires_at is when this discount expires
+  int64 expires_at = 13;
+}
+
+// MsgApplyTaxDiscountResponse defines the response to MsgApplyTaxDiscount
+message MsgApplyTaxDiscountResponse {
+  // approved indicates if the discount was approved
+  bool approved = 1;
+
+  // discount_amount is the approved discount amount
+  cosmos.base.v1beta1.Coin discount_amount = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // discount_percentage is the discount percentage
+  string discount_percentage = 3;
+
+  // valid_until is when the discount is valid until
+  int64 valid_until = 4;
+
+  // approval_reason is the reason for approval
+  string approval_reason = 5;
+
+  // conditions are the conditions for the discount
+  repeated string conditions = 6;
+
+  // usage_limit is the usage limit
+  uint64 usage_limit = 7;
+
+  // discount_id is the discount ID
+  string discount_id = 8;
+
+  // automatic_renewal indicates if automatic renewal is enabled
+  bool automatic_renewal = 9;
+
+  // next_review_date is the next review date
+  int64 next_review_date = 10;
+}
+
+// MsgRegisterTaxIncentive defines a message to register tax incentive
+message MsgRegisterTaxIncentive {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "deshchain/MsgRegisterTaxIncentive";
+
+  // authority is the address with authority to register incentive
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // incentive is the tax incentive
+  TaxIncentive incentive = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // target_audience is the target audience
+  repeated string target_audience = 3;
+
+  // budget_allocation is the budget allocation
+  cosmos.base.v1beta1.Coin budget_allocation = 4 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // performance_metrics are the performance metrics
+  repeated string performance_metrics = 5;
+
+  // success_criteria are the success criteria
+  repeated string success_criteria = 6;
+
+  // approval_workflow is the approval workflow
+  string approval_workflow = 7;
+
+  // monitoring_frequency is the monitoring frequency
+  string monitoring_frequency = 8;
+
+  // reporting_requirements are the reporting requirements
+  repeated string reporting_requirements = 9;
+
+  // review_schedule is the review schedule
+  string review_schedule = 10;
+}
+
+// MsgRegisterTaxIncentiveResponse defines the response to MsgRegisterTaxIncentive
+message MsgRegisterTaxIncentiveResponse {
+  // incentive_id is the incentive ID
+  string incentive_id = 1;
+
+  // registration_successful indicates if registration was successful
+  bool registration_successful = 2;
+
+  // effective_date is the effective date
+  int64 effective_date = 3;
+
+  // budget_approved is the approved budget
+  cosmos.base.v1beta1.Coin budget_approved = 4 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // monitoring_dashboard_url is the monitoring dashboard URL
+  string monitoring_dashboard_url = 5;
+
+  // notification_settings are the notification settings
+  map<string, string> notification_settings = 6;
+
+  // stakeholder_notifications are the stakeholder notifications
+  repeated string stakeholder_notifications = 7;
+
+  // compliance_requirements are the compliance requirements
+  repeated string compliance_requirements = 8;
+
+  // audit_schedule is the audit schedule
+  string audit_schedule = 9;
+
+  // reporting_schedule is the reporting schedule
+  string reporting_schedule = 10;
+}
+
+// MsgProcessTaxRefund defines a message to process tax refund
+message MsgProcessTaxRefund {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "deshchain/MsgProcessTaxRefund";
+
+  // authority is the address with authority to process refund
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // refund_recipient is the refund recipient
+  string refund_recipient = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // refund_amount is the refund amount
+  cosmos.base.v1beta1.Coin refund_amount = 3 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // refund_reason is the reason for refund
+  string refund_reason = 4;
+
+  // original_transaction_hash is the original transaction hash
+  string original_transaction_hash = 5;
+
+  // supporting_documents are supporting documents
+  repeated string supporting_documents = 6;
+
+  // refund_type is the type of refund
+  string refund_type = 7;
+
+  // approval_workflow is the approval workflow
+  string approval_workflow = 8;
+
+  // priority_level is the priority level
+  string priority_level = 9;
+
+  // processing_notes are processing notes
+  string processing_notes = 10;
+
+  // compliance_check_required indicates if compliance check is required
+  bool compliance_check_required = 11;
+
+  // audit_trail_required indicates if audit trail is required
+  bool audit_trail_required = 12;
+
+  // notification_required indicates if notification is required
+  bool notification_required = 13;
+
+  // batch_processing indicates if batch processing is enabled
+  bool batch_processing = 14;
+
+  // estimated_processing_time is the estimated processing time
+  int64 estimated_processing_time = 15;
+}
+
+// MsgProcessTaxRefundResponse defines the response to MsgProcessTaxRefund
+message MsgProcessTaxRefundResponse {
+  // refund_id is the refund ID
+  string refund_id = 1;
+
+  // refund_processed indicates if refund was processed
+  bool refund_processed = 2;
+
+  // refund_amount is the actual refund amount
+  cosmos.base.v1beta1.Coin refund_amount = 3 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // processing_time is the processing time
+  int64 processing_time = 4;
+
+  // refund_transaction_hash is the refund transaction hash
+  string refund_transaction_hash = 5;
+
+  // status is the refund status
+  string status = 6;
+
+  // estimated_delivery_time is the estimated delivery time
+  int64 estimated_delivery_time = 7;
+
+  // tracking_number is the tracking number
+  string tracking_number = 8;
+
+  // compliance_status is the compliance status
+  string compliance_status = 9;
+
+  // audit_reference is the audit reference
+  string audit_reference = 10;
+
+  // notification_sent indicates if notification was sent
+  bool notification_sent = 11;
+
+  // follow_up_required indicates if follow-up is required
+  bool follow_up_required = 12;
+
+  // additional_actions are additional actions required
+  repeated string additional_actions = 13;
+
+  // warnings are any warnings
+  repeated string warnings = 14;
+
+  // receipt_generated indicates if receipt was generated
+  bool receipt_generated = 15;
+}
+
+// MsgUpdateUserTaxProfile defines a message to update user tax profile
+message MsgUpdateUserTaxProfile {
+  option (cosmos.msg.v1.signer) = "user";
+  option (amino.name) = "deshchain/MsgUpdateUserTaxProfile";
+
+  // user is the user address
+  string user = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // tax_optimization_enabled indicates if tax optimization is enabled
+  bool tax_optimization_enabled = 2;
+
+  // preferred_calculation_method is the preferred calculation method
+  string preferred_calculation_method = 3;
+
+  // notifications_enabled indicates if notifications are enabled
+  bool notifications_enabled = 4;
+
+  // tax_reports_enabled indicates if tax reports are enabled
+  bool tax_reports_enabled = 5;
+
+  // privacy_level is the privacy level
+  string privacy_level = 6;
+
+  // kyc_information is the KYC information
+  map<string, string> kyc_information = 7;
+
+  // tax_jurisdiction is the tax jurisdiction
+  string tax_jurisdiction = 8;
+
+  // tax_advisor_contact is the tax advisor contact
+  string tax_advisor_contact = 9;
+
+  // preferred_payment_method is the preferred payment method
+  string preferred_payment_method = 10;
+
+  // auto_optimization_enabled indicates if auto optimization is enabled
+  bool auto_optimization_enabled = 11;
+
+  // reporting_frequency is the reporting frequency
+  string reporting_frequency = 12;
+
+  // compliance_level is the compliance level
+  string compliance_level = 13;
+
+  // risk_tolerance is the risk tolerance
+  string risk_tolerance = 14;
+
+  // investment_profile is the investment profile
+  map<string, string> investment_profile = 15;
+
+  // tax_planning_enabled indicates if tax planning is enabled
+  bool tax_planning_enabled = 16;
+
+  // audit_preparation_enabled indicates if audit preparation is enabled
+  bool audit_preparation_enabled = 17;
+
+  // document_management_enabled indicates if document management is enabled
+  bool document_management_enabled = 18;
+
+  // integration_preferences are integration preferences
+  map<string, string> integration_preferences = 19;
+
+  // backup_preferences are backup preferences
+  map<string, string> backup_preferences = 20;
+}
+
+// MsgUpdateUserTaxProfileResponse defines the response to MsgUpdateUserTaxProfile
+message MsgUpdateUserTaxProfileResponse {
+  // update_successful indicates if update was successful
+  bool update_successful = 1;
+
+  // profile_version is the profile version
+  string profile_version = 2;
+
+  // effective_date is the effective date
+  int64 effective_date = 3;
+
+  // optimization_recommendations are optimization recommendations
+  repeated string optimization_recommendations = 4;
+
+  // compliance_status is the compliance status
+  string compliance_status = 5;
+
+  // estimated_tax_savings is the estimated tax savings
+  cosmos.base.v1beta1.Coin estimated_tax_savings = 6 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // next_review_date is the next review date
+  int64 next_review_date = 7;
+
+  // configuration_warnings are configuration warnings
+  repeated string configuration_warnings = 8;
+
+  // feature_availability is the feature availability
+  map<string, string> feature_availability = 9;
+
+  // integration_status is the integration status
+  map<string, string> integration_status = 10;
+
+  // backup_status is the backup status
+  string backup_status = 11;
+
+  // security_level is the security level
+  string security_level = 12;
+
+  // support_level is the support level
+  string support_level = 13;
+
+  // training_recommendations are training recommendations
+  repeated string training_recommendations = 14;
+
+  // additional_services are additional services available
+  repeated string additional_services = 15;
+}
+
+// MsgCreateTaxHoliday defines a message to create tax holiday
+message MsgCreateTaxHoliday {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "deshchain/MsgCreateTaxHoliday";
+
+  // authority is the address with authority to create tax holiday
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // tax_holiday is the tax holiday details
+  TaxHolidayPeriod tax_holiday = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // budget_impact is the budget impact
+  cosmos.base.v1beta1.Coin budget_impact = 3 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // stakeholder_approvals are stakeholder approvals
+  repeated string stakeholder_approvals = 4;
+
+  // economic_justification is the economic justification
+  string economic_justification = 5;
+
+  // expected_outcomes are expected outcomes
+  repeated string expected_outcomes = 6;
+
+  // success_metrics are success metrics
+  repeated string success_metrics = 7;
+
+  // monitoring_plan is the monitoring plan
+  string monitoring_plan = 8;
+
+  // communication_plan is the communication plan
+  string communication_plan = 9;
+
+  // implementation_timeline is the implementation timeline
+  string implementation_timeline = 10;
+
+  // rollback_plan is the rollback plan
+  string rollback_plan = 11;
+
+  // risk_assessment is the risk assessment
+  string risk_assessment = 12;
+
+  // compliance_check is the compliance check
+  string compliance_check = 13;
+
+  // legal_review is the legal review
+  string legal_review = 14;
+
+  // public_consultation is the public consultation
+  string public_consultation = 15;
+}
+
+// MsgCreateTaxHolidayResponse defines the response to MsgCreateTaxHoliday
+message MsgCreateTaxHolidayResponse {
+  // holiday_id is the holiday ID
+  string holiday_id = 1;
+
+  // creation_successful indicates if creation was successful
+  bool creation_successful = 2;
+
+  // effective_date is the effective date
+  int64 effective_date = 3;
+
+  // approval_status is the approval status
+  string approval_status = 4;
+
+  // budget_approved is the approved budget
+  cosmos.base.v1beta1.Coin budget_approved = 5 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // monitoring_dashboard_url is the monitoring dashboard URL
+  string monitoring_dashboard_url = 6;
+
+  // public_announcement_date is the public announcement date
+  int64 public_announcement_date = 7;
+
+  // implementation_checklist is the implementation checklist
+  repeated string implementation_checklist = 8;
+
+  // stakeholder_notifications are stakeholder notifications
+  repeated string stakeholder_notifications = 9;
+
+  // compliance_requirements are compliance requirements
+  repeated string compliance_requirements = 10;
+
+  // reporting_schedule is the reporting schedule
+  string reporting_schedule = 11;
+
+  // review_schedule is the review schedule
+  string review_schedule = 12;
+
+  // success_criteria are success criteria
+  repeated string success_criteria = 13;
+
+  // risk_mitigation_plan is the risk mitigation plan
+  string risk_mitigation_plan = 14;
+
+  // communication_materials are communication materials
+  repeated string communication_materials = 15;
+}
+
+// MsgOptimizeTaxCalculation defines a message to optimize tax calculation
+message MsgOptimizeTaxCalculation {
+  option (cosmos.msg.v1.signer) = "user";
+  option (amino.name) = "deshchain/MsgOptimizeTaxCalculation";
+
+  // user is the user address
+  string user = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // transaction_hash is the transaction hash
+  string transaction_hash = 2;
+
+  // optimization_type is the optimization type
+  string optimization_type = 3;
+
+  // optimization_parameters are optimization parameters
+  map<string, string> optimization_parameters = 4;
+
+  // constraints are constraints
+  repeated string constraints = 5;
+
+  // preferences are preferences
+  map<string, string> preferences = 6;
+
+  // time_horizon is the time horizon
+  string time_horizon = 7;
+
+  // risk_tolerance is the risk tolerance
+  string risk_tolerance = 8;
+
+  // compliance_level is the compliance level
+  string compliance_level = 9;
+
+  // performance_metrics are performance metrics
+  repeated string performance_metrics = 10;
+
+  // benchmark_comparison is the benchmark comparison
+  string benchmark_comparison = 11;
+
+  // scenario_analysis is the scenario analysis
+  string scenario_analysis = 12;
+
+  // sensitivity_analysis is the sensitivity analysis
+  string sensitivity_analysis = 13;
+
+  // monte_carlo_simulation is the monte carlo simulation
+  string monte_carlo_simulation = 14;
+
+  // machine_learning_model is the machine learning model
+  string machine_learning_model = 15;
+}
+
+// MsgOptimizeTaxCalculationResponse defines the response to MsgOptimizeTaxCalculation
+message MsgOptimizeTaxCalculationResponse {
+  // optimization_id is the optimization ID
+  string optimization_id = 1;
+
+  // optimization_successful indicates if optimization was successful
+  bool optimization_successful = 2;
+
+  // original_tax_amount is the original tax amount
+  cosmos.base.v1beta1.Coin original_tax_amount = 3 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // optimized_tax_amount is the optimized tax amount
+  cosmos.base.v1beta1.Coin optimized_tax_amount = 4 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // savings_amount is the savings amount
+  cosmos.base.v1beta1.Coin savings_amount = 5 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  // savings_percentage is the savings percentage
+  string savings_percentage = 6;
+
+  // optimization_strategy is the optimization strategy
+  string optimization_strategy = 7;
+
+  // applied_discounts are applied discounts
+  repeated string applied_discounts = 8;
+
+  // applied_incentives are applied incentives
+  repeated string applied_incentives = 9;
+
+  // optimization_score is the optimization score
+  string optimization_score = 10;
+
+  // performance_metrics are performance metrics
+  map<string, string> performance_metrics = 11;
+
+  // risk_assessment is the risk assessment
+  string risk_assessment = 12;
+
+  // compliance_check is the compliance check
+  string compliance_check = 13;
+
+  // recommendations are recommendations
+  repeated string recommendations = 14;
+
+  // alternative_strategies are alternative strategies
+  repeated string alternative_strategies = 15;
+
+  // sensitivity_analysis is the sensitivity analysis
+  map<string, string> sensitivity_analysis = 16;
+
+  // scenario_outcomes are scenario outcomes
+  map<string, string> scenario_outcomes = 17;
+
+  // confidence_level is the confidence level
+  string confidence_level = 18;
+
+  // optimization_validity is the optimization validity
+  int64 optimization_validity = 19;
+
+  // next_optimization_date is the next optimization date
+  int64 next_optimization_date = 20;
+}
+
+// MsgUpdateParams defines a message to update module parameters
+message MsgUpdateParams {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "deshchain/MsgUpdateParams";
+
+  // authority is the address with authority to update parameters
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // params are the new parameters
+  TaxParams params = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
+
+// MsgUpdateParamsResponse defines the response to MsgUpdateParams
+message MsgUpdateParamsResponse {}
