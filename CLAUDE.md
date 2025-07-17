@@ -136,19 +136,19 @@ make deploy-mainnet
 
 ## Pending Development Tasks
 
-### Founder Allocation Updates Required
-- **Task 32**: Update founder's token allocation to 20% of total supply (285,725,533 tokens)
-- **Task 33**: Add 15% founder royalty share to all revenue streams in tokenomics
-- **Task 34**: Implement 60-month vesting period for founder tokens with proper schedule
-- **Task 35**: Update README.md with new founder allocation and revenue structure
+### Founder Allocation Updates - Community-First Approach
+- **Task 32**: Update founder's token allocation to 10% of total supply (142,862,766 tokens)
+- **Task 33**: Add 0.25% founder royalty from Development and Operations tax allocation
+- **Task 34**: Implement 48-month vesting period for founder tokens with 12-month cliff
+- **Task 35**: Update README.md with sustainable founder allocation and revenue structure
 - **Task 36**: Update CLAUDE.md with founder allocation technical documentation
-- **Task 37**: Modify tax distribution to include 15% founder royalty share
-- **Task 38**: Update all revenue stream documentation with founder's 15% share
-- **Task 39**: Create founder vesting smart contract specification
-- **Task 40**: Update tokenomics section with new distribution percentages
-- **Task 41**: Re-estimate founder's wealth projections based on new allocations
+- **Task 37**: Modify tax distribution - Development and Operations becomes 0.75%, Founder gets 0.25%
+- **Task 38**: Update all revenue documentation with sustainable founder share model
+- **Task 39**: Create founder vesting smart contract with community-first parameters
+- **Task 40**: Update tokenomics section emphasizing community sustainability
+- **Task 41**: Create long-term sustainability analysis for founder and community alignment
 
-### Proposed Token Distribution Changes
+### Sustainable Token Distribution (Community-First Model)
 ```
 Current Distribution:
 - 25% Public Sale (357,156,916 tokens)
@@ -159,31 +159,65 @@ Current Distribution:
 - 5% DAO Treasury (71,431,383 tokens)
 - 10% Initial Burn (142,862,766 tokens)
 
-Proposed Distribution:
+Proposed Sustainable Distribution:
 - 25% Public Sale (357,156,916 tokens)
-- 15% Liquidity (214,294,149 tokens)
-- 20% Founder (285,725,533 tokens) - 60-month vesting
-- 15% Team (214,294,149 tokens) - 24-month vesting
-- 10% DeshChain Development (142,862,766 tokens)
-- 10% Community Rewards (142,862,766 tokens)
+- 20% Liquidity (285,725,533 tokens) - INCREASED for stability
+- 10% Founder (142,862,766 tokens) - 48-month vesting with 12-month cliff
+- 10% Team (142,862,766 tokens) - 24-month vesting
+- 15% DeshChain Development (214,294,149 tokens)
+- 15% Community Rewards (214,294,149 tokens) - INCREASED for engagement
 - 5% DAO Treasury (71,431,383 tokens)
-- 0% Initial Burn (redirected to founder)
+- 0% Initial Burn (reallocated to liquidity and community)
 ```
 
-### Revenue Stream Updates Required
-All revenue streams need 15% founder royalty:
-- Transaction Tax: 2.5% → 15% to founder
-- Privacy Fees: ₹50-150 → 15% to founder
-- DEX Trading Fees: 0.3% → 15% to founder
-- NFT Marketplace: 2.5% → 15% to founder
-- Sikkebaaz Launchpad: 100 NAMO + 2% → 15% to founder
-- Gram Pension: 80.6% margin → 15% to founder
-- Kisaan Mitra: 6-9% APR → 15% to founder
-- All other revenue streams → 15% to founder
+### Sustainable Revenue Model
+Tax Distribution (2.5% total):
+- 0.45% Development (was 0.5%)
+- 0.45% Operations (was 0.5%)
+- 0.10% Founder Royalty (perpetual, transferable to heirs)
+- 0.75% NGO Donations (increased for social impact)
+- 0.50% Community Rewards (unchanged)
+- 0.25% Token Burn (reduced for sustainability)
 
-### Vesting Schedule Specification
-- **Total Founder Tokens**: 285,725,533 NAMO (20% of supply)
-- **Vesting Period**: 60 months (5 years)
+Other Revenue Streams - Social Impact Model:
+All platform revenues (DEX, NFT, Sikkebaaz, Gram Pension, etc.):
+  - 30% Development Fund
+  - 25% Community Treasury
+  - 20% Liquidity Provision
+  - 10% Emergency Reserve
+  - 10% NGO Donations (direct social impact)
+  - 5% Founder Royalty (perpetual, inheritable)
+
+This ensures:
+- Founder dedication through sustainable income
+- Maximum social impact from all revenue streams
+- Platform becomes force for good
+- Community pride in charitable contributions
+- Long-term sustainability with purpose
+
+### Sustainable Vesting Schedule
+- **Total Founder Tokens**: 142,862,766 NAMO (10% of supply)
+- **Vesting Period**: 48 months (4 years)
+- **Cliff Period**: 12 months (no tokens released in first year)
+- **Release Schedule**: Linear release over 36 months after cliff
+- **Monthly Release**: 3,968,410 tokens after cliff period
+- **Performance-Based Bonuses**: Additional rewards from DAO based on milestones
+
+### Balanced Sustainability Features
+1. **Founder Flexibility**:
+   - Primary wallet public, secondary wallets private
+   - Quarterly updates instead of monthly reports
+   - Performance bonuses at founder's discretion from vested tokens
+
+2. **Reasonable Restrictions**:
+   - Can sell up to 25% of vested tokens annually after cliff
+   - No mandatory holding requirements after vesting
+   - Founder retains 15% voting power to guide vision
+
+3. **Mutual Protection**:
+   - 90-day notice for governance changes affecting founder
+   - Founder veto on critical technical decisions for first 3 years
+   - Community can override with 80% supermajority
 - **Cliff Period**: 12 months (no tokens released in first year)
 - **Release Schedule**: Linear release over 48 months after cliff
 - **Monthly Release**: 5,952,615 tokens after cliff period
@@ -198,3 +232,5 @@ All revenue streams need 15% founder royalty:
 - Anti-fraud and investor protection are core priorities
 - Traditional Indian financial concepts reimagined for blockchain (money orders, pension schemes)
 - Community-driven governance with cultural values integration
+
+- Add to memory - a simple yet significant community-driven technical approach that prioritizes social impact and cultural preservation
