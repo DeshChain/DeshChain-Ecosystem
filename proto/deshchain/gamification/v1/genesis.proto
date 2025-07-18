@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package deshchain.gamification.v1;
+
+import "gogoproto/gogo.proto";
+import "deshchain/gamification/v1/gamification.proto";
+import "amino/amino.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/gamification/types";
+
+// GenesisState defines the gamification module's genesis state.
+message GenesisState {
+  // params defines all the parameters of the module.
+  GamificationParams params = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  
+  // profiles contains all developer profiles
+  repeated DeveloperProfile profiles = 2 [(gogoproto.nullable) = false];
+  
+  // achievements contains all achievements
+  repeated Achievement achievements = 3 [(gogoproto.nullable) = false];
+  
+  // humor_quotes contains all humor quotes
+  repeated HumorQuote humor_quotes = 4 [(gogoproto.nullable) = false];
+  
+  // social_posts contains all social media posts
+  repeated SocialMediaPost social_posts = 5 [(gogoproto.nullable) = false];
+  
+  // team_battles contains all team battles
+  repeated TeamBattle team_battles = 6 [(gogoproto.nullable) = false];
+  
+  // daily_challenges contains all daily challenges
+  repeated DailyChallenge daily_challenges = 7 [(gogoproto.nullable) = false];
+  
+  // achievement_cards contains all achievement cards
+  repeated AchievementCard achievement_cards = 8 [(gogoproto.nullable) = false];
+  
+  // level_configs contains level configurations
+  repeated LevelConfig level_configs = 9 [(gogoproto.nullable) = false];
+  
+  // next_achievement_id is the next achievement ID to be used
+  uint64 next_achievement_id = 10;
+  
+  // next_post_id is the next social post ID to be used
+  uint64 next_post_id = 11;
+  
+  // next_battle_id is the next team battle ID to be used
+  uint64 next_battle_id = 12;
+  
+  // next_quote_id is the next humor quote ID to be used
+  uint64 next_quote_id = 13;
+  
+  // next_card_id is the next achievement card ID to be used
+  uint64 next_card_id = 14;
+}

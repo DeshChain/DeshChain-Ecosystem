@@ -1,0 +1,327 @@
+syntax = "proto3";
+
+package deshchain.governance.v1;
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+import "amino/amino.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/governance/types";
+
+// GovernanceParams defines the governance module parameters
+message GovernanceParams {
+  option (gogoproto.equal) = true;
+  option (gogoproto.goproto_stringer) = false;
+  option (amino.name) = "deshchain/x/governance/GovernanceParams";
+
+  // founder_address is the immutable founder address
+  string founder_address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // founder_minimum_voting_power is the guaranteed voting power (15%)
+  string founder_minimum_voting_power = 2;
+  
+  // founder_veto_enabled indicates if founder veto is active
+  bool founder_veto_enabled = 3;
+  
+  // founder_veto_expiry is when veto rights expire (3 years from genesis)
+  google.protobuf.Timestamp founder_veto_expiry = 4 [(gogoproto.stdtime) = true];
+  
+  // supermajority_threshold for overriding founder decisions (80%)
+  string supermajority_threshold = 5;
+  
+  // governance_change_notice_period (90 days)
+  google.protobuf.Duration governance_change_notice_period = 6 [(gogoproto.stdduration) = true];
+  
+  // proposal_deposit minimum deposit to create proposal
+  string proposal_deposit = 7;
+  
+  // voting_period duration for voting
+  google.protobuf.Duration voting_period = 8 [(gogoproto.stdduration) = true];
+}
+
+// ProtectedParameter defines parameters that cannot be changed without founder consent
+message ProtectedParameter {
+  option (gogoproto.equal) = true;
+  option (gogoproto.goproto_getters) = false;
+
+  // parameter_key is the parameter being protected
+  string parameter_key = 1;
+  
+  // protection_type defines the level of protection
+  ProtectionType protection_type = 2;
+  
+  // description of why this parameter is protected
+  string description = 3;
+}
+
+// ProtectionType defines different levels of parameter protection
+enum ProtectionType {
+  // PROTECTION_TYPE_UNSPECIFIED is invalid
+  PROTECTION_TYPE_UNSPECIFIED = 0;
+  
+  // PROTECTION_TYPE_IMMUTABLE cannot be changed ever
+  PROTECTION_TYPE_IMMUTABLE = 1;
+  
+  // PROTECTION_TYPE_FOUNDER_CONSENT requires founder approval
+  PROTECTION_TYPE_FOUNDER_CONSENT = 2;
+  
+  // PROTECTION_TYPE_SUPERMAJORITY requires 80% vote
+  PROTECTION_TYPE_SUPERMAJORITY = 3;
+  
+  // PROTECTION_TYPE_TIME_LOCKED cannot be changed for specified period
+  PROTECTION_TYPE_TIME_LOCKED = 4;
+}
+
+// ProtectedParameters is the list of all protected parameters
+message ProtectedParameters {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // protected_params is the list of protected parameters
+  repeated ProtectedParameter protected_params = 1 [(gogoproto.nullable) = false];
+}
+
+// Proposal defines a governance proposal
+message Proposal {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // proposal_id is the unique ID of the proposal
+  uint64 proposal_id = 1;
+  
+  // title of the proposal
+  string title = 2;
+  
+  // description of the proposal
+  string description = 3;
+  
+  // proposal_type is the type of proposal
+  ProposalType proposal_type = 4;
+  
+  // proposer is the address of the proposer
+  string proposer = 5 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // deposit is the deposit amount
+  string deposit = 6;
+  
+  // submit_time is when the proposal was submitted
+  google.protobuf.Timestamp submit_time = 7 [(gogoproto.stdtime) = true];
+  
+  // voting_start_time is when voting begins
+  google.protobuf.Timestamp voting_start_time = 8 [(gogoproto.stdtime) = true];
+  
+  // voting_end_time is when voting ends
+  google.protobuf.Timestamp voting_end_time = 9 [(gogoproto.stdtime) = true];
+  
+  // status is the proposal status
+  ProposalStatus status = 10;
+  
+  // founder_veto_used indicates if founder vetoed this proposal
+  bool founder_veto_used = 11;
+  
+  // requires_founder_approval indicates if this needs founder consent
+  bool requires_founder_approval = 12;
+  
+  // founder_approval_status is the founder's decision
+  FounderApprovalStatus founder_approval_status = 13;
+  
+  // affects_protected_params lists protected parameters affected
+  repeated string affects_protected_params = 14;
+}
+
+// ProposalType defines types of proposals
+enum ProposalType {
+  // PROPOSAL_TYPE_UNSPECIFIED is invalid
+  PROPOSAL_TYPE_UNSPECIFIED = 0;
+  
+  // PROPOSAL_TYPE_PARAMETER_CHANGE changes module parameters
+  PROPOSAL_TYPE_PARAMETER_CHANGE = 1;
+  
+  // PROPOSAL_TYPE_SOFTWARE_UPGRADE upgrades the chain
+  PROPOSAL_TYPE_SOFTWARE_UPGRADE = 2;
+  
+  // PROPOSAL_TYPE_COMMUNITY_SPEND spends from community pool
+  PROPOSAL_TYPE_COMMUNITY_SPEND = 3;
+  
+  // PROPOSAL_TYPE_REVENUE_DISTRIBUTION changes revenue distribution
+  PROPOSAL_TYPE_REVENUE_DISTRIBUTION = 4;
+  
+  // PROPOSAL_TYPE_TAX_ADJUSTMENT adjusts tax parameters
+  PROPOSAL_TYPE_TAX_ADJUSTMENT = 5;
+  
+  // PROPOSAL_TYPE_FOUNDER_RELATED affects founder rights
+  PROPOSAL_TYPE_FOUNDER_RELATED = 6;
+}
+
+// ProposalStatus defines the status of a proposal
+enum ProposalStatus {
+  // PROPOSAL_STATUS_UNSPECIFIED is invalid
+  PROPOSAL_STATUS_UNSPECIFIED = 0;
+  
+  // PROPOSAL_STATUS_DEPOSIT_PERIOD is initial deposit period
+  PROPOSAL_STATUS_DEPOSIT_PERIOD = 1;
+  
+  // PROPOSAL_STATUS_VOTING_PERIOD is the voting period
+  PROPOSAL_STATUS_VOTING_PERIOD = 2;
+  
+  // PROPOSAL_STATUS_PASSED proposal passed
+  PROPOSAL_STATUS_PASSED = 3;
+  
+  // PROPOSAL_STATUS_REJECTED proposal rejected
+  PROPOSAL_STATUS_REJECTED = 4;
+  
+  // PROPOSAL_STATUS_FAILED proposal failed
+  PROPOSAL_STATUS_FAILED = 5;
+  
+  // PROPOSAL_STATUS_VETOED proposal vetoed by founder
+  PROPOSAL_STATUS_VETOED = 6;
+  
+  // PROPOSAL_STATUS_AWAITING_FOUNDER awaiting founder approval
+  PROPOSAL_STATUS_AWAITING_FOUNDER = 7;
+}
+
+// FounderApprovalStatus defines founder's decision on proposals
+enum FounderApprovalStatus {
+  // FOUNDER_APPROVAL_STATUS_UNSPECIFIED not yet decided
+  FOUNDER_APPROVAL_STATUS_UNSPECIFIED = 0;
+  
+  // FOUNDER_APPROVAL_STATUS_APPROVED founder approved
+  FOUNDER_APPROVAL_STATUS_APPROVED = 1;
+  
+  // FOUNDER_APPROVAL_STATUS_REJECTED founder rejected
+  FOUNDER_APPROVAL_STATUS_REJECTED = 2;
+  
+  // FOUNDER_APPROVAL_STATUS_ABSTAINED founder abstained
+  FOUNDER_APPROVAL_STATUS_ABSTAINED = 3;
+}
+
+// Vote defines a vote on a proposal
+message Vote {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // proposal_id is the ID of the proposal
+  uint64 proposal_id = 1;
+  
+  // voter is the address of the voter
+  string voter = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // option is the vote option
+  VoteOption option = 3;
+  
+  // voting_power is the voting power of this vote
+  string voting_power = 4;
+}
+
+// VoteOption defines voting options
+enum VoteOption {
+  // VOTE_OPTION_UNSPECIFIED is invalid
+  VOTE_OPTION_UNSPECIFIED = 0;
+  
+  // VOTE_OPTION_YES is a yes vote
+  VOTE_OPTION_YES = 1;
+  
+  // VOTE_OPTION_NO is a no vote
+  VOTE_OPTION_NO = 2;
+  
+  // VOTE_OPTION_ABSTAIN is an abstain vote
+  VOTE_OPTION_ABSTAIN = 3;
+  
+  // VOTE_OPTION_NO_WITH_VETO is a no with veto vote
+  VOTE_OPTION_NO_WITH_VETO = 4;
+}
+
+// FounderRights defines the founder's special governance rights
+message FounderRights {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // guaranteed_voting_power is the minimum voting power (15%)
+  string guaranteed_voting_power = 1;
+  
+  // veto_power indicates if founder has veto
+  bool veto_power = 2;
+  
+  // veto_expiry is when veto power expires
+  google.protobuf.Timestamp veto_expiry = 3 [(gogoproto.stdtime) = true];
+  
+  // protected_allocations lists allocations that cannot be changed
+  repeated string protected_allocations = 4;
+  
+  // protected_royalties lists royalties that cannot be changed
+  repeated string protected_royalties = 5;
+  
+  // emergency_powers allows founder to act in emergencies
+  bool emergency_powers = 6;
+  
+  // technical_decision_authority for first 3 years
+  bool technical_decision_authority = 7;
+}
+
+// ImmutableFounderProtections defines protections that can never be changed
+message ImmutableFounderProtections {
+  option (gogoproto.equal) = true;
+  option (gogoproto.goproto_getters) = false;
+
+  // founder_token_allocation_protected ensures 10% allocation
+  bool founder_token_allocation_protected = 1;
+  
+  // founder_tax_royalty_protected ensures 0.10% tax royalty
+  bool founder_tax_royalty_protected = 2;
+  
+  // founder_platform_royalty_protected ensures 5% platform royalty
+  bool founder_platform_royalty_protected = 3;
+  
+  // inheritance_mechanism_protected ensures royalties are inheritable
+  bool inheritance_mechanism_protected = 4;
+  
+  // minimum_voting_power_protected ensures 15% voting power
+  bool minimum_voting_power_protected = 5;
+  
+  // protection_removal_forbidden prevents removing these protections
+  bool protection_removal_forbidden = 6;
+}
+
+// EmergencyAction defines actions founder can take in emergencies
+message EmergencyAction {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // action_id is the unique ID
+  uint64 action_id = 1;
+  
+  // action_type is the type of emergency action
+  EmergencyActionType action_type = 2;
+  
+  // description of the emergency
+  string description = 3;
+  
+  // executed_by must be founder address
+  string executed_by = 4 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // execution_time is when action was taken
+  google.protobuf.Timestamp execution_time = 5 [(gogoproto.stdtime) = true];
+  
+  // reversal_proposal_id if community wants to reverse
+  uint64 reversal_proposal_id = 6;
+}
+
+// EmergencyActionType defines types of emergency actions
+enum EmergencyActionType {
+  // EMERGENCY_ACTION_TYPE_UNSPECIFIED is invalid
+  EMERGENCY_ACTION_TYPE_UNSPECIFIED = 0;
+  
+  // EMERGENCY_ACTION_TYPE_HALT_CHAIN halts the chain
+  EMERGENCY_ACTION_TYPE_HALT_CHAIN = 1;
+  
+  // EMERGENCY_ACTION_TYPE_FREEZE_MODULE freezes a module
+  EMERGENCY_ACTION_TYPE_FREEZE_MODULE = 2;
+  
+  // EMERGENCY_ACTION_TYPE_ROLLBACK_UPGRADE rolls back an upgrade
+  EMERGENCY_ACTION_TYPE_ROLLBACK_UPGRADE = 3;
+  
+  // EMERGENCY_ACTION_TYPE_PATCH_VULNERABILITY patches security issue
+  EMERGENCY_ACTION_TYPE_PATCH_VULNERABILITY = 4;
+}

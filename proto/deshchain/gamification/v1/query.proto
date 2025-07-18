@@ -1,0 +1,207 @@
+syntax = "proto3";
+
+package deshchain.gamification.v1;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "deshchain/gamification/v1/gamification.proto";
+import "amino/amino.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/gamification/types";
+
+// Query defines the gRPC query service.
+service Query {
+  // Params queries the parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/deshchain/gamification/v1/params";
+  }
+  
+  // Profile queries a developer profile by address
+  rpc Profile(QueryProfileRequest) returns (QueryProfileResponse) {
+    option (google.api.http).get = "/deshchain/gamification/v1/profile/{address}";
+  }
+  
+  // Achievements queries all achievements
+  rpc Achievements(QueryAchievementsRequest) returns (QueryAchievementsResponse) {
+    option (google.api.http).get = "/deshchain/gamification/v1/achievements";
+  }
+  
+  // Achievement queries a specific achievement
+  rpc Achievement(QueryAchievementRequest) returns (QueryAchievementResponse) {
+    option (google.api.http).get = "/deshchain/gamification/v1/achievement/{achievement_id}";
+  }
+  
+  // Leaderboard queries the leaderboard
+  rpc Leaderboard(QueryLeaderboardRequest) returns (QueryLeaderboardResponse) {
+    option (google.api.http).get = "/deshchain/gamification/v1/leaderboard/{leaderboard_type}";
+  }
+  
+  // DailyChallenge queries the current daily challenge
+  rpc DailyChallenge(QueryDailyChallengeRequest) returns (QueryDailyChallengeResponse) {
+    option (google.api.http).get = "/deshchain/gamification/v1/daily_challenge";
+  }
+  
+  // TeamBattles queries all active team battles
+  rpc TeamBattles(QueryTeamBattlesRequest) returns (QueryTeamBattlesResponse) {
+    option (google.api.http).get = "/deshchain/gamification/v1/team_battles";
+  }
+  
+  // TeamBattle queries a specific team battle
+  rpc TeamBattle(QueryTeamBattleRequest) returns (QueryTeamBattleResponse) {
+    option (google.api.http).get = "/deshchain/gamification/v1/team_battle/{battle_id}";
+  }
+  
+  // ProfileByUsername queries a profile by GitHub username
+  rpc ProfileByUsername(QueryProfileByUsernameRequest) returns (QueryProfileByUsernameResponse) {
+    option (google.api.http).get = "/deshchain/gamification/v1/profile/username/{username}";
+  }
+  
+  // SocialPosts queries social media posts
+  rpc SocialPosts(QuerySocialPostsRequest) returns (QuerySocialPostsResponse) {
+    option (google.api.http).get = "/deshchain/gamification/v1/social_posts";
+  }
+  
+  // HumorQuotes queries humor quotes
+  rpc HumorQuotes(QueryHumorQuotesRequest) returns (QueryHumorQuotesResponse) {
+    option (google.api.http).get = "/deshchain/gamification/v1/humor_quotes";
+  }
+  
+  // LevelConfig queries level configuration
+  rpc LevelConfig(QueryLevelConfigRequest) returns (QueryLevelConfigResponse) {
+    option (google.api.http).get = "/deshchain/gamification/v1/level_config/{level}";
+  }
+}
+
+// QueryParamsRequest is the request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is the response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  GamificationParams params = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryProfileRequest is the request type for the Query/Profile RPC method.
+message QueryProfileRequest {
+  string address = 1;
+}
+
+// QueryProfileResponse is the response type for the Query/Profile RPC method.
+message QueryProfileResponse {
+  DeveloperProfile profile = 1;
+}
+
+// QueryAchievementsRequest is the request type for the Query/Achievements RPC method.
+message QueryAchievementsRequest {
+  AchievementCategory category = 1;
+  RarityLevel rarity = 2;
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
+}
+
+// QueryAchievementsResponse is the response type for the Query/Achievements RPC method.
+message QueryAchievementsResponse {
+  repeated Achievement achievements = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryAchievementRequest is the request type for the Query/Achievement RPC method.
+message QueryAchievementRequest {
+  uint64 achievement_id = 1;
+}
+
+// QueryAchievementResponse is the response type for the Query/Achievement RPC method.
+message QueryAchievementResponse {
+  Achievement achievement = 1;
+}
+
+// QueryLeaderboardRequest is the request type for the Query/Leaderboard RPC method.
+message QueryLeaderboardRequest {
+  string leaderboard_type = 1; // global, weekly, monthly, category
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+// QueryLeaderboardResponse is the response type for the Query/Leaderboard RPC method.
+message QueryLeaderboardResponse {
+  repeated LeaderboardEntry entries = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryDailyChallengeRequest is the request type for the Query/DailyChallenge RPC method.
+message QueryDailyChallengeRequest {
+  string date = 1; // Optional: specific date, defaults to today
+}
+
+// QueryDailyChallengeResponse is the response type for the Query/DailyChallenge RPC method.
+message QueryDailyChallengeResponse {
+  DailyChallenge challenge = 1;
+}
+
+// QueryTeamBattlesRequest is the request type for the Query/TeamBattles RPC method.
+message QueryTeamBattlesRequest {
+  bool active_only = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+// QueryTeamBattlesResponse is the response type for the Query/TeamBattles RPC method.
+message QueryTeamBattlesResponse {
+  repeated TeamBattle battles = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryTeamBattleRequest is the request type for the Query/TeamBattle RPC method.
+message QueryTeamBattleRequest {
+  uint64 battle_id = 1;
+}
+
+// QueryTeamBattleResponse is the response type for the Query/TeamBattle RPC method.
+message QueryTeamBattleResponse {
+  TeamBattle battle = 1;
+}
+
+// QueryProfileByUsernameRequest is the request type for the Query/ProfileByUsername RPC method.
+message QueryProfileByUsernameRequest {
+  string username = 1;
+}
+
+// QueryProfileByUsernameResponse is the response type for the Query/ProfileByUsername RPC method.
+message QueryProfileByUsernameResponse {
+  DeveloperProfile profile = 1;
+}
+
+// QuerySocialPostsRequest is the request type for the Query/SocialPosts RPC method.
+message QuerySocialPostsRequest {
+  string developer_address = 1;
+  SocialPlatform platform = 2;
+  bool viral_only = 3;
+  cosmos.base.query.v1beta1.PageRequest pagination = 4;
+}
+
+// QuerySocialPostsResponse is the response type for the Query/SocialPosts RPC method.
+message QuerySocialPostsResponse {
+  repeated SocialMediaPost posts = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryHumorQuotesRequest is the request type for the Query/HumorQuotes RPC method.
+message QueryHumorQuotesRequest {
+  QuoteType quote_type = 1;
+  AchievementCategory category = 2;
+  bool family_friendly_only = 3;
+  cosmos.base.query.v1beta1.PageRequest pagination = 4;
+}
+
+// QueryHumorQuotesResponse is the response type for the Query/HumorQuotes RPC method.
+message QueryHumorQuotesResponse {
+  repeated HumorQuote quotes = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryLevelConfigRequest is the request type for the Query/LevelConfig RPC method.
+message QueryLevelConfigRequest {
+  uint32 level = 1;
+}
+
+// QueryLevelConfigResponse is the response type for the Query/LevelConfig RPC method.
+message QueryLevelConfigResponse {
+  LevelConfig config = 1;
+}

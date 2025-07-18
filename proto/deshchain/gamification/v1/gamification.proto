@@ -1,0 +1,536 @@
+syntax = "proto3";
+
+package deshchain.gamification.v1;
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+import "google/protobuf/timestamp.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "amino/amino.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/gamification/types";
+
+// DeveloperAvatar represents the Bollywood-style developer characters
+message DeveloperAvatar {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // avatar_type is the character type
+  AvatarType avatar_type = 1;
+  
+  // name is the Bollywood-style name
+  string name = 2;
+  
+  // title is like "Bug Buster Bahubali"
+  string title = 3;
+  
+  // signature_quote is their famous dialogue
+  string signature_quote = 4;
+  
+  // special_move is their unique ability
+  string special_move = 5;
+  
+  // reward_multiplier for this avatar's specialty
+  string reward_multiplier = 6;
+  
+  // icon_url for avatar image
+  string icon_url = 7;
+  
+  // style_description like "Dhoni Style" or "SRK Style"
+  string style_description = 8;
+}
+
+// AvatarType defines the different developer character types
+enum AvatarType {
+  AVATAR_TYPE_UNSPECIFIED = 0;
+  AVATAR_TYPE_BUG_BUSTER_BAHUBALI = 1;     // 2x for bug fixes
+  AVATAR_TYPE_FEATURE_KHAN = 2;            // 3x for features
+  AVATAR_TYPE_DOCUMENTATION_RAJNI = 3;     // 2x for docs
+  AVATAR_TYPE_SPEED_SULTAN = 4;            // 4x for performance
+  AVATAR_TYPE_COMMIT_KUMAR = 5;            // Bonus for consistency
+}
+
+// DeveloperProfile represents a developer's complete gaming profile
+message DeveloperProfile {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // address is the developer's blockchain address
+  string address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // github_username for integration
+  string github_username = 2;
+  
+  // active_avatar is their current character
+  AvatarType active_avatar = 3;
+  
+  // level is their current level (1-100)
+  uint32 level = 4;
+  
+  // experience_points towards next level
+  uint64 experience_points = 5;
+  
+  // total_earnings in NAMO
+  cosmos.base.v1beta1.Coin total_earnings = 6 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  
+  // achievements_unlocked list
+  repeated uint64 achievements_unlocked = 7;
+  
+  // current_streak_days for commits
+  uint32 current_streak_days = 8;
+  
+  // longest_streak_days record
+  uint32 longest_streak_days = 9;
+  
+  // total_commits made
+  uint64 total_commits = 10;
+  
+  // total_bugs_fixed count
+  uint64 total_bugs_fixed = 11;
+  
+  // total_features_shipped count
+  uint64 total_features_shipped = 12;
+  
+  // total_docs_written count
+  uint64 total_docs_written = 13;
+  
+  // performance_improvements count
+  uint64 performance_improvements = 14;
+  
+  // leaderboard_rank current position
+  uint64 leaderboard_rank = 15;
+  
+  // social_media_handles for posting
+  SocialMediaHandles social_media_handles = 16;
+  
+  // preferred_language for quotes (Hindi/English)
+  string preferred_language = 17;
+  
+  // region for regional humor (Mumbai/Delhi/Bangalore/etc)
+  string region = 18;
+  
+  // joined_date when started
+  google.protobuf.Timestamp joined_date = 19 [(gogoproto.stdtime) = true];
+  
+  // last_active when last contributed
+  google.protobuf.Timestamp last_active = 20 [(gogoproto.stdtime) = true];
+  
+  // favorite_quotes they've collected
+  repeated uint64 favorite_quote_ids = 21;
+  
+  // viral_posts_count that got shared
+  uint32 viral_posts_count = 22;
+  
+  // humor_preference style
+  HumorPreference humor_preference = 23;
+}
+
+// SocialMediaHandles for cross-posting achievements
+message SocialMediaHandles {
+  string twitter = 1;
+  string discord = 2;
+  string telegram = 3;
+  string instagram = 4;
+  string linkedin = 5;
+}
+
+// HumorPreference for personalized jokes
+enum HumorPreference {
+  HUMOR_PREFERENCE_UNSPECIFIED = 0;
+  HUMOR_PREFERENCE_BOLLYWOOD = 1;      // SRK, Salman, Amitabh dialogues
+  HUMOR_PREFERENCE_CRICKET = 2;        // IPL commentary style
+  HUMOR_PREFERENCE_SOUTH_INDIAN = 3;   // Rajini, Allu Arjun style
+  HUMOR_PREFERENCE_COMEDY = 4;         // Munna Bhai, Golmaal style
+  HUMOR_PREFERENCE_MIXED = 5;          // Everything mixed
+}
+
+// Achievement represents a gamification achievement
+message Achievement {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // achievement_id unique identifier
+  uint64 achievement_id = 1;
+  
+  // name like "Dilwale Developer Le Jayenge"
+  string name = 2;
+  
+  // description of what to do
+  string description = 3;
+  
+  // category of achievement
+  AchievementCategory category = 4;
+  
+  // required_value to unlock (e.g., 100 PRs)
+  uint64 required_value = 5;
+  
+  // reward_amount in NAMO
+  cosmos.base.v1beta1.Coin reward_amount = 6 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  
+  // xp_reward for leveling up
+  uint64 xp_reward = 7;
+  
+  // badge_image_url for display
+  string badge_image_url = 8;
+  
+  // unlock_quote special dialogue when achieved
+  string unlock_quote = 9;
+  
+  // rarity_level of achievement
+  RarityLevel rarity_level = 10;
+  
+  // is_secret hidden until unlocked
+  bool is_secret = 11;
+  
+  // prerequisite_achievements that must be done first
+  repeated uint64 prerequisite_achievements = 12;
+}
+
+// AchievementCategory types
+enum AchievementCategory {
+  ACHIEVEMENT_CATEGORY_UNSPECIFIED = 0;
+  ACHIEVEMENT_CATEGORY_COMMITS = 1;
+  ACHIEVEMENT_CATEGORY_BUG_FIXES = 2;
+  ACHIEVEMENT_CATEGORY_FEATURES = 3;
+  ACHIEVEMENT_CATEGORY_DOCUMENTATION = 4;
+  ACHIEVEMENT_CATEGORY_PERFORMANCE = 5;
+  ACHIEVEMENT_CATEGORY_STREAK = 6;
+  ACHIEVEMENT_CATEGORY_SOCIAL = 7;
+  ACHIEVEMENT_CATEGORY_SPECIAL = 8;
+}
+
+// RarityLevel for achievements
+enum RarityLevel {
+  RARITY_LEVEL_UNSPECIFIED = 0;
+  RARITY_LEVEL_COMMON = 1;      // Bronze
+  RARITY_LEVEL_RARE = 2;        // Silver
+  RARITY_LEVEL_EPIC = 3;        // Gold
+  RARITY_LEVEL_LEGENDARY = 4;   // Diamond
+  RARITY_LEVEL_MYTHIC = 5;      // Only few can achieve
+}
+
+// HumorQuote represents a funny quote from the database
+message HumorQuote {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // quote_id unique identifier
+  uint64 quote_id = 1;
+  
+  // quote_type category
+  QuoteType quote_type = 2;
+  
+  // text in Hindi/English
+  string text = 3;
+  
+  // english_translation if Hindi
+  string english_translation = 4;
+  
+  // source like "3 Idiots" or "MS Dhoni"
+  string source = 5;
+  
+  // character who said it
+  string character = 6;
+  
+  // suitable_for which achievements
+  repeated AchievementCategory suitable_for = 7;
+  
+  // usage_count how many times used
+  uint64 usage_count = 8;
+  
+  // viral_score based on shares
+  uint32 viral_score = 9;
+  
+  // is_family_friendly safe for uncles
+  bool is_family_friendly = 10;
+  
+  // regional_tags like "Mumbai", "Punjab"
+  repeated string regional_tags = 11;
+}
+
+// QuoteType categories
+enum QuoteType {
+  QUOTE_TYPE_UNSPECIFIED = 0;
+  QUOTE_TYPE_BOLLYWOOD_DIALOGUE = 1;
+  QUOTE_TYPE_CRICKET_COMMENTARY = 2;
+  QUOTE_TYPE_SOUTH_INDIAN_SUPERSTAR = 3;
+  QUOTE_TYPE_COMEDY_PUNCHLINE = 4;
+  QUOTE_TYPE_CODING_PARODY = 5;
+  QUOTE_TYPE_MOTIVATIONAL_FILMY = 6;
+}
+
+// SocialMediaPost represents a generated post
+message SocialMediaPost {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // post_id unique identifier
+  uint64 post_id = 1;
+  
+  // developer_address who achieved
+  string developer_address = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // achievement_id that triggered post
+  uint64 achievement_id = 3;
+  
+  // platform where posted
+  SocialPlatform platform = 4;
+  
+  // content of the post
+  string content = 5;
+  
+  // image_url if poster generated
+  string image_url = 6;
+  
+  // hashtags used
+  repeated string hashtags = 7;
+  
+  // mentions of other users
+  repeated string mentions = 8;
+  
+  // post_time when posted
+  google.protobuf.Timestamp post_time = 9 [(gogoproto.stdtime) = true];
+  
+  // engagement_metrics tracking
+  EngagementMetrics engagement_metrics = 10;
+  
+  // quote_ids used in post
+  repeated uint64 quote_ids = 11;
+}
+
+// SocialPlatform types
+enum SocialPlatform {
+  SOCIAL_PLATFORM_UNSPECIFIED = 0;
+  SOCIAL_PLATFORM_TWITTER = 1;
+  SOCIAL_PLATFORM_DISCORD = 2;
+  SOCIAL_PLATFORM_TELEGRAM = 3;
+  SOCIAL_PLATFORM_INSTAGRAM = 4;
+  SOCIAL_PLATFORM_WHATSAPP = 5;
+  SOCIAL_PLATFORM_LINKEDIN = 6;
+}
+
+// EngagementMetrics for tracking viral posts
+message EngagementMetrics {
+  uint32 likes = 1;
+  uint32 shares = 2;
+  uint32 comments = 3;
+  uint32 views = 4;
+  uint32 clicks = 5;
+  bool is_viral = 6;  // If crossed threshold
+}
+
+// Leaderboard entry
+message LeaderboardEntry {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // rank position
+  uint64 rank = 1;
+  
+  // developer_address
+  string developer_address = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // github_username for display
+  string github_username = 3;
+  
+  // level achieved
+  uint32 level = 4;
+  
+  // total_xp earned
+  uint64 total_xp = 5;
+  
+  // total_earnings in NAMO
+  cosmos.base.v1beta1.Coin total_earnings = 6 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  
+  // active_avatar character
+  AvatarType active_avatar = 7;
+  
+  // special_title earned
+  string special_title = 8;
+  
+  // achievements_count
+  uint32 achievements_count = 9;
+  
+  // current_streak
+  uint32 current_streak = 10;
+}
+
+// LevelConfig defines XP requirements for each level
+message LevelConfig {
+  uint32 level = 1;
+  uint64 xp_required = 2;
+  string title = 3;  // Like "Junior Hero", "Superstar Coder"
+  string unlock_quote = 4;
+  cosmos.base.v1beta1.Coin bonus_reward = 5 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
+
+// GamificationParams module parameters
+message GamificationParams {
+  option (gogoproto.equal) = true;
+  option (amino.name) = "deshchain/x/gamification/Params";
+
+  // enable_gamification toggle
+  bool enable_gamification = 1;
+  
+  // base_xp_per_commit
+  uint64 base_xp_per_commit = 2;
+  
+  // base_xp_per_bug_fix
+  uint64 base_xp_per_bug_fix = 3;
+  
+  // base_xp_per_feature
+  uint64 base_xp_per_feature = 4;
+  
+  // base_xp_per_doc
+  uint64 base_xp_per_doc = 5;
+  
+  // streak_bonus_multiplier
+  string streak_bonus_multiplier = 6;
+  
+  // viral_threshold for posts
+  uint32 viral_threshold = 7;
+  
+  // enable_social_posting
+  bool enable_social_posting = 8;
+  
+  // max_daily_achievements
+  uint32 max_daily_achievements = 9;
+  
+  // quote_refresh_hours
+  uint32 quote_refresh_hours = 10;
+}
+
+// DailyChallenge for extra engagement
+message DailyChallenge {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // challenge_date
+  google.protobuf.Timestamp challenge_date = 1 [(gogoproto.stdtime) = true];
+  
+  // challenge_type
+  string challenge_type = 2;
+  
+  // description with movie reference
+  string description = 3;
+  
+  // target_value to achieve
+  uint64 target_value = 4;
+  
+  // reward for completion
+  cosmos.base.v1beta1.Coin reward = 5 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  
+  // participants who joined
+  repeated string participants = 6;
+  
+  // winners who completed
+  repeated string winners = 7;
+  
+  // theme_quote for the day
+  string theme_quote = 8;
+}
+
+// TeamBattle for group competitions
+message TeamBattle {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // battle_id unique identifier
+  uint64 battle_id = 1;
+  
+  // team_1_name like "Chennai Super Coders"
+  string team_1_name = 2;
+  
+  // team_2_name like "Mumbai Indians Developers"
+  string team_2_name = 3;
+  
+  // team_1_members addresses
+  repeated string team_1_members = 4;
+  
+  // team_2_members addresses
+  repeated string team_2_members = 5;
+  
+  // battle_type what they compete on
+  string battle_type = 6;
+  
+  // start_time of battle
+  google.protobuf.Timestamp start_time = 7 [(gogoproto.stdtime) = true];
+  
+  // end_time of battle
+  google.protobuf.Timestamp end_time = 8 [(gogoproto.stdtime) = true];
+  
+  // team_1_score current
+  uint64 team_1_score = 9;
+  
+  // team_2_score current
+  uint64 team_2_score = 10;
+  
+  // prize_pool in NAMO
+  cosmos.base.v1beta1.Coin prize_pool = 11 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  
+  // commentary_quotes IPL style updates
+  repeated string commentary_quotes = 12;
+}
+
+// AchievementCard for movie poster style display
+message AchievementCard {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // card_id unique
+  uint64 card_id = 1;
+  
+  // developer_address owner
+  string developer_address = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // achievement_id unlocked
+  uint64 achievement_id = 3;
+  
+  // movie_title parody like "Dilwale Developer Le Jayenge"
+  string movie_title = 4;
+  
+  // tag_line like "A Love Story Between Developer and Code"
+  string tag_line = 5;
+  
+  // starring_text like "Starring: @username as The Bug Buster"
+  string starring_text = 6;
+  
+  // box_office_text like "Box Office: ₹50,000 NAMO Collected"
+  string box_office_text = 7;
+  
+  // director_text like "Directed by: GitHub Actions"
+  string director_text = 8;
+  
+  // release_date when achieved
+  google.protobuf.Timestamp release_date = 9 [(gogoproto.stdtime) = true];
+  
+  // poster_image_url generated image
+  string poster_image_url = 10;
+  
+  // critic_reviews funny fake reviews
+  repeated string critic_reviews = 11;
+  
+  // is_nft if minted as NFT
+  bool is_nft = 12;
+  
+  // share_count times shared
+  uint32 share_count = 13;
+}

@@ -1,0 +1,179 @@
+syntax = "proto3";
+package deshchain.royalty.v1;
+
+option go_package = "github.com/deshchain/deshchain/x/royalty/types";
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos_proto/cosmos.proto";
+import "google/protobuf/timestamp.proto";
+
+// RoyaltyConfig represents the main royalty configuration
+message RoyaltyConfig {
+  // Current beneficiary who receives royalties
+  string beneficiary = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // Backup beneficiaries for inheritance (in order of priority)
+  repeated string backup_beneficiaries = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // Transaction royalty rate (0.10% of transaction tax)
+  string transaction_royalty_rate = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Platform revenue royalty rate (5% of platform revenues)
+  string platform_royalty_rate = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Whether inheritance is enabled
+  bool inheritance_enabled = 5;
+  
+  // Lock period before inheritance can be triggered (in days)
+  int64 inheritance_lock_days = 6;
+  
+  // Last activity timestamp of current beneficiary
+  google.protobuf.Timestamp last_activity_time = 7 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // Total royalties earned lifetime
+  RoyaltyBalance total_earned = 8 [(gogoproto.nullable) = false];
+  
+  // Current unclaimed balance
+  RoyaltyBalance unclaimed_balance = 9 [(gogoproto.nullable) = false];
+  
+  // Configuration active status
+  bool active = 10;
+  
+  // Creation timestamp
+  google.protobuf.Timestamp created_at = 11 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // Last update timestamp
+  google.protobuf.Timestamp updated_at = 12 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+// RoyaltyBalance tracks royalty amounts by type
+message RoyaltyBalance {
+  // Transaction-based royalties
+  cosmos.base.v1beta1.Coin transaction_royalties = 1 [(gogoproto.nullable) = false];
+  
+  // Platform revenue royalties
+  cosmos.base.v1beta1.Coin platform_royalties = 2 [(gogoproto.nullable) = false];
+  
+  // Total combined royalties
+  cosmos.base.v1beta1.Coin total = 3 [(gogoproto.nullable) = false];
+}
+
+// RoyaltyClaim represents a royalty claim by beneficiary
+message RoyaltyClaim {
+  // Unique claim ID
+  uint64 id = 1;
+  
+  // Beneficiary who made the claim
+  string beneficiary = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // Amount claimed
+  RoyaltyBalance claim_amount = 3 [(gogoproto.nullable) = false];
+  
+  // Claim timestamp
+  google.protobuf.Timestamp claim_time = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // Block height of claim
+  int64 block_height = 5;
+  
+  // Transaction hash
+  string tx_hash = 6;
+  
+  // Status of claim
+  string status = 7; // "pending", "completed", "failed"
+}
+
+// InheritanceRecord tracks inheritance events
+message InheritanceRecord {
+  // Record ID
+  uint64 id = 1;
+  
+  // Previous beneficiary
+  string previous_beneficiary = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // New beneficiary
+  string new_beneficiary = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // Reason for inheritance trigger
+  string trigger_reason = 4; // "inactivity", "voluntary", "governance", "emergency"
+  
+  // Balance transferred
+  RoyaltyBalance transferred_balance = 5 [(gogoproto.nullable) = false];
+  
+  // Timestamp of inheritance
+  google.protobuf.Timestamp inheritance_time = 6 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // Block height
+  int64 block_height = 7;
+  
+  // Additional notes
+  string notes = 8;
+}
+
+// BeneficiaryHistory tracks historical beneficiaries
+message BeneficiaryHistory {
+  // Beneficiary address
+  string address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // Start time as beneficiary
+  google.protobuf.Timestamp start_time = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // End time as beneficiary (empty if current)
+  google.protobuf.Timestamp end_time = 3 [(gogoproto.stdtime) = true];
+  
+  // Total earned during tenure
+  RoyaltyBalance total_earned = 4 [(gogoproto.nullable) = false];
+  
+  // Total claimed during tenure
+  RoyaltyBalance total_claimed = 5 [(gogoproto.nullable) = false];
+  
+  // Reason for change
+  string change_reason = 6;
+}
+
+// RoyaltyAccumulator tracks accumulated royalties by source
+message RoyaltyAccumulator {
+  // Source identifier (e.g., "dex_trading", "nft_marketplace")
+  string source = 1;
+  
+  // Type of royalty ("transaction" or "platform")
+  string type = 2;
+  
+  // Accumulated amount
+  cosmos.base.v1beta1.Coin amount = 3 [(gogoproto.nullable) = false];
+  
+  // Last accumulation timestamp
+  google.protobuf.Timestamp last_accumulation = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // Number of accumulations
+  uint64 accumulation_count = 5;
+}
+
+// RoyaltyParams defines the parameters for the royalty module
+message RoyaltyParams {
+  // Minimum claim amount
+  cosmos.base.v1beta1.Coin minimum_claim_amount = 1 [(gogoproto.nullable) = false];
+  
+  // Claim cooldown period in seconds
+  int64 claim_cooldown_seconds = 2;
+  
+  // Maximum backup beneficiaries allowed
+  uint32 max_backup_beneficiaries = 3;
+  
+  // Default inheritance lock days
+  int64 default_inheritance_lock_days = 4;
+  
+  // Emergency override enabled
+  bool emergency_override_enabled = 5;
+  
+  // Governance control enabled
+  bool governance_control_enabled = 6;
+}

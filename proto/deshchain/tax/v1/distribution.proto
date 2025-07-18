@@ -1,0 +1,141 @@
+syntax = "proto3";
+package deshchain.tax.v1;
+
+option go_package = "github.com/deshchain/deshchain/x/tax/types";
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos_proto/cosmos.proto";
+
+// TaxDistribution represents the distribution of transaction tax
+message TaxDistribution {
+  // NGO Donation - 30% of base tax (0.75% of transaction)
+  string ngo_donation = 1 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Community Rewards - 20% of base tax (0.50% of transaction)
+  string community_rewards = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Development - 18% of base tax (0.45% of transaction)
+  string development = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Operations - 18% of base tax (0.45% of transaction)
+  string operations = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Token Burn - 10% of base tax (0.25% of transaction)
+  string token_burn = 5 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Founder Royalty - 4% of base tax (0.10% of transaction)
+  string founder_royalty = 6 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// TaxDistributionParams defines parameters for tax distribution
+message TaxDistributionParams {
+  // Base tax rate (2.5%)
+  string base_tax_rate = 1 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Tax distribution configuration
+  TaxDistribution distribution = 2 [(gogoproto.nullable) = false];
+  
+  // Module account names for distribution
+  string ngo_pool_name = 3;
+  string community_pool_name = 4;
+  string development_pool_name = 5;
+  string operations_pool_name = 6;
+  string burn_pool_name = 7;
+  string founder_pool_name = 8;
+  
+  // Minimum tax amount before distribution
+  cosmos.base.v1beta1.Coin minimum_distribution_amount = 9 [(gogoproto.nullable) = false];
+}
+
+// TaxCollectionRecord represents a tax collection event
+message TaxCollectionRecord {
+  // Transaction hash
+  string tx_hash = 1;
+  
+  // Payer address
+  string payer = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // Original transaction amount
+  cosmos.base.v1beta1.Coin transaction_amount = 3 [(gogoproto.nullable) = false];
+  
+  // Tax amount collected
+  cosmos.base.v1beta1.Coin tax_amount = 4 [(gogoproto.nullable) = false];
+  
+  // Effective tax rate applied
+  string effective_rate = 5 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Distribution breakdown
+  map<string, cosmos.base.v1beta1.Coin> distribution_amounts = 6 [(gogoproto.nullable) = false];
+  
+  // Block height
+  int64 block_height = 7;
+  
+  // Collection timestamp
+  int64 timestamp = 8;
+}
+
+// TaxDistributionRecord represents distribution of collected taxes
+message TaxDistributionRecord {
+  // Unique identifier
+  uint64 id = 1;
+  
+  // Total tax amount distributed
+  cosmos.base.v1beta1.Coin total_amount = 2 [(gogoproto.nullable) = false];
+  
+  // NGO donation amount
+  cosmos.base.v1beta1.Coin ngo_amount = 3 [(gogoproto.nullable) = false];
+  
+  // Community rewards amount
+  cosmos.base.v1beta1.Coin community_amount = 4 [(gogoproto.nullable) = false];
+  
+  // Development fund amount
+  cosmos.base.v1beta1.Coin development_amount = 5 [(gogoproto.nullable) = false];
+  
+  // Operations fund amount
+  cosmos.base.v1beta1.Coin operations_amount = 6 [(gogoproto.nullable) = false];
+  
+  // Token burn amount
+  cosmos.base.v1beta1.Coin burn_amount = 7 [(gogoproto.nullable) = false];
+  
+  // Founder royalty amount
+  cosmos.base.v1beta1.Coin founder_amount = 8 [(gogoproto.nullable) = false];
+  
+  // Distribution timestamp
+  int64 timestamp = 9;
+  
+  // Block height
+  int64 block_height = 10;
+}

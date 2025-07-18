@@ -1,0 +1,181 @@
+syntax = "proto3";
+package deshchain.revenue.v1;
+
+option go_package = "github.com/deshchain/deshchain/x/revenue/types";
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos_proto/cosmos.proto";
+import "google/protobuf/timestamp.proto";
+
+// RevenueStream represents a source of platform revenue
+message RevenueStream {
+  // Unique identifier for the revenue stream
+  string id = 1;
+  
+  // Name of the revenue stream
+  string name = 2;
+  
+  // Type of revenue stream
+  string type = 3;
+  
+  // Total revenue collected lifetime
+  cosmos.base.v1beta1.Coin total_collected = 4 [(gogoproto.nullable) = false];
+  
+  // Revenue collected in current month
+  cosmos.base.v1beta1.Coin monthly_revenue = 5 [(gogoproto.nullable) = false];
+  
+  // Timestamp of last collection
+  google.protobuf.Timestamp last_collected = 6 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // Active status
+  bool active = 7;
+}
+
+// RevenueDistribution represents how platform revenue is distributed
+message RevenueDistribution {
+  // Development fund allocation (30%)
+  cosmos.base.v1beta1.Coin development = 1 [(gogoproto.nullable) = false];
+  
+  // Community treasury allocation (25%)
+  cosmos.base.v1beta1.Coin community = 2 [(gogoproto.nullable) = false];
+  
+  // Liquidity provision allocation (20%)
+  cosmos.base.v1beta1.Coin liquidity = 3 [(gogoproto.nullable) = false];
+  
+  // NGO donation allocation (10%)
+  cosmos.base.v1beta1.Coin ngo_donation = 4 [(gogoproto.nullable) = false];
+  
+  // Emergency reserve allocation (10%)
+  cosmos.base.v1beta1.Coin emergency = 5 [(gogoproto.nullable) = false];
+  
+  // Founder royalty allocation (5%)
+  cosmos.base.v1beta1.Coin founder_royalty = 6 [(gogoproto.nullable) = false];
+}
+
+// FounderRoyaltyConfig represents the founder's royalty configuration
+message FounderRoyaltyConfig {
+  // Current beneficiary address
+  string beneficiary_address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // Backup beneficiary addresses for inheritance
+  repeated string backup_beneficiaries = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // Royalty percentage (5% by default)
+  string royalty_percentage = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Total royalties earned lifetime
+  cosmos.base.v1beta1.Coin total_earned = 4 [(gogoproto.nullable) = false];
+  
+  // Unclaimed royalties
+  cosmos.base.v1beta1.Coin unclaimed_amount = 5 [(gogoproto.nullable) = false];
+  
+  // Last claim timestamp
+  google.protobuf.Timestamp last_claim_time = 6 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // Inheritance enabled flag
+  bool inheritance_enabled = 7;
+  
+  // Lock period for inheritance (in days)
+  int64 inheritance_lock_days = 8;
+}
+
+// DistributionRecord represents a single revenue distribution event
+message DistributionRecord {
+  // Unique identifier
+  uint64 id = 1;
+  
+  // Revenue stream that generated this
+  string stream_id = 2;
+  
+  // Total amount distributed
+  cosmos.base.v1beta1.Coin total_amount = 3 [(gogoproto.nullable) = false];
+  
+  // Distribution breakdown
+  RevenueDistribution distribution = 4 [(gogoproto.nullable) = false];
+  
+  // Timestamp of distribution
+  google.protobuf.Timestamp timestamp = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // Block height
+  int64 block_height = 6;
+  
+  // Transaction hash
+  string tx_hash = 7;
+}
+
+// RevenueParams defines the parameters for the revenue module
+message RevenueParams {
+  // Development fund percentage (default: 30%)
+  string development_percentage = 1 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Community treasury percentage (default: 25%)
+  string community_percentage = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Liquidity provision percentage (default: 20%)
+  string liquidity_percentage = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // NGO donation percentage (default: 10%)
+  string ngo_percentage = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Emergency reserve percentage (default: 10%)
+  string emergency_percentage = 5 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Founder royalty percentage (default: 5%)
+  string founder_percentage = 6 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Minimum claim amount for royalties
+  cosmos.base.v1beta1.Coin minimum_claim_amount = 7 [(gogoproto.nullable) = false];
+  
+  // Claim cooldown period in seconds
+  int64 claim_cooldown_seconds = 8;
+}
+
+// MonthlyRevenueReport represents monthly revenue summary
+message MonthlyRevenueReport {
+  // Year and month (YYYY-MM format)
+  string period = 1;
+  
+  // Total revenue collected
+  cosmos.base.v1beta1.Coin total_revenue = 2 [(gogoproto.nullable) = false];
+  
+  // Revenue by stream type
+  map<string, cosmos.base.v1beta1.Coin> revenue_by_stream = 3 [(gogoproto.nullable) = false];
+  
+  // Total distributed amounts
+  RevenueDistribution total_distributed = 4 [(gogoproto.nullable) = false];
+  
+  // Number of distributions
+  uint64 distribution_count = 5;
+  
+  // Report generation timestamp
+  google.protobuf.Timestamp generated_at = 6 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}

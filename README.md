@@ -11,6 +11,8 @@ DeshChain is India's first culturally-aware blockchain platform that transforms 
 - **Social Impact**: Transparent donation tracking to Army NGO and War Relief with complete accountability
 - **Economic Empowerment**: Progressive tax caps that make large transfers affordable while funding continuous development
 - **Digital Heritage**: NFT rewards that gamify payments while celebrating Indian culture
+- **Blockchain KYC**: Revolutionary identity verification using Hyperledger Aries + Indy for pension and agriculture finance
+- **Native Wallet**: Batua wallet with pre-integrated NAMO support and cultural UI elements
 
 ## NAMO Token - The Heart of DeshChain
 
@@ -18,12 +20,13 @@ DeshChain is India's first culturally-aware blockchain platform that transforms 
 - **Total Supply**: 1,428,627,663 NAMO tokens
 - **Distribution**:
   - 25% Public Sale (357,156,916 tokens)
-  - 15% Liquidity (214,294,149 tokens) 
-  - 20% Team (285,725,533 tokens) - 24-month vesting
+  - 20% Liquidity (285,725,533 tokens) - Increased for enhanced stability
+  - 15% Community Rewards (214,294,149 tokens) - 60-month distribution
   - 15% DeshChain Development (214,294,149 tokens)
-  - 10% Community Rewards (142,862,766 tokens) - 60-month distribution
+  - 10% Founder (142,862,766 tokens) - 48-month vesting with 12-month cliff
+  - 10% Team (142,862,766 tokens) - 24-month vesting
   - 5% DAO Treasury (71,431,383 tokens)
-  - 10% Initial Burn (142,862,766 tokens)
+  - 0% Initial Burn (Reallocated to liquidity and community)
 
 ### Utility
 - Transaction fee payment
@@ -181,12 +184,13 @@ DeshChain is India's first culturally-aware blockchain platform that transforms 
 - **₹40,001-4,00,000**: Percentage with ₹1,000 cap
 - **Above ₹4,00,000**: Flat ₹1,000 maximum
 
-### Tax Distribution
-- 20% Token burn
-- 20% Army NGO
-- 20% War Relief NGO
-- 20% Development fund
-- 20% Operations
+### Tax Distribution (2.5% Base Tax)
+- **30% NGO Donations** (0.75% of transaction) - Supporting verified charitable causes
+- **20% Community Rewards** (0.50% of transaction) - Rewarding active users
+- **18% Development Fund** (0.45% of transaction) - Continuous platform improvement
+- **18% Operations** (0.45% of transaction) - Maintaining infrastructure
+- **10% Token Burn** (0.25% of transaction) - Deflationary mechanism
+- **4% Founder Royalty** (0.10% of transaction) - Perpetual, inheritable royalty
 
 ## NFT Marketplace & Rewards
 
@@ -298,6 +302,81 @@ India's first community-backed agricultural lending platform designed specifical
 - **40% Income Increase**: Average farmer income improvement
 - **85% Approval Rate**: High approval compared to 30% in traditional banks
 
+## Batua Wallet - बटुआ
+
+### *"Your Digital Wallet with Indian Soul"*
+India's first culturally-integrated blockchain wallet with native NAMO support, combining cutting-edge technology with traditional Indian values.
+
+### Core Features
+- **Native NAMO Integration**: Pre-configured token support with cultural quotes
+- **Multi-Chain Support**: DeshChain, Ethereum, Bitcoin, and 100+ cryptocurrencies
+- **Cultural UI**: Indian flag gradients, traditional animations, cultural quotes
+- **HD Wallet**: BIP32/BIP39/BIP44 compliant with secure key management
+- **Cross-Platform**: Flutter-based for Android, iOS, Desktop, and Web
+- **Secure Storage**: AES-256-GCM encryption with biometric authentication
+
+### Unique Features
+- **Cultural Quotes**: Display inspiring quotes with every transaction
+- **Festival Themes**: Auto-changing themes for Indian festivals
+- **Regional Languages**: Support for 22 Indian languages
+- **Voice Commands**: "Hey Batua, send 100 NAMO to Ram"
+- **Offline Capability**: Works without internet for rural areas
+- **Family Wallet**: Joint accounts with spending limits and approvals
+
+### Integrated Services
+- **Gram Pension**: Direct access to pension scheme management
+- **Krishi Mitra**: Agricultural lending platform integration
+- **DeshPay**: Seamless payment system integration
+- **NFT Gallery**: Showcase cultural NFT collections
+- **Staking**: Built-in staking with cultural rewards
+
+### Security Features
+- **Biometric Authentication**: Fingerprint and Face ID
+- **Multi-Signature**: Joint family wallet management
+- **Time-locked Transactions**: Schedule payments for muhurat
+- **Anti-Phishing**: Visual hash with rangoli patterns
+- **Hardware Wallet**: Ledger and Trezor integration
+
+## Hyperledger Aries + Indy KYC System
+
+### *"Blockchain-Native Identity for Financial Inclusion"*
+Revolutionary KYC solution using self-sovereign identity for pension and agriculture finance.
+
+### Core Architecture
+- **Self-Sovereign Identity**: Users control their own identity data
+- **Verifiable Credentials**: Privacy-preserving verification system
+- **Zero-Knowledge Proofs**: Selective disclosure without revealing sensitive data
+- **Blockchain Native**: Direct integration with DeshChain Cosmos SDK
+- **Interoperable**: Works with multiple identity standards
+
+### Key Features
+- **DID Registration**: Decentralized identity on DeshChain
+- **Credential Schemas**: Custom schemas for pension and agriculture
+- **Fraud Detection**: AI-powered risk assessment and fraud prevention
+- **Biometric Verification**: Offline biometric authentication
+- **Multi-Language Support**: 22 Indian languages for rural accessibility
+- **Village Panchayat Integration**: Community-backed verification system
+
+### Compliance Features
+- **RBI Guidelines**: Full compliance with Indian KYC regulations
+- **DigiLocker Integration**: Government document verification
+- **Audit Trail**: Immutable compliance records
+- **Privacy Protection**: GDPR-compliant data handling
+- **Regulatory Reporting**: Automated compliance reporting
+
+### Use Cases
+- **Pension Verification**: Age, identity, and beneficiary verification
+- **Agriculture Finance**: Farmer identity and land ownership verification
+- **Banking Services**: Instant KYC for financial services
+- **Government Schemes**: Eligibility verification for welfare programs
+- **Insurance**: Identity verification for insurance products
+
+### Implementation Timeline
+- **Phase 1 (Q3 2024)**: Foundation setup and basic DID registration
+- **Phase 2 (Q4 2024)**: Gram Pension KYC integration
+- **Phase 3 (Q1 2025)**: Kishan Mitra agriculture finance KYC
+- **Phase 4 (Q2 2025)**: Advanced privacy features and India Stack integration
+
 ## Governance System
 
 ### Voting Mechanism
@@ -315,6 +394,37 @@ India's first community-backed agricultural lending platform designed specifical
 - Privacy fee adjustments (75% approval required)
 - NGO fund allocation (66% approval required)
 - Development fund allocation (majority required)
+
+## Platform Revenue Distribution
+
+### Revenue Streams
+DeshChain generates revenue from multiple sources beyond transaction taxes:
+- **DEX Trading Fees**: 0.3% on all trades
+- **NFT Marketplace**: 2.5% commission on sales
+- **Sikkebaaz Launchpad**: 100 NAMO + 2% of tokens
+- **Gram Pension**: Management fees from pension products
+- **Kisaan Mitra**: Interest spread on agricultural loans
+- **Privacy Fees**: ₹50-150 per private transaction
+- **Governance Fees**: Proposal submission and voting
+
+### Revenue Sharing Model
+All platform revenues are distributed as follows:
+- **30% Development Fund** - Continuous platform enhancement
+- **25% Community Treasury** - Community-governed initiatives
+- **20% Liquidity Provision** - Market stability
+- **10% NGO Donations** - Charitable causes
+- **10% Emergency Reserve** - Crisis management
+- **5% Founder Royalty** - Perpetual, inheritable share
+
+### Founder Royalty System
+- **Dual Revenue Stream**: 
+  - 0.10% from transaction tax (perpetual)
+  - 5% from all platform revenues (perpetual)
+- **Inheritance Mechanism**: 
+  - Fully inheritable to designated beneficiaries
+  - 90-day inactivity trigger for automatic inheritance
+  - Multi-signature backup beneficiary system
+- **Transparency**: All royalty distributions publicly visible on-chain
 
 ## Technical Architecture
 
@@ -396,17 +506,23 @@ India's first community-backed agricultural lending platform designed specifical
 - ✅ Basic blockchain explorer
 - ✅ Smart tax system foundation
 
-### Phase 2: DeshPay Core (Months 4-6)
-- QR payment system
-- Merchant verification
-- KYC integration
-- Basic NFT rewards
-- Mobile app MVP
-- **Gram Pension Scheme Launch**: Revolutionary blockchain pension system
-- **Sikkebaaz Alpha**: Desi memecoin launchpad (safety-first model)
-- **Kisaan Mitra Beta**: Agricultural lending platform for farmers
+### Phase 2: DeshPay Core (Months 4-6) ✅ COMPLETED
+- ✅ QR payment system
+- ✅ Merchant verification
+- ✅ KYC integration research and strategy
+- ✅ Basic NFT rewards
+- ✅ **Batua Wallet**: Native Flutter wallet with NAMO integration
+- ✅ **Gram Pension Scheme Launch**: Revolutionary blockchain pension system
+- ✅ **Sikkebaaz Alpha**: Desi memecoin launchpad (safety-first model)
+- ✅ **Kisaan Mitra Beta**: Agricultural lending platform for farmers
 
-### Phase 3: Advanced Features (Months 7-9)
+### Phase 3: Advanced Features (Months 7-9) 🔄 IN PROGRESS
+- **Hyperledger Aries + Indy KYC**: Blockchain-native identity verification system
+- **Pension KYC Integration**: Age verification, beneficiary management, patriotism scoring
+- **Agriculture KYC Integration**: Farmer identity, land ownership, community verification
+- **Mobile KYC Application**: Offline-capable KYC for rural areas with biometric support
+- **Village Panchayat Integration**: Community-backed verification system
+- **DigiLocker Integration**: Government document verification
 - Privacy layer implementation
 - **Money Order DEX**: Traditional money order inspired decentralized exchange
 - Smart tax system enhancement
@@ -417,6 +533,11 @@ India's first community-backed agricultural lending platform designed specifical
 - **Kisaan Mitra Pro**: Advanced agricultural lending with AI and IoT integration
 
 ### Phase 4: Scale & Integration (Months 10-12)
+- **Advanced KYC Features**: Zero-knowledge proofs, selective disclosure, automated compliance
+- **Cross-Platform KYC**: Desktop, web, and mobile synchronization
+- **KYC Analytics**: Dashboard for pension and agriculture KYC insights
+- **Fraud Detection Engine**: AI-powered risk assessment and prevention
+- **Regulatory Compliance**: Automated reporting and audit trails
 - Cross-chain bridges
 - Enterprise features
 - Government integrations

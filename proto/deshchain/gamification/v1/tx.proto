@@ -1,0 +1,197 @@
+syntax = "proto3";
+
+package deshchain.gamification.v1;
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "deshchain/gamification/v1/gamification.proto";
+import "amino/amino.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/gamification/types";
+
+// Msg defines the gamification module Msg service.
+service Msg {
+  // CreateProfile creates a new developer profile
+  rpc CreateProfile(MsgCreateProfile) returns (MsgCreateProfileResponse);
+  
+  // UpdateProfile updates an existing profile
+  rpc UpdateProfile(MsgUpdateProfile) returns (MsgUpdateProfileResponse);
+  
+  // SelectAvatar selects a developer avatar
+  rpc SelectAvatar(MsgSelectAvatar) returns (MsgSelectAvatarResponse);
+  
+  // ClaimAchievement claims an unlocked achievement
+  rpc ClaimAchievement(MsgClaimAchievement) returns (MsgClaimAchievementResponse);
+  
+  // RecordAction records a developer action
+  rpc RecordAction(MsgRecordAction) returns (MsgRecordActionResponse);
+  
+  // ShareAchievement shares an achievement on social media
+  rpc ShareAchievement(MsgShareAchievement) returns (MsgShareAchievementResponse);
+  
+  // JoinTeamBattle joins an ongoing team battle
+  rpc JoinTeamBattle(MsgJoinTeamBattle) returns (MsgJoinTeamBattleResponse);
+  
+  // CreateTeamBattle creates a new team battle
+  rpc CreateTeamBattle(MsgCreateTeamBattle) returns (MsgCreateTeamBattleResponse);
+  
+  // CompleteDailyChallenge completes a daily challenge
+  rpc CompleteDailyChallenge(MsgCompleteDailyChallenge) returns (MsgCompleteDailyChallengeResponse);
+}
+
+// MsgCreateProfile creates a new developer profile
+message MsgCreateProfile {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "deshchain/gamification/CreateProfile";
+  
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string github_username = 2;
+  AvatarType preferred_avatar = 3;
+  string preferred_language = 4;
+  string region = 5;
+  HumorPreference humor_preference = 6;
+}
+
+message MsgCreateProfileResponse {
+  DeveloperProfile profile = 1;
+}
+
+// MsgUpdateProfile updates developer profile
+message MsgUpdateProfile {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "deshchain/gamification/UpdateProfile";
+  
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string preferred_language = 2;
+  string region = 3;
+  HumorPreference humor_preference = 4;
+  SocialMediaHandles social_handles = 5;
+}
+
+message MsgUpdateProfileResponse {
+  DeveloperProfile profile = 1;
+}
+
+// MsgSelectAvatar selects a developer avatar
+message MsgSelectAvatar {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "deshchain/gamification/SelectAvatar";
+  
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  AvatarType avatar_type = 2;
+}
+
+message MsgSelectAvatarResponse {
+  DeveloperProfile profile = 1;
+  string unlock_message = 2;
+}
+
+// MsgClaimAchievement claims an achievement
+message MsgClaimAchievement {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "deshchain/gamification/ClaimAchievement";
+  
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  uint64 achievement_id = 2;
+}
+
+message MsgClaimAchievementResponse {
+  Achievement achievement = 1;
+  cosmos.base.v1beta1.Coin reward = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  uint64 xp_gained = 3;
+  bool level_up = 4;
+  uint32 new_level = 5;
+}
+
+// MsgRecordAction records a developer action
+message MsgRecordAction {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "deshchain/gamification/RecordAction";
+  
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string action_type = 2;
+  uint64 value = 3;
+  string metadata = 4;
+}
+
+message MsgRecordActionResponse {
+  uint64 xp_gained = 1;
+  repeated uint64 achievements_unlocked = 2;
+  bool streak_maintained = 3;
+  uint32 new_streak_days = 4;
+}
+
+// MsgShareAchievement shares an achievement on social media
+message MsgShareAchievement {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "deshchain/gamification/ShareAchievement";
+  
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  uint64 achievement_id = 2;
+  SocialPlatform platform = 3;
+  string content = 4;
+}
+
+message MsgShareAchievementResponse {
+  SocialMediaPost post = 1;
+  string share_url = 2;
+  map<string, string> share_links = 3;
+}
+
+// MsgJoinTeamBattle joins a team battle
+message MsgJoinTeamBattle {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "deshchain/gamification/JoinTeamBattle";
+  
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  uint64 battle_id = 2;
+  string team_name = 3;
+}
+
+message MsgJoinTeamBattleResponse {
+  TeamBattle battle = 1;
+  string team_joined = 2;
+}
+
+// MsgCreateTeamBattle creates a new team battle
+message MsgCreateTeamBattle {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "deshchain/gamification/CreateTeamBattle";
+  
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string battle_type = 2;
+  int64 duration = 3;
+  cosmos.base.v1beta1.Coin prize_pool = 4 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  string team_1_name = 5;
+  string team_2_name = 6;
+}
+
+message MsgCreateTeamBattleResponse {
+  TeamBattle battle = 1;
+}
+
+// MsgCompleteDailyChallenge completes a daily challenge
+message MsgCompleteDailyChallenge {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "deshchain/gamification/CompleteDailyChallenge";
+  
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string challenge_date = 2;
+  string proof_data = 3;
+}
+
+message MsgCompleteDailyChallengeResponse {
+  DailyChallenge challenge = 1;
+  cosmos.base.v1beta1.Coin reward = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  uint64 xp_gained = 3;
+}

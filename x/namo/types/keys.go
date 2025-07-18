@@ -44,16 +44,19 @@ const (
 	// TotalSupply is the total supply of NAMO tokens: 1,428,627,663
 	TotalSupply = 1428627663
 
-	// Supply distribution percentages
+	// Supply distribution percentages - Updated for sustainable model
 	PublicSalePercent      = 25 // 25% - 357,156,916 tokens
-	LiquidityPercent       = 15 // 15% - 214,294,149 tokens
-	TeamPercent            = 20 // 20% - 285,725,533 tokens (24-month vesting)
+	LiquidityPercent       = 20 // 20% - 285,725,533 tokens (increased for stability)
+	FounderPercent         = 10 // 10% - 142,862,766 tokens (48-month vesting with 12-month cliff)
+	TeamPercent            = 10 // 10% - 142,862,766 tokens (24-month vesting)
 	DevelopmentPercent     = 15 // 15% - 214,294,149 tokens
-	CommunityPercent       = 10 // 10% - 142,862,766 tokens (60-month distribution)
+	CommunityPercent       = 15 // 15% - 214,294,149 tokens (increased for engagement)
 	DAOTreasuryPercent     = 5  // 5% - 71,431,383 tokens
-	InitialBurnPercent     = 10 // 10% - 142,862,766 tokens
+	InitialBurnPercent     = 0  // 0% - 0 tokens (reallocated to liquidity and community)
 
 	// Vesting parameters
+	FounderVestingMonths    = 48 // 48 months for founder vesting
+	FounderCliffMonths      = 12 // 12 months cliff for founder
 	TeamVestingMonths       = 24 // 24 months for team vesting
 	CommunityDistribMonths  = 60 // 60 months for community rewards
 	DefaultCliffMonths      = 6  // 6 months cliff period
@@ -62,12 +65,13 @@ const (
 // Token allocation amounts (in base units)
 var (
 	PublicSaleAllocation    = TotalSupply * PublicSalePercent / 100      // 357,156,916
-	LiquidityAllocation     = TotalSupply * LiquidityPercent / 100       // 214,294,149
-	TeamAllocation          = TotalSupply * TeamPercent / 100            // 285,725,533
+	LiquidityAllocation     = TotalSupply * LiquidityPercent / 100       // 285,725,533
+	FounderAllocation       = TotalSupply * FounderPercent / 100          // 142,862,766
+	TeamAllocation          = TotalSupply * TeamPercent / 100            // 142,862,766
 	DevelopmentAllocation   = TotalSupply * DevelopmentPercent / 100     // 214,294,149
-	CommunityAllocation     = TotalSupply * CommunityPercent / 100       // 142,862,766
+	CommunityAllocation     = TotalSupply * CommunityPercent / 100       // 214,294,149
 	DAOTreasuryAllocation   = TotalSupply * DAOTreasuryPercent / 100     // 71,431,383
-	InitialBurnAllocation   = TotalSupply * InitialBurnPercent / 100     // 142,862,766
+	InitialBurnAllocation   = TotalSupply * InitialBurnPercent / 100     // 0
 )
 
 // Module account names
@@ -77,6 +81,9 @@ const (
 
 	// LiquidityPoolName is the name of the liquidity pool
 	LiquidityPoolName = "liquidity_pool"
+
+	// FounderPoolName is the name of the founder pool
+	FounderPoolName = "founder_pool"
 
 	// TeamPoolName is the name of the team pool
 	TeamPoolName = "team_pool"
