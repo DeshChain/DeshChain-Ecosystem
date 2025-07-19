@@ -1,0 +1,43 @@
+{
+  "license": "CC-BY-NC-SA-4.0",
+  "attribution": "DeshChain Foundation Cultural Heritage Collection",
+  "source": "Historical records and public domain sources",
+  "category": "freedom-fighters",
+  "quotes": [
+    {
+      "id": "gandhi-001",
+      "text": "Be the change you wish to see in the world",
+      "author": "Mahatma Gandhi",
+      "context": "Philosophy of personal transformation",
+      "year": "circa 1940s",
+      "languages": {
+        "hindi": "वह परिवर्तन बनिए जो आप दुनिया में देखना चाहते हैं",
+        "gujarati": "તમે જે પરિવર્તન જોવા માંગો છો તે બનો"
+      }
+    },
+    {
+      "id": "gandhi-002",
+      "text": "In a gentle way, you can shake the world",
+      "author": "Mahatma Gandhi",
+      "context": "Non-violent resistance philosophy",
+      "languages": {
+        "hindi": "कोमल तरीके से आप दुनिया को हिला सकते हैं"
+      }
+    },
+    {
+      "id": "gandhi-003",
+      "text": "The best way to find yourself is to lose yourself in the service of others",
+      "author": "Mahatma Gandhi",
+      "context": "Service and self-realization",
+      "languages": {
+        "hindi": "स्वयं को खोजने का सबसे अच्छा तरीका दूसरों की सेवा में खुद को खो देना है"
+      }
+    }
+  ],
+  "metadata": {
+    "total_quotes": 3,
+    "languages_supported": ["english", "hindi", "gujarati"],
+    "last_updated": "2024-07-19",
+    "cultural_significance": "Preserving the wisdom of the Father of the Nation"
+  }
+}

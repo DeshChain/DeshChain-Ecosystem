@@ -1,5 +1,13 @@
 # DeshChain - India's Cultural Blockchain Revolution
 
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Cultural License: CC BY-NC-SA 4.0](https://img.shields.io/badge/Cultural%20License-CC%20BY--NC--SA%204.0-green.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+[![Go Report Card](https://goreportcard.com/badge/github.com/deshchain/deshchain)](https://goreportcard.com/report/github.com/deshchain/deshchain)
+[![GitHub release](https://img.shields.io/github/release/deshchain/deshchain.svg)](https://github.com/deshchain/deshchain/releases)
+[![GitHub stars](https://img.shields.io/github/stars/deshchain/deshchain.svg)](https://github.com/deshchain/deshchain/stargazers)
+
+> *Empowering India's blockchain revolution while preserving cultural heritage*
+
 ## Vision Statement
 
 DeshChain is India's first culturally-aware blockchain platform that transforms every financial transaction into an educational journey through India's rich heritage. Built on Cosmos SDK, DeshChain combines revolutionary payment technology with cultural preservation, creating a sustainable ecosystem that becomes more affordable as it grows while supporting our armed forces and preserving our timeless wisdom.
@@ -16,25 +24,302 @@ DeshChain is India's first culturally-aware blockchain platform that transforms 
 
 ## NAMO Token - The Heart of DeshChain
 
-### Token Economics
+### Token Economics (Final Distribution v2.0)
 - **Total Supply**: 1,428,627,663 NAMO tokens
-- **Distribution**:
-  - 25% Public Sale (357,156,916 tokens)
-  - 20% Liquidity (285,725,533 tokens) - Increased for enhanced stability
-  - 15% Community Rewards (214,294,149 tokens) - 60-month distribution
+- **Community-First Distribution**:
+  - 20% Public Sale (285,725,533 tokens) - **Reduced for scarcity**
+  - 18% Liquidity (257,152,979 tokens) - **Adjusted for market stability**
+  - 15% Community Rewards (214,294,149 tokens) - **Increased for engagement**
   - 15% DeshChain Development (214,294,149 tokens)
-  - 10% Founder (142,862,766 tokens) - 48-month vesting with 12-month cliff
-  - 10% Team (142,862,766 tokens) - 24-month vesting
+  - 12% Team (171,435,319 tokens) - 24-month vesting with 12-month cliff
+  - 8% Founder (114,290,213 tokens) - 48-month vesting with 12-month cliff
   - 5% DAO Treasury (71,431,383 tokens)
-  - 0% Initial Burn (Reallocated to liquidity and community)
+  - 3.5% Co-Founders (50,001,968 tokens) - 24-month vesting with 12-month cliff
+  - 1.5% Angel Investors (21,428,900 tokens) - 24-month vesting with 12-month cliff
+  - 2% Operations Reserve (28,572,553 tokens)
 
-### Utility
+### Utility & Use Cases
 - Transaction fee payment
 - Governance voting rights
 - NFT marketplace currency
 - DEX trading pairs
 - Staking rewards
 - Launchpad participation
+- Gram Pension Scheme contributions
+- Krishi Mitra agricultural lending
+
+## Revolutionary Tax and Revenue System
+
+### Dual-Stream Revenue Model
+
+**Transaction Tax Distribution** (2.5% base tax):
+- **30% NGO Donations** (0.75% of transaction) - **Maximum social impact**
+- **25% Validators** (0.625% of transaction) - **Network security incentive**
+- **20% Community Rewards** (0.50% of transaction)
+- **5% Operations** (0.125% of transaction) - **Optimized for efficiency**
+- **6% Tech Innovation** (0.15% of transaction) - **R&D and acquisitions**
+- **4% Talent Acquisition** (0.10% of transaction) - **Global hiring**
+- **4% Strategic Reserve** (0.10% of transaction) - **Emergency fund**
+- **3.5% Founder** (0.0875% of transaction) - **Perpetual, inheritable**
+- **1.8% Co-Founders** (0.045% of transaction) - **Perpetual, inheritable**
+- **0.7% Angel Investors** (0.0175% of transaction) - **Perpetual returns**
+
+**Platform Revenue Distribution** (all other revenue sources):
+- **30% Development Fund**
+- **25% Community Treasury**
+- **20% Liquidity Provision**
+- **10% NGO Donations** - **All revenue streams contribute to charity**
+- **10% Emergency Reserve**
+- **5% Founder Royalty** - **Perpetual, inheritable**
+
+### Dynamic Tax System
+- **Volume-based reduction**: From 2.5% to 0.25% based on daily transaction volume
+- **Progressive tax caps**: ₹1,000 maximum for transactions above ₹4,00,000
+- **Real-time adjustment**: Tax rates change based on network activity
+- **Charity focus**: 40% of all fees go to verified NGOs
+
+## Social Impact Revolution
+
+### Enhanced NGO Donation System
+- **6 verified NGO wallets** with multi-signature security (5-of-9 signers)
+  - Army Welfare Fund
+  - War Relief Fund
+  - Disabled Soldiers Rehabilitation
+  - Border Area Development
+  - Martyrs' Children Education
+  - Emergency Disaster Relief
+
+### Projected Social Impact
+- **Year 1**: ₹102 Cr to NGOs (feeds 10M people)
+- **Year 5**: ₹4,618 Cr to NGOs (transforms 100M lives)
+- **Year 10**: ₹9,578 Cr to NGOs (nationwide impact)
+
+### Transparency Features
+- **200,000+ beneficiaries** across all programs
+- **95% average transparency score** (highest accountability standards)
+- **Monthly audit reports** with automated compliance tracking
+- **RTI compliance** - Right to Information integration
+- **Real-time tracking** of all donations and their impact
+
+## Revolutionary Transparency Framework
+
+### Real-Time Fund Tracking Dashboard
+- **Live Updates**: Every 5 minutes for all fund movements
+- **Transaction Visibility**: All fund movements tracked on-chain
+- **Category Breakdowns**: Detailed spending by purpose
+- **Impact Metrics**: Real-time social impact measurement
+- **Predictive Analytics**: AI-powered forecasting for fund usage
+- **Public Access**: Available to all token holders at dashboard.deshchain.io
+
+### Multi-Signature Governance
+
+#### Community Fund (15% - 214,294,149 NAMO)
+- **Governance**: 5 of 9 signatures required
+- **Signers**: Community leaders, validators, representatives
+- **Categories**:
+  - Community Rewards: 30%
+  - Developer Incentives: 25%
+  - Education Programs: 15%
+  - Marketing: 10%
+  - Events & Infrastructure: 10%
+  - Partnerships & Social Impact: 6%
+  - Research & Emergency: 4%
+- **Transparency**: All proposals and votes public
+
+#### Development Fund (15% - 214,294,149 NAMO)
+- **Governance**: 6 of 11 signatures required
+- **Signers**: Technical leads, auditors, developers
+- **Categories**:
+  - Core Blockchain: 25%
+  - Smart Contracts: 15%
+  - User Interface: 12%
+  - Mobile Apps: 10%
+  - Security & Testing: 18%
+  - Documentation & Tools: 8%
+  - Infrastructure & Research: 12%
+- **Quality Control**: Technical, financial, and security reviews
+
+### Phased Community Governance
+
+#### Phase 1: Founder-Driven (Years 0-3)
+- **Founder Control**: 100% allocation power
+- **Community Features**: Full visibility, feedback system
+- **Transparency**: Real-time tracking, public reports
+- **Foundation Building**: Establishing governance infrastructure
+
+#### Phase 2: Transitional (Year 3-4)
+- **Power Distribution**: 70% founder, 30% community
+- **Advisory Voting**: Community input on proposals
+- **Training Programs**: Governance education initiatives
+- **Pilot Projects**: Testing community decision-making
+
+#### Phase 3: Community Proposals (Years 4-7)
+- **Power Shift**: 30% founder, 70% community
+- **Binding Votes**: Community decisions implemented
+- **Founder Veto**: Limited to large proposals
+- **Community Council**: Elected representatives
+
+#### Phase 4: Full Governance (Year 7+)
+- **Community Control**: 90% community power
+- **Founder Role**: 10% allocation, emergency veto only
+- **Constitutional Rules**: Immutable governance principles
+- **Decentralized Operations**: Autonomous community management
+
+### Transparency Metrics & Reporting
+
+#### Real-Time Metrics
+- **Fund Balances**: Updated every minute
+- **Transaction History**: Publicly searchable
+- **Spending Patterns**: AI-analyzed trends
+- **Impact Calculations**: Automated social good metrics
+- **Anomaly Detection**: Fraud prevention system
+
+#### Reporting Requirements
+- **Daily Reports**: Automated summaries
+- **Weekly Analysis**: Detailed breakdowns
+- **Monthly Audits**: Third-party verification
+- **Quarterly Reviews**: Community town halls
+- **Annual Transparency Score**: Public rating
+
+### Accountability Mechanisms
+- **Public Dashboards**: Live fund tracking
+- **Multi-sig Protection**: No single point of control
+- **Community Oversight**: Regular audits and reviews
+- **Slashing Penalties**: For fund mismanagement
+- **Reputation System**: Track record visibility
+- **Appeal Process**: Community-driven dispute resolution
+
+## Batua Wallet - Native Flutter Implementation
+
+### Revolutionary Native Wallet
+- **Pre-integrated NAMO support** with cultural quotes
+- **22 Indian languages** with complete localization
+- **Cultural UI elements**: Indian flag gradients, festival themes
+- **Voice commands**: "Hey Batua, send 100 NAMO to Ram"
+- **Biometric authentication**: Fingerprint and Face ID
+- **HD Wallet support**: BIP32/BIP39/BIP44 compliant
+
+### Integrated Services
+- **Gram Pension Scheme**: Direct pension management
+- **Krishi Mitra preview**: Agricultural lending (coming soon)
+- **DeshPay integration**: Cultural payment system
+- **NFT gallery**: Cultural NFT collections
+- **Staking interface**: Built-in staking with rewards
+- **Cultural calendar**: Festival-based features
+
+### Security Features
+- **AES-256-GCM encryption**: Military-grade security
+- **Multi-signature support**: Family wallet management
+- **Hardware wallet integration**: Ledger and Trezor support
+- **Secure storage**: Encrypted key management
+
+## Gram Pension Scheme - Guaranteed 50% Returns
+
+### Revolutionary Pension System
+- **Guaranteed 50% returns**: ₹12,000 investment → ₹18,000 payout
+- **13-month scheme**: 12 months contribution + 1 month payout
+- **Monthly contributions**: ₹1,000 worth of NAMO tokens
+- **80.6% profit margin**: Sustainable business model
+- **KYC integration**: Hyperledger Aries + Indy verification
+
+### Financial Sustainability
+- **Revenue source**: Transaction tax (₹56.25M monthly potential)
+- **Cost structure**: ₹10.9M monthly operational costs
+- **Monthly profit**: ₹45.3M (80.6% margin)
+- **Break-even**: 2,000 participants
+- **Target**: 10,000-50,000 participants
+
+### Scheme Features
+- **Blockchain-backed**: Immutable contribution records
+- **Transparent**: Real-time scheme performance tracking
+- **Flexible**: Early withdrawal options with reduced returns
+- **Community-driven**: Referral bonuses and loyalty rewards
+- **Cultural integration**: Patriotism scoring and cultural bonuses
+
+## Krishi Mitra - Agricultural Finance Platform
+
+### Community-Backed Agricultural Lending
+- **Low interest rates**: 6-9% vs 12-18% from traditional banks
+- **Community verification**: Village panchayat validation system
+- **Triple-layer fraud protection**: Community, AI, and blockchain verification
+- **Regional specialization**: Crop-specific loan products
+- **95% repayment rate**: Community-backed accountability
+
+### Expected Impact
+- **1,00,000+ farmers**: Target beneficiaries
+- **₹500 crores**: Total loan disbursement
+- **40% income increase**: Average farmer improvement
+- **85% approval rate**: vs 30% in traditional banks
+- **Seasonal lending**: Aligned with agricultural cycles
+
+### Features
+- **Village-level verification**: Community endorsement system
+- **Crop insurance integration**: Risk mitigation
+- **Weather-based lending**: Monsoon-adjusted terms
+- **Digital documentation**: Blockchain-based records
+- **Multi-language support**: 22 Indian languages
+
+## Gamification Module - Bollywood-Style Developer Experience
+
+### Developer Characters
+- **Bug Buster Bahubali**: The legendary bug hunter
+- **Feature Khan**: The feature development superstar
+- **Deploy Singh**: The deployment warrior
+- **Test Rani**: The queen of quality assurance
+- **Refactor Raja**: The code optimization king
+
+### Achievement System
+- **30+ achievements** with cultural quotes and Bollywood themes
+- **XP-based progression**: Level up with development contributions
+- **Social media integration**: Auto-posting to Twitter, Discord, Telegram
+- **Movie poster generation**: Bollywood-style achievement cards
+- **Team battles**: IPL-style coding competitions
+
+### Features
+- **Leaderboard system**: Developer rankings with XP
+- **Achievement cards**: Collectible developer milestones
+- **Social sharing**: Celebrate achievements with community
+- **Cultural integration**: Indian cinema and sports themes
+- **Humor database**: 1000+ programming jokes in Hindi and English
+
+## Advanced Founder Protection & Governance
+
+### Immutable Founder Protections
+- **8% token allocation**: Cryptographically guaranteed, cannot be changed
+- **3.5% transaction tax share**: Perpetual founder allocation from fees
+- **Combined 4.3-7.3% platform revenue**: Founder, co-founder, and angel shares
+- **15% minimum voting power**: Guaranteed governance influence
+- **Inheritance mechanism**: Royalties automatically transfer to designated heirs
+
+### Governance Rights
+- **3-year veto period**: Can veto critical proposals
+- **Emergency powers**: Chain halt, module freeze capabilities
+- **50-year plan override**: Authority to maintain long-term vision
+- **Technical leadership**: Final say on architectural decisions
+- **Community protection**: 80% supermajority required to override
+
+### Sustainable Leadership Model
+- **Lifetime commitment**: Founder dedicated for 50+ years
+- **Generational wealth**: Income continues for founder's family
+- **Community alignment**: Success tied to platform growth
+- **Transparent operations**: All actions visible on-chain
+- **Balanced governance**: Community autonomy with founder guidance
+
+## KYC and Identity Verification
+
+### Hyperledger Aries + Indy Integration
+- **Self-sovereign identity**: Users control their own data
+- **Zero-knowledge proofs**: Privacy-preserving verification
+- **Blockchain-native**: Direct DeshChain integration
+- **Village panchayat support**: Community-backed verification
+- **Biometric authentication**: Offline-capable verification
+
+### Compliance Features
+- **RBI guidelines**: Full regulatory compliance
+- **DigiLocker integration**: Government document verification
+- **Multi-language support**: 22 Indian languages
+- **Audit trails**: Immutable compliance records
+- **Privacy protection**: Minimal data collection
 
 ## DeshPay - The UPI Killer
 
@@ -94,541 +379,271 @@ DeshChain is India's first culturally-aware blockchain platform that transforms 
 
 **Important**: Privacy fees are ADDITIONAL to base fees and dynamic tax. NGO donations can never be private.
 
-## Transparent Donation System
+## Blockchain Explorer - Real-Time Transparency
 
-### Verified NGO Wallets
-- Army Welfare Fund wallet
-- War Widows Support wallet
-- Disabled Soldiers Rehabilitation wallet
-- Border Area Schools wallet
-- Martyrs' Children Education wallet
-- Disaster Relief Fund wallet
+### Advanced Analytics
+- **Real-time transaction tracking** with cultural quotes
+- **Comprehensive validator monitoring** with uptime statistics
+- **Multi-language search** across 22 Indian languages
+- **Cultural integration**: Quotes and themes in explorer interface
+- **Advanced filtering**: By amount, date, type, NGO donations
 
-### Transparency Features
-- Multi-signature control (5-of-9 signers)
-- Real-time balance tracking
-- Public transaction visibility
-- Monthly auto-generated audit reports
-- Photo/video proof of fund utilization
-- Beneficiary testimonials
-- RTI compliance
-- Government audit integration
-
-## Gram Pension Scheme - India's First Blockchain Pension
-
-### Revolutionary Guaranteed Returns Program
-- **Monthly Contribution**: ₹1,000 worth of NAMO tokens
-- **Contribution Period**: 12 months
-- **Total Investment**: ₹12,000 worth of NAMO tokens
-- **Maturity Payout**: ₹18,000 worth of NAMO tokens
-- **Guaranteed Bonus**: ₹6,000 worth of NAMO tokens (50% return)
-- **Scheme Duration**: 13 months
-
-### How It Works
-1. **Enrollment**: Complete KYC and enroll in the scheme
-2. **Monthly Contributions**: Invest ₹1,000 worth of NAMO each month for 12 months
-3. **Automatic Tracking**: Blockchain tracks all contributions transparently
-4. **Maturity Payout**: Receive ₹18,000 worth of NAMO in the 13th month
-5. **Cultural Integration**: Each contribution displays an inspiring quote from Indian leaders
-
-### Financial Sustainability
-- **Revenue Source**: Transaction tax revenue (₹56.25M monthly)
-- **Cost Structure**: ₹10.9M monthly (including bonus reserves)
-- **Monthly Profit**: ₹45.3M (80.6% profit margin)
-- **Break-even**: 2,000 participants (currently targeting 10,000+)
-- **Liquidity Generation**: Creates 30% increase in trading volume
-
-### Participant Benefits
-- **Guaranteed Returns**: 50% return in 13 months
-- **Patriotic Investment**: Contributing to India's digital future
-- **Cultural Engagement**: Learn about Indian heritage with each contribution
-- **Blockchain Transparency**: All transactions publicly verifiable
-- **Referral Rewards**: Earn bonuses for referring friends
-- **Loyalty Points**: Accumulate points for additional benefits
-
-### Risk Management
-- **Reserve Fund**: 3-month payout guarantee
-- **Emergency Fund**: Additional safety buffer
-- **Regulatory Compliance**: Full RBI guideline adherence
-- **Insurance Coverage**: Participant protection fund
-- **Stress Testing**: Viable even with 50% revenue drop
-
-### Eligibility Criteria
-- **Age**: 18-65 years
-- **KYC**: Mandatory verification
-- **Minimum Commitment**: 12 monthly contributions
-- **Residency**: Indian citizens and residents
-- **Bank Account**: Verified Indian bank account
-
-### Scheme Statistics (Target for Year 1)
-- **Target Participants**: 10,000-50,000
-- **Projected Revenue**: ₹675M annually
-- **Projected Profit**: ₹544M annually
-- **Participant Satisfaction**: >90%
-- **Completion Rate**: >92%
-
-## Smart Tax System
-
-### Dynamic Volume-Based Tax Reduction
-- **Base Tax**: 2.5% at <1,000 daily transactions
-- **Volume Tiers**: 
-  - 2.25% at 10K tx/day
-  - 2.0% at 50K tx/day  
-  - 1.5% at 100K tx/day
-  - 1.0% at 500K tx/day
-  - 0.5% at 1M tx/day
-  - 0.25% minimum at 10M+ tx/day
-
-### Progressive Tax Caps
-- **₹0-40,000**: Dynamic percentage (except DeshPay)
-- **₹40,001-4,00,000**: Percentage with ₹1,000 cap
-- **Above ₹4,00,000**: Flat ₹1,000 maximum
-
-### Tax Distribution (2.5% Base Tax)
-- **30% NGO Donations** (0.75% of transaction) - Supporting verified charitable causes
-- **20% Community Rewards** (0.50% of transaction) - Rewarding active users
-- **18% Development Fund** (0.45% of transaction) - Continuous platform improvement
-- **18% Operations** (0.45% of transaction) - Maintaining infrastructure
-- **10% Token Burn** (0.25% of transaction) - Deflationary mechanism
-- **4% Founder Royalty** (0.10% of transaction) - Perpetual, inheritable royalty
-
-## NFT Marketplace & Rewards
-
-### Patriotic NFT Collections
-- Bollywood/Cricket celebrity NFTs
-- Festival celebration NFTs
-- Temple blessing NFTs
-- Wedding Shagun NFTs
-- Achievement badge NFTs
-- Historical moment NFTs
-
-### Automatic Distribution
-- 50% to Army NGO
-- 30% to War Relief
-- 20% to Artist DAO
-- All distributions publicly visible
-
-## Money Order DEX - मनी ऑर्डर
-
-### *"Ghar Ghar Tak Pahunchane Wala Bharosa"*
-India's first culturally-rooted decentralized exchange that recreates the trust and emotional connection of traditional money orders in the digital age.
-
-### Trading Features
-- Automated market maker with cultural themes
-- Concentrated liquidity pools
-- Limit orders with desi terminology
-- Privacy-enabled swaps
-- Cross-chain bridges (Bitcoin, Ethereum, Solana, BNB, Polygon, Avalanche)
-- Yield farming with NAMO rewards
-- Impermanent loss protection
-- Festival-based trading events
-- Regional language support (22 Indian languages)
-
-### Multi-Chain Integration
-- Threshold signatures for Bitcoin
-- Lock-and-mint for Ethereum
-- Wormhole integration for Solana
-- Native bridges for major chains
-- 20+ chain support
-- Cultural continuity across all chains
-
-### Cultural Features
-- Traditional money order trust model
-- Emotional intelligence in trading
-- Festival-based rewards and events
-- Regional customization and themes
-- Community-driven governance
-
-## Sikkebaaz - सिक्केबाज़ 
-
-### *"Asli Meme Sikke, Pakki Guarantee ke Saath"*
-India's first safety-first memecoin launchpad that combines desi humor with anti-pump & dump protection.
-
-### Safety Features
-- 72-hour community review process
-- Mandatory KYC for all project creators
-- Automatic liquidity locks (365 days minimum)
-- Progressive token release schedules
-- Community-driven approval system
-- Real-time fraud detection
-- 24/7 security monitoring
-
-### Cultural Integration
-- Bollywood-style project categories
-- Festival-themed launches
-- Regional language support
-- Celebrity endorsement opportunities
-- Cultural meme contests
-- Traditional joint family tokenomics
-
-### Anti-Pump & Dump Protection
-- Smart contract audits by certified blockchain experts
-- Binding creator accountability system
-- Community governance over project continuation
-- Reputation scoring and long-term tracking
-- Investor protection fund (5% of all transactions)
-- Guaranteed liquidity requirements
-
-## Kisaan Mitra - किसान मित्र
-
-### *"Annadaata Ka Sacha Mitr, Blockchain Pe Bharosa"*
-India's first community-backed agricultural lending platform designed specifically for farmers with cultural sensitivity and fraud protection.
-
-### Core Features
-- **Low Interest Rates**: 6-9% compared to 12-18% from commercial banks
-- **Community Verification**: Village-level panchayat system verification
-- **Seasonal Lending**: Aligned with Kharif, Rabi, and Zaid seasons
-- **Fraud Protection**: Triple-layer security against agricultural scams
-- **Cultural Integration**: Festival-based lending and regional customization
-- **95% Repayment Rate**: Exceptional community trust and support
-
-### Scam Protection System
-- **Village Elder Council**: Traditional panchayat verification
-- **Digital Verification**: Aadhaar, land records, crop insurance integration
-- **Community Watch**: Peer monitoring and anonymous reporting
-- **AI Fraud Detection**: Pattern recognition and risk assessment
-- **Blockchain Transparency**: Immutable records and audit trails
-
-### Regional Specialization
-- **Punjab**: Wheat, rice, cotton mechanization loans
-- **Andhra Pradesh**: Spice processing and value addition
-- **Kerala**: Coconut plantation and rubber loans
-- **Maharashtra**: Sugarcane cooperative integration
-- **West Bengal**: Small farmer and vegetable cultivation
-
-### Social Impact
-- **1,00,000+ Farmers**: Served across India
-- **₹500 Crores**: Total loans disbursed
-- **40% Income Increase**: Average farmer income improvement
-- **85% Approval Rate**: High approval compared to 30% in traditional banks
-
-## Batua Wallet - बटुआ
-
-### *"Your Digital Wallet with Indian Soul"*
-India's first culturally-integrated blockchain wallet with native NAMO support, combining cutting-edge technology with traditional Indian values.
-
-### Core Features
-- **Native NAMO Integration**: Pre-configured token support with cultural quotes
-- **Multi-Chain Support**: DeshChain, Ethereum, Bitcoin, and 100+ cryptocurrencies
-- **Cultural UI**: Indian flag gradients, traditional animations, cultural quotes
-- **HD Wallet**: BIP32/BIP39/BIP44 compliant with secure key management
-- **Cross-Platform**: Flutter-based for Android, iOS, Desktop, and Web
-- **Secure Storage**: AES-256-GCM encryption with biometric authentication
-
-### Unique Features
-- **Cultural Quotes**: Display inspiring quotes with every transaction
-- **Festival Themes**: Auto-changing themes for Indian festivals
-- **Regional Languages**: Support for 22 Indian languages
-- **Voice Commands**: "Hey Batua, send 100 NAMO to Ram"
-- **Offline Capability**: Works without internet for rural areas
-- **Family Wallet**: Joint accounts with spending limits and approvals
-
-### Integrated Services
-- **Gram Pension**: Direct access to pension scheme management
-- **Krishi Mitra**: Agricultural lending platform integration
-- **DeshPay**: Seamless payment system integration
-- **NFT Gallery**: Showcase cultural NFT collections
-- **Staking**: Built-in staking with cultural rewards
-
-### Security Features
-- **Biometric Authentication**: Fingerprint and Face ID
-- **Multi-Signature**: Joint family wallet management
-- **Time-locked Transactions**: Schedule payments for muhurat
-- **Anti-Phishing**: Visual hash with rangoli patterns
-- **Hardware Wallet**: Ledger and Trezor integration
-
-## Hyperledger Aries + Indy KYC System
-
-### *"Blockchain-Native Identity for Financial Inclusion"*
-Revolutionary KYC solution using self-sovereign identity for pension and agriculture finance.
-
-### Core Architecture
-- **Self-Sovereign Identity**: Users control their own identity data
-- **Verifiable Credentials**: Privacy-preserving verification system
-- **Zero-Knowledge Proofs**: Selective disclosure without revealing sensitive data
-- **Blockchain Native**: Direct integration with DeshChain Cosmos SDK
-- **Interoperable**: Works with multiple identity standards
-
-### Key Features
-- **DID Registration**: Decentralized identity on DeshChain
-- **Credential Schemas**: Custom schemas for pension and agriculture
-- **Fraud Detection**: AI-powered risk assessment and fraud prevention
-- **Biometric Verification**: Offline biometric authentication
-- **Multi-Language Support**: 22 Indian languages for rural accessibility
-- **Village Panchayat Integration**: Community-backed verification system
-
-### Compliance Features
-- **RBI Guidelines**: Full compliance with Indian KYC regulations
-- **DigiLocker Integration**: Government document verification
-- **Audit Trail**: Immutable compliance records
-- **Privacy Protection**: GDPR-compliant data handling
-- **Regulatory Reporting**: Automated compliance reporting
-
-### Use Cases
-- **Pension Verification**: Age, identity, and beneficiary verification
-- **Agriculture Finance**: Farmer identity and land ownership verification
-- **Banking Services**: Instant KYC for financial services
-- **Government Schemes**: Eligibility verification for welfare programs
-- **Insurance**: Identity verification for insurance products
-
-### Implementation Timeline
-- **Phase 1 (Q3 2024)**: Foundation setup and basic DID registration
-- **Phase 2 (Q4 2024)**: Gram Pension KYC integration
-- **Phase 3 (Q1 2025)**: Kishan Mitra agriculture finance KYC
-- **Phase 4 (Q2 2025)**: Advanced privacy features and India Stack integration
-
-## Governance System
-
-### Voting Mechanism
-- Proposal creation requires 10,000 NAMO
-- Weighted voting by stake
-- Special voting power for rare NFT holders
-- Time-lock bonuses for long-term stakers
-- Delegation system
-- Emergency DAO actions
-
-### Governance Categories
-- Tax curve adjustments (75% approval required)
-- Tax cap modifications (75% approval required)
-- Minimum tax floor (80% approval required)
-- Privacy fee adjustments (75% approval required)
-- NGO fund allocation (66% approval required)
-- Development fund allocation (majority required)
-
-## Platform Revenue Distribution
-
-### Revenue Streams
-DeshChain generates revenue from multiple sources beyond transaction taxes:
-- **DEX Trading Fees**: 0.3% on all trades
-- **NFT Marketplace**: 2.5% commission on sales
-- **Sikkebaaz Launchpad**: 100 NAMO + 2% of tokens
-- **Gram Pension**: Management fees from pension products
-- **Kisaan Mitra**: Interest spread on agricultural loans
-- **Privacy Fees**: ₹50-150 per private transaction
-- **Governance Fees**: Proposal submission and voting
-
-### Revenue Sharing Model
-All platform revenues are distributed as follows:
-- **30% Development Fund** - Continuous platform enhancement
-- **25% Community Treasury** - Community-governed initiatives
-- **20% Liquidity Provision** - Market stability
-- **10% NGO Donations** - Charitable causes
-- **10% Emergency Reserve** - Crisis management
-- **5% Founder Royalty** - Perpetual, inheritable share
-
-### Founder Royalty System
-- **Dual Revenue Stream**: 
-  - 0.10% from transaction tax (perpetual)
-  - 5% from all platform revenues (perpetual)
-- **Inheritance Mechanism**: 
-  - Fully inheritable to designated beneficiaries
-  - 90-day inactivity trigger for automatic inheritance
-  - Multi-signature backup beneficiary system
-- **Transparency**: All royalty distributions publicly visible on-chain
+### Features
+- **Patriotism leaderboard**: Top contributors to social causes
+- **Holder rankings**: Token distribution transparency
+- **Donation tracking**: Real-time NGO fund monitoring
+- **Tax statistics**: Dynamic tax rate analytics
+- **Cultural quote display**: Historical context for transactions
 
 ## Technical Architecture
 
-### Blockchain Foundation
-- **Base**: Cosmos SDK fork
+### Core Stack
+- **Blockchain**: Cosmos SDK (Go)
 - **Consensus**: Tendermint
-- **Target TPS**: 10,000+ (optimized for DeshPay)
-- **Languages**: Go, Rust, TypeScript
+- **Frontend**: React/TypeScript + PWA
+- **Backend**: Go, Node.js/TypeScript
+- **Database**: PostgreSQL, Redis
+- **Storage**: IPFS (cultural content, NFT metadata)
 - **Privacy**: zk-SNARKs implementation
-- **Storage**: IPFS for cultural content and NFT metadata
+- **Mobile**: Flutter (Batua Wallet)
+- **KYC**: Hyperledger Aries + Indy
 
-### Infrastructure
-- State pruning for scalability
-- Archive nodes for historical data
-- CDN integration for global access
-- Horizontal scaling capability
-- High-availability for donations
-- Edge computing for QR validation
+### Smart Contracts
+- **Revenue distribution**: Automated payment splitting
+- **Gamification**: Achievement tracking and rewards
+- **NFT marketplace**: Cultural NFT trading
+- **Governance**: Voting and proposal management
+- **Privacy**: zk-SNARK verification
+- **Staking**: Validator and delegator rewards
 
-### Mobile-First Design
-- Progressive Web App
-- 14 language support (Hindi, English, 12 regional)
-- Voice commands in local languages
-- Offline transaction signing
-- AR QR scanner with merchant overlay
-- Push notifications for tax changes
+## Revenue Model & Sustainability
 
-## Security Framework
+### Multiple Revenue Streams
+1. **Transaction Tax**: 2.5% base rate (volume-based reduction)
+2. **DEX Trading Fees**: 0.3% of trading volume
+3. **NFT Marketplace**: 2.5% of sales
+4. **Sikkebaaz Launchpad**: 1000 NAMO + 5% of raised amount (increased from 2%)
+5. **Privacy Fees**: ₹50-150 per private transaction
+6. **Premium Services**: Advanced analytics, API access
 
-### Multi-Layer Security
-- Multi-signature treasury
-- Time-locks on large transactions
-- Rate limiting and circuit breakers
-- Formal verification
-- Bug bounty program
-- Insurance fund
-- Hardware security modules for NGO wallets
+### Projected Revenue
+- **Year 1**: ₹255 Cr total platform revenue
+- **Year 5**: ₹11,906 Cr total platform revenue
+- **Year 10**: ₹24,592 Cr total platform revenue
 
-### Compliance Features
-- GST integration
-- TDS calculation
-- AML monitoring
-- KYC verification
-- Regulatory reporting
-- Government API endpoints
-- 80G receipt generation for donations
+### Sustainability Features
+- **Development Fund**: 30% of all revenues for continuous innovation
+- **Community Treasury**: 25% for user incentives and growth
+- **Emergency Reserve**: 10% for crisis management
+- **Founder Commitment**: Lifetime dedication through sustainable compensation
 
-## Monetization Strategy
+## Validator Economics - Industry Leading Compensation
 
-### Revenue Streams
-1. **Primary**: 2.5% transaction tax (sustainable volume-based)
-2. **Secondary**: Privacy fees (₹50/₹100/₹150 additional)
-3. **Trading**: Money Order DEX fees (0.3% swaps)
-4. **NFT**: Marketplace fees (2.5%)
-5. **Launchpad**: Sikkebaaz creation fees (100 NAMO + 2% supply)
-6. **Pension**: Gram Pension scheme profits (80.6% profit margin)
-7. **Agricultural**: Kisaan Mitra lending interest (6-9% APR on agricultural loans)
-8. **Premium**: Advanced features and analytics
-9. **Enterprise**: White-label solutions
-10. **Cultural**: Festival events and cultural NFT sales
-11. **Education**: Crypto learning platform subscriptions
-12. **Insurance**: Agricultural insurance partnerships and commissions
+### Revolutionary Multi-Revenue Stream Model
+DeshChain validators earn from ALL platform activities, not just transaction fees:
 
-### Sustainable Economics
-- Large transaction caps attract whale users
-- Volume-based tax reduction drives adoption
-- DeshPay subsidies create market dominance
-- NFT rewards increase user retention
-- Privacy fees fund premium infrastructure
+#### Revenue Sources for Validators
+1. **Transaction Fees**: 25% of 2.5% tax (0.625% of all transactions)
+2. **DEX Trading**: 45% of 0.3% trading fees + 100% MEV capture
+3. **Sikkebaaz Launchpad**: 40% of 5% platform fees (due diligence rewards)
+4. **NFT Marketplace**: 35% of 2.5% sales (IPFS pinning + validation)
+5. **Gram Pension**: 30% of profit margins (KYC verification)
+6. **Kisaan Mitra**: 35% of interest spreads (ground verification)
+7. **Privacy Transactions**: 50% of ₹50-150 fees (zk-SNARK computation)
+8. **Governance Participation**: 25% of proposal fees
+9. **Enterprise Services**: 80% of RPC/API subscription fees
+10. **Staking Rewards**: 15-25% APY based on lock period
 
-## Development Roadmap
+### Geographic Incentives (India First)
+- **Base India Bonus**: +10% on ALL earnings for India data centers
+- **Tier 2/3 City Bonus**: +5% additional for smaller cities
+- **Local Employment**: +3% for hiring 5+ local employees
+- **Green Energy**: +2% for renewable energy usage
+- **Total Possible**: Up to 20% geographic bonus
 
-### Phase 1: Foundation (Months 1-3) ✅ COMPLETED
-- ✅ Cosmos SDK fork setup
-- ✅ Basic blockchain functionality
-- ✅ NAMO token implementation
-- ✅ Cultural Heritage System with 10,000+ quotes
-- ✅ Transparent donation tracking system
-- ✅ Basic blockchain explorer
-- ✅ Smart tax system foundation
+### Performance Multipliers
+- **99.99% Uptime**: +5% bonus
+- **Top 10% Block Production**: +3% bonus
+- **<100ms Transaction Speed**: +3% bonus
+- **Archive Node Operation**: +2% bonus
+- **Public RPC Provision**: +2% bonus
+- **Community Contribution**: +2% bonus
+- **Maximum Performance Bonus**: +17%
 
-### Phase 2: DeshPay Core (Months 4-6) ✅ COMPLETED
-- ✅ QR payment system
-- ✅ Merchant verification
-- ✅ KYC integration research and strategy
-- ✅ Basic NFT rewards
-- ✅ **Batua Wallet**: Native Flutter wallet with NAMO integration
-- ✅ **Gram Pension Scheme Launch**: Revolutionary blockchain pension system
-- ✅ **Sikkebaaz Alpha**: Desi memecoin launchpad (safety-first model)
-- ✅ **Kisaan Mitra Beta**: Agricultural lending platform for farmers
+### Validator Earnings Comparison
+| Metric | DeshChain | BSC | Ethereum |
+|--------|-----------|-----|----------|
+| 10-Year Earnings (1% stake) | ₹101.09 Cr | ₹78.3 Cr | ₹59.7 Cr |
+| Revenue Streams | 10+ | 1-2 | 2-3 |
+| Geographic Bonus | Yes (20%) | No | No |
+| Social Impact | Yes | No | No |
+| ROI | 20,218% | 15,660% | 11,940% |
 
-### Phase 3: Advanced Features (Months 7-9) 🔄 IN PROGRESS
-- **Hyperledger Aries + Indy KYC**: Blockchain-native identity verification system
-- **Pension KYC Integration**: Age verification, beneficiary management, patriotism scoring
-- **Agriculture KYC Integration**: Farmer identity, land ownership, community verification
-- **Mobile KYC Application**: Offline-capable KYC for rural areas with biometric support
-- **Village Panchayat Integration**: Community-backed verification system
-- **DigiLocker Integration**: Government document verification
-- Privacy layer implementation
-- **Money Order DEX**: Traditional money order inspired decentralized exchange
-- Smart tax system enhancement
-- Governance module
-- Advanced NFT marketplace
-- **Sikkebaaz Beta**: Full memecoin launchpad with anti-pump & dump features
-- **Gram Pension Expansion**: Multi-scheme pension platform
-- **Kisaan Mitra Pro**: Advanced agricultural lending with AI and IoT integration
+## Roadmap & Development
 
-### Phase 4: Scale & Integration (Months 10-12)
-- **Advanced KYC Features**: Zero-knowledge proofs, selective disclosure, automated compliance
-- **Cross-Platform KYC**: Desktop, web, and mobile synchronization
-- **KYC Analytics**: Dashboard for pension and agriculture KYC insights
-- **Fraud Detection Engine**: AI-powered risk assessment and prevention
-- **Regulatory Compliance**: Automated reporting and audit trails
-- Cross-chain bridges
-- Enterprise features
-- Government integrations
-- Performance optimization
-- Security audits
-- **Money Order Global**: International DEX expansion
-- **Sikkebaaz International**: Global desi memecoin platform
+### Phase 1: Foundation (Months 1-3) ✅ **COMPLETED**
+- [x] Cosmos SDK fork setup
+- [x] NAMO token implementation
+- [x] Cultural heritage system
+- [x] Basic donation tracking
+- [x] Blockchain explorer
+- [x] Smart tax system foundation
 
-### Phase 5: Ecosystem Expansion (Months 13+)
-- International expansion
-- Advanced DeFi features
-- AI integration
-- Quantum-resistant upgrades
-- Metaverse integration
-- **Cultural Finance Hub**: Complete ecosystem of culturally-aware financial products
-- **Bharat DeFi**: India's largest decentralized finance platform
+### Phase 2: DeshPay System (Months 4-6)
+- [ ] UPI integration
+- [ ] Merchant onboarding
+- [ ] QR code generation
+- [ ] Payment processing
+- [ ] NFT reward system
+- [ ] Mobile app MVP
 
-## Why DeshChain Will Succeed
+### Phase 3: Advanced Features (Months 7-9)
+- [ ] Privacy layer implementation
+- [ ] DEX development
+- [ ] Governance module
+- [ ] Staking implementation
+- [ ] Cross-chain bridges
+- [ ] Advanced analytics
 
-### Market Advantages
-1. **Cost Leadership**: ₹1,000 cap vs traditional banking fees
-2. **Cultural Connection**: First blockchain celebrating Indian heritage
-3. **Social Impact**: Transparent donations build trust
-4. **Gamification**: NFT rewards create engagement
-5. **Network Effect**: Cheaper as it grows
-6. **Regulatory Alignment**: Designed for Indian compliance
+### Phase 4: Ecosystem Expansion (Months 10-12)
+- [ ] Full KYC integration
+- [ ] Gram Pension Scheme launch
+- [ ] Krishi Mitra platform
+- [ ] Enterprise partnerships
+- [ ] International expansion
+- [ ] Advanced gamification
 
-### Competitive Positioning
-- **vs UPI**: Adds rewards, permanent records, tax benefits
-- **vs PayTM/PhonePe**: True zero fees, NFT rewards, cultural value
-- **vs Traditional Banking**: 95%+ cost savings on large transfers
-- **vs International Transfers**: Massive savings with social impact
-- **vs Other Blockchains**: Cultural relevance, regulatory compliance
+### Phase 5: Global Scale (Year 2+)
+- [ ] Multi-chain deployment
+- [ ] AI integration
+- [ ] IoT connectivity
+- [ ] Government partnerships
+- [ ] Educational initiatives
+- [ ] Cultural preservation programs
 
-## Get Involved
+## Community & Social Impact
+
+### Building for India
+- **Cultural Values**: Respecting traditions while embracing innovation
+- **Social Responsibility**: Every transaction contributes to social good
+- **Financial Inclusion**: Making blockchain accessible to all Indians
+- **Education**: Spreading knowledge through every interaction
+- **Transparency**: Open-source development and transparent operations
+
+### Community Engagement
+- **Developer Gamification**: Bollywood-style achievements and competitions
+- **Cultural Events**: Festival-based features and celebrations
+- **Educational Programs**: Blockchain literacy initiatives
+- **Social Media**: Multi-platform community building
+- **Partnerships**: Collaborations with cultural institutions
+
+### Long-term Vision
+- **50-year commitment**: Building sustainable technology for generations
+- **Cultural preservation**: Digitizing and protecting Indian heritage
+- **Financial empowerment**: Creating opportunities for all Indians
+- **Technological leadership**: Establishing India as a blockchain superpower
+- **Global influence**: Spreading Indian values through technology
+
+## Getting Started
 
 ### For Developers
-- Comprehensive SDK
-- REST/GraphQL APIs
-- Hackathon opportunities
-- Development grants
-- Open-source contributions
+```bash
+# Clone the repository
+git clone https://github.com/deshchain/deshchain.git
 
-### For Merchants
-- Free DeshPay integration
-- NFT loyalty programs
-- Advanced analytics
-- Marketing support
-- Community building
+# Install dependencies
+go mod download
+
+# Start the development network
+make dev-start
+
+# Run tests
+make test
+```
 
 ### For Users
-- Early adopter NFTs
-- Cultural NFT collections
-- Referral rewards
-- Community governance
-- Educational content
+1. **Download Batua Wallet**: Native Flutter app with NAMO integration
+2. **Complete KYC**: Hyperledger Aries + Indy verification
+3. **Get NAMO tokens**: Purchase through official channels
+4. **Start transacting**: Experience culture with every payment
+5. **Join community**: Discord, Telegram, Twitter
 
-## Community & Support
+### For Merchants
+1. **Apply for DeshPay**: Free merchant registration
+2. **Complete verification**: KYC and business documentation
+3. **Generate QR codes**: Instant payment acceptance
+4. **Start accepting payments**: Zero fees for verified transactions
+5. **Access dashboard**: Real-time analytics and reporting
 
-### Social Media
-- Twitter: @DeshChain
-- Telegram: @DeshChainOfficial
-- Discord: DeshChain Community
-- YouTube: DeshChain Education
+## Support & Community
 
-### Documentation
-- Developer docs: docs.deshchain.com
-- User guides: help.deshchain.com
-- Cultural content: wisdom.deshchain.com
-- Impact reports: impact.deshchain.com
+- **Website**: https://deshchain.org
+- **Documentation**: https://docs.deshchain.org
+- **GitHub**: https://github.com/deshchain
+- **Discord**: https://discord.gg/deshchain
+- **Telegram**: https://t.me/deshchain
+- **Twitter**: https://twitter.com/deshchain
+
+## License & Attribution
+
+### Dual Licensing Structure
+
+DeshChain uses a dual licensing approach to protect both technological innovation and cultural heritage:
+
+#### 📋 **Source Code License: Apache 2.0**
+- All Go, JavaScript, TypeScript, Python, and shell script files
+- Build configurations, Docker files, and deployment scripts
+- Technical documentation and development tools
+- Test files and development utilities
+
+*Permits commercial use, modification, and distribution with proper attribution.*
+
+#### 🎭 **Cultural Heritage License: CC BY-NC-SA 4.0**
+- Traditional quotes, sayings, and wisdom (`/cultural-data/quotes/`)
+- Festival calendars and celebrations (`/cultural-data/festivals/`)
+- Heritage site information (`/cultural-data/heritage/`)
+- Language translations (`/cultural-data/languages/`)
+
+*Permits sharing and adaptation for non-commercial purposes with attribution and share-alike requirements.*
+
+### Attribution Requirements
+
+**For Source Code:**
+```
+Copyright 2024 DeshChain Foundation
+Licensed under Apache License 2.0
+Source: https://github.com/deshchain/deshchain
+```
+
+**For Cultural Content:**
+```
+DeshChain Foundation Cultural Heritage Collection
+Licensed under CC BY-NC-SA 4.0
+Source: https://github.com/deshchain/deshchain/tree/main/cultural-data
+```
+
+### Files and License Coverage
+
+| Component | License | Files |
+|-----------|---------|-------|
+| Blockchain Core | Apache 2.0 | `app/`, `x/`, `cmd/`, `tests/` |
+| Cultural Data | CC BY-NC-SA 4.0 | `cultural-data/` |
+| Documentation | Apache 2.0 | `docs/`, `README.md`, `*.md` |
+| Deployment | Apache 2.0 | `docker/`, `k8s/`, `scripts/` |
+
+See [LICENSE](./LICENSE), [LICENSE-CULTURAL](./LICENSE-CULTURAL), and [NOTICE](./NOTICE) files for complete terms.
 
 ## Legal & Compliance
 
-### Regulatory Status
-- Designed for Indian regulatory compliance
-- GST integration ready
-- AML/KYC compliant
-- Government partnership ready
-- International expansion planned
-
-### Token Classification
-- Utility token (not security)
-- Clear use cases
-- Decentralized governance
-- Community-driven development
-- Transparent tokenomics
+- **Regulatory Compliance**: Full adherence to Indian regulations
+- **AML/KYC**: Comprehensive anti-money laundering measures
+- **Data Protection**: Privacy-first approach with user consent
+- **Intellectual Property**: Respecting all copyrights and trademarks
+- **Tax Compliance**: Proper reporting and tax obligations
+- **Cultural Sensitivity**: Respectful preservation of Indian heritage
 
 ---
 
-**DeshChain: Where Every Transaction Tells a Story, Builds a Nation, and Preserves Our Heritage**
+**DeshChain: Where Culture Meets Innovation, Where Every Transaction Tells a Story**
 
-*"Vasudhaiva Kutumbakam" - The World is One Family*
-
-*Making blockchain technology accessible, affordable, and culturally relevant for 1.4 billion Indians*
+*Built with ❤️ for India, by Indians, celebrating our incredible heritage while pioneering the future of finance.*

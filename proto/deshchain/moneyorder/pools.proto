@@ -1,0 +1,319 @@
+syntax = "proto3";
+package deshchain.moneyorder;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos_proto/cosmos.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/moneyorder/types";
+
+// FixedRatePool represents a pool with fixed exchange rates
+message FixedRatePool {
+  // Pool identification
+  uint64 pool_id = 1;
+  string pool_name = 2;
+  string description = 3;
+  
+  // Token pair configuration
+  string token0_denom = 4;
+  string token1_denom = 5;
+  string exchange_rate = 6 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string reverse_rate = 7 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Pool limits
+  string min_order_amount = 8 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string max_order_amount = 9 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string daily_limit = 10 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string monthly_limit = 11 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Liquidity management
+  string token0_balance = 12 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string token1_balance = 13 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string reserved_balance = 14 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Geographic and KYC requirements
+  repeated string supported_regions = 15;
+  bool requires_kyc = 16;
+  string kyc_threshold = 17 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Fee structure
+  string base_fee = 18 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string express_fee = 19 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string bulk_discount = 20 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Cultural features
+  bool cultural_pair = 21;
+  bool festival_bonus = 22;
+  bool village_priority = 23;
+  
+  // Pool status
+  bool active = 24;
+  bool maintenance_mode = 25;
+  string created_by = 26 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  google.protobuf.Timestamp created_at = 27 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated_at = 28 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // Statistics
+  uint64 total_orders = 29;
+  string total_volume = 30 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string daily_volume = 31 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string monthly_volume = 32 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// VillagePool represents a community-managed liquidity pool
+message VillagePool {
+  // Pool identification
+  uint64 pool_id = 1;
+  string village_name = 2;
+  string postal_code = 3;
+  string state_code = 4;
+  string district_code = 5;
+  
+  // Community details
+  string panchayat_name = 6;
+  string panchayat_head = 7 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string cooperative_id = 8;
+  
+  // Pool configuration
+  repeated string supported_tokens = 9;
+  string primary_token = 10;
+  string local_currency = 11;
+  
+  // Liquidity management
+  repeated cosmos.base.v1beta1.Coin total_liquidity = 12 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+  repeated cosmos.base.v1beta1.Coin available_liquidity = 13 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+  repeated cosmos.base.v1beta1.Coin reserved_liquidity = 14 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+  string minimum_liquidity = 15 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Community validators
+  repeated LocalValidator local_validators = 16;
+  uint32 required_signatures = 17;
+  
+  // Fee structure
+  string base_trading_fee = 18 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string community_fee = 19 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string education_fee = 20 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string infrastructure_fee = 21 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Member management
+  uint64 total_members = 22;
+  uint64 active_traders = 23;
+  MemberBenefits member_benefits = 24;
+  
+  // Trading statistics
+  string total_volume = 25 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string daily_volume = 26 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string monthly_volume = 27 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  uint64 total_transactions = 28;
+  
+  // Community funds
+  repeated cosmos.base.v1beta1.Coin community_fund = 29 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+  repeated cosmos.base.v1beta1.Coin education_fund = 30 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+  repeated cosmos.base.v1beta1.Coin emergency_fund = 31 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+  
+  // Cultural features
+  repeated string local_festivals = 32;
+  repeated string language_support = 33;
+  repeated string cultural_quotes = 34;
+  
+  // Pool status
+  bool active = 35;
+  bool verified = 36;
+  google.protobuf.Timestamp established_date = 37 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp last_activity_date = 38 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // Achievements
+  repeated VillageAchievement achievements = 39;
+  uint32 trust_score = 40;
+}
+
+// LocalValidator represents a trusted community validator
+message LocalValidator {
+  string validator_address = 1 [(cosmos_proto.scalar) = "cosmos.ValidatorAddressString"];
+  string local_name = 2;
+  string role = 3;
+  uint32 trust_level = 4;
+  google.protobuf.Timestamp joined_at = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+// MemberBenefits defines benefits for village pool members
+message MemberBenefits {
+  string fee_discount = 1 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  bool priority_execution = 2;
+  bool voting_rights = 3;
+  string profit_sharing = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  bool education_access = 5;
+  bool emergency_support = 6;
+}
+
+// VillageAchievement represents milestones achieved by the village
+message VillageAchievement {
+  string achievement_id = 1;
+  string title = 2;
+  string description = 3;
+  string category = 4;
+  google.protobuf.Timestamp achieved_at = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  repeated cosmos.base.v1beta1.Coin reward_amount = 6 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+}
+
+// VillagePoolMember represents a member of the village pool
+message VillagePoolMember {
+  string member_address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string local_name = 2;
+  string mobile_number = 3;
+  string aadhaar_hash = 4;
+  
+  // Membership details
+  string membership_type = 5;
+  google.protobuf.Timestamp joined_at = 6 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  repeated cosmos.base.v1beta1.Coin contribution = 7 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+  
+  // Activity tracking
+  uint64 total_trades = 8;
+  string total_volume = 9 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  google.protobuf.Timestamp last_trade_at = 10 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // Benefits earned
+  repeated cosmos.base.v1beta1.Coin total_earnings = 11 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+  repeated cosmos.base.v1beta1.Coin pending_rewards = 12 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+  uint32 education_credits = 13;
+}

@@ -1,0 +1,43 @@
+syntax = "proto3";
+package deshchain.moneyorder;
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/moneyorder/types";
+
+// PoolAsset represents a token in an AMM pool
+message PoolAsset {
+  string denom = 1;
+  string amount = 2 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string weight = 3 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// AMMPoolInfo represents an automated market maker pool
+message AMMPoolInfo {
+  uint64 pool_id = 1;
+  repeated PoolAsset pool_assets = 2 [(gogoproto.nullable) = false];
+  string total_shares = 3 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string swap_fee = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string creator = 5 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  bool active = 6;
+  bool cultural_pair = 7;
+  bool festival_bonus = 8;
+  bool village_priority = 9;
+}

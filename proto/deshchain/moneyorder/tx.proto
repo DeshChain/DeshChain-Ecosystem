@@ -1,0 +1,263 @@
+syntax = "proto3";
+package deshchain.moneyorder;
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos_proto/cosmos.proto";
+import "cosmos/msg/v1/msg.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/moneyorder/types";
+
+// Msg defines the Msg service.
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+  
+  // CreateMoneyOrder creates a new money order with UPI-style simplicity
+  rpc CreateMoneyOrder(MsgCreateMoneyOrder) returns (MsgCreateMoneyOrderResponse);
+  
+  // CreateFixedRatePool creates a fixed exchange rate pool
+  rpc CreateFixedRatePool(MsgCreateFixedRatePool) returns (MsgCreateFixedRatePoolResponse);
+  
+  // CreateVillagePool creates a community-managed village pool
+  rpc CreateVillagePool(MsgCreateVillagePool) returns (MsgCreateVillagePoolResponse);
+  
+  // AddLiquidity adds liquidity to a pool
+  rpc AddLiquidity(MsgAddLiquidity) returns (MsgAddLiquidityResponse);
+  
+  // RemoveLiquidity removes liquidity from a pool
+  rpc RemoveLiquidity(MsgRemoveLiquidity) returns (MsgRemoveLiquidityResponse);
+  
+  // SwapExactAmountIn swaps tokens with exact input amount
+  rpc SwapExactAmountIn(MsgSwapExactAmountIn) returns (MsgSwapExactAmountInResponse);
+  
+  // SwapExactAmountOut swaps tokens with exact output amount
+  rpc SwapExactAmountOut(MsgSwapExactAmountOut) returns (MsgSwapExactAmountOutResponse);
+  
+  // JoinVillagePool allows a user to join a village pool
+  rpc JoinVillagePool(MsgJoinVillagePool) returns (MsgJoinVillagePoolResponse);
+  
+  // ClaimRewards claims accumulated rewards from a pool
+  rpc ClaimRewards(MsgClaimRewards) returns (MsgClaimRewardsResponse);
+  
+  // UpdatePoolParams updates pool parameters (governance only)
+  rpc UpdatePoolParams(MsgUpdatePoolParams) returns (MsgUpdatePoolParamsResponse);
+}
+
+// MsgCreateMoneyOrder - Simple UPI-style money transfer
+message MsgCreateMoneyOrder {
+  option (cosmos.msg.v1.signer) = "sender";
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+  
+  string sender = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string receiver_upi = 2; // name@deshchain or address
+  cosmos.base.v1beta1.Coin amount = 3 [(gogoproto.nullable) = false];
+  string note = 4; // Personal message
+  string order_type = 5; // "instant", "normal", "scheduled"
+  int64 scheduled_time = 6; // Unix timestamp if scheduled
+}
+
+message MsgCreateMoneyOrderResponse {
+  string order_id = 1;
+  string reference_number = 2;
+}
+
+// MsgCreateFixedRatePool - Create a fixed exchange rate pool
+message MsgCreateFixedRatePool {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+  
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string token0_denom = 2;
+  string token1_denom = 3;
+  string exchange_rate = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  repeated cosmos.base.v1beta1.Coin initial_liquidity = 5 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+  string description = 6;
+  repeated string supported_regions = 7;
+}
+
+message MsgCreateFixedRatePoolResponse {
+  uint64 pool_id = 1;
+}
+
+// MsgCreateVillagePool - Create a community-managed pool
+message MsgCreateVillagePool {
+  option (cosmos.msg.v1.signer) = "panchayat_head";
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+  
+  string panchayat_head = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string village_name = 2;
+  string postal_code = 3;
+  string state_code = 4;
+  string district_code = 5;
+  repeated cosmos.base.v1beta1.Coin initial_liquidity = 6 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+  repeated string local_validators = 7;
+}
+
+message MsgCreateVillagePoolResponse {
+  uint64 pool_id = 1;
+}
+
+// MsgAddLiquidity - Add liquidity to any pool
+message MsgAddLiquidity {
+  option (cosmos.msg.v1.signer) = "depositor";
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+  
+  string depositor = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  uint64 pool_id = 2;
+  repeated cosmos.base.v1beta1.Coin token_amounts = 3 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+  string share_out_min = 4 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message MsgAddLiquidityResponse {
+  string shares_out = 1 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// MsgRemoveLiquidity - Remove liquidity from a pool
+message MsgRemoveLiquidity {
+  option (cosmos.msg.v1.signer) = "withdrawer";
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+  
+  string withdrawer = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  uint64 pool_id = 2;
+  string share_amount = 3 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  repeated cosmos.base.v1beta1.Coin token_out_mins = 4 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+}
+
+message MsgRemoveLiquidityResponse {
+  repeated cosmos.base.v1beta1.Coin tokens_out = 1 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+}
+
+// MsgSwapExactAmountIn - Swap with exact input amount
+message MsgSwapExactAmountIn {
+  option (cosmos.msg.v1.signer) = "sender";
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+  
+  string sender = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  uint64 pool_id = 2;
+  cosmos.base.v1beta1.Coin token_in = 3 [(gogoproto.nullable) = false];
+  string token_out_denom = 4;
+  string token_out_min = 5 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message MsgSwapExactAmountInResponse {
+  cosmos.base.v1beta1.Coin token_out = 1 [(gogoproto.nullable) = false];
+}
+
+// MsgSwapExactAmountOut - Swap with exact output amount
+message MsgSwapExactAmountOut {
+  option (cosmos.msg.v1.signer) = "sender";
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+  
+  string sender = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  uint64 pool_id = 2;
+  string token_in_denom = 3;
+  string token_in_max = 4 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin token_out = 5 [(gogoproto.nullable) = false];
+}
+
+message MsgSwapExactAmountOutResponse {
+  cosmos.base.v1beta1.Coin token_in = 1 [(gogoproto.nullable) = false];
+}
+
+// MsgJoinVillagePool - Join a village pool as a member
+message MsgJoinVillagePool {
+  option (cosmos.msg.v1.signer) = "member";
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+  
+  string member = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  uint64 pool_id = 2;
+  repeated cosmos.base.v1beta1.Coin initial_deposit = 3 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+  string local_name = 4;
+  string mobile_number = 5;
+}
+
+message MsgJoinVillagePoolResponse {
+  string member_id = 1;
+}
+
+// MsgClaimRewards - Claim accumulated rewards
+message MsgClaimRewards {
+  option (cosmos.msg.v1.signer) = "claimer";
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+  
+  string claimer = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  uint64 pool_id = 2;
+}
+
+message MsgClaimRewardsResponse {
+  repeated cosmos.base.v1beta1.Coin rewards_claimed = 1 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+}
+
+// MsgUpdatePoolParams - Update pool parameters (governance)
+message MsgUpdatePoolParams {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+  
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  uint64 pool_id = 2;
+  string base_fee = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  bool active = 4;
+}
+
+message MsgUpdatePoolParamsResponse {
+  bool success = 1;
+}

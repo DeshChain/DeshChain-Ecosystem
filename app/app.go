@@ -1,3 +1,19 @@
+/*
+Copyright 2024 DeshChain Foundation
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 package app
 
 import (
@@ -7,7 +23,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"cosmossdk.io/store/types"
 	storetypes "cosmossdk.io/store/types"
 	"cosmossdk.io/x/evidence"
 	evidencekeeper "cosmossdk.io/x/evidence/keeper"
@@ -82,6 +97,12 @@ import (
 	dbm "github.com/cometbft/cometbft-db"
 	abci "github.com/cometbft/cometbft/abci/types"
 	nodeservice "github.com/cosmos/cosmos-sdk/client/grpc/node"
+	"github.com/spf13/cast"
+
+	// Money Order imports
+	moneyorder "github.com/deshchain/deshchain/x/moneyorder"
+	moneyorderkeeper "github.com/deshchain/deshchain/x/moneyorder/keeper"
+	moneyordertypes "github.com/deshchain/deshchain/x/moneyorder/types"
 )
 
 const (
@@ -121,6 +142,7 @@ var (
 		authzmodule.AppModuleBasic{},
 		vesting.AppModuleBasic{},
 		consensus.AppModuleBasic{},
+		moneyorder.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -136,6 +158,7 @@ var (
 		"development_fund":             nil, // Development fund wallet
 		"operations_fund":              nil, // Operations fund wallet
 		"burn_address":                 {authtypes.Burner}, // Token burn address
+		moneyordertypes.ModuleName:     nil, // Money Order module
 	}
 )
 
@@ -186,6 +209,7 @@ type DeshChainApp struct {
 	EvidenceKeeper        evidencekeeper.Keeper
 	FeeGrantKeeper        feegrantkeeper.Keeper
 	ConsensusParamsKeeper consensusparamkeeper.Keeper
+	MoneyOrderKeeper      moneyorderkeeper.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -226,6 +250,7 @@ func New(
 		minttypes.StoreKey, distrtypes.StoreKey, slashingtypes.StoreKey,
 		govtypes.StoreKey, paramstypes.StoreKey, upgradetypes.StoreKey, feegrant.StoreKey,
 		evidencetypes.StoreKey, authzkeeper.StoreKey, consensusparamtypes.StoreKey,
+		moneyordertypes.StoreKey,
 	)
 	tkeys := storetypes.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := storetypes.NewMemoryStoreKeys()
@@ -314,6 +339,15 @@ func New(
 	)
 	app.EvidenceKeeper = *evidenceKeeper
 
+	// Initialize Money Order Keeper
+	app.MoneyOrderKeeper = moneyorderkeeper.NewKeeper(
+		appCodec,
+		runtime.NewKVStoreService(keys[moneyordertypes.StoreKey]),
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.GetSubspace(moneyordertypes.ModuleName),
+	)
+
 	// NOTE: we may consider parsing `appOpts` inside module constructors. For the moment
 	// we prefer to be more strict in what arguments the modules expect.
 	skipGenesisInvariants := cast.ToBool(appOpts.Get(crisis.FlagSkipGenesisInvariants))
@@ -340,6 +374,7 @@ func New(
 		evidence.NewAppModule(app.EvidenceKeeper),
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
+		moneyorder.NewAppModule(appCodec, app.MoneyOrderKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(moneyordertypes.ModuleName)),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -355,6 +390,7 @@ func New(
 		stakingtypes.ModuleName,
 		authz.ModuleName,
 		genutiltypes.ModuleName,
+		moneyordertypes.ModuleName,
 	)
 
 	app.mm.SetOrderEndBlockers(
@@ -363,6 +399,7 @@ func New(
 		stakingtypes.ModuleName,
 		feegrant.ModuleName,
 		genutiltypes.ModuleName,
+		moneyordertypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -387,6 +424,7 @@ func New(
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
+		moneyordertypes.ModuleName,
 	}
 	app.mm.SetOrderInitGenesis(genesisModuleOrder...)
 	app.mm.SetOrderExportGenesis(genesisModuleOrder...)
@@ -635,6 +673,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(slashingtypes.ModuleName)
 	paramsKeeper.Subspace(govtypes.ModuleName)
 	paramsKeeper.Subspace(crisistypes.ModuleName)
+	paramsKeeper.Subspace(moneyordertypes.ModuleName)
 
 	return paramsKeeper
 }

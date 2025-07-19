@@ -1,0 +1,78 @@
+# Copyright 2024 DeshChain Foundation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DeshChain Validator Dockerfile
+# Optimized for validator operations with enhanced security
+
+FROM deshchain/deshchaind:latest AS validator
+
+# Install additional security tools
+RUN apk add --no-cache \
+    fail2ban \
+    ufw \
+    tmux \
+    htop \
+    iotop \
+    nethogs \
+    tcpdump \
+    strace
+
+# Install tmkms for key management
+RUN apk add --no-cache \
+    rust \
+    cargo \
+    libusb-dev \
+    eudev-dev \
+    build-base
+
+# Build tmkms from source
+RUN cargo install tmkms --features=yubihsm,ledger
+
+# Create tmkms configuration directory
+RUN mkdir -p /home/deshchain/.tmkms/config \
+    /home/deshchain/.tmkms/state \
+    /home/deshchain/.tmkms/secrets
+
+# Copy validator-specific configurations
+COPY docker/validator/tmkms.toml /home/deshchain/.tmkms/config/
+COPY docker/validator/validator-entrypoint.sh /usr/local/bin/validator-entrypoint.sh
+
+# Set permissions
+RUN chown -R deshchain:deshchain /home/deshchain/.tmkms \
+    && chmod +x /usr/local/bin/validator-entrypoint.sh \
+    && chmod 600 /home/deshchain/.tmkms/config/tmkms.toml
+
+# Validator-specific environment variables
+ENV VALIDATOR_MODE=true
+ENV ENABLE_EXTERNAL_RPC=false
+ENV ENABLE_EXTERNAL_API=false
+ENV MAX_INBOUND_PEERS=40
+ENV MAX_OUTBOUND_PEERS=10
+ENV MEMPOOL_SIZE=5000
+ENV BLOCK_TIME_TARGET=1000ms
+
+# Security hardening
+RUN echo "deshchain ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers \
+    && echo "root:!:0:0:99999:7:::" > /etc/shadow
+
+# Health check for validator
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
+    CMD curl -f http://localhost:26657/health && \
+        deshchaind status | jq -e '.ValidatorInfo.VotingPower != "0"' || exit 1
+
+# Use validator entrypoint
+ENTRYPOINT ["/usr/local/bin/validator-entrypoint.sh"]
+
+# Default to validator operations
+CMD ["start", "--validator"]

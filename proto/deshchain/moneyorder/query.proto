@@ -1,0 +1,197 @@
+syntax = "proto3";
+package deshchain.moneyorder;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "deshchain/moneyorder/params.proto";
+import "deshchain/moneyorder/money_order.proto";
+import "deshchain/moneyorder/pools.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos_proto/cosmos.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/moneyorder/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Params queries the module parameters
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/deshchain/moneyorder/v1/params";
+  }
+  
+  // MoneyOrderReceipt queries a specific money order receipt
+  rpc MoneyOrderReceipt(QueryMoneyOrderReceiptRequest) returns (QueryMoneyOrderReceiptResponse) {
+    option (google.api.http).get = "/deshchain/moneyorder/v1/receipt/{order_id}";
+  }
+  
+  // UserReceipts queries all receipts for a user
+  rpc UserReceipts(QueryUserReceiptsRequest) returns (QueryUserReceiptsResponse) {
+    option (google.api.http).get = "/deshchain/moneyorder/v1/users/{address}/receipts";
+  }
+  
+  // FixedRatePool queries a specific fixed rate pool
+  rpc FixedRatePool(QueryFixedRatePoolRequest) returns (QueryFixedRatePoolResponse) {
+    option (google.api.http).get = "/deshchain/moneyorder/v1/fixed_pool/{pool_id}";
+  }
+  
+  // FixedRatePools queries all fixed rate pools with pagination
+  rpc FixedRatePools(QueryFixedRatePoolsRequest) returns (QueryFixedRatePoolsResponse) {
+    option (google.api.http).get = "/deshchain/moneyorder/v1/fixed_pools";
+  }
+  
+  // VillagePool queries a specific village pool
+  rpc VillagePool(QueryVillagePoolRequest) returns (QueryVillagePoolResponse) {
+    option (google.api.http).get = "/deshchain/moneyorder/v1/village_pools/{pool_id}";
+  }
+  
+  // VillagePools queries all village pools with pagination
+  rpc VillagePools(QueryVillagePoolsRequest) returns (QueryVillagePoolsResponse) {
+    option (google.api.http).get = "/deshchain/moneyorder/v1/village_pools";
+  }
+  
+  // VillagePoolMembers queries members of a village pool
+  rpc VillagePoolMembers(QueryVillagePoolMembersRequest) returns (QueryVillagePoolMembersResponse) {
+    option (google.api.http).get = "/deshchain/moneyorder/v1/village_pools/{pool_id}/members";
+  }
+  
+  // EstimateSwap estimates the output of a swap
+  rpc EstimateSwap(QueryEstimateSwapRequest) returns (QueryEstimateSwapResponse) {
+    option (google.api.http).get = "/deshchain/moneyorder/v1/estimate_swap";
+  }
+  
+  // UserUPIAddress queries the UPI address for a user
+  rpc UserUPIAddress(QueryUserUPIAddressRequest) returns (QueryUserUPIAddressResponse) {
+    option (google.api.http).get = "/deshchain/moneyorder/v1/users/{address}/upi";
+  }
+  
+  // AddressFromUPI queries the blockchain address from UPI address
+  rpc AddressFromUPI(QueryAddressFromUPIRequest) returns (QueryAddressFromUPIResponse) {
+    option (google.api.http).get = "/deshchain/moneyorder/v1/upi/{upi_address}/address";
+  }
+}
+
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  MoneyOrderParams params = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryMoneyOrderReceiptRequest is request type for the Query/MoneyOrderReceipt RPC method.
+message QueryMoneyOrderReceiptRequest {
+  string order_id = 1;
+}
+
+// QueryMoneyOrderReceiptResponse is response type for the Query/MoneyOrderReceipt RPC method.
+message QueryMoneyOrderReceiptResponse {
+  MoneyOrderReceipt receipt = 1;
+}
+
+// QueryUserReceiptsRequest is request type for the Query/UserReceipts RPC method.
+message QueryUserReceiptsRequest {
+  string address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+// QueryUserReceiptsResponse is response type for the Query/UserReceipts RPC method.
+message QueryUserReceiptsResponse {
+  repeated MoneyOrderReceipt receipts = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryFixedRatePoolRequest is request type for the Query/FixedRatePool RPC method.
+message QueryFixedRatePoolRequest {
+  uint64 pool_id = 1;
+}
+
+// QueryFixedRatePoolResponse is response type for the Query/FixedRatePool RPC method.
+message QueryFixedRatePoolResponse {
+  FixedRatePool pool = 1;
+}
+
+// QueryFixedRatePoolsRequest is request type for the Query/FixedRatePools RPC method.
+message QueryFixedRatePoolsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+  string region_filter = 2; // Optional postal code filter
+}
+
+// QueryFixedRatePoolsResponse is response type for the Query/FixedRatePools RPC method.
+message QueryFixedRatePoolsResponse {
+  repeated FixedRatePool pools = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryVillagePoolRequest is request type for the Query/VillagePool RPC method.
+message QueryVillagePoolRequest {
+  uint64 pool_id = 1;
+}
+
+// QueryVillagePoolResponse is response type for the Query/VillagePool RPC method.
+message QueryVillagePoolResponse {
+  VillagePool pool = 1;
+}
+
+// QueryVillagePoolsRequest is request type for the Query/VillagePools RPC method.
+message QueryVillagePoolsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+  string state_filter = 2; // Optional state code filter
+  bool verified_only = 3; // Only show government verified pools
+}
+
+// QueryVillagePoolsResponse is response type for the Query/VillagePools RPC method.
+message QueryVillagePoolsResponse {
+  repeated VillagePool pools = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryVillagePoolMembersRequest is request type for the Query/VillagePoolMembers RPC method.
+message QueryVillagePoolMembersRequest {
+  uint64 pool_id = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+// QueryVillagePoolMembersResponse is response type for the Query/VillagePoolMembers RPC method.
+message QueryVillagePoolMembersResponse {
+  repeated VillagePoolMember members = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryEstimateSwapRequest is request type for the Query/EstimateSwap RPC method.
+message QueryEstimateSwapRequest {
+  string token_in = 1;
+  string token_out_denom = 2;
+}
+
+// QueryEstimateSwapResponse is response type for the Query/EstimateSwap RPC method.
+message QueryEstimateSwapResponse {
+  cosmos.base.v1beta1.Coin token_out = 1 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin fee = 2 [(gogoproto.nullable) = false];
+  uint64 pool_id = 3;
+  string rate = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// QueryUserUPIAddressRequest is request type for the Query/UserUPIAddress RPC method.
+message QueryUserUPIAddressRequest {
+  string address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+}
+
+// QueryUserUPIAddressResponse is response type for the Query/UserUPIAddress RPC method.
+message QueryUserUPIAddressResponse {
+  string upi_address = 1;
+}
+
+// QueryAddressFromUPIRequest is request type for the Query/AddressFromUPI RPC method.
+message QueryAddressFromUPIRequest {
+  string upi_address = 1;
+}
+
+// QueryAddressFromUPIResponse is response type for the Query/AddressFromUPI RPC method.
+message QueryAddressFromUPIResponse {
+  string address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+}

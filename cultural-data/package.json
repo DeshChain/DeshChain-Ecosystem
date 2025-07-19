@@ -1,0 +1,70 @@
+{
+  "name": "@deshchain/cultural-heritage",
+  "version": "1.0.0",
+  "description": "DeshChain Cultural Heritage Collection - Preserving Indian culture through blockchain technology",
+  "license": "CC-BY-NC-SA-4.0",
+  "author": "DeshChain Foundation <cultural@deshchain.org>",
+  "homepage": "https://deshchain.org/cultural-heritage",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/deshchain/deshchain.git",
+    "directory": "cultural-data"
+  },
+  "keywords": [
+    "indian-culture",
+    "heritage",
+    "festivals",
+    "quotes",
+    "traditions",
+    "cultural-preservation",
+    "blockchain"
+  ],
+  "files": [
+    "quotes/",
+    "festivals/",
+    "heritage/",
+    "languages/",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+    "validate": "node scripts/validate-cultural-data.js",
+    "lint": "node scripts/lint-cultural-content.js"
+  },
+  "contributors": [
+    "DeshChain Cultural Advisory Board",
+    "Indian Heritage Preservation Committee",
+    "Community Cultural Contributors"
+  ],
+  "funding": {
+    "type": "foundation",
+    "url": "https://deshchain.org/foundation"
+  },
+  "cultural": {
+    "license": "CC-BY-NC-SA-4.0",
+    "attribution": {
+      "required": true,
+      "format": "DeshChain Foundation Cultural Heritage Collection",
+      "url": "https://github.com/deshchain/deshchain/tree/main/cultural-data"
+    },
+    "sensitivity": {
+      "level": "high",
+      "guidelines": "Respect cultural accuracy and significance",
+      "contact": "cultural@deshchain.org"
+    },
+    "languages": [
+      "hindi", "english", "bengali", "telugu", "marathi", "tamil",
+      "gujarati", "urdu", "kannada", "odia", "punjabi", "malayalam",
+      "assamese", "maithili", "santali", "kashmiri", "nepali", "konkani",
+      "sindhi", "dogri", "manipuri", "bodo"
+    ],
+    "regions": [
+      "north-india", "south-india", "east-india", "west-india",
+      "northeast-india", "central-india"
+    ],
+    "categories": [
+      "quotes", "festivals", "heritage", "languages", "traditions",
+      "customs", "art-forms", "spiritual", "historical"
+    ]
+  }
+}

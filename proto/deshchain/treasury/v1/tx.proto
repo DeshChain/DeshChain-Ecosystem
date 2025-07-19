@@ -1,0 +1,285 @@
+syntax = "proto3";
+
+package deshchain.treasury.v1;
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos_proto/cosmos.proto";
+import "amino/amino.proto";
+import "cosmos/msg/v1/msg.proto";
+import "deshchain/treasury/v1/treasury.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/treasury/types";
+
+// Msg defines the treasury Msg service
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+
+  // SubmitCommunityProposal submits a community fund proposal
+  rpc SubmitCommunityProposal(MsgSubmitCommunityProposal) returns (MsgSubmitCommunityProposalResponse);
+
+  // VoteCommunityProposal votes on a community fund proposal
+  rpc VoteCommunityProposal(MsgVoteCommunityProposal) returns (MsgVoteCommunityProposalResponse);
+
+  // ExecuteCommunityProposal executes a passed community fund proposal
+  rpc ExecuteCommunityProposal(MsgExecuteCommunityProposal) returns (MsgExecuteCommunityProposalResponse);
+
+  // SubmitDevelopmentProposal submits a development fund proposal
+  rpc SubmitDevelopmentProposal(MsgSubmitDevelopmentProposal) returns (MsgSubmitDevelopmentProposalResponse);
+
+  // ReviewDevelopmentProposal reviews a development fund proposal
+  rpc ReviewDevelopmentProposal(MsgReviewDevelopmentProposal) returns (MsgReviewDevelopmentProposalResponse);
+
+  // ExecuteDevelopmentProposal executes an approved development fund proposal
+  rpc ExecuteDevelopmentProposal(MsgExecuteDevelopmentProposal) returns (MsgExecuteDevelopmentProposalResponse);
+
+  // UpdateMilestone updates a milestone status
+  rpc UpdateMilestone(MsgUpdateMilestone) returns (MsgUpdateMilestoneResponse);
+
+  // AddMultiSigSigner adds a new signer to multi-sig governance
+  rpc AddMultiSigSigner(MsgAddMultiSigSigner) returns (MsgAddMultiSigSignerResponse);
+
+  // RemoveMultiSigSigner removes a signer from multi-sig governance
+  rpc RemoveMultiSigSigner(MsgRemoveMultiSigSigner) returns (MsgRemoveMultiSigSignerResponse);
+
+  // SignMultiSigProposal signs a multi-sig proposal
+  rpc SignMultiSigProposal(MsgSignMultiSigProposal) returns (MsgSignMultiSigProposalResponse);
+
+  // UpdateGovernancePhase manually updates the governance phase (authority only)
+  rpc UpdateGovernancePhase(MsgUpdateGovernancePhase) returns (MsgUpdateGovernancePhaseResponse);
+
+  // SubmitTransparencyReport submits a transparency report
+  rpc SubmitTransparencyReport(MsgSubmitTransparencyReport) returns (MsgSubmitTransparencyReportResponse);
+
+  // UpdateDashboard updates the real-time dashboard
+  rpc UpdateDashboard(MsgUpdateDashboard) returns (MsgUpdateDashboardResponse);
+}
+
+// MsgSubmitCommunityProposal defines a message to submit a community fund proposal
+message MsgSubmitCommunityProposal {
+  option (cosmos.msg.v1.signer) = "proposer";
+  option (amino.name) = "deshchain/x/treasury/MsgSubmitCommunityProposal";
+
+  string proposer = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string title = 2;
+  string description = 3;
+  string category = 4;
+  cosmos.base.v1beta1.Coin requested_amount = 5 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  repeated Recipient recipients = 6;
+  repeated Milestone milestones = 7;
+}
+
+// MsgSubmitCommunityProposalResponse defines the response for MsgSubmitCommunityProposal
+message MsgSubmitCommunityProposalResponse {
+  uint64 proposal_id = 1;
+}
+
+// MsgVoteCommunityProposal defines a message to vote on a community fund proposal
+message MsgVoteCommunityProposal {
+  option (cosmos.msg.v1.signer) = "voter";
+  option (amino.name) = "deshchain/x/treasury/MsgVoteCommunityProposal";
+
+  uint64 proposal_id = 1;
+  string voter = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string option = 3; // yes, no, abstain, no_with_veto
+  string metadata = 4;
+}
+
+// MsgVoteCommunityProposalResponse defines the response for MsgVoteCommunityProposal
+message MsgVoteCommunityProposalResponse {}
+
+// MsgExecuteCommunityProposal defines a message to execute a passed community fund proposal
+message MsgExecuteCommunityProposal {
+  option (cosmos.msg.v1.signer) = "executor";
+  option (amino.name) = "deshchain/x/treasury/MsgExecuteCommunityProposal";
+
+  uint64 proposal_id = 1;
+  string executor = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+}
+
+// MsgExecuteCommunityProposalResponse defines the response for MsgExecuteCommunityProposal
+message MsgExecuteCommunityProposalResponse {
+  repeated string transaction_ids = 1;
+}
+
+// MsgSubmitDevelopmentProposal defines a message to submit a development fund proposal
+message MsgSubmitDevelopmentProposal {
+  option (cosmos.msg.v1.signer) = "proposer";
+  option (amino.name) = "deshchain/x/treasury/MsgSubmitDevelopmentProposal";
+
+  string proposer = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string title = 2;
+  string description = 3;
+  string category = 4;
+  string priority = 5;
+  cosmos.base.v1beta1.Coin requested_amount = 6 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  TechnicalSpecs technical_specs = 7;
+  ProjectTimeline timeline = 8;
+  repeated TeamMember team = 9;
+  repeated Deliverable deliverables = 10;
+}
+
+// MsgSubmitDevelopmentProposalResponse defines the response for MsgSubmitDevelopmentProposal
+message MsgSubmitDevelopmentProposalResponse {
+  uint64 proposal_id = 1;
+}
+
+// MsgReviewDevelopmentProposal defines a message to review a development fund proposal
+message MsgReviewDevelopmentProposal {
+  option (cosmos.msg.v1.signer) = "reviewer";
+  option (amino.name) = "deshchain/x/treasury/MsgReviewDevelopmentProposal";
+
+  uint64 proposal_id = 1;
+  string reviewer = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string review_type = 3; // technical, financial, security
+  uint32 score = 4;
+  bool approved = 5;
+  string comments = 6;
+  repeated string recommendations = 7;
+}
+
+// MsgReviewDevelopmentProposalResponse defines the response for MsgReviewDevelopmentProposal
+message MsgReviewDevelopmentProposalResponse {}
+
+// MsgExecuteDevelopmentProposal defines a message to execute an approved development fund proposal
+message MsgExecuteDevelopmentProposal {
+  option (cosmos.msg.v1.signer) = "executor";
+  option (amino.name) = "deshchain/x/treasury/MsgExecuteDevelopmentProposal";
+
+  uint64 proposal_id = 1;
+  string executor = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+}
+
+// MsgExecuteDevelopmentProposalResponse defines the response for MsgExecuteDevelopmentProposal
+message MsgExecuteDevelopmentProposalResponse {
+  string transaction_id = 1;
+}
+
+// MsgUpdateMilestone defines a message to update a milestone status
+message MsgUpdateMilestone {
+  option (cosmos.msg.v1.signer) = "updater";
+  option (amino.name) = "deshchain/x/treasury/MsgUpdateMilestone";
+
+  uint64 proposal_id = 1;
+  uint64 milestone_id = 2;
+  string updater = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  bool completed = 4;
+  string evidence = 5;
+}
+
+// MsgUpdateMilestoneResponse defines the response for MsgUpdateMilestone
+message MsgUpdateMilestoneResponse {}
+
+// MsgAddMultiSigSigner defines a message to add a new signer to multi-sig governance
+message MsgAddMultiSigSigner {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "deshchain/x/treasury/MsgAddMultiSigSigner";
+
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  uint64 governance_id = 2;
+  string signer_address = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string role = 4;
+  uint32 weight = 5;
+}
+
+// MsgAddMultiSigSignerResponse defines the response for MsgAddMultiSigSigner
+message MsgAddMultiSigSignerResponse {}
+
+// MsgRemoveMultiSigSigner defines a message to remove a signer from multi-sig governance
+message MsgRemoveMultiSigSigner {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "deshchain/x/treasury/MsgRemoveMultiSigSigner";
+
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  uint64 governance_id = 2;
+  string signer_address = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+}
+
+// MsgRemoveMultiSigSignerResponse defines the response for MsgRemoveMultiSigSigner
+message MsgRemoveMultiSigSignerResponse {}
+
+// MsgSignMultiSigProposal defines a message to sign a multi-sig proposal
+message MsgSignMultiSigProposal {
+  option (cosmos.msg.v1.signer) = "signer";
+  option (amino.name) = "deshchain/x/treasury/MsgSignMultiSigProposal";
+
+  uint64 proposal_id = 1;
+  string signer = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string signature = 3;
+  string comments = 4;
+}
+
+// MsgSignMultiSigProposalResponse defines the response for MsgSignMultiSigProposal
+message MsgSignMultiSigProposalResponse {
+  uint32 current_signatures = 1;
+  uint32 required_signatures = 2;
+  bool approved = 3;
+}
+
+// MsgUpdateGovernancePhase defines a message to manually update the governance phase
+message MsgUpdateGovernancePhase {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "deshchain/x/treasury/MsgUpdateGovernancePhase";
+
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string new_phase = 2;
+  string reason = 3;
+}
+
+// MsgUpdateGovernancePhaseResponse defines the response for MsgUpdateGovernancePhase
+message MsgUpdateGovernancePhaseResponse {
+  string old_phase = 1;
+  string new_phase = 2;
+}
+
+// MsgSubmitTransparencyReport defines a message to submit a transparency report
+message MsgSubmitTransparencyReport {
+  option (cosmos.msg.v1.signer) = "submitter";
+  option (amino.name) = "deshchain/x/treasury/MsgSubmitTransparencyReport";
+
+  string submitter = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  google.protobuf.Timestamp start_date = 2 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  google.protobuf.Timestamp end_date = 3 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  cosmos.base.v1beta1.Coin total_funds = 4 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  cosmos.base.v1beta1.Coin allocated_funds = 5 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  cosmos.base.v1beta1.Coin spent_funds = 6 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  string report_url = 7;
+}
+
+// MsgSubmitTransparencyReportResponse defines the response for MsgSubmitTransparencyReport
+message MsgSubmitTransparencyReportResponse {
+  uint64 report_id = 1;
+}
+
+// MsgUpdateDashboard defines a message to update the real-time dashboard
+message MsgUpdateDashboard {
+  option (cosmos.msg.v1.signer) = "updater";
+  option (amino.name) = "deshchain/x/treasury/MsgUpdateDashboard";
+
+  string updater = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  bool force_update = 2;
+}
+
+// MsgUpdateDashboardResponse defines the response for MsgUpdateDashboard
+message MsgUpdateDashboardResponse {
+  google.protobuf.Timestamp last_updated = 1 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  uint32 transparency_score = 2;
+  uint32 compliance_score = 3;
+}

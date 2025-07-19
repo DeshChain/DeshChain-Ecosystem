@@ -3,7 +3,7 @@
 
 ---
 
-## Vision: Parallel Democratic Governance Rooted in Indian Ethos
+## Vision: Community-Driven Social Impact Rooted in Indian Ethos
 
 ### Core Philosophy: Integrating Ancient Wisdom with Future Technology
 
@@ -119,10 +119,10 @@ Drawing from India's 5,000-year governance heritage:
 ---
 
 ## Phase 3: Digital Swaraj (Years 21-30)
-### *Self-Governance Implementation*
+### *Community Self-Management Implementation*
 
 #### Years 21-25: Rajya Sabha Digital
-**Goal**: Parallel policy-making body
+**Goal**: Community-driven policy recommendations
 
 **Structure**:
 1. **Policy DAOs**: Issue-specific governance
@@ -171,7 +171,7 @@ Drawing from India's 5,000-year governance heritage:
 ### *Unified Digital Nation*
 
 #### Years 31-35: Rashtra Chain
-**Goal**: Complete parallel nation infrastructure
+**Goal**: Complete community ecosystem infrastructure
 
 **Infrastructure**:
 1. **Bharat Identity**: Sovereign digital identity
@@ -220,7 +220,7 @@ Drawing from India's 5,000-year governance heritage:
 ### *Age of Truth and Transparency*
 
 #### Years 41-45: Param Democracy
-**Goal**: Ultimate democratic expression
+**Goal**: Ultimate community participation
 
 **Features**:
 1. **Thought Democracy**: Neural consensus
@@ -377,7 +377,7 @@ Years 41-50:  Post-scarcity abundance
 
 DeshChain's 50-year journey represents not just technological evolution but civilizational transformation. By integrating India's timeless wisdom with cutting-edge technology, we create a model for the world - proving that progress need not come at the cost of culture, that governance can be truly democratic, and that technology can serve humanity's highest aspirations.
 
-This is not merely building a blockchain; this is architecting the future of human organization - a Digital Rashtra that embodies the best of our past while embracing the possibilities of our future.
+This is not merely building a blockchain; this is architecting the future of community organization - a Digital Bharat ecosystem that embodies the best of our past while embracing the possibilities of our future.
 
 **"यत् पिण्डे तत् ब्रह्माण्डे" (Yat Pinde Tat Brahmande)**
 *"As is the individual, so is the universe"*

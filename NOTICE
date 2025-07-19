@@ -1,0 +1,151 @@
+DeshChain - Empowering India's Blockchain Revolution
+Copyright 2024 DeshChain Foundation
+
+This product includes software developed by the DeshChain Foundation (https://deshchain.org).
+
+================================================================================
+OPEN SOURCE LICENSES AND ATTRIBUTIONS
+================================================================================
+
+This software contains components under multiple licenses:
+
+1. APACHE 2.0 LICENSE
+   - All source code files (*.go, *.js, *.ts, *.py, *.sh)
+   - Build scripts, Docker configurations, and deployment files
+   - Documentation files in /docs directory
+   - Test files and development tools
+
+2. CREATIVE COMMONS BY-NC-SA 4.0 LICENSE  
+   - Cultural heritage data and content
+   - Traditional quotes and sayings
+   - Festival calendars and cultural information
+   - Heritage site data and cultural practices
+   - Files under /cultural-data directory
+
+================================================================================
+THIRD-PARTY DEPENDENCIES
+================================================================================
+
+This project incorporates the following open source components:
+
+COSMOS SDK
+- License: Apache 2.0
+- Copyright: Cosmos Network Development Foundation
+- Source: https://github.com/cosmos/cosmos-sdk
+
+TENDERMINT CORE
+- License: Apache 2.0  
+- Copyright: Tendermint Inc.
+- Source: https://github.com/tendermint/tendermint
+
+GO PROGRAMMING LANGUAGE
+- License: BSD-style
+- Copyright: The Go Authors
+- Source: https://golang.org
+
+REACT FRAMEWORK
+- License: MIT
+- Copyright: Meta Platforms, Inc.
+- Source: https://reactjs.org
+
+TYPESCRIPT
+- License: Apache 2.0
+- Copyright: Microsoft Corporation
+- Source: https://github.com/microsoft/TypeScript
+
+FLUTTER FRAMEWORK
+- License: BSD-style
+- Copyright: Google Inc.
+- Source: https://flutter.dev
+
+POSTGRESQL DATABASE
+- License: PostgreSQL License (MIT-style)
+- Copyright: PostgreSQL Global Development Group
+- Source: https://www.postgresql.org
+
+REDIS
+- License: BSD 3-Clause
+- Copyright: Redis Labs
+- Source: https://redis.io
+
+DOCKER
+- License: Apache 2.0
+- Copyright: Docker, Inc.
+- Source: https://www.docker.com
+
+KUBERNETES
+- License: Apache 2.0
+- Copyright: The Kubernetes Authors
+- Source: https://kubernetes.io
+
+================================================================================
+CULTURAL HERITAGE ACKNOWLEDGMENTS
+================================================================================
+
+This project honors and preserves Indian cultural heritage. Special acknowledgment to:
+
+- Ancient Indian scriptures and philosophical texts
+- Traditional folk wisdom and sayings
+- Regional festivals and cultural celebrations  
+- India's diverse linguistic heritage (22 official languages)
+- Historical monuments and heritage sites
+- Traditional art forms and cultural practices
+
+CULTURAL CONTRIBUTORS:
+- Traditional knowledge holders and cultural experts
+- Regional cultural institutions and museums
+- India's Ministry of Culture and heritage organizations
+- Academic institutions preserving cultural knowledge
+- Community elders and cultural practitioners
+
+================================================================================
+INSPIRATION AND DEDICATION
+================================================================================
+
+This project is inspired by and dedicated to:
+
+- Bharat Mata (Mother India) and her rich cultural heritage
+- The vision of a technologically empowered India
+- Financial inclusion for all Indians
+- Preservation of cultural traditions for future generations
+- The spirit of "Vasudhaiva Kutumbakam" (the world is one family)
+
+================================================================================
+SPECIAL THANKS
+================================================================================
+
+- The Indian blockchain and technology community
+- Open source contributors worldwide
+- Cultural heritage preservationists
+- Early adopters and community supporters
+- Validators and node operators
+- Development team and advisors
+
+================================================================================
+DISCLAIMERS
+================================================================================
+
+CULTURAL CONTENT DISCLAIMER:
+Cultural content in this repository has been compiled from publicly available sources and traditional knowledge. While every effort has been made to ensure accuracy and cultural sensitivity, users are encouraged to verify cultural information and respect its significance.
+
+FINANCIAL DISCLAIMER:
+This software is provided for technological and educational purposes. The economic models, tokenomics, and financial projections are experimental and subject to change. Users should conduct their own research before making any financial decisions.
+
+TRADEMARK NOTICE:
+DeshChain, NAMO, Sikkebaaz, and related marks are trademarks of DeshChain Foundation. All other trademarks are the property of their respective owners.
+
+================================================================================
+CONTACT INFORMATION
+================================================================================
+
+DeshChain Foundation
+Email: info@deshchain.org
+Website: https://deshchain.org
+GitHub: https://github.com/deshchain/deshchain
+Cultural Heritage: cultural@deshchain.org
+Technical Support: support@deshchain.org
+
+For license compliance questions: legal@deshchain.org
+For cultural content questions: cultural@deshchain.org
+
+Last Updated: July 19, 2025

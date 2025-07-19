@@ -96,6 +96,35 @@ In the land where *"Paisa Phek Tamasha Dekh"* (Throw Money, Watch the Show) is a
 
 ---
 
+## 💸 **Platform Fee Structure - "Seedha Saadha, Saaf Saaf"**
+
+### **Transparent Pricing Model**
+
+#### **Launch Fees**
+- **Platform Fee**: 5% of total funds raised (increased from industry standard 2%)
+- **Listing Fee**: 1000 NAMO tokens 
+- **Success Bonus**: Additional 1% if target exceeded
+- **Anti-Rug Deposit**: 10% refundable security deposit
+
+#### **Fee Distribution**
+```
+👮 Validators (Security & Audit): 40%
+🎓 NGO Education Fund: 20%
+👥 Community Rewards: 15%
+🛡️ Anti-Rug Insurance: 10%
+🏢 Operations: 5%
+🔧 Tech Development: 4%
+💼 Founders & Angels: 6%
+```
+
+#### **Why 5%?**
+- **Enhanced Security**: More resources for audits and monitoring
+- **Better Support**: Dedicated team for each project
+- **Insurance Fund**: Stronger protection for investors
+- **Quality Control**: Higher standards for project approval
+
+---
+
 ## 🎨 **Cultural Integration - "Hamaari Sanskriti, Hamaara Sikka"**
 
 ### **Desi Themes & Concepts**

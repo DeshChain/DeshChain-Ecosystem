@@ -1,0 +1,45 @@
+syntax = "proto3";
+package deshchain.moneyorder;
+
+import "gogoproto/gogo.proto";
+import "deshchain/moneyorder/params.proto";
+import "deshchain/moneyorder/money_order.proto";
+import "deshchain/moneyorder/pools.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/moneyorder/types";
+
+// GenesisState defines the money order module's genesis state
+message GenesisState {
+  // Module parameters
+  MoneyOrderParams params = 1 [(gogoproto.nullable) = false];
+  
+  // Next pool ID
+  uint64 next_pool_id = 2;
+  
+  // Fixed rate pools
+  repeated FixedRatePool fixed_rate_pools = 3;
+  
+  // Village pools
+  repeated VillagePool village_pools = 4;
+  
+  // Money order receipts
+  repeated MoneyOrderReceipt money_order_receipts = 5;
+  
+  // Village pool members
+  repeated VillagePoolMembership village_pool_members = 6;
+  
+  // UPI address mappings
+  repeated UPIAddressMapping upi_address_mappings = 7;
+}
+
+// VillagePoolMembership represents a member's association with a village pool
+message VillagePoolMembership {
+  uint64 pool_id = 1;
+  VillagePoolMember member = 2;
+}
+
+// UPIAddressMapping represents a UPI address to account address mapping
+message UPIAddressMapping {
+  string upi_address = 1;
+  string address = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+}

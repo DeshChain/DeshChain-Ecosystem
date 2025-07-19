@@ -1,0 +1,363 @@
+{
+  "genesis_time": "2024-01-01T00:00:00Z",
+  "chain_id": "deshchain-testnet-1",
+  "initial_height": "1",
+  "consensus_params": {
+    "block": {
+      "max_bytes": "22020096",
+      "max_gas": "10000000",
+      "time_iota_ms": "1000"
+    },
+    "evidence": {
+      "max_age_num_blocks": "100000",
+      "max_age_duration": "172800000000000",
+      "max_bytes": "1048576"
+    },
+    "validator": {
+      "pub_key_types": [
+        "ed25519"
+      ]
+    },
+    "version": {}
+  },
+  "app_hash": "",
+  "app_state": {
+    "auth": {
+      "params": {
+        "max_memo_characters": "256",
+        "tx_sig_limit": "7",
+        "tx_size_cost_per_byte": "10",
+        "sig_verify_cost_ed25519": "590",
+        "sig_verify_cost_secp256k1": "1000"
+      },
+      "accounts": []
+    },
+    "bank": {
+      "params": {
+        "send_enabled": [],
+        "default_send_enabled": true
+      },
+      "balances": [],
+      "supply": [],
+      "denom_metadata": [
+        {
+          "description": "The native token of DeshChain",
+          "denom_units": [
+            {
+              "denom": "unamo",
+              "exponent": 0,
+              "aliases": [
+                "micro-namo"
+              ]
+            },
+            {
+              "denom": "mnamo",
+              "exponent": 3,
+              "aliases": [
+                "milli-namo"
+              ]
+            },
+            {
+              "denom": "namo",
+              "exponent": 6,
+              "aliases": []
+            }
+          ],
+          "base": "unamo",
+          "display": "namo",
+          "name": "NAMO",
+          "symbol": "NAMO"
+        }
+      ]
+    },
+    "distribution": {
+      "params": {
+        "community_tax": "0.020000000000000000",
+        "base_proposer_reward": "0.010000000000000000",
+        "bonus_proposer_reward": "0.040000000000000000",
+        "withdraw_addr_enabled": true
+      },
+      "fee_pool": {
+        "community_pool": []
+      },
+      "delegator_withdraw_infos": [],
+      "previous_proposer": "",
+      "outstanding_rewards": [],
+      "validator_accumulated_commissions": [],
+      "validator_historical_rewards": [],
+      "validator_current_rewards": [],
+      "delegator_starting_infos": [],
+      "validator_slash_events": []
+    },
+    "gov": {
+      "starting_proposal_id": "1",
+      "deposits": [],
+      "votes": [],
+      "proposals": [],
+      "deposit_params": {
+        "min_deposit": [
+          {
+            "denom": "namo",
+            "amount": "10000000"
+          }
+        ],
+        "max_deposit_period": "172800s"
+      },
+      "voting_params": {
+        "voting_period": "604800s"
+      },
+      "tally_params": {
+        "quorum": "0.334000000000000000",
+        "threshold": "0.500000000000000000",
+        "veto_threshold": "0.334000000000000000"
+      }
+    },
+    "mint": {
+      "minter": {
+        "inflation": "0.130000000000000000",
+        "annual_provisions": "0.000000000000000000"
+      },
+      "params": {
+        "mint_denom": "namo",
+        "inflation_rate_change": "0.130000000000000000",
+        "inflation_max": "0.200000000000000000",
+        "inflation_min": "0.070000000000000000",
+        "goal_bonded": "0.670000000000000000",
+        "blocks_per_year": "6311520"
+      }
+    },
+    "slashing": {
+      "params": {
+        "signed_blocks_window": "100",
+        "min_signed_per_window": "0.500000000000000000",
+        "downtime_jail_duration": "600s",
+        "slash_fraction_double_sign": "0.050000000000000000",
+        "slash_fraction_downtime": "0.010000000000000000"
+      },
+      "signing_infos": [],
+      "missed_blocks": []
+    },
+    "staking": {
+      "params": {
+        "unbonding_time": "1814400s",
+        "max_validators": 150,
+        "max_entries": 7,
+        "historical_entries": 10000,
+        "bond_denom": "namo",
+        "min_commission_rate": "0.000000000000000000"
+      },
+      "last_total_power": "0",
+      "last_validator_powers": [],
+      "validators": [],
+      "delegations": [],
+      "unbonding_delegations": [],
+      "redelegations": [],
+      "exported": false
+    },
+    "namo": {
+      "params": {
+        "total_supply": "1428627660000000",
+        "founder_allocation": "142862766000000",
+        "community_allocation": "214294149000000",
+        "development_allocation": "214294149000000",
+        "liquidity_allocation": "285725532000000",
+        "ecosystem_allocation": "142862766000000",
+        "treasury_allocation": "214294149000000",
+        "validator_allocation": "214294149000000"
+      },
+      "founder_account": "desh1founder00000000000000000000000000000000",
+      "community_account": "desh1community000000000000000000000000000000",
+      "development_account": "desh1development00000000000000000000000000000",
+      "liquidity_account": "desh1liquidity0000000000000000000000000000000",
+      "ecosystem_account": "desh1ecosystem0000000000000000000000000000000",
+      "treasury_account": "desh1treasury00000000000000000000000000000000",
+      "validator_account": "desh1validator0000000000000000000000000000000"
+    },
+    "tax": {
+      "params": {
+        "tax_rate": "0.025000000000000000",
+        "development_allocation": "0.450000000000000000",
+        "operations_allocation": "0.450000000000000000",
+        "founder_royalty": "0.100000000000000000",
+        "min_tx_amount": "1000000",
+        "tax_enabled": true
+      },
+      "collected_taxes": [],
+      "distribution_history": []
+    },
+    "cultural": {
+      "params": {
+        "cultural_preservation_enabled": true,
+        "heritage_nft_enabled": true,
+        "festival_rewards_enabled": true,
+        "language_support": [
+          "hindi",
+          "english",
+          "bengali",
+          "telugu",
+          "marathi",
+          "tamil",
+          "gujarati",
+          "urdu",
+          "kannada",
+          "odia",
+          "punjabi",
+          "malayalam",
+          "assamese",
+          "maithili",
+          "santali",
+          "kashmiri",
+          "nepali",
+          "konkani",
+          "sindhi",
+          "dogri",
+          "manipuri",
+          "bodo"
+        ]
+      },
+      "heritage_items": [],
+      "festivals": [],
+      "quotes": []
+    },
+    "dex": {
+      "params": {
+        "trading_fee": "0.002500000000000000",
+        "validator_fee_share": "0.250000000000000000",
+        "liquidity_provider_share": "0.500000000000000000",
+        "platform_share": "0.250000000000000000",
+        "min_order_size": "1000000",
+        "max_order_size": "100000000000000"
+      },
+      "trading_pairs": [],
+      "orders": [],
+      "liquidity_pools": []
+    },
+    "launchpad": {
+      "params": {
+        "launch_fee": "0.050000000000000000",
+        "platform_share": "0.300000000000000000",
+        "validator_share": "0.200000000000000000",
+        "anti_dump_share": "0.500000000000000000",
+        "min_launch_amount": "1000000000",
+        "vesting_period": "7776000s",
+        "min_liquidity_ratio": "0.200000000000000000"
+      },
+      "token_launches": [],
+      "anti_dump_mechanisms": []
+    },
+    "validator": {
+      "params": {
+        "geographic_bonus_enabled": true,
+        "performance_bonus_enabled": true,
+        "mev_distribution_enabled": true,
+        "india_bonus_rate": "0.020000000000000000",
+        "performance_threshold": 350,
+        "performance_bonus_rate": "0.010000000000000000"
+      },
+      "geographic_validators": [],
+      "performance_metrics": [],
+      "mev_distributions": []
+    },
+    "treasury": {
+      "params": {
+        "transparency_enabled": true,
+        "multi_sig_enabled": true,
+        "community_governance_enabled": true,
+        "real_time_tracking_enabled": true,
+        "audit_frequency": "2592000s",
+        "proposal_deposit": "1000000000"
+      },
+      "community_fund": {
+        "total_allocation": "214294149000000",
+        "available_amount": "214294149000000",
+        "allocated_amount": "0",
+        "proposals": [],
+        "governance": {
+          "threshold": 5,
+          "total_signers": 9,
+          "signers": []
+        }
+      },
+      "development_fund": {
+        "total_allocation": "214294149000000",
+        "available_amount": "214294149000000",
+        "allocated_amount": "0",
+        "proposals": [],
+        "governance": {
+          "threshold": 6,
+          "total_signers": 11,
+          "signers": []
+        }
+      }
+    },
+    "donation": {
+      "params": {
+        "donation_enabled": true,
+        "ngo_verification_required": true,
+        "min_donation_amount": "1000000",
+        "max_donation_amount": "1000000000000",
+        "transparency_score_required": 8
+      },
+      "registered_ngos": [],
+      "donations": [],
+      "donation_reports": []
+    },
+    "gamification": {
+      "params": {
+        "achievements_enabled": true,
+        "social_media_integration": true,
+        "bollywood_themes": true,
+        "reward_multiplier": "1.500000000000000000"
+      },
+      "achievements": [],
+      "leaderboards": [],
+      "reward_history": []
+    },
+    "revenue": {
+      "params": {
+        "revenue_sharing_enabled": true,
+        "founder_platform_share": "0.050000000000000000",
+        "ngo_platform_share": "0.100000000000000000",
+        "transparency_reporting": true
+      },
+      "revenue_streams": [],
+      "distribution_history": []
+    },
+    "royalty": {
+      "params": {
+        "perpetual_royalty_enabled": true,
+        "inheritable_royalty_enabled": true,
+        "founder_tax_royalty": "0.001000000000000000",
+        "founder_platform_royalty": "0.050000000000000000"
+      },
+      "royalty_recipients": [],
+      "royalty_history": []
+    },
+    "governance": {
+      "params": {
+        "founder_protection_enabled": true,
+        "veto_enabled": true,
+        "immutable_parameters": [
+          "founder_token_allocation",
+          "founder_tax_royalty", 
+          "founder_platform_royalty"
+        ]
+      },
+      "founder_controls": {
+        "veto_rights": true,
+        "emergency_powers": true,
+        "succession_plan_enabled": true
+      }
+    },
+    "explorer": {
+      "params": {
+        "indexing_enabled": true,
+        "real_time_updates": true,
+        "api_rate_limit": 1000,
+        "cache_duration": "300s"
+      },
+      "indexed_blocks": [],
+      "indexed_transactions": []
+    }
+  }
+}

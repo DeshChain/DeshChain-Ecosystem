@@ -1,0 +1,657 @@
+syntax = "proto3";
+
+package deshchain.treasury.v1;
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos_proto/cosmos.proto";
+import "amino/amino.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/treasury/types";
+
+// CommunityFundProposal represents a proposal for using community funds
+message CommunityFundProposal {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  uint64 proposal_id = 1;
+  string proposer = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string title = 3;
+  string description = 4;
+  string category = 5;
+  cosmos.base.v1beta1.Coin requested_amount = 6 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  repeated Recipient recipients = 7;
+  repeated Milestone milestones = 8;
+  string status = 9;
+  google.protobuf.Duration voting_period = 10 [(gogoproto.nullable) = false, (gogoproto.stdduration) = true];
+  google.protobuf.Timestamp submission_time = 11 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  google.protobuf.Timestamp voting_end_time = 12 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  google.protobuf.Timestamp execution_time = 13 [(gogoproto.stdtime) = true];
+  string votes_for = 14;
+  string votes_against = 15;
+  string votes_abstain = 16;
+  string total_votes = 17;
+  bool quorum_reached = 18;
+  bool passed = 19;
+  bool audit_required = 20;
+  uint32 transparency_score = 21;
+}
+
+// Recipient represents a fund recipient
+message Recipient {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  cosmos.base.v1beta1.Coin amount = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  string description = 3;
+  bool kyc_verified = 4;
+  uint32 reputation = 5;
+}
+
+// Milestone represents a project milestone
+message Milestone {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  uint64 id = 1;
+  string title = 2;
+  string description = 3;
+  cosmos.base.v1beta1.Coin amount = 4 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  google.protobuf.Timestamp due_date = 5 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  bool completed = 6;
+  google.protobuf.Timestamp completed_at = 7 [(gogoproto.stdtime) = true];
+  string evidence = 8;
+  bool approved = 9;
+}
+
+// CommunityFundBalance tracks the current balance and allocations
+message CommunityFundBalance {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  cosmos.base.v1beta1.Coin total_balance = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  cosmos.base.v1beta1.Coin allocated_amount = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  cosmos.base.v1beta1.Coin available_amount = 3 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  cosmos.base.v1beta1.Coin reserved_amount = 4 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  cosmos.base.v1beta1.Coin pending_amount = 5 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  int64 last_update_height = 6;
+  google.protobuf.Timestamp last_update_time = 7 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+}
+
+// CommunityFundTransaction represents a fund transaction
+message CommunityFundTransaction {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string tx_id = 1;
+  uint64 proposal_id = 2;
+  string from = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string to = 4 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  cosmos.base.v1beta1.Coin amount = 5 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  string type = 6;
+  string category = 7;
+  string description = 8;
+  google.protobuf.Timestamp timestamp = 9 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  int64 block_height = 10;
+  string status = 11;
+  repeated AuditEntry audit_trail = 12;
+  bool verified = 13;
+}
+
+// AuditEntry represents an audit log entry
+message AuditEntry {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  google.protobuf.Timestamp timestamp = 1 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  string action = 2;
+  string actor = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string description = 4;
+  string evidence = 5;
+  bool approved = 6;
+}
+
+// CommunityGovernance represents governance parameters
+message CommunityGovernance {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string quorum_percentage = 1;
+  string passing_percentage = 2;
+  google.protobuf.Duration voting_period = 3 [(gogoproto.nullable) = false, (gogoproto.stdduration) = true];
+  cosmos.base.v1beta1.Coin min_deposit = 4 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  cosmos.base.v1beta1.Coin max_proposal_size = 5 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  cosmos.base.v1beta1.Coin required_stake = 6 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  cosmos.base.v1beta1.Coin audit_threshold = 7 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  bool transparency_required = 8;
+  bool community_approval_req = 9;
+  bool multi_sig_required = 10;
+  uint32 min_reputation = 11;
+}
+
+// DevelopmentFundProposal represents a proposal for using development funds
+message DevelopmentFundProposal {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  uint64 proposal_id = 1;
+  string proposer = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string title = 3;
+  string description = 4;
+  string category = 5;
+  string priority = 6;
+  cosmos.base.v1beta1.Coin requested_amount = 7 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  TechnicalSpecs technical_specs = 8;
+  ProjectTimeline timeline = 9;
+  repeated TeamMember team = 10;
+  repeated Deliverable deliverables = 11;
+  string status = 12;
+  google.protobuf.Timestamp submission_time = 13 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  google.protobuf.Duration review_period = 14 [(gogoproto.nullable) = false, (gogoproto.stdduration) = true];
+  google.protobuf.Timestamp review_end_time = 15 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  google.protobuf.Timestamp approval_time = 16 [(gogoproto.stdtime) = true];
+  google.protobuf.Timestamp execution_start_time = 17 [(gogoproto.stdtime) = true];
+  google.protobuf.Timestamp completion_time = 18 [(gogoproto.stdtime) = true];
+  TechnicalReview technical_review = 19;
+  FinancialReview financial_review = 20;
+  SecurityReview security_review = 21;
+  CodeQuality code_quality = 22;
+  TestingCoverage testing_coverage = 23;
+  Documentation documentation = 24;
+  ImpactAssessment impact = 25;
+  RiskAssessment risk_assessment = 26;
+  uint32 approval_score = 27;
+  repeated CommunityFeedback community_feedback = 28;
+  uint32 transparency_level = 29;
+}
+
+// TechnicalSpecs represents technical specifications
+message TechnicalSpecs {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  repeated string languages = 1;
+  repeated string frameworks = 2;
+  repeated string dependencies = 3;
+  string architecture = 4;
+  string database = 5;
+  repeated string apis = 6;
+  repeated string security_features = 7;
+  PerformanceSpecs performance = 8;
+  ScalabilitySpecs scalability = 9;
+  CompatibilitySpecs compatibility = 10;
+  TestingSpecs testing = 11;
+  DocumentationSpecs documentation = 12;
+  DeploymentSpecs deployment = 13;
+  MonitoringSpecs monitoring = 14;
+}
+
+// PerformanceSpecs represents performance requirements
+message PerformanceSpecs {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  uint64 expected_tps = 1;
+  google.protobuf.Duration latency_target = 2 [(gogoproto.nullable) = false, (gogoproto.stdduration) = true];
+  string memory_usage = 3;
+  string cpu_usage = 4;
+  string network_bandwidth = 5;
+  string storage_requirements = 6;
+}
+
+// ScalabilitySpecs represents scalability requirements
+message ScalabilitySpecs {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  bool horizontal_scaling = 1;
+  bool vertical_scaling = 2;
+  bool load_balancing = 3;
+  string caching = 4;
+  bool cdn = 5;
+  bool microservices = 6;
+}
+
+// CompatibilitySpecs represents compatibility requirements
+message CompatibilitySpecs {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  repeated string platforms = 1;
+  repeated string browsers = 2;
+  repeated string mobile_os = 3;
+  repeated string database_systems = 4;
+  repeated string api_versions = 5;
+  bool backward_compat = 6;
+}
+
+// TestingSpecs represents testing requirements
+message TestingSpecs {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  bool unit_tests = 1;
+  bool integration_tests = 2;
+  bool e2e_tests = 3;
+  bool load_tests = 4;
+  bool security_tests = 5;
+  uint32 coverage_target = 6;
+  repeated string test_frameworks = 7;
+}
+
+// DocumentationSpecs represents documentation requirements
+message DocumentationSpecs {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  bool api_documentation = 1;
+  bool user_guides = 2;
+  bool developer_guides = 3;
+  bool technical_specs = 4;
+  bool installation_guide = 5;
+  bool troubleshooting_guide = 6;
+}
+
+// DeploymentSpecs represents deployment requirements
+message DeploymentSpecs {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  bool container_support = 1;
+  repeated string cloud_platforms = 2;
+  bool ci_cd = 3;
+  string rollback_strategy = 4;
+  bool blue_green_deploy = 5;
+  bool monitoring_integration = 6;
+}
+
+// MonitoringSpecs represents monitoring requirements
+message MonitoringSpecs {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  repeated string metrics = 1;
+  bool logging = 2;
+  bool alerting = 3;
+  bool dashboards = 4;
+  bool tracing = 5;
+  bool health_checks = 6;
+}
+
+// ProjectTimeline represents project timeline
+message ProjectTimeline {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  google.protobuf.Timestamp start_date = 1 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  google.protobuf.Timestamp end_date = 2 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  google.protobuf.Duration duration = 3 [(gogoproto.nullable) = false, (gogoproto.stdduration) = true];
+  repeated Phase phases = 4;
+  repeated Milestone milestones = 5;
+  repeated string dependencies = 6;
+  repeated string critical_path = 7;
+  google.protobuf.Duration buffer_time = 8 [(gogoproto.nullable) = false, (gogoproto.stdduration) = true];
+  repeated google.protobuf.Timestamp review_checkpoints = 9 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+}
+
+// Phase represents a project phase
+message Phase {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  uint64 id = 1;
+  string name = 2;
+  string description = 3;
+  google.protobuf.Timestamp start_date = 4 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  google.protobuf.Timestamp end_date = 5 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  string status = 6;
+  uint32 progress = 7;
+  repeated string deliverables = 8;
+}
+
+// TeamMember represents a team member
+message TeamMember {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string role = 2;
+  repeated string expertise = 3;
+  string allocation = 4;
+  cosmos.base.v1beta1.Coin compensation = 5 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  repeated string kpis = 6;
+  uint32 reputation = 7;
+  uint32 experience = 8;
+  uint32 availability = 9;
+}
+
+// Deliverable represents a project deliverable
+message Deliverable {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  uint64 id = 1;
+  string name = 2;
+  string description = 3;
+  string type = 4;
+  google.protobuf.Timestamp due_date = 5 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  string status = 6;
+  uint32 progress = 7;
+  uint32 quality = 8;
+  string test_status = 9;
+  string review_status = 10;
+  string deploy_status = 11;
+}
+
+// TechnicalReview represents technical review results
+message TechnicalReview {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string reviewer = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  google.protobuf.Timestamp review_date = 2 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  uint32 score = 3;
+  bool approved = 4;
+  string comments = 5;
+  repeated string recommendations = 6;
+  repeated string technical_risks = 7;
+  uint32 complexity = 8;
+  uint32 feasibility = 9;
+  uint32 innovation = 10;
+  uint32 maintainability = 11;
+}
+
+// FinancialReview represents financial review results
+message FinancialReview {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string reviewer = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  google.protobuf.Timestamp review_date = 2 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  uint32 score = 3;
+  bool approved = 4;
+  string budget_analysis = 5;
+  repeated CostItem cost_breakdown = 6;
+  string roi = 7;
+  string npv = 8;
+  google.protobuf.Duration payback = 9 [(gogoproto.nullable) = false, (gogoproto.stdduration) = true];
+  repeated string risk_factors = 10;
+  repeated string recommendations = 11;
+}
+
+// CostItem represents a cost item
+message CostItem {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string category = 1;
+  cosmos.base.v1beta1.Coin amount = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  string description = 3;
+  bool recurring = 4;
+  string frequency = 5;
+}
+
+// SecurityReview represents security review results
+message SecurityReview {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string reviewer = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  google.protobuf.Timestamp review_date = 2 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  uint32 score = 3;
+  bool approved = 4;
+  repeated SecurityRisk security_risks = 5;
+  repeated string vulnerabilities = 6;
+  repeated string mitigations = 7;
+  string compliance_status = 8;
+  bool audit_required = 9;
+  bool penetration_testing = 10;
+  repeated string recommendations = 11;
+}
+
+// SecurityRisk represents a security risk
+message SecurityRisk {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  uint64 id = 1;
+  string severity = 2;
+  string description = 3;
+  string impact = 4;
+  string likelihood = 5;
+  string mitigation = 6;
+  string status = 7;
+}
+
+// CodeQuality represents code quality metrics
+message CodeQuality {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  uint32 overall_score = 1;
+  uint32 maintainability = 2;
+  uint32 reliability = 3;
+  uint32 security = 4;
+  uint32 performance = 5;
+  uint32 duplication = 6;
+  uint32 complexity = 7;
+  uint32 technical_debt = 8;
+  uint32 code_coverage = 9;
+  uint32 documentation_cov = 10;
+  uint32 standards = 11;
+  uint32 best_practices = 12;
+  repeated string issues = 13;
+  repeated string improvements = 14;
+}
+
+// TestingCoverage represents testing coverage
+message TestingCoverage {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  uint32 unit_test_coverage = 1;
+  uint32 integration_test_coverage = 2;
+  uint32 e2e_test_coverage = 3;
+  uint32 overall_coverage = 4;
+  uint64 tests_passed = 5;
+  uint64 tests_failed = 6;
+  uint64 tests_skipped = 7;
+  google.protobuf.Duration test_execution_time = 8 [(gogoproto.nullable) = false, (gogoproto.stdduration) = true];
+  uint32 critical_paths_covered = 9;
+  uint32 edge_cases_covered = 10;
+  uint32 performance = 11;
+  uint32 load_testing = 12;
+  uint32 security_testing = 13;
+  repeated string recommendations = 14;
+}
+
+// Documentation represents documentation status
+message Documentation {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  uint32 overall_score = 1;
+  uint32 completeness = 2;
+  uint32 clarity = 3;
+  uint32 accuracy = 4;
+  uint32 examples = 5;
+  uint32 api_documentation = 6;
+  uint32 user_guides = 7;
+  uint32 developer_guides = 8;
+  uint32 installation_guide = 9;
+  uint32 troubleshooting_guide = 10;
+  uint32 code_comments = 11;
+  uint32 changelog = 12;
+  repeated string recommendations = 13;
+}
+
+// ImpactAssessment represents impact assessment
+message ImpactAssessment {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  uint32 user_impact = 1;
+  uint32 developer_impact = 2;
+  uint32 platform_impact = 3;
+  uint32 security_impact = 4;
+  uint32 performance_impact = 5;
+  uint32 scalability_impact = 6;
+  uint32 maintenance_impact = 7;
+  uint32 cost_impact = 8;
+  uint32 revenue_impact = 9;
+  uint32 market_impact = 10;
+  uint32 competitive_adv = 11;
+  uint32 innovation = 12;
+  uint32 strategic_value = 13;
+  uint32 long_term_value = 14;
+  string justification = 15;
+  repeated string metrics = 16;
+}
+
+// RiskAssessment represents risk assessment
+message RiskAssessment {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  uint32 overall_risk = 1;
+  uint32 technical_risk = 2;
+  uint32 financial_risk = 3;
+  uint32 security_risk = 4;
+  uint32 timeline_risk = 5;
+  uint32 resource_risk = 6;
+  uint32 market_risk = 7;
+  uint32 competitive_risk = 8;
+  uint32 regulatory_risk = 9;
+  uint32 reputation_risk = 10;
+  string mitigation_plan = 11;
+  string contingency_plan = 12;
+  repeated string risk_factors = 13;
+  repeated string assumptions = 14;
+  repeated string dependencies = 15;
+  uint32 success_probability = 16;
+}
+
+// CommunityFeedback represents community feedback
+message CommunityFeedback {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  uint64 id = 1;
+  string submitter = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string content = 3;
+  uint32 rating = 4;
+  string category = 5;
+  google.protobuf.Timestamp timestamp = 6 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  bool verified = 7;
+  uint64 helpful = 8;
+  string response = 9;
+  bool addressed = 10;
+}
+
+// DevelopmentFundBalance tracks the development fund balance
+message DevelopmentFundBalance {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  cosmos.base.v1beta1.Coin total_balance = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  cosmos.base.v1beta1.Coin allocated_amount = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  cosmos.base.v1beta1.Coin available_amount = 3 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  cosmos.base.v1beta1.Coin pending_amount = 4 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  cosmos.base.v1beta1.Coin emergency_reserve = 5 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  int64 last_update_height = 6;
+  google.protobuf.Timestamp last_update_time = 7 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+}
+
+// DevelopmentFundTransaction represents a development fund transaction
+message DevelopmentFundTransaction {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string tx_id = 1;
+  uint64 proposal_id = 2;
+  string from = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string to = 4 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  cosmos.base.v1beta1.Coin amount = 5 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  string type = 6;
+  string category = 7;
+  string description = 8;
+  google.protobuf.Timestamp timestamp = 9 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  int64 block_height = 10;
+  string status = 11;
+  string phase = 12;
+  string milestone = 13;
+  string deliverable = 14;
+  uint32 quality_score = 15;
+  bool approved = 16;
+  bool reviewed = 17;
+  bool audited = 18;
+}

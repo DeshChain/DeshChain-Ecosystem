@@ -1,0 +1,138 @@
+syntax = "proto3";
+
+package deshchain.treasury.v1;
+
+import "gogoproto/gogo.proto";
+import "deshchain/treasury/v1/treasury.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos_proto/cosmos.proto";
+import "amino/amino.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/treasury/types";
+
+// GenesisState defines the treasury module's genesis state
+message GenesisState {
+  // Community fund state
+  CommunityFundState community_fund = 1;
+  
+  // Development fund state
+  DevelopmentFundState development_fund = 2;
+  
+  // Multi-signature governance configurations
+  repeated MultiSigGovernance multi_sig_governances = 3;
+  
+  // Community proposal system configuration
+  CommunityProposalSystem proposal_system = 4;
+  
+  // Real-time dashboard state
+  RealTimeDashboard dashboard = 5;
+  
+  // Transparency reports
+  repeated TransparencyReport transparency_reports = 6;
+}
+
+// CommunityFundState represents the state of the community fund
+message CommunityFundState {
+  // Current balance
+  CommunityFundBalance balance = 1;
+  
+  // All proposals
+  repeated CommunityFundProposal proposals = 2;
+  
+  // All transactions
+  repeated CommunityFundTransaction transactions = 3;
+  
+  // Governance parameters
+  CommunityGovernance governance = 4;
+}
+
+// DevelopmentFundState represents the state of the development fund
+message DevelopmentFundState {
+  // Current balance
+  DevelopmentFundBalance balance = 1;
+  
+  // All proposals
+  repeated DevelopmentFundProposal proposals = 2;
+  
+  // All transactions
+  repeated DevelopmentFundTransaction transactions = 3;
+}
+
+// PhaseSchedule defines the timeline for governance phase transitions
+message PhaseSchedule {
+  google.protobuf.Timestamp founder_driven_end = 1 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  google.protobuf.Timestamp transitional_end = 2 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  google.protobuf.Timestamp community_proposal_end = 3 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  google.protobuf.Timestamp full_governance_start = 4 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+}
+
+// PhaseConfig defines configuration for each governance phase
+message PhaseConfig {
+  string phase = 1;
+  string description = 2;
+  uint32 founder_allocation_power = 3;
+  uint32 community_proposal_power = 4;
+  bool community_voting_enabled = 5;
+  bool founder_veto_enabled = 6;
+  repeated string allowed_proposal_types = 7;
+}
+
+// EmergencyProtocol defines emergency governance parameters
+message EmergencyProtocol {
+  bool enabled = 1;
+  uint32 min_signers = 2;
+  uint32 threshold = 3;
+  cosmos.base.v1beta1.Coin max_amount = 4 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  google.protobuf.Duration cooldown_period = 5 [(gogoproto.nullable) = false, (gogoproto.stdduration) = true];
+  repeated string allowed_categories = 6;
+}
+
+// GovernanceRules defines rules for multi-sig governance
+message GovernanceRules {
+  uint32 min_signers = 1;
+  uint32 max_signers = 2;
+  uint64 proposal_duration = 3; // in seconds
+  uint64 execution_delay = 4; // in seconds
+  uint32 emergency_threshold = 5;
+}
+
+// Signer represents a multi-sig signer
+message Signer {
+  string address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string role = 2;
+  uint32 weight = 3;
+  google.protobuf.Timestamp added_at = 4 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  string added_by = 5 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  bool active = 6;
+  uint32 reputation = 7;
+}
+
+// GovernanceProposal represents a multi-sig governance proposal
+message GovernanceProposal {
+  uint64 proposal_id = 1;
+  uint64 governance_id = 2;
+  string proposer = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string title = 4;
+  string description = 5;
+  string type = 6;
+  google.protobuf.Any content = 7;
+  google.protobuf.Timestamp submission_time = 8 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  google.protobuf.Timestamp expiry_time = 9 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  string status = 10;
+  repeated Signature signatures = 11;
+  bool executed = 12;
+  google.protobuf.Timestamp execution_time = 13 [(gogoproto.stdtime) = true];
+}
+
+// Signature represents a signature on a governance proposal
+message Signature {
+  string signer = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string signature = 2;
+  google.protobuf.Timestamp timestamp = 3 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  string comments = 4;
+}

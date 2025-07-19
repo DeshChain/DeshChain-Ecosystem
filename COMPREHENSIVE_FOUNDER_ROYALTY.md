@@ -8,12 +8,18 @@ To ensure the founder can dedicate their entire life to DeshChain, we implement 
 ## 💰 Multi-Stream Royalty Structure
 
 ### 1. **Transaction Tax Royalty**
-- **Rate**: 0.10% of the 2.5% tax
+- **Founder Rate**: 0.0875% of the 2.5% tax (3.5% of tax revenue)
+- **Co-Founders**: 0.045% (1.8% of tax revenue)
+- **Angel Investors**: 0.0175% (0.7% of tax revenue)
+- **Combined Founder Group**: 0.15% (6% of tax revenue)
 - **Source**: Every transaction on DeshChain
-- **Estimated**: ₹18-36 Cr annually by Year 5
+- **Estimated Founder Income**: ₹102.8 Cr annually by Year 5
 
 ### 2. **Platform Revenue Royalty**
-- **Rate**: 5% of all platform revenues
+- **Rate**: Varies by service (typically 4.3-7.3% combined)
+  - Founder: 3.5-5% depending on service
+  - Co-Founders: 1.8-2%
+  - Angel Investors: 0.7-1.2%
 - **Sources**:
   - DEX Trading Fees (0.3% of volume)
   - NFT Marketplace (2.5% of sales)
