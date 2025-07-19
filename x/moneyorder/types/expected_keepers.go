@@ -102,14 +102,36 @@ type ICS20Keeper interface {
 
 // MoneyOrderHooks defines the hooks for money order module
 type MoneyOrderHooks interface {
+	// Pool lifecycle hooks
 	AfterPoolCreated(ctx sdk.Context, poolId uint64)
+	BeforePoolCreation(ctx sdk.Context, creator sdk.AccAddress, poolType string) error
+	AfterPoolCreation(ctx sdk.Context, poolId uint64, poolType string, creator sdk.AccAddress) error
+	
+	// Trading hooks
 	AfterSwap(ctx sdk.Context, poolId uint64, tokenIn, tokenOut sdk.Coin)
 	AfterLiquidityAdded(ctx sdk.Context, poolId uint64, provider sdk.AccAddress, shares sdk.Int)
 	AfterLiquidityRemoved(ctx sdk.Context, poolId uint64, provider sdk.AccAddress, shares sdk.Int)
+	AfterTradingFeeCollection(ctx sdk.Context, poolId uint64, tradingFees sdk.Coins) error
+	
+	// Money Order hooks
 	AfterMoneyOrderCreated(ctx sdk.Context, orderId string, sender, receiver sdk.AccAddress, amount sdk.Coin)
 	AfterMoneyOrderCompleted(ctx sdk.Context, orderId string)
+	
+	// Village pool hooks
 	AfterVillagePoolCreated(ctx sdk.Context, poolId uint64, villageName string)
 	AfterVillageMemberJoined(ctx sdk.Context, poolId uint64, member sdk.AccAddress)
+	
+	// Pension integration hooks
+	AfterPensionContribution(ctx sdk.Context, pensionAccountId string, contributor sdk.AccAddress, contribution sdk.Coin, villagePostalCode string) error
+	AfterPensionMaturity(ctx sdk.Context, pensionAccountId string, beneficiary sdk.AccAddress, maturityAmount sdk.Coin) error
+	
+	// Agricultural lending integration hooks
+	BeforeAgriLoanApproval(ctx sdk.Context, borrower sdk.AccAddress, loanAmount sdk.Coin, villagePostalCode string) error
+	AfterAgriLoanDisbursement(ctx sdk.Context, loanId string, borrower sdk.AccAddress, loanAmount sdk.Coin, loanType string, duration uint32, villagePostalCode string) error
+	AfterAgriLoanRepayment(ctx sdk.Context, loanId string, repaymentAmount sdk.Coin) error
+	
+	// Monthly distribution hook
+	MonthlyRevenueDistribution(ctx sdk.Context) error
 }
 
 // ParamKeyTable returns the parameter key table

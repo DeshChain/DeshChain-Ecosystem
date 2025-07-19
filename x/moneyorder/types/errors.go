@@ -89,4 +89,7 @@ var (
 	ErrPoolNotActive          = sdkerrors.Register(ModuleName, 2004, "pool not active")
 	ErrInvalidPoolId          = sdkerrors.Register(ModuleName, 2005, "invalid pool id")
 	ErrInvalidShares          = sdkerrors.Register(ModuleName, 2006, "invalid shares amount")
+	
+	// General errors
+	ErrNotFound               = sdkerrors.Register(ModuleName, 2100, "not found")
 )

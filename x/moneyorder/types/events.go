@@ -50,6 +50,18 @@ const (
 	EventTypeVillageVerified      = "village_verified"
 	EventTypeTrustScoreUpdated    = "trust_score_updated"
 	
+	// Pension liquidity events
+	EventTypePensionLiquidityAdded = "pension_liquidity_added"
+	EventTypePensionLiquidityMatured = "pension_liquidity_matured"
+	
+	// Unified pool events
+	EventTypeUnifiedPoolCreated = "unified_pool_created"
+	EventTypeAgriLoanDisbursed = "agri_loan_disbursed"
+	EventTypeAgriLoanRepaid = "agri_loan_repaid"
+	EventTypePoolRebalanced = "pool_rebalanced"
+	EventTypePensionMaturityProcessed = "pension_maturity_processed"
+	EventTypeMonthlyDistribution = "monthly_distribution"
+	
 	// Cultural events
 	EventTypeFestivalBonusApplied = "festival_bonus_applied"
 	EventTypeCulturalDiscount     = "cultural_discount_applied"
@@ -92,6 +104,11 @@ const (
 	AttributeKeyMemberCount       = "member_count"
 	AttributeKeyTrustScore        = "trust_score"
 	AttributeKeyAchievement       = "achievement"
+	
+	// Pension attributes
+	AttributeKeyPensionAccount    = "pension_account"
+	AttributeKeyReserve           = "reserve"
+	AttributeKeyRewards           = "rewards"
 	
 	// Cultural attributes
 	AttributeKeyFestival          = "festival"

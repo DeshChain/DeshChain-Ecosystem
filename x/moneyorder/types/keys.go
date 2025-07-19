@@ -76,6 +76,12 @@ var (
 	KeyPrefixFestivalPeriod       = []byte{0x15}
 	KeyNextPoolId                 = []byte{0x16}
 	KeyPrefixVillagePoolMember    = []byte{0x17}
+	KeyPrefixPensionLiquidity     = []byte{0x18}
+	KeyPrefixUnifiedPool          = []byte{0x19}
+	KeyNextUnifiedPoolId          = []byte{0x1A}
+	KeyPrefixPensionContribution  = []byte{0x1B}
+	KeyPrefixAgriLoan             = []byte{0x1C}
+	KeyNextLoanId                 = []byte{0x1D}
 )
 
 // Module account names
