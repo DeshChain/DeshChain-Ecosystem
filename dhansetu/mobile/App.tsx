@@ -74,7 +74,7 @@ export default function App() {
                           barStyle="light-content"
                         />
                         <AppNavigator />
-                        <LoadingOverlay />
+                        <LoadingOverlay isVisible={false} />
                       </NavigationContainer>
                     </SafeAreaProvider>
                   </ThemeProvider>

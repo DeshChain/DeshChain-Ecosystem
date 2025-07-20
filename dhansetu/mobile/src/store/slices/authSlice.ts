@@ -165,4 +165,8 @@ export const {
   reset,
 } = authSlice.actions;
 
+// Re-export for compatibility
+export const setPin = setPinHash;
+export const authenticate = setAuthenticated;
+
 export default authSlice.reducer;

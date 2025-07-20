@@ -14,42 +14,44 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import { BaseMessage } from './types';
+
 // Placeholder exports for custom DeshChain messages
 // These would be properly generated from protobuf definitions
 
-export const MsgSend = {};
-export const MsgDelegate = {};
-export const MsgUndelegate = {};
-export const MsgWithdrawDelegatorReward = {};
+export const MsgSend = BaseMessage;
+export const MsgDelegate = BaseMessage;
+export const MsgUndelegate = BaseMessage;
+export const MsgWithdrawDelegatorReward = BaseMessage;
 
 // NAMO token specific messages
-export const MsgTransferNAMO = {};
-export const MsgBurnNAMO = {};
-export const MsgClaimVesting = {};
+export const MsgTransferNAMO = BaseMessage;
+export const MsgBurnNAMO = BaseMessage;
+export const MsgClaimVesting = BaseMessage;
 
 // Money Order DEX messages
-export const MsgCreateMoneyOrder = {};
-export const MsgAcceptMoneyOrder = {};
-export const MsgCancelMoneyOrder = {};
+export const MsgCreateMoneyOrder = BaseMessage;
+export const MsgAcceptMoneyOrder = BaseMessage;
+export const MsgCancelMoneyOrder = BaseMessage;
 
 // Sikkebaaz launchpad messages
-export const MsgCreateTokenLaunch = {};
-export const MsgParticipateInLaunch = {};
-export const MsgClaimTokens = {};
-export const MsgInitiateCommunityVeto = {};
-export const MsgVoteOnVeto = {};
+export const MsgCreateTokenLaunch = BaseMessage;
+export const MsgParticipateInLaunch = BaseMessage;
+export const MsgClaimTokens = BaseMessage;
+export const MsgInitiateCommunityVeto = BaseMessage;
+export const MsgVoteOnVeto = BaseMessage;
 
 // DhanSetu messages
-export const MsgCreateDhanPata = {};
-export const MsgUpdateMitraProfile = {};
-export const MsgSendViaVirtualAddress = {};
+export const MsgCreateDhanPata = BaseMessage;
+export const MsgUpdateMitraProfile = BaseMessage;
+export const MsgSendViaVirtualAddress = BaseMessage;
 
 // Gram Suraksha messages
-export const MsgEnrollInSuraksha = {};
-export const MsgContributeToPool = {};
-export const MsgClaimMaturity = {};
+export const MsgEnrollInSuraksha = BaseMessage;
+export const MsgContributeToPool = BaseMessage;
+export const MsgClaimMaturity = BaseMessage;
 
 // Cultural messages
-export const MsgSubmitQuote = {};
-export const MsgVoteOnQuote = {};
-export const MsgClaimFestivalBonus = {};
+export const MsgSubmitQuote = BaseMessage;
+export const MsgVoteOnQuote = BaseMessage;
+export const MsgClaimFestivalBonus = BaseMessage;

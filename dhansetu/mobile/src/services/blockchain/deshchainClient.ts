@@ -82,13 +82,25 @@ export interface Validator {
 }
 
 export class DeshChainClient {
+  private static instance: DeshChainClient;
   private client?: StargateClient;
   private signingClient?: SigningStargateClient;
   private apiClient: AxiosInstance;
   private config: DeshChainConfig;
   private registry: Registry;
 
-  constructor(config: DeshChainConfig) {
+  constructor(config?: DeshChainConfig) {
+    if (!config) {
+      // Default configuration for DeshChain
+      config = {
+        rpcEndpoint: 'https://rpc.deshchain.com',
+        apiEndpoint: 'https://api.deshchain.com',
+        chainId: 'deshchain-1',
+        addressPrefix: 'desh',
+        gasPrice: '0.025unamo',
+        gasDenom: 'unamo',
+      };
+    }
     this.config = config;
     this.apiClient = axios.create({
       baseURL: config.apiEndpoint,
@@ -101,6 +113,17 @@ export class DeshChainClient {
     // Initialize custom registry with DeshChain types
     this.registry = new Registry(defaultRegistryTypes);
     this.registerCustomTypes();
+  }
+
+  /**
+   * Get singleton instance
+   */
+  static async getInstance(): Promise<DeshChainClient> {
+    if (!DeshChainClient.instance) {
+      DeshChainClient.instance = new DeshChainClient();
+      await DeshChainClient.instance.connect();
+    }
+    return DeshChainClient.instance;
   }
 
   /**

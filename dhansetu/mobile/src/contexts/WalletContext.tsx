@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from '@store/index';
 import { HDWallet } from '@services/wallet/hdWallet';
 import { DeshChainClient } from '@services/blockchain/deshchainClient';
 import { setWalletCreated, setAddress, setMnemonic } from '@store/slices/walletSlice';
+import { SecureStorage } from '@services/wallet/secureStorage';
 
 interface WalletContextType {
   wallet: HDWallet | null;
@@ -35,19 +36,18 @@ export const WalletProvider: React.FC<{ children: ReactNode }> = ({ children }) 
 
   const initializeWallet = async () => {
     try {
-      const hdWallet = new HDWallet();
-      const hasSeed = await hdWallet.hasSeed();
+      const secureStorage = SecureStorage.getInstance();
+      const storedMnemonic = await secureStorage.getItem('mnemonic', 'WALLET');
       
-      if (hasSeed) {
-        await hdWallet.unlock(''); // In production, this would require the PIN
-        const address = await hdWallet.getAddress();
-        const deshClient = new DeshChainClient();
-        await deshClient.connect();
+      if (storedMnemonic) {
+        const hdWallet = await HDWallet.fromMnemonic(storedMnemonic);
+        const deshAccount = await hdWallet.deriveDeshChainAccount(0);
+        const deshClient = await DeshChainClient.getInstance();
         
         setWallet(hdWallet);
         setClient(deshClient);
         dispatch(setWalletCreated(true));
-        dispatch(setAddress(address));
+        dispatch(setAddress(deshAccount.address));
       }
     } catch (error) {
       console.error('Failed to initialize wallet:', error);
@@ -56,18 +56,20 @@ export const WalletProvider: React.FC<{ children: ReactNode }> = ({ children }) 
 
   const createWallet = async (): Promise<string> => {
     try {
-      const hdWallet = new HDWallet();
-      const mnemonic = HDWallet.generateMnemonic();
-      await hdWallet.createWallet(mnemonic);
+      const hdWallet = await HDWallet.generate();
+      const mnemonic = hdWallet.getMnemonic();
       
-      const address = await hdWallet.getAddress();
-      const deshClient = new DeshChainClient();
-      await deshClient.connect();
+      const deshAccount = await hdWallet.deriveDeshChainAccount(0);
+      const deshClient = await DeshChainClient.getInstance();
+      
+      // Store mnemonic securely
+      const secureStorage = SecureStorage.getInstance();
+      await secureStorage.setItem('mnemonic', mnemonic, 'WALLET');
       
       setWallet(hdWallet);
       setClient(deshClient);
       dispatch(setWalletCreated(true));
-      dispatch(setAddress(address));
+      dispatch(setAddress(deshAccount.address));
       dispatch(setMnemonic(mnemonic));
       
       return mnemonic;
@@ -79,17 +81,19 @@ export const WalletProvider: React.FC<{ children: ReactNode }> = ({ children }) 
 
   const importWallet = async (mnemonic: string): Promise<void> => {
     try {
-      const hdWallet = new HDWallet();
-      await hdWallet.createWallet(mnemonic);
+      const hdWallet = await HDWallet.fromMnemonic(mnemonic);
       
-      const address = await hdWallet.getAddress();
-      const deshClient = new DeshChainClient();
-      await deshClient.connect();
+      const deshAccount = await hdWallet.deriveDeshChainAccount(0);
+      const deshClient = await DeshChainClient.getInstance();
+      
+      // Store mnemonic securely
+      const secureStorage = SecureStorage.getInstance();
+      await secureStorage.setItem('mnemonic', mnemonic, 'WALLET');
       
       setWallet(hdWallet);
       setClient(deshClient);
       dispatch(setWalletCreated(true));
-      dispatch(setAddress(address));
+      dispatch(setAddress(deshAccount.address));
     } catch (error) {
       console.error('Failed to import wallet:', error);
       throw error;
@@ -101,8 +105,8 @@ export const WalletProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       throw new Error('Wallet not initialized');
     }
     
-    const address = await wallet.getAddress();
-    return await client.getBalance(address);
+    const deshAccount = await wallet.deriveDeshChainAccount(0);
+    return await client.getBalance(deshAccount.address);
   };
 
   return (

@@ -24,11 +24,12 @@ import {
   Alert,
   ActivityIndicator,
   Clipboard,
+  TextInput,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useNavigation } from '@react-navigation/native';
+import { useRootNavigation } from '@hooks/useTypedNavigation';
 import CheckBox from '@react-native-community/checkbox';
 
 import { COLORS, theme } from '@constants/theme';
@@ -40,7 +41,7 @@ import { createWallet } from '@store/slices/walletSlice';
 import { HDWallet } from '@services/wallet/hdWallet';
 
 export const CreateWalletScreen: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useRootNavigation();
   const dispatch = useAppDispatch();
   
   const [step, setStep] = useState<'info' | 'generate' | 'verify'>('info');
@@ -61,7 +62,7 @@ export const CreateWalletScreen: React.FC = () => {
       setStep('generate');
       
       // Set up verification words (3 random words)
-      const indices = [];
+      const indices: number[] = [];
       while (indices.length < 3) {
         const randomIndex = Math.floor(Math.random() * 12);
         if (!indices.includes(randomIndex)) {
@@ -95,8 +96,8 @@ export const CreateWalletScreen: React.FC = () => {
 
     setIsCreating(true);
     try {
-      await dispatch(createWallet(mnemonic.join(' '))).unwrap();
-      navigation.navigate('PinSetup' as any, { isNewWallet: true });
+      await dispatch(createWallet()).unwrap();
+      navigation.navigate('PinSetup', { isNewWallet: true });
     } catch (error) {
       Alert.alert('Error', 'Failed to create wallet. Please try again.');
     } finally {

@@ -48,6 +48,11 @@ export const COLORS = {
   error: '#F44336',
   info: '#2196F3',
   
+  // Additional colors
+  orange: '#FF6F00',
+  sky: '#87CEEB',
+  darkRed: '#8B0000',
+  
   // Festival colors (can be dynamically changed)
   festivalPrimary: '#FF6B35',
   festivalSecondary: '#F7931E',
@@ -96,6 +101,9 @@ export const theme = {
     info: COLORS.info,
     text: COLORS.gray900,
     white: COLORS.white,
+    orange: COLORS.orange,
+    sky: COLORS.sky,
+    darkRed: COLORS.darkRed,
   },
   
   // Custom properties
@@ -118,17 +126,29 @@ export const theme = {
   
   fonts: {
     ...DefaultTheme.fonts,
-    medium: {
-      ...DefaultTheme.fonts.medium,
+    bodyMedium: {
+      ...DefaultTheme.fonts.bodyMedium,
       fontFamily: 'Roboto-Medium',
     },
-    regular: {
-      ...DefaultTheme.fonts.regular,
+    bodySmall: {
+      ...DefaultTheme.fonts.bodySmall,
       fontFamily: 'Roboto-Regular',
     },
+    titleLarge: {
+      ...DefaultTheme.fonts.titleLarge,
+      fontFamily: 'Roboto-Bold',
+      fontWeight: 'bold' as const,
+    },
+    // Legacy aliases
     bold: {
       fontFamily: 'Roboto-Bold',
       fontWeight: 'bold' as const,
+      fontSize: 16,
+    },
+    medium: {
+      fontFamily: 'Roboto-Medium',
+      fontWeight: '500' as const,
+      fontSize: 14,
     },
   },
   
@@ -137,6 +157,7 @@ export const theme = {
     saffronWhite: ['#FF9933', '#FFFFFF'],
     whiteGreen: ['#FFFFFF', '#138808'],
     festivalGradient: ['#FF6B35', '#F7931E', '#FFD700'],
+    subtle: ['#F5F5F5', '#FAFAFA'],
   },
   
   shadows: {

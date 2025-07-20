@@ -1,0 +1,1 @@
+export { SecureStorage } from '../wallet/secureStorage';

@@ -106,4 +106,9 @@ export class AppInitializationService {
   }
 }
 
-export default AppInitializationService.getInstance();
+const initializeApp = async () => {
+  const instance = AppInitializationService.getInstance();
+  await instance.initialize();
+};
+
+export default initializeApp;

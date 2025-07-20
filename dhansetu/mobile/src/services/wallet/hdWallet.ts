@@ -15,7 +15,8 @@ limitations under the License.
 */
 
 import * as bip39 from 'bip39';
-import * as bip32 from 'bip32';
+import { BIP32Factory } from 'bip32';
+import * as ecc from 'tiny-secp256k1';
 import { ethers } from 'ethers';
 import { 
   DirectSecp256k1HdWallet,
@@ -47,9 +48,10 @@ export interface HDWalletConfig {
 export class HDWallet {
   private mnemonic: string;
   private seed: Buffer;
-  private masterKey: bip32.BIP32Interface;
+  private masterKey: any; // BIP32Interface
   private accounts: Map<string, WalletAccount[]> = new Map();
   private secureStorage: SecureStorage;
+  private static bip32: any;
 
   // Derivation paths
   private static readonly PATHS = {
@@ -61,7 +63,10 @@ export class HDWallet {
   constructor(private config: HDWalletConfig) {
     this.mnemonic = config.mnemonic;
     this.seed = bip39.mnemonicToSeedSync(this.mnemonic, config.password);
-    this.masterKey = bip32.fromSeed(this.seed);
+    if (!HDWallet.bip32) {
+      HDWallet.bip32 = BIP32Factory(ecc);
+    }
+    this.masterKey = HDWallet.bip32.fromSeed(this.seed);
     this.secureStorage = SecureStorage.getInstance();
   }
 

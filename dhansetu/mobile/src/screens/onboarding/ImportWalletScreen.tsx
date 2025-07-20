@@ -101,8 +101,8 @@ export const ImportWalletScreen: React.FC = () => {
     
     // Validate mnemonic phrase
     try {
-      const hdWallet = new HDWallet();
-      const isValid = await hdWallet.validateMnemonic(mnemonicWords.join(' '));
+      const bip39 = await import('bip39');
+      const isValid = bip39.validateMnemonic(mnemonicWords.join(' '));
       setIsValidating(false);
       return isValid;
     } catch (error) {
@@ -127,14 +127,13 @@ export const ImportWalletScreen: React.FC = () => {
     try {
       if (importMethod === 'phrase') {
         await dispatch(importWallet({
-          type: 'mnemonic',
-          value: mnemonicWords.join(' '),
+          mnemonic: mnemonicWords.join(' '),
         })).unwrap();
       } else {
-        await dispatch(importWallet({
-          type: 'privateKey',
-          value: privateKey,
-        })).unwrap();
+        // Private key import not yet supported
+        Alert.alert('Not Supported', 'Private key import is not yet supported');
+        setIsImporting(false);
+        return;
       }
       
       navigation.navigate('PinSetup' as any, { isNewWallet: false });
