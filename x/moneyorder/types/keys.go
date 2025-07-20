@@ -17,6 +17,8 @@ limitations under the License.
 package types
 
 import (
+	"time"
+	
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -35,6 +37,15 @@ const (
 
 	// MemStoreKey defines the in-memory store key
 	MemStoreKey = "mem_moneyorder"
+	
+	// DefaultDenom is the default denomination for the module
+	DefaultDenom = "namo"
+	
+	// EscrowModuleName for escrow account
+	EscrowModuleName = "moneyorder_escrow"
+	
+	// SevaMitraSecurityPool for seva mitra deposits
+	SevaMitraSecurityPool = "sevamitra_security"
 )
 
 // Store key prefixes
@@ -55,7 +66,8 @@ var (
 	KeyPrefixTradingPair          = []byte{0x20}
 	KeyPrefixLiquidity            = []byte{0x21}
 	KeyPrefixPosition             = []byte{0x22}
-	KeyPrefixVolume               = []byte{0x23}
+	KeyPrefixTick                 = []byte{0x23}
+	KeyPrefixVolume               = []byte{0x24}
 	
 	// Cultural Features
 	KeyPrefixFestivalBonus        = []byte{0x30}
@@ -82,6 +94,23 @@ var (
 	KeyPrefixPensionContribution  = []byte{0x1B}
 	KeyPrefixAgriLoan             = []byte{0x1C}
 	KeyNextLoanId                 = []byte{0x1D}
+	
+	// P2P and Escrow prefixes
+	P2POrderPrefix                = []byte{0x50}
+	P2PTradePrefix                = []byte{0x51}
+	AgentPrefix                   = []byte{0x52}
+	EscrowPrefix                  = []byte{0x53}
+	DisputePrefix                 = []byte{0x54}
+	UserStatsPrefix               = []byte{0x55}
+	TrustScorePrefix              = []byte{0x56}
+	EscrowOrderIndexPrefix        = []byte{0x57}
+	EscrowTradeIndexPrefix        = []byte{0x58}
+	DisputeEscrowIndexPrefix      = []byte{0x59}
+	EscrowExpiryQueuePrefix       = []byte{0x5A}
+	RefundQueuePrefix             = []byte{0x5B}
+	P2POrderTypeIndexPrefix       = []byte{0x5C}
+	AgentDistrictIndexPrefix      = []byte{0x5D}
+	UserStatsPrefix               = []byte{0x5E}
 )
 
 // Module account names
@@ -99,6 +128,7 @@ const (
 	VillagePoolReserve          = "village_pool_reserve"
 	FestivalBonusPool           = "festival_bonus_pool"
 	KYCEscrowAccount            = "kyc_escrow_account"
+	FeeCollectorName            = "fee_collector"
 )
 
 // Order status constants
@@ -204,6 +234,37 @@ func GetPostalCodeOrdersKey(postalCode string) []byte {
 	return append(KeyPrefixOrderByPostalCode, []byte(postalCode)...)
 }
 
+// GetConcentratedPoolKey returns the store key for a concentrated liquidity pool
+func GetConcentratedPoolKey(poolId uint64) []byte {
+	return append(KeyPrefixConcentratedPool, sdk.Uint64ToBigEndian(poolId)...)
+}
+
+// GetPositionKey returns the store key for a liquidity position
+func GetPositionKey(positionId uint64) []byte {
+	return append(KeyPrefixPosition, sdk.Uint64ToBigEndian(positionId)...)
+}
+
+// GetTickKey returns the store key for a tick
+func GetTickKey(poolId uint64, tickIndex int64) []byte {
+	key := append(KeyPrefixTick, sdk.Uint64ToBigEndian(poolId)...)
+	return append(key, sdk.Int64ToBigEndian(tickIndex)...)
+}
+
+// KeyConcentratedPool returns key for concentrated liquidity pool
+func KeyConcentratedPool(poolId uint64) []byte {
+	return GetConcentratedPoolKey(poolId)
+}
+
+// KeyPosition returns key for liquidity position
+func KeyPosition(positionId uint64) []byte {
+	return GetPositionKey(positionId)
+}
+
+// KeyTick returns key for price tick
+func KeyTick(poolId uint64, tickIndex int64) []byte {
+	return GetTickKey(poolId, tickIndex)
+}
+
 // ParsePoolIdFromKey extracts pool ID from a store key
 func ParsePoolIdFromKey(key []byte, prefix []byte) uint64 {
 	if len(key) < len(prefix)+8 {
@@ -211,3 +272,129 @@ func ParsePoolIdFromKey(key []byte, prefix []byte) uint64 {
 	}
 	return sdk.BigEndianToUint64(key[len(prefix):])
 }
+
+// GetP2POrderKey returns the store key for a P2P order
+func GetP2POrderKey(orderId string) []byte {
+	return append(P2POrderPrefix, []byte(orderId)...)
+}
+
+// GetP2PTradeKey returns the store key for a P2P trade
+func GetP2PTradeKey(tradeId string) []byte {
+	return append(P2PTradePrefix, []byte(tradeId)...)
+}
+
+// GetAgentKey returns the store key for an agent
+func GetAgentKey(agentId string) []byte {
+	return append(AgentPrefix, []byte(agentId)...)
+}
+
+// GetEscrowKey returns the store key for an escrow
+func GetEscrowKey(escrowId string) []byte {
+	return append(EscrowPrefix, []byte(escrowId)...)
+}
+
+// GetDisputeKey returns the store key for a dispute
+func GetDisputeKey(disputeId string) []byte {
+	return append(DisputePrefix, []byte(disputeId)...)
+}
+
+// GetUserStatsKey returns the store key for user stats
+func GetUserStatsKey(address string) []byte {
+	return append(UserStatsPrefix, []byte(address)...)
+}
+
+// GetEscrowOrderIndexKey returns the store key for escrow order index
+func GetEscrowOrderIndexKey(orderId string) []byte {
+	return append(EscrowOrderIndexPrefix, []byte(orderId)...)
+}
+
+// GetEscrowTradeIndexKey returns the store key for escrow trade index
+func GetEscrowTradeIndexKey(tradeId string) []byte {
+	return append(EscrowTradeIndexPrefix, []byte(tradeId)...)
+}
+
+// GetDisputeEscrowIndexKey returns the store key for dispute escrow index
+func GetDisputeEscrowIndexKey(escrowId string) []byte {
+	return append(DisputeEscrowIndexPrefix, []byte(escrowId)...)
+}
+
+// GetEscrowExpiryQueueKey returns the store key for escrow expiry queue
+func GetEscrowExpiryQueueKey(expiresAt time.Time, escrowId string) []byte {
+	timeBytes := sdk.FormatTimeBytes(expiresAt)
+	key := append(EscrowExpiryQueuePrefix, timeBytes...)
+	return append(key, []byte(escrowId)...)
+}
+
+// ParseTimeFromBytes parses time from bytes
+func ParseTimeFromBytes(bz []byte) time.Time {
+	return sdk.ParseTimeBytes(bz)
+}
+
+// GetSevaMitraKey returns the store key for a seva mitra
+func GetSevaMitraKey(mitraId string) []byte {
+	return append(AgentPrefix, []byte(mitraId)...)
+}
+
+// GetSevaMitraAddressIndexKey returns the store key for seva mitra address index
+func GetSevaMitraAddressIndexKey(address string) []byte {
+	return append([]byte("mitra-addr-"), []byte(address)...)
+}
+
+// GetSevaMitraDistrictIndexKey returns the store key for seva mitra district index
+func GetSevaMitraDistrictIndexKey(district, mitraId string) []byte {
+	key := append(AgentDistrictIndexPrefix, []byte(district)...)
+	return append(key, []byte(mitraId)...)
+}
+
+// GetSevaMitraDistrictIndexPrefix returns the prefix for seva mitra district index
+func GetSevaMitraDistrictIndexPrefix(district string) []byte {
+	return append(AgentDistrictIndexPrefix, []byte(district)...)
+}
+
+// GetSevaMitraDailyVolumeKey returns the store key for seva mitra daily volume
+func GetSevaMitraDailyVolumeKey(mitraId, date string) []byte {
+	key := append([]byte("mitra-daily-vol-"), []byte(mitraId)...)
+	return append(key, []byte(date)...)
+}
+
+// GetSevaMitraRatingKey returns the store key for seva mitra rating
+func GetSevaMitraRatingKey(mitraId string, rater sdk.AccAddress) []byte {
+	key := append([]byte("mitra-rating-"), []byte(mitraId)...)
+	return append(key, rater.Bytes()...)
+}
+
+// GetSevaMitraRatingsPrefix returns the prefix for seva mitra ratings
+func GetSevaMitraRatingsPrefix(mitraId string) []byte {
+	return append([]byte("mitra-rating-"), []byte(mitraId)...)
+}
+
+// GetKYCQueueKey returns the store key for KYC queue
+func GetKYCQueueKey(scheduledAt time.Time, mitraId string) []byte {
+	timeBytes := sdk.FormatTimeBytes(scheduledAt)
+	key := append([]byte("kyc-queue-"), timeBytes...)
+	return append(key, []byte(mitraId)...)
+}
+
+// Note: Using AgentPrefix and AgentDistrictIndexPrefix as SevaMitraPrefix 
+// and SevaMitraDistrictIndexPrefix for backward compatibility
+var SevaMitraPrefix = AgentPrefix
+var SevaMitraDistrictIndexPrefix = AgentDistrictIndexPrefix
+
+// Event types
+const (
+	EventTypeMoneyOrder          = "money_order"
+	EventTypeP2POrderCreated     = "p2p_order_created"
+	EventTypeP2PTradeMatched     = "p2p_trade_matched"
+	EventTypeP2POrderRefunded    = "p2p_order_refunded"
+	EventTypeEscrowRefunded      = "escrow_refunded"
+	EventTypeSevaMitraRegistered = "seva_mitra_registered"
+	EventTypeSevaMitraKYCCompleted = "seva_mitra_kyc_completed"
+	EventTypeSevaMitraStatusUpdated = "seva_mitra_status_updated"
+	
+	// Attribute keys
+	AttributeKeyOrderID    = "order_id"
+	AttributeKeyFees       = "fees"
+	AttributeKeySender     = "sender"
+	AttributeKeyAmount     = "amount"
+	AttributeKeyPostalCode = "postal_code"
+)

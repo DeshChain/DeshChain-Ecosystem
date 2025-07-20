@@ -92,4 +92,30 @@ var (
 	
 	// General errors
 	ErrNotFound               = sdkerrors.Register(ModuleName, 2100, "not found")
+	
+	// Biometric authentication errors
+	ErrInvalidBiometric       = sdkerrors.Register(ModuleName, 2200, "invalid biometric data")
+	ErrBiometricNotFound      = sdkerrors.Register(ModuleName, 2201, "biometric registration not found")
+	ErrBiometricAuthFailed    = sdkerrors.Register(ModuleName, 2202, "biometric authentication failed")
+	ErrInvalidDevice          = sdkerrors.Register(ModuleName, 2203, "invalid device")
+	ErrBiometricLocked        = sdkerrors.Register(ModuleName, 2204, "biometric authentication locked")
+	ErrInvalidAuthScore       = sdkerrors.Register(ModuleName, 2205, "invalid authentication score")
+	ErrTooManyFailedAttempts  = sdkerrors.Register(ModuleName, 2206, "too many failed authentication attempts")
+	
+	// Order status errors
+	ErrOrderNotFound          = sdkerrors.Register(ModuleName, 2300, "money order not found")
+	ErrInvalidOrderStatus     = sdkerrors.Register(ModuleName, 2301, "invalid order status")
+	ErrOrderAlreadyExecuted   = sdkerrors.Register(ModuleName, 2302, "money order already executed")
+	ErrInvalidRecipient       = sdkerrors.Register(ModuleName, 2303, "invalid recipient")
+	ErrInvalidSender          = sdkerrors.Register(ModuleName, 2304, "invalid sender")
+	ErrInvalidAddress         = sdkerrors.Register(ModuleName, 2305, "invalid address")
+	ErrInvalidAmount          = sdkerrors.Register(ModuleName, 2306, "invalid amount")
+	ErrInsufficientFunds      = sdkerrors.Register(ModuleName, 2307, "insufficient funds")
+	
+	// User management errors
+	ErrUserNotFound           = sdkerrors.Register(ModuleName, 2400, "user not found")
+	ErrUserNotActive          = sdkerrors.Register(ModuleName, 2401, "user not active")
+	ErrInvalidUserStatus      = sdkerrors.Register(ModuleName, 2402, "invalid user status")
+	ErrUserBlacklisted        = sdkerrors.Register(ModuleName, 2403, "user is blacklisted")
+	ErrInvalidTrustScore      = sdkerrors.Register(ModuleName, 2404, "invalid trust score")
 )

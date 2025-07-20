@@ -1,0 +1,35 @@
+{
+  "input_genesis_file": "genesis_with_dex.json",
+  "output_genesis_file": "genesis_with_moneyorder.json",
+  "chain_id": "deshchain-1",
+  "overwrite_time": true,
+  "migration_metadata": {
+    "migration_version": "v2.0.0",
+    "from_module": "dex",
+    "to_module": "moneyorder",
+    "features_added": [
+      "cultural_integration",
+      "village_pools",
+      "fixed_rate_exchanges",
+      "festival_bonuses",
+      "patriotism_rewards",
+      "money_order_receipts"
+    ],
+    "breaking_changes": [
+      "pool_structure_updated",
+      "new_fee_structure",
+      "cultural_parameters_added"
+    ]
+  },
+  "pool_migration_strategy": {
+    "preserve_liquidity": true,
+    "maintain_user_positions": true,
+    "upgrade_to_cultural_features": true,
+    "assign_default_themes": true
+  },
+  "validation_rules": {
+    "min_pool_liquidity": "1000000",
+    "max_slippage_tolerance": "0.05",
+    "required_cultural_score": "0.70"
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "name": "@deshchain/money-order-simple",
+  "version": "1.0.0",
+  "description": "Simple Money Order interface for DeshChain - Easy money transfers with cultural integration",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3001",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "type-check": "tsc --noEmit",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "dependencies": {
+    "@deshchain/money-order-ui": "^1.0.0",
+    "@deshchain/sdk": "^1.0.0",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.14.18",
+    "@mui/icons-material": "^5.14.18",
+    "next": "14.0.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.48.2",
+    "react-query": "^3.39.3",
+    "axios": "^1.6.2",
+    "date-fns": "^2.30.0",
+    "framer-motion": "^10.16.5",
+    "react-hot-toast": "^2.4.1",
+    "react-confetti": "^6.1.0",
+    "qrcode": "^1.5.3",
+    "react-to-print": "^2.14.15",
+    "@tanstack/react-query": "^5.12.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.4",
+    "@types/react": "^18.2.38",
+    "@types/react-dom": "^18.2.17",
+    "@types/qrcode": "^1.5.5",
+    "eslint": "^8.54.0",
+    "eslint-config-next": "14.0.4",
+    "jest": "^29.7.0",
+    "@testing-library/react": "^14.1.2",
+    "@testing-library/jest-dom": "^6.1.4",
+    "typescript": "^5.2.2"
+  }
+}

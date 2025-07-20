@@ -1,0 +1,76 @@
+syntax = "proto3";
+package deshchain.moneyorder;
+
+import "cosmos/base/v1beta1/coin.proto";
+import "google/protobuf/timestamp.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/moneyorder/types";
+
+// KYCData represents KYC verification data
+message KYCData {
+  string aadhaar_hash = 1; // SHA256 hash of Aadhaar
+  string pan_hash = 2; // SHA256 hash of PAN
+  string business_pan = 3; // Business PAN if applicable
+  string gst_number = 4; // GST registration
+  int32 verification_score = 5; // 0-100 score
+  google.protobuf.Timestamp verified_at = 6 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  string verification_method = 7; // DigiLocker, Hyperledger, Manual
+  repeated string document_hashes = 8; // Additional document hashes
+}
+
+// BankDetails for agent settlements
+message BankDetails {
+  string account_holder_name = 1;
+  string account_number_hash = 2; // Encrypted account number
+  string ifsc_code = 3;
+  string bank_name = 4;
+  string branch_name = 5;
+  bool verified = 6;
+}
+
+// SevaMitraRating represents a user rating for a seva mitra
+message SevaMitraRating {
+  string mitra_id = 1;
+  string rater = 2;
+  int32 rating = 3; // 1-5 stars
+  string comment = 4;
+  google.protobuf.Timestamp timestamp = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+// SevaMitraSystemStats represents system-wide seva mitra statistics
+message SevaMitraSystemStats {
+  int32 total_mitras = 1;
+  int32 active_mitras = 2;
+  int32 suspended_mitras = 3;
+  cosmos.base.v1beta1.Coin total_volume = 4 [(gogoproto.nullable) = false];
+  int64 total_transactions = 5;
+  double average_rating = 6;
+  map<string, int32> service_coverage = 7; // Service type -> count
+  map<string, int32> district_coverage = 8; // District -> count
+}
+
+// SevaMitra extension for additional fields
+message SevaMitraExtension {
+  // Security and compliance
+  cosmos.base.v1beta1.Coin security_deposit = 1 [(gogoproto.nullable) = false];
+  BankDetails bank_details = 2;
+  
+  // KYC data
+  KYCData kyc_data = 3;
+  google.protobuf.Timestamp kyc_verified_at = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  string kyc_verified_by = 5;
+  
+  // Status tracking
+  google.protobuf.Timestamp status_updated_at = 6 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  string status_reason = 7;
+  google.protobuf.Timestamp suspended_until = 8 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // Performance tracking
+  int32 trust_score = 9; // 0-100
+  bool daily_limit_reached = 10;
+  google.protobuf.Timestamp daily_limit_reset_at = 11 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // Additional metadata
+  map<string, string> metadata = 12; // Flexible key-value storage
+}

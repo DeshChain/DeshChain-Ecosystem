@@ -1,0 +1,80 @@
+syntax = "proto3";
+package deshchain.moneyorder;
+
+import "cosmos/base/v1beta1/coin.proto";
+import "google/protobuf/timestamp.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/moneyorder/types";
+
+// Dispute represents a dispute on an escrow
+message Dispute {
+  string dispute_id = 1;
+  string escrow_id = 2;
+  string trade_id = 3;
+  string disputed_by = 4;
+  string reason = 5;
+  
+  DisputeStatus status = 6;
+  
+  google.protobuf.Timestamp created_at = 7 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp resolved_at = 8 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  string resolved_by = 9;
+  DisputeResolution resolution = 10;
+  
+  // Evidence
+  repeated Evidence evidences = 11;
+}
+
+// DisputeStatus
+enum DisputeStatus {
+  DISPUTE_STATUS_UNSPECIFIED = 0;
+  DISPUTE_STATUS_OPEN = 1;
+  DISPUTE_STATUS_INVESTIGATING = 2;
+  DISPUTE_STATUS_RESOLVED = 3;
+  DISPUTE_STATUS_ESCALATED = 4;
+}
+
+// DisputeResolution
+message DisputeResolution {
+  DisputeDecision decision = 1;
+  string reasoning = 2;
+  int32 buyer_percentage = 3; // For split decisions
+  int32 seller_percentage = 4; // For split decisions
+}
+
+// DisputeDecision
+enum DisputeDecision {
+  DECISION_UNSPECIFIED = 0;
+  DECISION_RELEASE_TO_BUYER = 1;
+  DECISION_RELEASE_TO_SELLER = 2;
+  DECISION_SPLIT = 3;
+  DECISION_REFUND = 4;
+}
+
+// Evidence for dispute
+message Evidence {
+  string evidence_id = 1;
+  string submitted_by = 2;
+  string evidence_type = 3; // screenshot, chat_log, transaction_proof
+  string description = 4;
+  string url = 5; // IPFS or external URL
+  google.protobuf.Timestamp submitted_at = 6 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+// EscrowStats for analytics
+message EscrowStats {
+  int64 total_escrows = 1;
+  int64 active_escrows = 2;
+  int64 completed_escrows = 3;
+  int64 refunded_escrows = 4;
+  int64 disputed_escrows = 5;
+  
+  cosmos.base.v1beta1.Coin total_volume = 6 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin total_fees_collected = 7 [(gogoproto.nullable) = false];
+  
+  double avg_escrow_duration_hours = 8;
+  double dispute_rate = 9;
+  double successful_completion_rate = 10;
+}

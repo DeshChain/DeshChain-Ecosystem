@@ -1,0 +1,195 @@
+{
+  "app": {
+    "title": "देशचेन मनी ऑर्डर",
+    "tagline": "डिजिटल भारत के लिए डिजिटल मनी ऑर्डर",
+    "description": "ब्लॉकचेन सुरक्षा के साथ पूरे भारत में तुरंत पैसे भेजें"
+  },
+  "navigation": {
+    "home": "होम",
+    "send": "पैसे भेजें",
+    "receive": "प्राप्त करें",
+    "track": "ऑर्डर ट्रैक करें",
+    "history": "इतिहास",
+    "help": "सहायता",
+    "settings": "सेटिंग्स",
+    "logout": "लॉगआउट"
+  },
+  "moneyOrder": {
+    "title": "मनी ऑर्डर भेजें",
+    "simpleMode": "सरल मोड",
+    "advancedMode": "एडवांस मोड",
+    "form": {
+      "sender": "भेजने वाले की जानकारी",
+      "receiver": "प्राप्तकर्ता की जानकारी",
+      "amount": "राशि",
+      "purpose": "उद्देश्य",
+      "senderAddress": "आपका वॉलेट पता",
+      "receiverAddress": "प्राप्तकर्ता का वॉलेट पता",
+      "receiverName": "प्राप्तकर्ता का नाम",
+      "receiverPhone": "प्राप्तकर्ता का फोन नंबर",
+      "receiverEmail": "प्राप्तकर्ता का ईमेल (वैकल्पिक)",
+      "postalCode": "पिन कोड",
+      "amountToSend": "भेजने की राशि",
+      "selectPurpose": "उद्देश्य चुनें",
+      "customPurpose": "कस्टम उद्देश्य",
+      "message": "संदेश (वैकल्पिक)",
+      "scheduledDate": "बाद के लिए शेड्यूल करें",
+      "recurringPayment": "इसे आवर्ती बनाएं"
+    },
+    "purposes": {
+      "family_support": "परिवार सहायता",
+      "education": "शिक्षा शुल्क",
+      "medical": "चिकित्सा व्यय",
+      "business": "व्यावसायिक भुगतान",
+      "personal": "व्यक्तिगत",
+      "other": "अन्य"
+    },
+    "buttons": {
+      "send": "मनी ऑर्डर भेजें",
+      "cancel": "रद्द करें",
+      "reset": "फॉर्म रीसेट करें",
+      "preview": "पूर्वावलोकन",
+      "confirm": "पुष्टि करें और भेजें",
+      "back": "वापस"
+    },
+    "validation": {
+      "invalidAddress": "अमान्य वॉलेट पता",
+      "invalidAmount": "कृपया एक वैध राशि दर्ज करें",
+      "minAmount": "न्यूनतम राशि ₹10 है",
+      "maxAmount": "अधिकतम राशि ₹1,00,000 है",
+      "invalidPhone": "अमान्य फोन नंबर",
+      "invalidEmail": "अमान्य ईमेल पता",
+      "invalidPostalCode": "अमान्य पिन कोड",
+      "required": "यह फ़ील्ड आवश्यक है"
+    },
+    "preview": {
+      "title": "अपना मनी ऑर्डर समीक्षा करें",
+      "sender": "भेजने वाला",
+      "receiver": "प्राप्तकर्ता",
+      "amount": "राशि",
+      "fee": "लेनदेन शुल्क",
+      "total": "कुल राशि",
+      "estimatedTime": "अनुमानित समय",
+      "exchangeRate": "विनिमय दर"
+    },
+    "success": {
+      "title": "मनी ऑर्डर सफलतापूर्वक भेजा गया!",
+      "message": "आपका मनी ऑर्डर भेज दिया गया है और जल्द ही प्रोसेस किया जाएगा।",
+      "receiptNumber": "रसीद संख्या",
+      "trackingMessage": "आप इस रसीद संख्या से अपना मनी ऑर्डर ट्रैक कर सकते हैं।",
+      "buttons": {
+        "newOrder": "दूसरा भेजें",
+        "viewReceipt": "रसीद देखें",
+        "track": "ऑर्डर ट्रैक करें"
+      }
+    },
+    "error": {
+      "title": "लेनदेन विफल",
+      "genericMessage": "आपका मनी ऑर्डर प्रोसेस नहीं हो सका। कृपया पुनः प्रयास करें।",
+      "insufficientFunds": "आपके वॉलेट में अपर्याप्त धनराशि",
+      "networkError": "नेटवर्क त्रुटि। कृपया अपना कनेक्शन जांचें।",
+      "buttons": {
+        "retry": "पुनः प्रयास करें",
+        "support": "सहायता से संपर्क करें"
+      }
+    }
+  },
+  "receipt": {
+    "title": "मनी ऑर्डर रसीद",
+    "status": "स्थिति",
+    "from": "भेजने वाला",
+    "to": "प्राप्तकर्ता",
+    "amount": "भेजी गई राशि",
+    "fee": "नेटवर्क शुल्क",
+    "timestamp": "लेनदेन समय",
+    "verificationCode": "सत्यापन कोड",
+    "transactionHash": "लेनदेन हैश",
+    "blockHeight": "ब्लॉक ऊंचाई",
+    "confirmations": "पुष्टिकरण",
+    "buttons": {
+      "print": "प्रिंट",
+      "download": "डाउनलोड",
+      "share": "शेयर"
+    },
+    "qrCode": {
+      "title": "सत्यापित करने के लिए स्कैन करें",
+      "verifyUrl": "यहाँ सत्यापित करें"
+    }
+  },
+  "tracking": {
+    "title": "मनी ऑर्डर ट्रैक करें",
+    "placeholder": "रसीद संख्या दर्ज करें",
+    "button": "ट्रैक करें",
+    "status": {
+      "pending": "लंबित",
+      "processing": "प्रोसेसिंग",
+      "completed": "पूर्ण",
+      "failed": "विफल",
+      "refunded": "रिफंड किया गया"
+    },
+    "timeline": {
+      "created": "ऑर्डर बनाया गया",
+      "verified": "भुगतान सत्यापित",
+      "processing": "प्रोसेसिंग",
+      "completed": "वितरित",
+      "failed": "विफल"
+    }
+  },
+  "settings": {
+    "title": "सेटिंग्स",
+    "language": "भाषा",
+    "notifications": "सूचनाएं",
+    "security": "सुरक्षा",
+    "privacy": "गोपनीयता",
+    "theme": "थीम",
+    "about": "बारे में"
+  },
+  "notifications": {
+    "title": "सूचना प्राथमिकताएं",
+    "sms": "एसएमएस सूचनाएं",
+    "whatsapp": "व्हाट्सएप सूचनाएं",
+    "email": "ईमेल सूचनाएं",
+    "phone": "फोन नंबर",
+    "testMessage": "टेस्ट संदेश भेजें"
+  },
+  "offline": {
+    "title": "ऑफलाइन मोड",
+    "message": "आप वर्तमान में ऑफलाइन हैं। कनेक्शन बहाल होने पर ऑर्डर सिंक किए जाएंगे।",
+    "pendingOrders": "लंबित ऑर्डर",
+    "syncNow": "अभी सिंक करें",
+    "lastSync": "अंतिम सिंक"
+  },
+  "common": {
+    "loading": "लोड हो रहा है...",
+    "error": "त्रुटि",
+    "success": "सफल",
+    "confirm": "पुष्टि करें",
+    "cancel": "रद्द करें",
+    "yes": "हाँ",
+    "no": "नहीं",
+    "ok": "ठीक है",
+    "save": "सहेजें",
+    "delete": "हटाएं",
+    "edit": "संपादित करें",
+    "close": "बंद करें",
+    "back": "वापस",
+    "next": "अगला",
+    "finish": "समाप्त",
+    "search": "खोजें",
+    "filter": "फ़िल्टर",
+    "sort": "क्रमबद्ध करें",
+    "refresh": "रीफ्रेश",
+    "retry": "पुनः प्रयास",
+    "copyToClipboard": "क्लिपबोर्ड पर कॉपी करें",
+    "copied": "कॉपी किया गया!",
+    "shareVia": "द्वारा शेयर करें",
+    "poweredBy": "देशचेन द्वारा संचालित"
+  },
+  "footer": {
+    "rights": "सर्वाधिकार सुरक्षित",
+    "privacy": "गोपनीयता नीति",
+    "terms": "सेवा की शर्तें",
+    "contact": "संपर्क करें",
+    "help": "सहायता केंद्र"
+  }
+}

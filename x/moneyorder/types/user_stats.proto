@@ -1,0 +1,140 @@
+syntax = "proto3";
+package deshchain.moneyorder;
+
+import "cosmos/base/v1beta1/coin.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/moneyorder/types";
+
+// UserP2PStats tracks user statistics for P2P trading
+message UserP2PStats {
+  string address = 1;
+  
+  // Trade counts
+  int32 total_trades = 2;
+  int32 successful_trades = 3;
+  int32 cancelled_trades = 4;
+  int32 disputed_trades = 5;
+  int32 disputes_won = 6;
+  int32 disputes_lost = 7;
+  
+  // Volume metrics
+  cosmos.base.v1beta1.Coin total_volume = 8 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin average_trade_size = 9 [(gogoproto.nullable) = false];
+  
+  // Trust and reputation
+  int32 trust_score = 10; // 0-100
+  double completion_rate = 11;
+  
+  // Timing
+  google.protobuf.Timestamp created_at = 12 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp last_trade_at = 13 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp last_trade_start_time = 14 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // Preferences
+  repeated string preferred_payment_methods = 15;
+  google.protobuf.Duration trade_response_time = 16 [(gogoproto.stdduration) = true, (gogoproto.nullable) = false];
+  
+  // Ban status
+  bool banned = 17;
+  string ban_reason = 18;
+  google.protobuf.Timestamp banned_until = 19 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // Additional tracking
+  map<string, int32> cancellation_reasons = 20;
+}
+
+// TrustScoreBenefits defines benefits based on trust score
+message TrustScoreBenefits {
+  int32 trust_score = 1;
+  string fee_discount = 2; // Percentage as string
+  bool priority_matching = 3;
+  bool increased_limits = 4;
+  bool fast_dispute = 5;
+  string badge = 6;
+}
+
+// TradeHistory represents a user's trade history entry
+message TradeHistory {
+  string trade_id = 1;
+  string role = 2; // "buyer" or "seller"
+  string counterparty = 3;
+  cosmos.base.v1beta1.Coin amount = 4 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin fiat_amount = 5 [(gogoproto.nullable) = false];
+  string status = 6;
+  google.protobuf.Timestamp created_at = 7 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp completed_at = 8 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+// P2PMarketStats represents overall P2P market statistics
+message P2PMarketStats {
+  int32 total_users = 1;
+  int32 active_users = 2;
+  cosmos.base.v1beta1.Coin total_volume = 3 [(gogoproto.nullable) = false];
+  int64 total_trades = 4;
+  int32 active_orders = 5;
+  double average_trust_score = 6;
+  map<string, int64> top_trading_pairs = 7;
+  map<string, string> volume_by_state = 8; // state -> volume (as string to handle big numbers)
+}
+
+// Dispute represents a P2P trade dispute
+message Dispute {
+  string dispute_id = 1;
+  string escrow_id = 2;
+  string trade_id = 3;
+  string raised_by = 4;
+  string raised_against = 5;
+  
+  string reason = 6;
+  repeated string evidence = 7; // IPFS hashes of evidence
+  
+  DisputeStatus status = 8;
+  string resolution = 9;
+  string resolved_by = 10;
+  
+  google.protobuf.Timestamp created_at = 11 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp resolved_at = 12 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+// DisputeStatus
+enum DisputeStatus {
+  DISPUTE_STATUS_UNSPECIFIED = 0;
+  DISPUTE_STATUS_OPEN = 1;
+  DISPUTE_STATUS_UNDER_REVIEW = 2;
+  DISPUTE_STATUS_RESOLVED = 3;
+  DISPUTE_STATUS_ESCALATED = 4;
+  DISPUTE_STATUS_CLOSED = 5;
+}
+
+// AgentService types
+enum AgentService {
+  AGENT_SERVICE_UNSPECIFIED = 0;
+  AGENT_SERVICE_CASH_IN = 1;
+  AGENT_SERVICE_CASH_OUT = 2;
+  AGENT_SERVICE_REMITTANCE = 3;
+  AGENT_SERVICE_BILL_PAYMENT = 4;
+}
+
+// AgentStatus
+enum AgentStatus {
+  AGENT_STATUS_UNSPECIFIED = 0;
+  AGENT_STATUS_PENDING = 1;
+  AGENT_STATUS_ACTIVE = 2;
+  AGENT_STATUS_SUSPENDED = 3;
+  AGENT_STATUS_INACTIVE = 4;
+}
+
+// AgentStats for trust scoring
+message AgentStats {
+  int64 total_transactions = 1;
+  int64 successful_transactions = 2;
+  cosmos.base.v1beta1.Coin total_volume = 3 [(gogoproto.nullable) = false];
+  double average_rating = 4;
+  int64 total_ratings = 5;
+  int32 disputes_resolved = 6;
+  int32 disputes_lost = 7;
+  google.protobuf.Timestamp last_active = 8 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}

@@ -1,0 +1,242 @@
+syntax = "proto3";
+package deshchain.moneyorder;
+
+import "cosmos/base/v1beta1/coin.proto";
+import "google/protobuf/timestamp.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/moneyorder/types";
+
+// P2POrder represents a peer-to-peer trade order
+message P2POrder {
+  string order_id = 1;
+  string creator = 2;
+  
+  // Order details
+  OrderType order_type = 3;
+  cosmos.base.v1beta1.Coin amount = 4 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin fiat_amount = 5 [(gogoproto.nullable) = false];
+  string fiat_currency = 6; // INR, USD, etc
+  
+  // Location details for matching
+  string postal_code = 7;
+  string district = 8;
+  string state = 9;
+  
+  // Payment methods accepted
+  repeated PaymentMethod payment_methods = 10;
+  
+  // Order limits
+  cosmos.base.v1beta1.Coin min_amount = 11 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin max_amount = 12 [(gogoproto.nullable) = false];
+  
+  // Timing
+  google.protobuf.Timestamp created_at = 13 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp expires_at = 14 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // Status
+  P2POrderStatus status = 15;
+  
+  // Escrow details
+  string escrow_address = 16;
+  cosmos.base.v1beta1.Coin escrow_amount = 17 [(gogoproto.nullable) = false];
+  
+  // Matching preferences
+  int32 max_distance_km = 18; // Maximum distance for matching
+  repeated string preferred_languages = 19;
+  
+  // Trust requirements
+  int32 min_trust_score = 20;
+  bool require_kyc = 21;
+}
+
+// OrderType defines whether buying or selling NAMO
+enum OrderType {
+  ORDER_TYPE_UNSPECIFIED = 0;
+  ORDER_TYPE_BUY_NAMO = 1;  // User wants to buy NAMO with fiat
+  ORDER_TYPE_SELL_NAMO = 2; // User wants to sell NAMO for fiat
+}
+
+// P2POrderStatus
+enum P2POrderStatus {
+  P2P_STATUS_UNSPECIFIED = 0;
+  P2P_STATUS_PENDING = 1;      // Waiting for escrow
+  P2P_STATUS_ACTIVE = 2;       // Escrow received, searching for match
+  P2P_STATUS_MATCHED = 3;      // Match found
+  P2P_STATUS_EXECUTING = 4;    // Trade in progress
+  P2P_STATUS_COMPLETED = 5;    // Trade completed
+  P2P_STATUS_CANCELLED = 6;    // Cancelled by user
+  P2P_STATUS_EXPIRED = 7;      // Expired without match
+  P2P_STATUS_REFUNDED = 8;     // Refunded due to no match
+}
+
+// PaymentMethod for fiat transactions
+message PaymentMethod {
+  string method_type = 1; // UPI, IMPS, NEFT, CASH
+  string provider = 2;    // PayTM, GPay, PhonePe, Bank Name
+  string account_info = 3; // Masked account details
+}
+
+// P2PTrade represents an active P2P trade
+message P2PTrade {
+  string trade_id = 1;
+  string buyer_order_id = 2;
+  string seller_order_id = 3;
+  string buyer = 4;
+  string seller = 5;
+  
+  cosmos.base.v1beta1.Coin namo_amount = 6 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin fiat_amount = 7 [(gogoproto.nullable) = false];
+  string fiat_currency = 8;
+  
+  PaymentMethod payment_method = 9;
+  
+  google.protobuf.Timestamp created_at = 10 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp expires_at = 11 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  P2PTradeStatus status = 12;
+  
+  // Escrow details
+  string escrow_address = 13;
+  
+  // Chat
+  repeated ChatMessage messages = 14;
+  
+  // Dispute
+  bool disputed = 15;
+  string dispute_reason = 16;
+}
+
+// P2PTradeStatus
+enum P2PTradeStatus {
+  TRADE_STATUS_UNSPECIFIED = 0;
+  TRADE_STATUS_MATCHED = 1;
+  TRADE_STATUS_PAYMENT_PENDING = 2;
+  TRADE_STATUS_PAYMENT_CONFIRMED = 3;
+  TRADE_STATUS_COMPLETED = 4;
+  TRADE_STATUS_CANCELLED = 5;
+  TRADE_STATUS_DISPUTED = 6;
+  TRADE_STATUS_REFUNDED = 7;
+}
+
+// ChatMessage for P2P communication
+message ChatMessage {
+  string sender = 1;
+  string message = 2;
+  google.protobuf.Timestamp timestamp = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  bool is_system = 4;
+}
+
+// SevaMitra represents a voluntary service friend for cash-in/cash-out
+// Note: SevaMitra are independent community members, not agents of DeshChain
+message SevaMitra {
+  string mitra_id = 1;
+  string address = 2;
+  
+  // Business details
+  string business_name = 3;
+  string registration_number = 4;
+  
+  // Location
+  string postal_code = 5;
+  string full_address = 6;
+  string district = 7;
+  string state = 8;
+  double latitude = 9;
+  double longitude = 10;
+  
+  // Contact
+  string phone = 11;
+  string email = 12;
+  repeated string languages = 13;
+  
+  // Operating hours
+  repeated OperatingHours operating_hours = 14;
+  
+  // Services
+  repeated AgentService services = 15;
+  
+  // Limits
+  cosmos.base.v1beta1.Coin daily_limit = 16 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin per_transaction_limit = 17 [(gogoproto.nullable) = false];
+  
+  // Status
+  AgentStatus status = 18;
+  bool kyc_verified = 19;
+  
+  // Performance
+  AgentStats stats = 20;
+  
+  // Commission
+  string commission_rate = 21; // Percentage as string "2.5"
+  
+  google.protobuf.Timestamp created_at = 22 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+// OperatingHours
+message OperatingHours {
+  string day = 1; // Monday, Tuesday, etc
+  string open_time = 2; // "09:00"
+  string close_time = 3; // "18:00"
+  bool is_closed = 4;
+}
+
+// SevaMitraService types - voluntary services offered
+enum SevaMitraService {
+  SERVICE_UNSPECIFIED = 0;
+  SERVICE_CASH_IN = 1;   // Fiat to NAMO
+  SERVICE_CASH_OUT = 2;  // NAMO to Fiat
+  SERVICE_REMITTANCE = 3;
+  SERVICE_BILL_PAYMENT = 4;
+}
+
+// SevaMitraStatus
+enum SevaMitraStatus {
+  MITRA_STATUS_UNSPECIFIED = 0;
+  MITRA_STATUS_PENDING = 1;
+  MITRA_STATUS_ACTIVE = 2;
+  MITRA_STATUS_SUSPENDED = 3;
+  MITRA_STATUS_INACTIVE = 4;
+}
+
+// SevaMitraStats for trust scoring
+message SevaMitraStats {
+  int64 total_transactions = 1;
+  int64 successful_transactions = 2;
+  cosmos.base.v1beta1.Coin total_volume = 3 [(gogoproto.nullable) = false];
+  double average_rating = 4;
+  int64 total_ratings = 5;
+  int32 disputes_resolved = 6;
+  int32 disputes_lost = 7;
+  google.protobuf.Timestamp last_active = 8 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+// Escrow represents funds held for P2P trades
+message Escrow {
+  string escrow_id = 1;
+  string order_id = 2;
+  string trade_id = 3;
+  string depositor = 4;
+  
+  cosmos.base.v1beta1.Coin amount = 5 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin platform_fee = 6 [(gogoproto.nullable) = false];
+  
+  EscrowStatus status = 7;
+  
+  google.protobuf.Timestamp created_at = 8 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp expires_at = 9 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // Release conditions
+  string release_to = 10; // Address to release funds
+  string refund_to = 11;  // Address for refunds
+}
+
+// EscrowStatus
+enum EscrowStatus {
+  ESCROW_STATUS_UNSPECIFIED = 0;
+  ESCROW_STATUS_ACTIVE = 1;
+  ESCROW_STATUS_RELEASED = 2;
+  ESCROW_STATUS_REFUNDED = 3;
+  ESCROW_STATUS_EXPIRED = 4;
+  ESCROW_STATUS_DISPUTED = 5;
+}

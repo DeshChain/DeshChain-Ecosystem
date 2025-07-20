@@ -27,6 +27,13 @@ import (
 	"github.com/deshchain/deshchain/x/moneyorder/types"
 )
 
+// GramPensionHooks defines the interface expected by Gram Pension module
+type GramPensionHooks interface {
+	AfterPensionContribution(ctx sdk.Context, pensionAccountId string, contributor sdk.AccAddress, contribution sdk.Coin, villagePostalCode string) error
+	AfterPensionMaturity(ctx sdk.Context, pensionAccountId string, beneficiary sdk.AccAddress, maturityAmount sdk.Coin) error
+	MonthlyRevenueDistribution(ctx sdk.Context) error
+}
+
 // Keeper of the money order store
 type Keeper struct {
 	cdc           codec.BinaryCodec
@@ -38,12 +45,16 @@ type Keeper struct {
 	accountKeeper types.AccountKeeper
 	bankKeeper    types.BankKeeper
 	distrKeeper   types.DistributionKeeper
+	authKeeper    types.AuthKeeper
 	
 	// Module account names
 	feeCollectorName string
 	
 	// Hooks
 	hooks types.MoneyOrderHooks
+	
+	// P2P Matching Engine
+	matchingEngine *MatchingEngine
 }
 
 // NewKeeper creates a new money order Keeper instance
@@ -55,6 +66,7 @@ func NewKeeper(
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
 	distrKeeper types.DistributionKeeper,
+	authKeeper types.AuthKeeper,
 	feeCollectorName string,
 ) *Keeper {
 	// Set KeyTable if it has not already been set
@@ -62,7 +74,7 @@ func NewKeeper(
 		ps = ps.WithKeyTable(types.ParamKeyTable())
 	}
 	
-	return &Keeper{
+	keeper := &Keeper{
 		cdc:              cdc,
 		storeKey:         storeKey,
 		memKey:           memKey,
@@ -70,8 +82,14 @@ func NewKeeper(
 		accountKeeper:    accountKeeper,
 		bankKeeper:       bankKeeper,
 		distrKeeper:      distrKeeper,
+		authKeeper:       authKeeper,
 		feeCollectorName: feeCollectorName,
 	}
+	
+	// Initialize the P2P matching engine
+	keeper.matchingEngine = keeper.NewMatchingEngine()
+	
+	return keeper
 }
 
 // Logger returns a module-specific logger
@@ -97,6 +115,11 @@ func (k Keeper) GetParams(ctx sdk.Context) (params types.MoneyOrderParams) {
 // SetParams sets the total set of money order parameters
 func (k Keeper) SetParams(ctx sdk.Context, params types.MoneyOrderParams) {
 	k.paramstore.SetParamSet(ctx, &params)
+}
+
+// GetMoneyOrderHooks returns the money order hooks for gram pension integration
+func (k Keeper) GetMoneyOrderHooks() GramPensionHooks {
+	return Hooks{k}
 }
 
 // GetNextPoolId returns and increments the global pool ID counter

@@ -1,0 +1,195 @@
+{
+  "app": {
+    "title": "DeshChain Money Order",
+    "tagline": "Digital Money Orders for Digital India",
+    "description": "Send money across India instantly with blockchain security"
+  },
+  "navigation": {
+    "home": "Home",
+    "send": "Send Money",
+    "receive": "Receive",
+    "track": "Track Order",
+    "history": "History",
+    "help": "Help",
+    "settings": "Settings",
+    "logout": "Logout"
+  },
+  "moneyOrder": {
+    "title": "Send Money Order",
+    "simpleMode": "Simple Mode",
+    "advancedMode": "Advanced Mode",
+    "form": {
+      "sender": "Sender Details",
+      "receiver": "Receiver Details",
+      "amount": "Amount",
+      "purpose": "Purpose",
+      "senderAddress": "Your Wallet Address",
+      "receiverAddress": "Receiver's Wallet Address",
+      "receiverName": "Receiver's Name",
+      "receiverPhone": "Receiver's Phone Number",
+      "receiverEmail": "Receiver's Email (Optional)",
+      "postalCode": "Postal Code",
+      "amountToSend": "Amount to Send",
+      "selectPurpose": "Select Purpose",
+      "customPurpose": "Custom Purpose",
+      "message": "Message (Optional)",
+      "scheduledDate": "Schedule for Later",
+      "recurringPayment": "Make it Recurring"
+    },
+    "purposes": {
+      "family_support": "Family Support",
+      "education": "Education Fees",
+      "medical": "Medical Expenses",
+      "business": "Business Payment",
+      "personal": "Personal",
+      "other": "Other"
+    },
+    "buttons": {
+      "send": "Send Money Order",
+      "cancel": "Cancel",
+      "reset": "Reset Form",
+      "preview": "Preview",
+      "confirm": "Confirm & Send",
+      "back": "Back"
+    },
+    "validation": {
+      "invalidAddress": "Invalid wallet address",
+      "invalidAmount": "Please enter a valid amount",
+      "minAmount": "Minimum amount is ₹10",
+      "maxAmount": "Maximum amount is ₹1,00,000",
+      "invalidPhone": "Invalid phone number",
+      "invalidEmail": "Invalid email address",
+      "invalidPostalCode": "Invalid postal code",
+      "required": "This field is required"
+    },
+    "preview": {
+      "title": "Review Your Money Order",
+      "sender": "From",
+      "receiver": "To",
+      "amount": "Amount",
+      "fee": "Transaction Fee",
+      "total": "Total Amount",
+      "estimatedTime": "Estimated Time",
+      "exchangeRate": "Exchange Rate"
+    },
+    "success": {
+      "title": "Money Order Sent Successfully!",
+      "message": "Your money order has been sent and will be processed shortly.",
+      "receiptNumber": "Receipt Number",
+      "trackingMessage": "You can track your money order using this receipt number.",
+      "buttons": {
+        "newOrder": "Send Another",
+        "viewReceipt": "View Receipt",
+        "track": "Track Order"
+      }
+    },
+    "error": {
+      "title": "Transaction Failed",
+      "genericMessage": "Unable to process your money order. Please try again.",
+      "insufficientFunds": "Insufficient funds in your wallet",
+      "networkError": "Network error. Please check your connection.",
+      "buttons": {
+        "retry": "Try Again",
+        "support": "Contact Support"
+      }
+    }
+  },
+  "receipt": {
+    "title": "Money Order Receipt",
+    "status": "Status",
+    "from": "From",
+    "to": "To",
+    "amount": "Amount Sent",
+    "fee": "Network Fee",
+    "timestamp": "Transaction Time",
+    "verificationCode": "Verification Code",
+    "transactionHash": "Transaction Hash",
+    "blockHeight": "Block Height",
+    "confirmations": "Confirmations",
+    "buttons": {
+      "print": "Print",
+      "download": "Download",
+      "share": "Share"
+    },
+    "qrCode": {
+      "title": "Scan to Verify",
+      "verifyUrl": "Verify at"
+    }
+  },
+  "tracking": {
+    "title": "Track Money Order",
+    "placeholder": "Enter Receipt Number",
+    "button": "Track",
+    "status": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "completed": "Completed",
+      "failed": "Failed",
+      "refunded": "Refunded"
+    },
+    "timeline": {
+      "created": "Order Created",
+      "verified": "Payment Verified",
+      "processing": "Processing",
+      "completed": "Delivered",
+      "failed": "Failed"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "notifications": "Notifications",
+    "security": "Security",
+    "privacy": "Privacy",
+    "theme": "Theme",
+    "about": "About"
+  },
+  "notifications": {
+    "title": "Notification Preferences",
+    "sms": "SMS Notifications",
+    "whatsapp": "WhatsApp Notifications",
+    "email": "Email Notifications",
+    "phone": "Phone Number",
+    "testMessage": "Send Test Message"
+  },
+  "offline": {
+    "title": "Offline Mode",
+    "message": "You are currently offline. Orders will be synced when connection is restored.",
+    "pendingOrders": "Pending Orders",
+    "syncNow": "Sync Now",
+    "lastSync": "Last Sync"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "yes": "Yes",
+    "no": "No",
+    "ok": "OK",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "finish": "Finish",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "refresh": "Refresh",
+    "retry": "Retry",
+    "copyToClipboard": "Copy to Clipboard",
+    "copied": "Copied!",
+    "shareVia": "Share via",
+    "poweredBy": "Powered by DeshChain"
+  },
+  "footer": {
+    "rights": "All rights reserved",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "contact": "Contact Us",
+    "help": "Help Center"
+  }
+}

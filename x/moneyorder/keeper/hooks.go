@@ -30,6 +30,7 @@ type Hooks struct {
 }
 
 var _ types.MoneyOrderHooks = Hooks{}
+var _ GramPensionHooks = Hooks{}
 
 // Return the wrapper struct
 func (k Keeper) Hooks() Hooks {
