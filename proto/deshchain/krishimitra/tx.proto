@@ -1,0 +1,185 @@
+syntax = "proto3";
+package deshchain.krishimitra;
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos_proto/cosmos.proto";
+import "google/api/annotations.proto";
+
+option go_package = "github.com/deshchain/x/krishimitra/types";
+
+// Msg defines the Msg service.
+service Msg {
+  // ApplyLoan allows farmers to apply for agricultural loans
+  rpc ApplyLoan(MsgApplyLoan) returns (MsgApplyLoanResponse) {
+    option (google.api.http).post = "/deshchain/krishimitra/apply_loan";
+  }
+  
+  // ApproveLoan allows authorized validators to approve loans
+  rpc ApproveLoan(MsgApproveLoan) returns (MsgApproveLoanResponse) {
+    option (google.api.http).post = "/deshchain/krishimitra/approve_loan";
+  }
+  
+  // RejectLoan allows authorized validators to reject loans
+  rpc RejectLoan(MsgRejectLoan) returns (MsgRejectLoanResponse) {
+    option (google.api.http).post = "/deshchain/krishimitra/reject_loan";
+  }
+  
+  // DisburseLoan disburses approved loans to farmers
+  rpc DisburseLoan(MsgDisburseLoan) returns (MsgDisburseLoanResponse) {
+    option (google.api.http).post = "/deshchain/krishimitra/disburse_loan";
+  }
+  
+  // RepayLoan allows farmers to repay their loans
+  rpc RepayLoan(MsgRepayLoan) returns (MsgRepayLoanResponse) {
+    option (google.api.http).post = "/deshchain/krishimitra/repay_loan";
+  }
+  
+  // UpdateCropData updates crop yield and market data
+  rpc UpdateCropData(MsgUpdateCropData) returns (MsgUpdateCropDataResponse) {
+    option (google.api.http).post = "/deshchain/krishimitra/update_crop_data";
+  }
+  
+  // ClaimInsurance allows farmers to claim crop insurance
+  rpc ClaimInsurance(MsgClaimInsurance) returns (MsgClaimInsuranceResponse) {
+    option (google.api.http).post = "/deshchain/krishimitra/claim_insurance";
+  }
+  
+  // RegisterKCC registers Kisan Credit Card
+  rpc RegisterKCC(MsgRegisterKCC) returns (MsgRegisterKCCResponse) {
+    option (google.api.http).post = "/deshchain/krishimitra/register_kcc";
+  }
+}
+
+// MsgApplyLoan - Apply for agricultural loan
+message MsgApplyLoan {
+  option (cosmos_proto.implements_interface) = "cosmos.base.v1beta1.Msg";
+  
+  string applicant = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string dhanpata_id = 2;
+  cosmos.base.v1beta1.Coin loan_amount = 3 [(gogoproto.nullable) = false];
+  string crop_type = 4; // KHARIF, RABI, ZAID, PERENNIAL
+  string land_area = 5; // in acres
+  string land_ownership_doc = 6; // IPFS hash or document ID
+  string pincode = 7;
+  string purpose = 8;
+  int64 duration = 9; // in months
+  string kcc_number = 10; // optional
+  string cultural_quote = 11;
+}
+
+message MsgApplyLoanResponse {
+  string loan_id = 1;
+  string interest_rate = 2;
+  string status = 3;
+}
+
+// MsgApproveLoan - Approve agricultural loan
+message MsgApproveLoan {
+  option (cosmos_proto.implements_interface) = "cosmos.base.v1beta1.Msg";
+  
+  string approver = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string loan_id = 2;
+  cosmos.base.v1beta1.Coin approved_amount = 3 [(gogoproto.nullable) = false];
+  string interest_rate = 4;
+  string repayment_schedule = 5; // MONTHLY, QUARTERLY, HARVEST_BASED
+  string remarks = 6;
+}
+
+message MsgApproveLoanResponse {
+  bool success = 1;
+  cosmos.base.v1beta1.Coin total_repayment = 2 [(gogoproto.nullable) = false];
+}
+
+// MsgRejectLoan - Reject agricultural loan
+message MsgRejectLoan {
+  option (cosmos_proto.implements_interface) = "cosmos.base.v1beta1.Msg";
+  
+  string rejector = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string loan_id = 2;
+  string reason = 3;
+}
+
+message MsgRejectLoanResponse {
+  bool success = 1;
+}
+
+// MsgDisburseLoan - Disburse approved loan
+message MsgDisburseLoan {
+  option (cosmos_proto.implements_interface) = "cosmos.base.v1beta1.Msg";
+  
+  string disburser = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string loan_id = 2;
+  string disbursement_mode = 3; // BANK_TRANSFER, DHANPATA, CASH
+}
+
+message MsgDisburseLoanResponse {
+  bool success = 1;
+  string transaction_hash = 2;
+}
+
+// MsgRepayLoan - Repay agricultural loan
+message MsgRepayLoan {
+  option (cosmos_proto.implements_interface) = "cosmos.base.v1beta1.Msg";
+  
+  string borrower = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string loan_id = 2;
+  cosmos.base.v1beta1.Coin repay_amount = 3 [(gogoproto.nullable) = false];
+  string cultural_quote = 4;
+}
+
+message MsgRepayLoanResponse {
+  bool success = 1;
+  cosmos.base.v1beta1.Coin remaining_amount = 2 [(gogoproto.nullable) = false];
+  string loan_status = 3;
+}
+
+// MsgUpdateCropData - Update crop yield and market data
+message MsgUpdateCropData {
+  option (cosmos_proto.implements_interface) = "cosmos.base.v1beta1.Msg";
+  
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string loan_id = 2;
+  string crop_yield = 3; // in quintals
+  string market_price = 4; // price per quintal
+  string weather_event = 5; // DROUGHT, FLOOD, HAIL, PEST
+  string remarks = 6;
+}
+
+message MsgUpdateCropDataResponse {
+  bool success = 1;
+  bool insurance_claim_triggered = 2;
+}
+
+// MsgClaimInsurance - Claim crop insurance
+message MsgClaimInsurance {
+  option (cosmos_proto.implements_interface) = "cosmos.base.v1beta1.Msg";
+  
+  string claimant = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string loan_id = 2;
+  string claim_type = 3; // WEATHER, PEST, MARKET_PRICE
+  string evidence = 4; // IPFS hash of evidence
+  string estimated_loss = 5;
+}
+
+message MsgClaimInsuranceResponse {
+  bool success = 1;
+  string claim_id = 2;
+  cosmos.base.v1beta1.Coin estimated_payout = 3 [(gogoproto.nullable) = false];
+}
+
+// MsgRegisterKCC - Register Kisan Credit Card
+message MsgRegisterKCC {
+  option (cosmos_proto.implements_interface) = "cosmos.base.v1beta1.Msg";
+  
+  string farmer = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string kcc_number = 2;
+  string issuing_bank = 3;
+  string validity = 4;
+  cosmos.base.v1beta1.Coin credit_limit = 5 [(gogoproto.nullable) = false];
+}
+
+message MsgRegisterKCCResponse {
+  bool success = 1;
+  string benefits = 2; // List of benefits unlocked
+}

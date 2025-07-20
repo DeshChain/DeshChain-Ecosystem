@@ -122,8 +122,8 @@ type MoneyOrderHooks interface {
 	AfterVillageMemberJoined(ctx sdk.Context, poolId uint64, member sdk.AccAddress)
 	
 	// Pension integration hooks
-	AfterPensionContribution(ctx sdk.Context, pensionAccountId string, contributor sdk.AccAddress, contribution sdk.Coin, villagePostalCode string) error
-	AfterPensionMaturity(ctx sdk.Context, pensionAccountId string, beneficiary sdk.AccAddress, maturityAmount sdk.Coin) error
+	AfterSurakshaContribution(ctx sdk.Context, pensionAccountId string, contributor sdk.AccAddress, contribution sdk.Coin, villagePostalCode string) error
+	AfterSurakshaMaturity(ctx sdk.Context, pensionAccountId string, beneficiary sdk.AccAddress, maturityAmount sdk.Coin) error
 	
 	// Agricultural lending integration hooks
 	BeforeAgriLoanApproval(ctx sdk.Context, borrower sdk.AccAddress, loanAmount sdk.Coin, villagePostalCode string) error

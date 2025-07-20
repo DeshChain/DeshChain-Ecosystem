@@ -1,0 +1,201 @@
+syntax = "proto3";
+package deshchain.krishimitra;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "deshchain/krishimitra/types.proto";
+
+option go_package = "github.com/deshchain/x/krishimitra/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Params queries the parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/deshchain/krishimitra/params";
+  }
+  
+  // Loan queries a specific loan by ID
+  rpc Loan(QueryLoanRequest) returns (QueryLoanResponse) {
+    option (google.api.http).get = "/deshchain/krishimitra/loan/{loan_id}";
+  }
+  
+  // LoansByBorrower queries all loans for a specific borrower
+  rpc LoansByBorrower(QueryLoansByBorrowerRequest) returns (QueryLoansByBorrowerResponse) {
+    option (google.api.http).get = "/deshchain/krishimitra/loans/borrower/{borrower}";
+  }
+  
+  // LoansByPincode queries all loans in a specific PIN code
+  rpc LoansByPincode(QueryLoansByPincodeRequest) returns (QueryLoansByPincodeResponse) {
+    option (google.api.http).get = "/deshchain/krishimitra/loans/pincode/{pincode}";
+  }
+  
+  // LoansByCropType queries all loans for a specific crop type
+  rpc LoansByCropType(QueryLoansByCropTypeRequest) returns (QueryLoansByCropTypeResponse) {
+    option (google.api.http).get = "/deshchain/krishimitra/loans/crop/{crop_type}";
+  }
+  
+  // FarmerProfile queries the profile of a farmer
+  rpc FarmerProfile(QueryFarmerProfileRequest) returns (QueryFarmerProfileResponse) {
+    option (google.api.http).get = "/deshchain/krishimitra/farmer/{address}";
+  }
+  
+  // InterestRate calculates the interest rate for given parameters
+  rpc InterestRate(QueryInterestRateRequest) returns (QueryInterestRateResponse) {
+    option (google.api.http).get = "/deshchain/krishimitra/interest_rate";
+  }
+  
+  // EligibilityCheck checks loan eligibility for a farmer
+  rpc EligibilityCheck(QueryEligibilityCheckRequest) returns (QueryEligibilityCheckResponse) {
+    option (google.api.http).get = "/deshchain/krishimitra/eligibility";
+  }
+  
+  // CropData queries crop data for a borrower
+  rpc CropData(QueryCropDataRequest) returns (QueryCropDataResponse) {
+    option (google.api.http).get = "/deshchain/krishimitra/crop_data/{borrower}";
+  }
+  
+  // Statistics queries module-wide statistics
+  rpc Statistics(QueryStatisticsRequest) returns (QueryStatisticsResponse) {
+    option (google.api.http).get = "/deshchain/krishimitra/statistics";
+  }
+}
+
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryLoanRequest is request type for the Query/Loan RPC method.
+message QueryLoanRequest {
+  string loan_id = 1;
+}
+
+// QueryLoanResponse is response type for the Query/Loan RPC method.
+message QueryLoanResponse {
+  AgriculturalLoan loan = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryLoansByBorrowerRequest is request type for the Query/LoansByBorrower RPC method.
+message QueryLoansByBorrowerRequest {
+  string borrower = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+// QueryLoansByBorrowerResponse is response type for the Query/LoansByBorrower RPC method.
+message QueryLoansByBorrowerResponse {
+  repeated AgriculturalLoan loans = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryLoansByPincodeRequest is request type for the Query/LoansByPincode RPC method.
+message QueryLoansByPincodeRequest {
+  string pincode = 1;
+  string status = 2; // optional filter by status
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
+}
+
+// QueryLoansByPincodeResponse is response type for the Query/LoansByPincode RPC method.
+message QueryLoansByPincodeResponse {
+  repeated AgriculturalLoan loans = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+  string total_disbursed = 3;
+  int64 active_loans = 4;
+}
+
+// QueryLoansByCropTypeRequest is request type for the Query/LoansByCropType RPC method.
+message QueryLoansByCropTypeRequest {
+  string crop_type = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+// QueryLoansByCropTypeResponse is response type for the Query/LoansByCropType RPC method.
+message QueryLoansByCropTypeResponse {
+  repeated AgriculturalLoan loans = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+  string average_loan_amount = 3;
+  string average_interest_rate = 4;
+}
+
+// QueryFarmerProfileRequest is request type for the Query/FarmerProfile RPC method.
+message QueryFarmerProfileRequest {
+  string address = 1;
+}
+
+// QueryFarmerProfileResponse is response type for the Query/FarmerProfile RPC method.
+message QueryFarmerProfileResponse {
+  FarmerProfile profile = 1 [(gogoproto.nullable) = false];
+  repeated AgriculturalLoan active_loans = 2;
+  string total_borrowed = 3;
+  string total_repaid = 4;
+}
+
+// QueryInterestRateRequest is request type for the Query/InterestRate RPC method.
+message QueryInterestRateRequest {
+  string crop_type = 1;
+  int64 duration = 2; // in months
+  bool has_kcc = 3;
+  string pincode = 4;
+}
+
+// QueryInterestRateResponse is response type for the Query/InterestRate RPC method.
+message QueryInterestRateResponse {
+  string base_rate = 1;
+  string kcc_discount = 2;
+  string festival_discount = 3;
+  string final_rate = 4;
+  string active_festival = 5;
+}
+
+// QueryEligibilityCheckRequest is request type for the Query/EligibilityCheck RPC method.
+message QueryEligibilityCheckRequest {
+  string farmer = 1;
+  string loan_amount = 2;
+  string pincode = 3;
+  string crop_type = 4;
+}
+
+// QueryEligibilityCheckResponse is response type for the Query/EligibilityCheck RPC method.
+message QueryEligibilityCheckResponse {
+  bool eligible = 1;
+  string reason = 2;
+  string max_eligible_amount = 3;
+  string recommended_duration = 4;
+  repeated string required_documents = 5;
+}
+
+// QueryCropDataRequest is request type for the Query/CropData RPC method.
+message QueryCropDataRequest {
+  string borrower = 1;
+  string loan_id = 2; // optional
+}
+
+// QueryCropDataResponse is response type for the Query/CropData RPC method.
+message QueryCropDataResponse {
+  repeated CropData crop_data = 1 [(gogoproto.nullable) = false];
+  string total_yield = 2;
+  string average_price = 3;
+}
+
+// QueryStatisticsRequest is request type for the Query/Statistics RPC method.
+message QueryStatisticsRequest {
+  string pincode = 1; // optional filter
+}
+
+// QueryStatisticsResponse is response type for the Query/Statistics RPC method.
+message QueryStatisticsResponse {
+  int64 total_loans = 1;
+  int64 active_loans = 2;
+  string total_disbursed = 3;
+  string total_repaid = 4;
+  string average_loan_size = 5;
+  string average_interest_rate = 6;
+  string default_rate = 7;
+  map<string, int64> loans_by_crop = 8;
+  map<string, string> disbursed_by_pincode = 9;
+  int64 farmers_benefited = 10;
+}

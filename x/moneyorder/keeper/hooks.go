@@ -37,9 +37,9 @@ func (k Keeper) Hooks() Hooks {
 	return Hooks{k}
 }
 
-// AfterPensionContribution - called after a pension contribution is made
+// AfterSurakshaContribution - called after a pension contribution is made
 // This hook integrates with the Gram Pension module to add liquidity
-func (h Hooks) AfterPensionContribution(
+func (h Hooks) AfterSurakshaContribution(
 	ctx sdk.Context,
 	pensionAccountId string,
 	contributor sdk.AccAddress,
@@ -67,7 +67,7 @@ func (h Hooks) AfterPensionContribution(
 	}
 
 	// Add pension contribution to unified pool
-	return h.k.AddPensionContribution(
+	return h.k.AddSurakshaContribution(
 		ctx,
 		unifiedPool.PoolId,
 		contribution,
@@ -75,16 +75,16 @@ func (h Hooks) AfterPensionContribution(
 	)
 }
 
-// AfterPensionMaturity - called when pension reaches maturity
+// AfterSurakshaMaturity - called when pension reaches maturity
 // This hook handles liquidity withdrawal and return calculation
-func (h Hooks) AfterPensionMaturity(
+func (h Hooks) AfterSurakshaMaturity(
 	ctx sdk.Context,
 	pensionAccountId string,
 	beneficiary sdk.AccAddress,
 	maturityAmount sdk.Coin,
 ) error {
 	// Find all liquidity positions for this pension account
-	positions := h.k.GetPensionLiquidityPositions(ctx, pensionAccountId)
+	positions := h.k.GetSurakshaLiquidityPositions(ctx, pensionAccountId)
 	
 	totalReturns := sdk.NewCoins()
 	
@@ -107,7 +107,7 @@ func (h Hooks) AfterPensionMaturity(
 	// Emit event for tracking
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
-			types.EventTypePensionMaturityProcessed,
+			types.EventTypeSurakshaMaturityProcessed,
 			sdk.NewAttribute(types.AttributeKeyPensionAccount, pensionAccountId),
 			sdk.NewAttribute("beneficiary", beneficiary.String()),
 			sdk.NewAttribute(types.AttributeKeyRewards, totalReturns.String()),
@@ -337,7 +337,7 @@ func (k Keeper) GetUnifiedPoolByVillageId(ctx sdk.Context, villagePoolId uint64)
 	return foundPool, found
 }
 
-func (k Keeper) GetPensionLiquidityPositions(ctx sdk.Context, pensionAccountId string) []PensionLiquidity {
+func (k Keeper) GetSurakshaLiquidityPositions(ctx sdk.Context, pensionAccountId string) []PensionLiquidity {
 	var positions []PensionLiquidity
 
 	k.IteratePensionLiquidity(ctx, func(pl PensionLiquidity) bool {

@@ -33,7 +33,7 @@ type UnifiedLiquidityPool struct {
 	TotalLiquidity      sdk.Coins `json:"total_liquidity"`
 	
 	// Allocations
-	PensionReserve      sdk.Coins `json:"pension_reserve"`      // 20% - Reserved for pension payouts
+	SurakshaReserve      sdk.Coins `json:"suraksha_reserve"`      // 20% - Reserved for pension payouts
 	DexLiquidity        sdk.Coins `json:"dex_liquidity"`        // 30% - For Money Order trading
 	AgriLendingPool     sdk.Coins `json:"agri_lending_pool"`   // 40% - For Kisaan Mitra loans
 	EmergencyReserve    sdk.Coins `json:"emergency_reserve"`    // 10% - Emergency buffer
@@ -56,7 +56,7 @@ type UnifiedLiquidityPool struct {
 
 // AllocationConfig defines how liquidity is allocated across different uses
 type AllocationConfig struct {
-	PensionReserveRatio   sdk.Dec `json:"pension_reserve_ratio"`    // Default: 20%
+	SurakshaReserveRatio   sdk.Dec `json:"suraksha_reserve_ratio"`    // Default: 20%
 	DexLiquidityRatio     sdk.Dec `json:"dex_liquidity_ratio"`      // Default: 30%
 	AgriLendingRatio      sdk.Dec `json:"agri_lending_ratio"`       // Default: 40%
 	EmergencyReserveRatio sdk.Dec `json:"emergency_reserve_ratio"`  // Default: 10%
@@ -70,7 +70,7 @@ type AllocationConfig struct {
 // DefaultAllocationConfig returns the default allocation configuration
 func DefaultAllocationConfig() AllocationConfig {
 	return AllocationConfig{
-		PensionReserveRatio:   sdk.NewDecWithPrec(20, 2), // 20%
+		SurakshaReserveRatio:   sdk.NewDecWithPrec(20, 2), // 20%
 		DexLiquidityRatio:     sdk.NewDecWithPrec(30, 2), // 30%
 		AgriLendingRatio:      sdk.NewDecWithPrec(40, 2), // 40%
 		EmergencyReserveRatio: sdk.NewDecWithPrec(10, 2), // 10%
@@ -132,8 +132,8 @@ func (k Keeper) CreateUnifiedLiquidityPool(
 	return pool, nil
 }
 
-// AddPensionContribution adds pension contribution to unified pool
-func (k Keeper) AddPensionContribution(
+// AddSurakshaContribution adds pension contribution to unified pool
+func (k Keeper) AddSurakshaContribution(
 	ctx sdk.Context,
 	unifiedPoolId uint64,
 	contribution sdk.Coin,
@@ -154,7 +154,7 @@ func (k Keeper) AddPensionContribution(
 	}
 
 	// Track pension contribution
-	k.SetPensionContribution(ctx, PensionContribution{
+	k.SetSurakshaContribution(ctx, SurakshaContribution{
 		PensionAccountId: pensionAccountId,
 		UnifiedPoolId:    unifiedPoolId,
 		Amount:           contribution,
@@ -333,19 +333,19 @@ func (k Keeper) allocateLiquidity(ctx sdk.Context, pool *UnifiedLiquidityPool) e
 	config := pool.AllocationConfig
 	
 	// Reset allocations
-	pool.PensionReserve = sdk.NewCoins()
+	pool.SurakshaReserve = sdk.NewCoins()
 	pool.DexLiquidity = sdk.NewCoins()
 	pool.AgriLendingPool = sdk.NewCoins()
 	pool.EmergencyReserve = sdk.NewCoins()
 	
 	// Allocate each coin type
 	for _, coin := range pool.TotalLiquidity {
-		pensionAmount := coin.Amount.ToDec().Mul(config.PensionReserveRatio).TruncateInt()
+		pensionAmount := coin.Amount.ToDec().Mul(config.SurakshaReserveRatio).TruncateInt()
 		dexAmount := coin.Amount.ToDec().Mul(config.DexLiquidityRatio).TruncateInt()
 		agriAmount := coin.Amount.ToDec().Mul(config.AgriLendingRatio).TruncateInt()
 		emergencyAmount := coin.Amount.ToDec().Mul(config.EmergencyReserveRatio).TruncateInt()
 		
-		pool.PensionReserve = pool.PensionReserve.Add(sdk.NewCoin(coin.Denom, pensionAmount))
+		pool.SurakshaReserve = pool.SurakshaReserve.Add(sdk.NewCoin(coin.Denom, pensionAmount))
 		pool.DexLiquidity = pool.DexLiquidity.Add(sdk.NewCoin(coin.Denom, dexAmount))
 		pool.AgriLendingPool = pool.AgriLendingPool.Add(sdk.NewCoin(coin.Denom, agriAmount))
 		pool.EmergencyReserve = pool.EmergencyReserve.Add(sdk.NewCoin(coin.Denom, emergencyAmount))
@@ -386,7 +386,7 @@ func (k Keeper) getAgriLoanInterestRate(loanType string) sdk.Dec {
 
 // Types
 
-type PensionContribution struct {
+type SurakshaContribution struct {
 	PensionAccountId string    `json:"pension_account_id"`
 	UnifiedPoolId    uint64    `json:"unified_pool_id"`
 	Amount           sdk.Coin  `json:"amount"`
@@ -445,9 +445,9 @@ func (k Keeper) SetNextUnifiedPoolId(ctx sdk.Context, poolId uint64) {
 	store.Set(types.KeyNextUnifiedPoolId, sdk.Uint64ToBigEndian(poolId))
 }
 
-func (k Keeper) SetPensionContribution(ctx sdk.Context, pc PensionContribution) {
+func (k Keeper) SetSurakshaContribution(ctx sdk.Context, pc SurakshaContribution) {
 	store := ctx.KVStore(k.storeKey)
-	key := getPensionContributionKey(pc.PensionAccountId, pc.UnifiedPoolId)
+	key := getSurakshaContributionKey(pc.PensionAccountId, pc.UnifiedPoolId)
 	bz := k.cdc.MustMarshal(&pc)
 	store.Set(key, bz)
 }
@@ -487,8 +487,8 @@ func getUnifiedPoolKey(poolId uint64) []byte {
 	return append(types.KeyPrefixUnifiedPool, sdk.Uint64ToBigEndian(poolId)...)
 }
 
-func getPensionContributionKey(pensionAccountId string, poolId uint64) []byte {
-	return append(append(types.KeyPrefixPensionContribution, []byte(pensionAccountId)...), sdk.Uint64ToBigEndian(poolId)...)
+func getSurakshaContributionKey(pensionAccountId string, poolId uint64) []byte {
+	return append(append(types.KeyPrefixSurakshaContribution, []byte(pensionAccountId)...), sdk.Uint64ToBigEndian(poolId)...)
 }
 
 func getAgriLoanKey(loanId uint64) []byte {

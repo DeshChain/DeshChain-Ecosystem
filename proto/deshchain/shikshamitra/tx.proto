@@ -1,0 +1,264 @@
+syntax = "proto3";
+package deshchain.shikshamitra;
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos_proto/cosmos.proto";
+import "google/api/annotations.proto";
+
+option go_package = "github.com/deshchain/x/shikshamitra/types";
+
+// Msg defines the Msg service for education lending
+service Msg {
+  // ApplyEducationLoan allows students to apply for education loans
+  rpc ApplyEducationLoan(MsgApplyEducationLoan) returns (MsgApplyEducationLoanResponse) {
+    option (google.api.http).post = "/deshchain/shikshamitra/apply_education_loan";
+  }
+  
+  // UpdateAcademicProgress updates student's academic progress
+  rpc UpdateAcademicProgress(MsgUpdateAcademicProgress) returns (MsgUpdateAcademicProgressResponse) {
+    option (google.api.http).post = "/deshchain/shikshamitra/update_academic_progress";
+  }
+  
+  // UpdateEmploymentStatus updates student's employment status after course
+  rpc UpdateEmploymentStatus(MsgUpdateEmploymentStatus) returns (MsgUpdateEmploymentStatusResponse) {
+    option (google.api.http).post = "/deshchain/shikshamitra/update_employment_status";
+  }
+  
+  // ApplyScholarship allows students to apply for merit-based scholarships
+  rpc ApplyScholarship(MsgApplyScholarship) returns (MsgApplyScholarshipResponse) {
+    option (google.api.http).post = "/deshchain/shikshamitra/apply_scholarship";
+  }
+  
+  // ApproveLoan allows authorized validators to approve education loans
+  rpc ApproveLoan(MsgApproveLoan) returns (MsgApproveLoanResponse) {
+    option (google.api.http).post = "/deshchain/shikshamitra/approve_loan";
+  }
+  
+  // RejectLoan allows authorized validators to reject loans
+  rpc RejectLoan(MsgRejectLoan) returns (MsgRejectLoanResponse) {
+    option (google.api.http).post = "/deshchain/shikshamitra/reject_loan";
+  }
+  
+  // DisburseLoan disburses approved loans to students
+  rpc DisburseLoan(MsgDisburseLoan) returns (MsgDisburseLoanResponse) {
+    option (google.api.http).post = "/deshchain/shikshamitra/disburse_loan";
+  }
+  
+  // RepayLoan allows students/co-applicants to repay their loans
+  rpc RepayLoan(MsgRepayLoan) returns (MsgRepayLoanResponse) {
+    option (google.api.http).post = "/deshchain/shikshamitra/repay_loan";
+  }
+  
+  // StartMoratorium begins the moratorium period after course completion
+  rpc StartMoratorium(MsgStartMoratorium) returns (MsgStartMoratoriumResponse) {
+    option (google.api.http).post = "/deshchain/shikshamitra/start_moratorium";
+  }
+}
+
+// MsgApplyEducationLoan - Apply for education loan
+message MsgApplyEducationLoan {
+  option (cosmos_proto.implements_interface) = "cosmos.base.v1beta1.Msg";
+  
+  string applicant = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string dhanpata_id = 2;
+  string student_name = 3;
+  string co_applicant = 4 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string co_applicant_dhanpata_id = 5;
+  string institution_name = 6;
+  string institution_type = 7; // IIT, IIM, NIT, AIIMS, etc.
+  string course_type = 8; // ENGINEERING, MEDICAL, MANAGEMENT, etc.
+  string course_name = 9;
+  int32 course_duration = 10; // in months
+  string academic_year = 11;
+  cosmos.base.v1beta1.Coin loan_amount = 12 [(gogoproto.nullable) = false];
+  repeated LoanComponentInput loan_components = 13;
+  string entrance_exam_score = 14;
+  string previous_academic_record = 15; // IPFS hash
+  string admission_letter = 16; // IPFS hash
+  string pincode = 17;
+  cosmos.base.v1beta1.Coin family_income = 18 [(gogoproto.nullable) = false];
+  string collateral_offered = 19;
+  string cultural_quote = 20;
+}
+
+// LoanComponentInput for loan application
+message LoanComponentInput {
+  string component_type = 1; // TUITION, HOSTEL, BOOKS, EQUIPMENT, LIVING
+  cosmos.base.v1beta1.Coin amount = 2 [(gogoproto.nullable) = false];
+  string description = 3;
+}
+
+message MsgApplyEducationLoanResponse {
+  string loan_id = 1;
+  string interest_rate = 2;
+  string status = 3;
+  bool collateral_required = 4;
+  string moratorium_period = 5;
+  string estimated_emi = 6;
+}
+
+// MsgUpdateAcademicProgress - Update student's academic progress
+message MsgUpdateAcademicProgress {
+  option (cosmos_proto.implements_interface) = "cosmos.base.v1beta1.Msg";
+  
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string loan_id = 2;
+  int32 semester = 3;
+  string grade_point_avg = 4;
+  string attendance = 5; // Percentage
+  string marksheet = 6; // IPFS hash
+  string remarks = 7;
+  string continuation_status = 8; // CONTINUING, DROPPED, COMPLETED
+}
+
+message MsgUpdateAcademicProgressResponse {
+  bool success = 1;
+  bool interest_rate_revised = 2;
+  string new_interest_rate = 3;
+  string next_disbursement_status = 4;
+}
+
+// MsgUpdateEmploymentStatus - Update employment status after course completion
+message MsgUpdateEmploymentStatus {
+  option (cosmos_proto.implements_interface) = "cosmos.base.v1beta1.Msg";
+  
+  string student = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string loan_id = 2;
+  string employment_status = 3; // EMPLOYED, SELF_EMPLOYED, HIGHER_STUDIES, SEEKING
+  string employer_name = 4;
+  string job_title = 5;
+  cosmos.base.v1beta1.Coin monthly_salary = 6 [(gogoproto.nullable) = false];
+  string joining_date = 7;
+  string offer_letter = 8; // IPFS hash
+}
+
+message MsgUpdateEmploymentStatusResponse {
+  bool success = 1;
+  bool repayment_schedule_updated = 2;
+  string new_emi_amount = 3;
+  string repayment_start_date = 4;
+}
+
+// MsgApplyScholarship - Apply for merit-based scholarship
+message MsgApplyScholarship {
+  option (cosmos_proto.implements_interface) = "cosmos.base.v1beta1.Msg";
+  
+  string applicant = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string loan_id = 2;
+  string scholarship_type = 3; // MERIT, NEED, SPORTS, SPECIAL
+  string academic_score = 4;
+  string achievements = 5; // Description
+  string recommendations = 6; // IPFS hash
+  string financial_need = 7; // Justification
+  cosmos.base.v1beta1.Coin requested_amount = 8 [(gogoproto.nullable) = false];
+}
+
+message MsgApplyScholarshipResponse {
+  string scholarship_id = 1;
+  string status = 2;
+  string evaluation_criteria = 3;
+  string expected_decision_date = 4;
+}
+
+// MsgApproveLoan - Approve education loan
+message MsgApproveLoan {
+  option (cosmos_proto.implements_interface) = "cosmos.base.v1beta1.Msg";
+  
+  string approver = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string loan_id = 2;
+  cosmos.base.v1beta1.Coin approved_amount = 3 [(gogoproto.nullable) = false];
+  string interest_rate = 4;
+  repeated LoanComponentApproval approved_components = 5;
+  int64 moratorium_period = 6; // in months
+  string disbursement_schedule = 7; // LUMPSUM, SEMESTER_WISE, COMPONENT_WISE
+  string remarks = 8;
+}
+
+message LoanComponentApproval {
+  string component_type = 1;
+  cosmos.base.v1beta1.Coin approved_amount = 2 [(gogoproto.nullable) = false];
+  string disbursement_timing = 3; // IMMEDIATE, SEMESTER_START, AS_NEEDED
+}
+
+message MsgApproveLoanResponse {
+  bool success = 1;
+  cosmos.base.v1beta1.Coin total_repayment = 2 [(gogoproto.nullable) = false];
+  string emi_amount = 3; // Post-moratorium EMI
+  string first_disbursement_date = 4;
+}
+
+// MsgRejectLoan - Reject education loan
+message MsgRejectLoan {
+  option (cosmos_proto.implements_interface) = "cosmos.base.v1beta1.Msg";
+  
+  string rejector = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string loan_id = 2;
+  string reason = 3;
+  repeated string improvement_areas = 4;
+  bool can_reapply = 5;
+}
+
+message MsgRejectLoanResponse {
+  bool success = 1;
+  string reapply_after_days = 2;
+  repeated string eligibility_criteria = 3;
+}
+
+// MsgDisburseLoan - Disburse approved loan
+message MsgDisburseLoan {
+  option (cosmos_proto.implements_interface) = "cosmos.base.v1beta1.Msg";
+  
+  string disburser = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string loan_id = 2;
+  string disbursement_type = 3; // TUITION, HOSTEL, BOOKS, LIVING, ALL
+  cosmos.base.v1beta1.Coin amount = 4 [(gogoproto.nullable) = false];
+  string disbursement_mode = 5; // INSTITUTION_ACCOUNT, STUDENT_ACCOUNT, VENDOR_DIRECT
+  string academic_period = 6; // e.g., "2024-25 Semester 1"
+  string fee_receipt = 7; // IPFS hash
+}
+
+message MsgDisburseLoanResponse {
+  bool success = 1;
+  string transaction_hash = 2;
+  cosmos.base.v1beta1.Coin remaining_approved = 3 [(gogoproto.nullable) = false];
+  string next_disbursement_date = 4;
+}
+
+// MsgRepayLoan - Repay education loan
+message MsgRepayLoan {
+  option (cosmos_proto.implements_interface) = "cosmos.base.v1beta1.Msg";
+  
+  string payer = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string loan_id = 2;
+  cosmos.base.v1beta1.Coin repay_amount = 3 [(gogoproto.nullable) = false];
+  string payment_type = 4; // EMI, PREPAYMENT, FINAL_SETTLEMENT
+  string cultural_quote = 5;
+}
+
+message MsgRepayLoanResponse {
+  bool success = 1;
+  cosmos.base.v1beta1.Coin remaining_amount = 2 [(gogoproto.nullable) = false];
+  string loan_status = 3;
+  string next_emi_date = 4;
+  string interest_saved = 5; // If prepayment
+  bool scholarship_bonus_applied = 6;
+}
+
+// MsgStartMoratorium - Start moratorium period after course completion
+message MsgStartMoratorium {
+  option (cosmos_proto.implements_interface) = "cosmos.base.v1beta1.Msg";
+  
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string loan_id = 2;
+  string completion_certificate = 3; // IPFS hash
+  string final_marksheet = 4; // IPFS hash
+  string completion_date = 5;
+}
+
+message MsgStartMoratoriumResponse {
+  bool success = 1;
+  string moratorium_end_date = 2;
+  string repayment_start_date = 3;
+  string estimated_emi = 4;
+}

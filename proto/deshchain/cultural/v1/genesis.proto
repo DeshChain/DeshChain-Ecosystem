@@ -1,0 +1,34 @@
+syntax = "proto3";
+package deshchain.cultural.v1;
+
+import "gogoproto/gogo.proto";
+import "deshchain/cultural/v1/cultural.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/cultural/types";
+
+// GenesisState defines the cultural module's genesis state
+message GenesisState {
+  // params defines all the parameters of the module
+  Params params = 1 [(gogoproto.nullable) = false];
+  
+  // quotes is the list of all quotes
+  repeated Quote quotes = 2 [(gogoproto.nullable) = false];
+  
+  // historical_events is the list of all historical events
+  repeated HistoricalEvent historical_events = 3 [(gogoproto.nullable) = false];
+  
+  // cultural_wisdom is the list of all cultural wisdom
+  repeated CulturalWisdom cultural_wisdom = 4 [(gogoproto.nullable) = false];
+  
+  // transaction_quotes is the list of all transaction quotes
+  repeated TransactionQuote transaction_quotes = 5 [(gogoproto.nullable) = false];
+  
+  // quote_count is the total number of quotes
+  uint64 quote_count = 6;
+  
+  // historical_event_count is the total number of historical events
+  uint64 historical_event_count = 7;
+  
+  // cultural_wisdom_count is the total number of cultural wisdom
+  uint64 cultural_wisdom_count = 8;
+}

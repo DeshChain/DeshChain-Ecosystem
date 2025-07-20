@@ -1,0 +1,171 @@
+syntax = "proto3";
+package deshchain.liquiditymanager.v1;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "deshchain/liquiditymanager/v1/params.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/liquiditymanager/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // LiquidityStatus returns the current liquidity status
+  rpc LiquidityStatus(QueryLiquidityStatusRequest) returns (QueryLiquidityStatusResponse) {
+    option (google.api.http).get = "/deshchain/liquiditymanager/v1/status";
+  }
+
+  // LendingAvailability checks if lending is available for a specific amount and module
+  rpc LendingAvailability(QueryLendingAvailabilityRequest) returns (QueryLendingAvailabilityResponse) {
+    option (google.api.http).get = "/deshchain/liquiditymanager/v1/lending/availability";
+  }
+
+  // CollateralLoanAvailability checks if a NAMO collateral loan can be processed
+  rpc CollateralLoanAvailability(QueryCollateralLoanAvailabilityRequest) returns (QueryCollateralLoanAvailabilityResponse) {
+    option (google.api.http).get = "/deshchain/liquiditymanager/v1/collateral/availability";
+  }
+
+  // UserStakeInfo returns detailed staking information for a user
+  rpc UserStakeInfo(QueryUserStakeInfoRequest) returns (QueryUserStakeInfoResponse) {
+    option (google.api.http).get = "/deshchain/liquiditymanager/v1/stake/{user}";
+  }
+
+  // PoolProgress returns detailed progress information towards next threshold
+  rpc PoolProgress(QueryPoolProgressRequest) returns (QueryPoolProgressResponse) {
+    option (google.api.http).get = "/deshchain/liquiditymanager/v1/progress";
+  }
+
+  // DailyLendingStats returns daily lending statistics
+  rpc DailyLendingStats(QueryDailyLendingStatsRequest) returns (QueryDailyLendingStatsResponse) {
+    option (google.api.http).get = "/deshchain/liquiditymanager/v1/stats/daily";
+  }
+
+  // LendingQueue returns information about pending loan applications
+  rpc LendingQueue(QueryLendingQueueRequest) returns (QueryLendingQueueResponse) {
+    option (google.api.http).get = "/deshchain/liquiditymanager/v1/queue";
+  }
+
+  // Params queries the parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/deshchain/liquiditymanager/v1/params";
+  }
+}
+
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryLiquidityStatusRequest is the request type for the Query/LiquidityStatus RPC method
+message QueryLiquidityStatusRequest {}
+
+// QueryLiquidityStatusResponse is the response type for the Query/LiquidityStatus RPC method
+message QueryLiquidityStatusResponse {
+  string total_pool_value = 1;
+  string available_for_lending = 2;
+  string reserve_amount = 3;
+  string status = 4;
+  string max_loan_amount = 5;
+  string daily_lending_limit = 6;
+  repeated string available_modules = 7;
+  string next_threshold = 8;
+  string progress_to_next = 9;
+  int64 estimated_days_to_next = 10;
+}
+
+// QueryLendingAvailabilityRequest is the request type for checking lending availability
+message QueryLendingAvailabilityRequest {
+  string amount = 1;
+  string module = 2;
+  string borrower = 3; // REVOLUTIONARY: Borrower address required for member verification
+}
+
+// QueryLendingAvailabilityResponse is the response type for lending availability
+message QueryLendingAvailabilityResponse {
+  bool available = 1;
+  string message = 2;
+}
+
+// QueryCollateralLoanAvailabilityRequest is the request type for checking collateral loan availability
+message QueryCollateralLoanAvailabilityRequest {
+  string loan_amount = 1;
+  string collateral_amount = 2;
+  string borrower = 3;
+}
+
+// QueryCollateralLoanAvailabilityResponse is the response type for collateral loan availability
+message QueryCollateralLoanAvailabilityResponse {
+  bool available = 1;
+  string message = 2;
+  string max_loan_amount = 3;
+  string required_collateral = 4;
+  string user_staked_amount = 5;
+  string user_locked_amount = 6;
+  string user_available_stake = 7;
+  string loan_to_value_ratio = 8; // Fixed at 70%
+}
+
+// QueryUserStakeInfoRequest is the request type for user stake information
+message QueryUserStakeInfoRequest {
+  string user = 1;
+}
+
+// QueryUserStakeInfoResponse is the response type for user stake information
+message QueryUserStakeInfoResponse {
+  string staked_amount = 1;
+  string locked_collateral = 2;
+  string available_stake = 3;
+  string max_borrow_capacity = 4;
+  bool is_village_pool_member = 5;
+  bool is_urban_pool_member = 6;
+  bool is_eligible_for_lending = 7;
+  string loan_to_value_ratio = 8;
+}
+
+// QueryPoolProgressRequest is the request type for pool progress information
+message QueryPoolProgressRequest {}
+
+// PoolMilestone represents a liquidity milestone
+message PoolMilestone {
+  string name = 1;
+  string description = 2;
+  string threshold = 3;
+  bool achieved = 4;
+  repeated string benefits = 5;
+}
+
+// QueryPoolProgressResponse is the response type for pool progress information
+message QueryPoolProgressResponse {
+  string current_value = 1;
+  string next_threshold = 2;
+  string progress_percentage = 3;
+  int64 estimated_days_to_next = 4;
+  repeated PoolMilestone milestones = 5;
+  string status = 6;
+}
+
+// QueryDailyLendingStatsRequest is the request type for daily lending statistics
+message QueryDailyLendingStatsRequest {}
+
+// QueryDailyLendingStatsResponse is the response type for daily lending statistics
+message QueryDailyLendingStatsResponse {
+  string daily_limit = 1;
+  string daily_used = 2;
+  string daily_remaining = 3;
+  string utilization_percentage = 4;
+  string status = 5;
+}
+
+// QueryLendingQueueRequest is the request type for lending queue information
+message QueryLendingQueueRequest {}
+
+// QueryLendingQueueResponse is the response type for lending queue information
+message QueryLendingQueueResponse {
+  int64 queue_size = 1;
+  int64 estimated_wait_time_hours = 2;
+  bool accepting_new_applications = 3;
+}

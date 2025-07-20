@@ -29,8 +29,8 @@ import (
 
 // GramPensionHooks defines the interface expected by Gram Pension module
 type GramPensionHooks interface {
-	AfterPensionContribution(ctx sdk.Context, pensionAccountId string, contributor sdk.AccAddress, contribution sdk.Coin, villagePostalCode string) error
-	AfterPensionMaturity(ctx sdk.Context, pensionAccountId string, beneficiary sdk.AccAddress, maturityAmount sdk.Coin) error
+	AfterSurakshaContribution(ctx sdk.Context, pensionAccountId string, contributor sdk.AccAddress, contribution sdk.Coin, villagePostalCode string) error
+	AfterSurakshaMaturity(ctx sdk.Context, pensionAccountId string, beneficiary sdk.AccAddress, maturityAmount sdk.Coin) error
 	MonthlyRevenueDistribution(ctx sdk.Context) error
 }
 

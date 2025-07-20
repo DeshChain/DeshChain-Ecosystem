@@ -1,0 +1,216 @@
+syntax = "proto3";
+package deshchain.vyavasayamitra;
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos_proto/cosmos.proto";
+import "google/api/annotations.proto";
+
+option go_package = "github.com/deshchain/x/vyavasayamitra/types";
+
+// Msg defines the Msg service for business lending
+service Msg {
+  // ApplyBusinessLoan allows businesses to apply for loans
+  rpc ApplyBusinessLoan(MsgApplyBusinessLoan) returns (MsgApplyBusinessLoanResponse) {
+    option (google.api.http).post = "/deshchain/vyavasayamitra/apply_business_loan";
+  }
+  
+  // ApplyInvoiceFinancing allows businesses to get financing against invoices
+  rpc ApplyInvoiceFinancing(MsgApplyInvoiceFinancing) returns (MsgApplyInvoiceFinancingResponse) {
+    option (google.api.http).post = "/deshchain/vyavasayamitra/apply_invoice_financing";
+  }
+  
+  // ApproveLoan allows authorized validators to approve business loans
+  rpc ApproveLoan(MsgApproveLoan) returns (MsgApproveLoanResponse) {
+    option (google.api.http).post = "/deshchain/vyavasayamitra/approve_loan";
+  }
+  
+  // RejectLoan allows authorized validators to reject loans
+  rpc RejectLoan(MsgRejectLoan) returns (MsgRejectLoanResponse) {
+    option (google.api.http).post = "/deshchain/vyavasayamitra/reject_loan";
+  }
+  
+  // DisburseLoan disburses approved loans to businesses
+  rpc DisburseLoan(MsgDisburseLoan) returns (MsgDisburseLoanResponse) {
+    option (google.api.http).post = "/deshchain/vyavasayamitra/disburse_loan";
+  }
+  
+  // RepayLoan allows businesses to repay their loans
+  rpc RepayLoan(MsgRepayLoan) returns (MsgRepayLoanResponse) {
+    option (google.api.http).post = "/deshchain/vyavasayamitra/repay_loan";
+  }
+  
+  // UpdateBusinessMetrics updates business performance metrics
+  rpc UpdateBusinessMetrics(MsgUpdateBusinessMetrics) returns (MsgUpdateBusinessMetricsResponse) {
+    option (google.api.http).post = "/deshchain/vyavasayamitra/update_business_metrics";
+  }
+  
+  // UpdateCreditLine updates the credit line for a business
+  rpc UpdateCreditLine(MsgUpdateCreditLine) returns (MsgUpdateCreditLineResponse) {
+    option (google.api.http).post = "/deshchain/vyavasayamitra/update_credit_line";
+  }
+}
+
+// MsgApplyBusinessLoan - Apply for business loan
+message MsgApplyBusinessLoan {
+  option (cosmos_proto.implements_interface) = "cosmos.base.v1beta1.Msg";
+  
+  string applicant = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string dhanpata_id = 2;
+  string business_name = 3;
+  string business_type = 4; // RETAIL, MANUFACTURING, SERVICES, TRADING, STARTUP
+  string gst_number = 5;
+  cosmos.base.v1beta1.Coin loan_amount = 6 [(gogoproto.nullable) = false];
+  string loan_purpose = 7; // WORKING_CAPITAL, EXPANSION, EQUIPMENT, INVENTORY
+  int64 duration = 8; // in months
+  cosmos.base.v1beta1.Coin annual_revenue = 9 [(gogoproto.nullable) = false];
+  int32 employee_count = 10;
+  int32 business_age = 11; // in months
+  string pincode = 12;
+  string collateral_offered = 13;
+  string business_plan = 14; // IPFS hash
+  string financial_statements = 15; // IPFS hash
+  string cultural_quote = 16;
+}
+
+message MsgApplyBusinessLoanResponse {
+  string loan_id = 1;
+  string interest_rate = 2;
+  string status = 3;
+  string credit_score = 4;
+}
+
+// MsgApplyInvoiceFinancing - Apply for invoice financing
+message MsgApplyInvoiceFinancing {
+  option (cosmos_proto.implements_interface) = "cosmos.base.v1beta1.Msg";
+  
+  string applicant = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string business_loan_id = 2;
+  string invoice_number = 3;
+  cosmos.base.v1beta1.Coin invoice_amount = 4 [(gogoproto.nullable) = false];
+  string invoice_date = 5;
+  string due_date = 6;
+  string buyer_gst_number = 7;
+  string buyer_name = 8;
+  string invoice_document = 9; // IPFS hash
+  string financing_percent = 10; // 70-90% of invoice value
+}
+
+message MsgApplyInvoiceFinancingResponse {
+  string financing_id = 1;
+  cosmos.base.v1beta1.Coin approved_amount = 2 [(gogoproto.nullable) = false];
+  string interest_rate = 3;
+  string expected_repayment_date = 4;
+}
+
+// MsgApproveLoan - Approve business loan
+message MsgApproveLoan {
+  option (cosmos_proto.implements_interface) = "cosmos.base.v1beta1.Msg";
+  
+  string approver = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string loan_id = 2;
+  cosmos.base.v1beta1.Coin approved_amount = 3 [(gogoproto.nullable) = false];
+  string interest_rate = 4;
+  string repayment_schedule = 5; // MONTHLY, QUARTERLY, BALLOON
+  cosmos.base.v1beta1.Coin credit_line = 6; // Optional credit line
+  string remarks = 7;
+}
+
+message MsgApproveLoanResponse {
+  bool success = 1;
+  cosmos.base.v1beta1.Coin total_repayment = 2 [(gogoproto.nullable) = false];
+  string emi_amount = 3; // Monthly payment amount
+}
+
+// MsgRejectLoan - Reject business loan
+message MsgRejectLoan {
+  option (cosmos_proto.implements_interface) = "cosmos.base.v1beta1.Msg";
+  
+  string rejector = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string loan_id = 2;
+  string reason = 3;
+  repeated string improvement_suggestions = 4;
+}
+
+message MsgRejectLoanResponse {
+  bool success = 1;
+  string reapply_after_days = 2;
+}
+
+// MsgDisburseLoan - Disburse approved loan
+message MsgDisburseLoan {
+  option (cosmos_proto.implements_interface) = "cosmos.base.v1beta1.Msg";
+  
+  string disburser = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string loan_id = 2;
+  string disbursement_mode = 3; // BANK_TRANSFER, DHANPATA, CHEQUE
+  repeated DisbursementTranche tranches = 4; // For milestone-based disbursement
+}
+
+message DisbursementTranche {
+  cosmos.base.v1beta1.Coin amount = 1 [(gogoproto.nullable) = false];
+  string milestone = 2;
+  string expected_date = 3;
+}
+
+message MsgDisburseLoanResponse {
+  bool success = 1;
+  string transaction_hash = 2;
+  string next_milestone = 3;
+}
+
+// MsgRepayLoan - Repay business loan
+message MsgRepayLoan {
+  option (cosmos_proto.implements_interface) = "cosmos.base.v1beta1.Msg";
+  
+  string borrower = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string loan_id = 2;
+  cosmos.base.v1beta1.Coin repay_amount = 3 [(gogoproto.nullable) = false];
+  string payment_type = 4; // EMI, PREPAYMENT, FINAL_SETTLEMENT
+  string cultural_quote = 5;
+}
+
+message MsgRepayLoanResponse {
+  bool success = 1;
+  cosmos.base.v1beta1.Coin remaining_amount = 2 [(gogoproto.nullable) = false];
+  string loan_status = 3;
+  string next_emi_date = 4;
+  string prepayment_savings = 5; // Interest saved if prepayment
+}
+
+// MsgUpdateBusinessMetrics - Update business performance metrics
+message MsgUpdateBusinessMetrics {
+  option (cosmos_proto.implements_interface) = "cosmos.base.v1beta1.Msg";
+  
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string business_loan_id = 2;
+  cosmos.base.v1beta1.Coin monthly_revenue = 3 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin monthly_expenses = 4 [(gogoproto.nullable) = false];
+  int32 new_employees = 5;
+  string gst_filing_status = 6; // FILED, PENDING, DELAYED
+  string credit_utilization = 7; // Percentage of credit line used
+  string reporting_period = 8; // YYYY-MM
+}
+
+message MsgUpdateBusinessMetricsResponse {
+  bool success = 1;
+  string updated_credit_score = 2;
+  bool credit_line_increase_eligible = 3;
+}
+
+// MsgUpdateCreditLine - Update credit line for business
+message MsgUpdateCreditLine {
+  option (cosmos_proto.implements_interface) = "cosmos.base.v1beta1.Msg";
+  
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string business_loan_id = 2;
+  cosmos.base.v1beta1.Coin new_credit_limit = 3 [(gogoproto.nullable) = false];
+  string reason = 4;
+  int64 validity_period = 5; // in days
+}
+
+message MsgUpdateCreditLineResponse {
+  bool success = 1;
+  cosmos.base.v1beta1.Coin previous_limit = 2 [(gogoproto.nullable) = false];
+  string effective_date = 3;
+}

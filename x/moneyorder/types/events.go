@@ -59,7 +59,7 @@ const (
 	EventTypeAgriLoanDisbursed = "agri_loan_disbursed"
 	EventTypeAgriLoanRepaid = "agri_loan_repaid"
 	EventTypePoolRebalanced = "pool_rebalanced"
-	EventTypePensionMaturityProcessed = "pension_maturity_processed"
+	EventTypeSurakshaMaturityProcessed = "suraksha_maturity_processed"
 	EventTypeMonthlyDistribution = "monthly_distribution"
 	
 	// Cultural events

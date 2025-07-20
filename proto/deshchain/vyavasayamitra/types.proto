@@ -1,0 +1,205 @@
+syntax = "proto3";
+package deshchain.vyavasayamitra;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+option go_package = "github.com/deshchain/x/vyavasayamitra/types";
+
+// Params defines the parameters for the business lending module
+message Params {
+  option (gogoproto.goproto_stringer) = false;
+  
+  string min_interest_rate = 1; // 8%
+  string max_interest_rate = 2; // 12%
+  string startup_discount = 3; // 1% discount for startups
+  string women_entrepreneur_discount = 4; // 1.5% discount
+  int64 min_loan_duration = 5; // 6 months
+  int64 max_loan_duration = 6; // 84 months (7 years)
+  cosmos.base.v1beta1.Coin min_loan_amount = 7 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin max_loan_amount = 8 [(gogoproto.nullable) = false];
+  repeated string authorized_approvers = 9;
+  repeated string authorized_disbursers = 10;
+  repeated string gst_verifiers = 11;
+  string early_repayment_discount = 12; // 3%
+  string invoice_financing_ltv = 13; // 80% loan-to-value
+  map<string, string> sector_risk_premiums = 14; // Sector-wise risk adjustments
+  map<string, string> pincode_limits = 15; // PIN code to max loan amount
+}
+
+// BusinessType represents different business categories
+enum BusinessType {
+  BUSINESS_TYPE_UNSPECIFIED = 0;
+  BUSINESS_TYPE_RETAIL = 1;
+  BUSINESS_TYPE_MANUFACTURING = 2;
+  BUSINESS_TYPE_SERVICES = 3;
+  BUSINESS_TYPE_TRADING = 4;
+  BUSINESS_TYPE_STARTUP = 5;
+  BUSINESS_TYPE_MSME = 6;
+  BUSINESS_TYPE_EXPORT = 7;
+  BUSINESS_TYPE_TECHNOLOGY = 8;
+}
+
+// LoanPurpose represents the purpose of business loan
+enum LoanPurpose {
+  LOAN_PURPOSE_UNSPECIFIED = 0;
+  LOAN_PURPOSE_WORKING_CAPITAL = 1;
+  LOAN_PURPOSE_EXPANSION = 2;
+  LOAN_PURPOSE_EQUIPMENT = 3;
+  LOAN_PURPOSE_INVENTORY = 4;
+  LOAN_PURPOSE_REAL_ESTATE = 5;
+  LOAN_PURPOSE_DEBT_CONSOLIDATION = 6;
+  LOAN_PURPOSE_MARKETING = 7;
+  LOAN_PURPOSE_R_AND_D = 8;
+}
+
+// LoanStatus represents the status of a business loan
+enum LoanStatus {
+  LOAN_STATUS_UNSPECIFIED = 0;
+  LOAN_STATUS_PENDING = 1;
+  LOAN_STATUS_UNDER_REVIEW = 2;
+  LOAN_STATUS_APPROVED = 3;
+  LOAN_STATUS_REJECTED = 4;
+  LOAN_STATUS_ACTIVE = 5;
+  LOAN_STATUS_REPAID = 6;
+  LOAN_STATUS_DEFAULTED = 7;
+  LOAN_STATUS_RESTRUCTURED = 8;
+  LOAN_STATUS_WRITTEN_OFF = 9;
+}
+
+// BusinessLoan represents a business loan application and details
+message BusinessLoan {
+  string loan_id = 1;
+  string borrower = 2;
+  string dhanpata_id = 3;
+  string business_name = 4;
+  BusinessType business_type = 5;
+  string gst_number = 6;
+  cosmos.base.v1beta1.Coin loan_amount = 7 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin approved_amount = 8 [(gogoproto.nullable) = false];
+  LoanPurpose loan_purpose = 9;
+  string interest_rate = 10;
+  int64 duration = 11; // in months
+  LoanStatus status = 12;
+  google.protobuf.Timestamp application_date = 13 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp approval_date = 14 [(gogoproto.stdtime) = true];
+  google.protobuf.Timestamp disbursement_date = 15 [(gogoproto.stdtime) = true];
+  google.protobuf.Timestamp completion_date = 16 [(gogoproto.stdtime) = true];
+  cosmos.base.v1beta1.Coin annual_revenue = 17 [(gogoproto.nullable) = false];
+  int32 employee_count = 18;
+  int32 business_age = 19; // in months
+  string pincode = 20;
+  string collateral_details = 21;
+  string business_plan_hash = 22; // IPFS hash
+  string financial_statements_hash = 23; // IPFS hash
+  cosmos.base.v1beta1.Coin total_repayment = 24 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin repaid_amount = 25 [(gogoproto.nullable) = false];
+  google.protobuf.Timestamp last_payment_date = 26 [(gogoproto.stdtime) = true];
+  google.protobuf.Timestamp next_payment_date = 27 [(gogoproto.stdtime) = true];
+  string repayment_schedule = 28; // MONTHLY, QUARTERLY, BALLOON
+  cosmos.base.v1beta1.Coin emi_amount = 29 [(gogoproto.nullable) = false];
+  string remarks = 30;
+  string cultural_quote = 31;
+  CreditLine credit_line = 32;
+  repeated RepaymentRecord repayment_history = 33;
+  repeated InvoiceFinancing invoice_financings = 34;
+}
+
+// CreditLine represents a revolving credit facility
+message CreditLine {
+  cosmos.base.v1beta1.Coin credit_limit = 1 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin utilized_amount = 2 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin available_credit = 3 [(gogoproto.nullable) = false];
+  google.protobuf.Timestamp validity_date = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  string interest_rate = 5;
+  bool is_active = 6;
+}
+
+// InvoiceFinancing represents invoice-based financing
+message InvoiceFinancing {
+  string financing_id = 1;
+  string loan_id = 2;
+  string invoice_number = 3;
+  cosmos.base.v1beta1.Coin invoice_amount = 4 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin financed_amount = 5 [(gogoproto.nullable) = false];
+  google.protobuf.Timestamp invoice_date = 6 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp due_date = 7 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  string buyer_gst_number = 8;
+  string buyer_name = 9;
+  string invoice_document_hash = 10; // IPFS hash
+  string status = 11; // PENDING, APPROVED, PAID, OVERDUE
+  google.protobuf.Timestamp financing_date = 12 [(gogoproto.stdtime) = true];
+  google.protobuf.Timestamp repayment_date = 13 [(gogoproto.stdtime) = true];
+}
+
+// BusinessProfile represents a business entity's profile
+message BusinessProfile {
+  string address = 1;
+  string dhanpata_id = 2;
+  string business_name = 3;
+  BusinessType business_type = 4;
+  string gst_number = 5;
+  string pincode = 6;
+  int64 total_loans = 7;
+  int64 active_loans = 8;
+  int64 repaid_loans = 9;
+  int64 defaulted_loans = 10;
+  int32 credit_score = 11; // 300-900
+  google.protobuf.Timestamp joined_date = 12 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin total_borrowed = 13 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin total_repaid = 14 [(gogoproto.nullable) = false];
+  MerchantRating merchant_rating = 15;
+  repeated string business_licenses = 16;
+  bool is_verified = 17;
+  bool is_women_owned = 18;
+  bool is_startup = 19;
+  int32 years_in_business = 20;
+}
+
+// MerchantRating represents business ratings
+message MerchantRating {
+  double overall_rating = 1; // 0-5
+  int64 total_reviews = 2;
+  double payment_punctuality = 3; // 0-5
+  double business_stability = 4; // 0-5
+  double growth_trajectory = 5; // 0-5
+  google.protobuf.Timestamp last_updated = 6 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+// RepaymentRecord tracks individual repayments
+message RepaymentRecord {
+  cosmos.base.v1beta1.Coin amount = 1 [(gogoproto.nullable) = false];
+  google.protobuf.Timestamp date = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  string transaction_hash = 3;
+  string payment_type = 4; // EMI, PREPAYMENT, FINAL_SETTLEMENT
+  cosmos.base.v1beta1.Coin principal_component = 5 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin interest_component = 6 [(gogoproto.nullable) = false];
+}
+
+// BusinessMetrics represents monthly business performance
+message BusinessMetrics {
+  string loan_id = 1;
+  string reporting_period = 2; // YYYY-MM
+  cosmos.base.v1beta1.Coin monthly_revenue = 3 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin monthly_expenses = 4 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin net_profit = 5 [(gogoproto.nullable) = false];
+  int32 employee_count = 6;
+  string gst_filing_status = 7;
+  string credit_utilization = 8; // Percentage
+  google.protobuf.Timestamp update_date = 9 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  string growth_rate = 10; // YoY or MoM
+}
+
+// FestivalOffer represents special festival period benefits for businesses
+message FestivalOffer {
+  string festival_id = 1;
+  string festival_name = 2;
+  string interest_reduction = 3; // e.g., "1.5%"
+  string processing_fee_waiver = 4; // e.g., "50%"
+  google.protobuf.Timestamp start_date = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp end_date = 6 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  repeated BusinessType eligible_business_types = 7;
+  repeated string eligible_pincodes = 8; // empty means all
+  cosmos.base.v1beta1.Coin min_loan_amount = 9; // Minimum loan for offer
+}

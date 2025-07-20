@@ -1,0 +1,23 @@
+syntax = "proto3";
+package deshchain.cultural.v1;
+
+import "cosmos/msg/v1/msg.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/cultural/types";
+
+// Msg defines the cultural Msg service
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+  
+  // TODO: Add message handlers when implementing admin functions
+  // Example future messages:
+  // rpc AddQuote(MsgAddQuote) returns (MsgAddQuoteResponse);
+  // rpc UpdateQuote(MsgUpdateQuote) returns (MsgUpdateQuoteResponse);
+  // rpc DeleteQuote(MsgDeleteQuote) returns (MsgDeleteQuoteResponse);
+  // rpc AddHistoricalEvent(MsgAddHistoricalEvent) returns (MsgAddHistoricalEventResponse);
+  // rpc AddCulturalWisdom(MsgAddCulturalWisdom) returns (MsgAddCulturalWisdomResponse);
+}
+
+// Placeholder message types for future implementation
+// These would allow authorized addresses to manage cultural content

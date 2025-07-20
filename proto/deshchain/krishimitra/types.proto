@@ -1,0 +1,151 @@
+syntax = "proto3";
+package deshchain.krishimitra;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+option go_package = "github.com/deshchain/x/krishimitra/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (gogoproto.goproto_stringer) = false;
+  
+  string min_interest_rate = 1; // 6%
+  string max_interest_rate = 2; // 9%
+  string kcc_discount = 3; // 1% discount for KCC holders
+  int64 min_loan_duration = 4; // 3 months
+  int64 max_loan_duration = 5; // 60 months
+  cosmos.base.v1beta1.Coin min_loan_amount = 6 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin max_loan_amount = 7 [(gogoproto.nullable) = false];
+  repeated string authorized_approvers = 8;
+  repeated string authorized_disbursers = 9;
+  repeated string authorized_data_providers = 10;
+  string early_repayment_discount = 11; // 2%
+  map<string, string> pincode_limits = 12; // PIN code to max loan amount
+}
+
+// CropType represents different crop categories
+enum CropType {
+  CROP_TYPE_UNSPECIFIED = 0;
+  CROP_TYPE_KHARIF = 1; // Monsoon crops (June-October)
+  CROP_TYPE_RABI = 2; // Winter crops (October-March)
+  CROP_TYPE_ZAID = 3; // Summer crops (April-June)
+  CROP_TYPE_PERENNIAL = 4; // Year-round crops
+}
+
+// LoanStatus represents the status of a loan
+enum LoanStatus {
+  LOAN_STATUS_UNSPECIFIED = 0;
+  LOAN_STATUS_PENDING = 1;
+  LOAN_STATUS_APPROVED = 2;
+  LOAN_STATUS_REJECTED = 3;
+  LOAN_STATUS_ACTIVE = 4;
+  LOAN_STATUS_REPAID = 5;
+  LOAN_STATUS_DEFAULTED = 6;
+  LOAN_STATUS_WRITTEN_OFF = 7;
+}
+
+// AgriculturalLoan represents a farmer's loan
+message AgriculturalLoan {
+  string loan_id = 1;
+  string borrower = 2;
+  string dhanpata_id = 3;
+  cosmos.base.v1beta1.Coin amount = 4 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin requested_amount = 5 [(gogoproto.nullable) = false];
+  string interest_rate = 6;
+  int64 duration = 7; // in months
+  LoanStatus status = 8;
+  google.protobuf.Timestamp application_date = 9 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp approval_date = 10 [(gogoproto.stdtime) = true];
+  google.protobuf.Timestamp disbursement_date = 11 [(gogoproto.stdtime) = true];
+  google.protobuf.Timestamp completion_date = 12 [(gogoproto.stdtime) = true];
+  CropType crop_type = 13;
+  string land_area = 14; // in acres
+  string land_ownership = 15; // document hash
+  string pincode = 16;
+  string purpose = 17;
+  string kcc_number = 18;
+  cosmos.base.v1beta1.Coin total_repayment = 19 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin repaid_amount = 20 [(gogoproto.nullable) = false];
+  google.protobuf.Timestamp last_payment_date = 21 [(gogoproto.stdtime) = true];
+  google.protobuf.Timestamp next_payment_date = 22 [(gogoproto.stdtime) = true];
+  string repayment_schedule = 23; // MONTHLY, QUARTERLY, HARVEST_BASED
+  string remarks = 24;
+  string cultural_quote = 25;
+  repeated RepaymentRecord repayment_history = 26;
+}
+
+// RepaymentRecord tracks individual repayments
+message RepaymentRecord {
+  cosmos.base.v1beta1.Coin amount = 1 [(gogoproto.nullable) = false];
+  google.protobuf.Timestamp date = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  string transaction_hash = 3;
+  string mode = 4; // ONLINE, CASH, BANK_TRANSFER
+}
+
+// FarmerProfile represents a farmer's profile and credit history
+message FarmerProfile {
+  string address = 1;
+  string dhanpata_id = 2;
+  string pincode = 3;
+  int64 total_loans = 4;
+  int64 active_loans = 5;
+  int64 repaid_loans = 6;
+  int64 defaulted_loans = 7;
+  int32 credit_score = 8; // 300-900
+  google.protobuf.Timestamp joined_date = 9 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  repeated string kcc_numbers = 10;
+  cosmos.base.v1beta1.Coin total_borrowed = 11 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin total_repaid = 12 [(gogoproto.nullable) = false];
+  repeated CropType preferred_crops = 13;
+  string land_holdings = 14; // total acres
+  bool is_verified = 15;
+}
+
+// CropData represents crop yield and market data
+message CropData {
+  string loan_id = 1;
+  string crop_yield = 2; // in quintals
+  string market_price = 3; // per quintal
+  string weather_event = 4;
+  google.protobuf.Timestamp update_date = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  string remarks = 6;
+}
+
+// InsuranceClaim represents a crop insurance claim
+message InsuranceClaim {
+  string claim_id = 1;
+  string loan_id = 2;
+  string claimant = 3;
+  string claim_type = 4; // WEATHER, PEST, MARKET_PRICE
+  cosmos.base.v1beta1.Coin claim_amount = 5 [(gogoproto.nullable) = false];
+  string evidence = 6; // IPFS hash
+  string status = 7; // PENDING, APPROVED, REJECTED, PAID
+  google.protobuf.Timestamp claim_date = 8 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp settlement_date = 9 [(gogoproto.stdtime) = true];
+  string assessor_remarks = 10;
+}
+
+// KisanCreditCard represents a registered KCC
+message KisanCreditCard {
+  string kcc_number = 1;
+  string farmer_address = 2;
+  string issuing_bank = 3;
+  cosmos.base.v1beta1.Coin credit_limit = 4 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin utilized_amount = 5 [(gogoproto.nullable) = false];
+  google.protobuf.Timestamp issue_date = 6 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp validity_date = 7 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  bool is_active = 8;
+}
+
+// FestivalBonus represents special festival period benefits
+message FestivalBonus {
+  string festival_id = 1;
+  string festival_name = 2;
+  string interest_reduction = 3; // e.g., "1%"
+  google.protobuf.Timestamp start_date = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp end_date = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  repeated string eligible_pincodes = 6; // empty means all
+  repeated CropType eligible_crops = 7; // empty means all
+}

@@ -59,7 +59,7 @@ func (s *IntegrationTestSuite) TestUnifiedLiquidityPoolIntegration() {
 
 		// Test hook integration
 		hooks := s.keeper.Hooks()
-		err := hooks.AfterPensionContribution(s.ctx, pensionAccountID, contributor, contribution, villageCode)
+		err := hooks.AfterSurakshaContribution(s.ctx, pensionAccountID, contributor, contribution, villageCode)
 		s.Require().NoError(err)
 
 		// Verify unified pool was created and liquidity added
@@ -69,7 +69,7 @@ func (s *IntegrationTestSuite) TestUnifiedLiquidityPoolIntegration() {
 
 		// Verify allocation percentages
 		s.Require().Equal(uint64(1), unifiedPool.VillagePoolId)
-		s.Require().True(unifiedPool.PensionReserve.IsPositive())
+		s.Require().True(unifiedPool.SurakshaReserve.IsPositive())
 		s.Require().True(unifiedPool.DexLiquidity.IsPositive())
 		s.Require().True(unifiedPool.AgriLendingPool.IsPositive())
 	})
@@ -159,17 +159,17 @@ func (s *IntegrationTestSuite) TestUnifiedLiquidityPoolIntegration() {
 		poolId := uint64(1)
 		initialPool, found := s.keeper.GetUnifiedPoolByVillageId(s.ctx, poolId)
 		s.Require().True(found)
-		initialReserve := initialPool.PensionReserve
+		initialReserve := initialPool.SurakshaReserve
 
 		// Process maturity
 		hooks := s.keeper.Hooks()
-		err := hooks.AfterPensionMaturity(s.ctx, pensionAccountID, beneficiary, maturityAmount)
+		err := hooks.AfterSurakshaMaturity(s.ctx, pensionAccountID, beneficiary, maturityAmount)
 		s.Require().NoError(err)
 
 		// Verify pension reserve was used
 		updatedPool, found := s.keeper.GetUnifiedPoolByVillageId(s.ctx, poolId)
 		s.Require().True(found)
-		s.Require().True(updatedPool.PensionReserve.AmountOf("unamo").LT(initialReserve.AmountOf("unamo")))
+		s.Require().True(updatedPool.SurakshaReserve.AmountOf("unamo").LT(initialReserve.AmountOf("unamo")))
 	})
 
 	s.Run("Monthly Revenue Distribution", func() {
@@ -374,11 +374,11 @@ func (s *IntegrationTestSuite) TestErrorHandling() {
 		hooks := s.keeper.Hooks()
 
 		// Invalid pension contribution
-		err := hooks.AfterPensionContribution(s.ctx, "", sdk.AccAddress{}, sdk.Coin{}, "")
+		err := hooks.AfterSurakshaContribution(s.ctx, "", sdk.AccAddress{}, sdk.Coin{}, "")
 		s.Require().Error(err)
 
 		// Invalid maturity processing
-		err = hooks.AfterPensionMaturity(s.ctx, "", sdk.AccAddress{}, sdk.Coin{})
+		err = hooks.AfterSurakshaMaturity(s.ctx, "", sdk.AccAddress{}, sdk.Coin{})
 		s.Require().Error(err)
 	})
 }
@@ -543,11 +543,11 @@ func (s *IntegrationTestSuite) TestCrossModuleIntegration() {
 		cityCode := "DEL"
 
 		// Create urban pension scheme
-		scheme, err := s.keeper.CreateUrbanPensionScheme(s.ctx, contributorAddr, cityCode, sdk.AccAddress{})
+		scheme, err := s.keeper.CreateUrbanSurakshaScheme(s.ctx, contributorAddr, cityCode, sdk.AccAddress{})
 		s.Require().NoError(err)
 
 		// Process monthly contribution
-		err = s.keeper.ProcessUrbanPensionContribution(s.ctx, scheme.SchemeID, contributorAddr, monthlyContribution)
+		err = s.keeper.ProcessUrbanSurakshaContribution(s.ctx, scheme.SchemeID, contributorAddr, monthlyContribution)
 		s.Require().NoError(err)
 
 		// Verify liquidity was added to SME pool (35% allocation)

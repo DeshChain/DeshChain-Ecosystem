@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package deshchain.liquiditymanager.v1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/liquiditymanager/types";
+
+// Params defines the parameters for the liquidity manager module.
+message Params {
+  option (gogoproto.goproto_stringer) = false;
+
+  // Lending thresholds for graduated activation
+  string lending_basic_threshold = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+
+  string lending_medium_threshold = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+
+  string lending_full_threshold = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+
+  // Reserve ratios for risk management
+  string minimum_reserve_ratio = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+
+  string emergency_reserve_ratio = 5 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}

@@ -1,0 +1,65 @@
+{
+  "expo": {
+    "name": "DhanSetu",
+    "slug": "dhansetu",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FF9933"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "bundleIdentifier": "com.deshchain.dhansetu",
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "DhanSetu needs camera access to scan QR codes for sending and receiving transactions.",
+        "NSFaceIDUsageDescription": "DhanSetu uses Face ID to secure your wallet and authenticate transactions.",
+        "NSLocalNetworkUsageDescription": "DhanSetu needs local network access to connect to DeshChain nodes."
+      }
+    },
+    "android": {
+      "package": "com.deshchain.dhansetu",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FF9933"
+      },
+      "permissions": [
+        "CAMERA",
+        "USE_BIOMETRIC",
+        "USE_FINGERPRINT",
+        "INTERNET",
+        "ACCESS_NETWORK_STATE"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-secure-store",
+      "expo-local-authentication",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow DhanSetu to access your camera for QR code scanning"
+        }
+      ]
+    ],
+    "extra": {
+      "deshchainRpc": "https://rpc.deshchain.com",
+      "deshchainApi": "https://api.deshchain.com",
+      "supportedLanguages": [
+        "en", "hi", "bn", "te", "mr", "ta", "gu", "ur", "kn", "or",
+        "ml", "pa", "as", "mai", "sat", "ks", "ne", "kok", "sd", "mni", "doi", "sa"
+      ],
+      "defaultCurrency": "INR",
+      "nativeToken": "NAMO"
+    }
+  }
+}

@@ -1,0 +1,102 @@
+# Makefile for DeshChain Lending Modules Testing
+
+.PHONY: test-lending test-krishi test-vyavasaya test-shiksha test-lending-integration test-lending-benchmark lint-lending
+
+# Test all lending modules
+test-lending:
+	@echo "Running all lending module tests..."
+	go test -v ./x/krishimitra/keeper/...
+	go test -v ./x/vyavasayamitra/keeper/...
+	go test -v ./x/shikshamitra/keeper/...
+	go test -v ./x/lending_test_runner.go
+
+# Test individual modules
+test-krishi:
+	@echo "Running Krishi Mitra tests..."
+	go test -v ./x/krishimitra/keeper/...
+
+test-vyavasaya:
+	@echo "Running Vyavasaya Mitra tests..."
+	go test -v ./x/vyavasayamitra/keeper/...
+
+test-shiksha:
+	@echo "Running Shiksha Mitra tests..."
+	go test -v ./x/shikshamitra/keeper/...
+
+# Test integration between modules
+test-lending-integration:
+	@echo "Running lending modules integration tests..."
+	go test -v -run TestLendingSuiteIntegration ./x/
+
+# Benchmark lending modules
+test-lending-benchmark:
+	@echo "Running lending modules benchmarks..."
+	go test -v -bench=. -run=Benchmark ./x/krishimitra/keeper/...
+	go test -v -bench=. -run=Benchmark ./x/vyavasayamitra/keeper/...
+	go test -v -bench=. -run=Benchmark ./x/shikshamitra/keeper/...
+	go test -v -bench=. -run=BenchmarkLendingModules ./x/
+
+# Test compliance
+test-lending-compliance:
+	@echo "Running lending compliance tests..."
+	go test -v -run TestLendingModuleCompliance ./x/
+
+# Coverage report for lending modules
+test-lending-coverage:
+	@echo "Generating coverage report for lending modules..."
+	go test -coverprofile=lending_coverage.out ./x/krishimitra/keeper/... ./x/vyavasayamitra/keeper/... ./x/shikshamitra/keeper/...
+	go tool cover -html=lending_coverage.out -o lending_coverage.html
+	@echo "Coverage report generated: lending_coverage.html"
+
+# Lint lending module code
+lint-lending:
+	@echo "Linting lending modules..."
+	golangci-lint run ./x/krishimitra/...
+	golangci-lint run ./x/vyavasayamitra/...
+	golangci-lint run ./x/shikshamitra/...
+
+# Run all lending tests with race detection
+test-lending-race:
+	@echo "Running lending tests with race detection..."
+	go test -race -v ./x/krishimitra/keeper/...
+	go test -race -v ./x/vyavasayamitra/keeper/...
+	go test -race -v ./x/shikshamitra/keeper/...
+
+# Test specific scenarios
+test-interest-rates:
+	@echo "Testing interest rate calculations across all modules..."
+	go test -v -run "TestCalculateInterestRate|Interest" ./x/krishimitra/keeper/... ./x/vyavasayamitra/keeper/... ./x/shikshamitra/keeper/...
+
+test-eligibility:
+	@echo "Testing eligibility checks across all modules..."
+	go test -v -run "TestCheckEligibility|Eligibility" ./x/krishimitra/keeper/... ./x/vyavasayamitra/keeper/... ./x/shikshamitra/keeper/...
+
+test-festival-integration:
+	@echo "Testing festival integration across all modules..."
+	go test -v -run "Festival" ./x/krishimitra/keeper/... ./x/vyavasayamitra/keeper/... ./x/shikshamitra/keeper/...
+
+# Clean test artifacts
+clean-lending-tests:
+	rm -f lending_coverage.out lending_coverage.html
+	go clean -testcache
+
+# Help
+help-lending:
+	@echo "Available lending test commands:"
+	@echo "  test-lending              - Run all lending module tests"
+	@echo "  test-krishi              - Run Krishi Mitra tests only"
+	@echo "  test-vyavasaya           - Run Vyavasaya Mitra tests only"
+	@echo "  test-shiksha             - Run Shiksha Mitra tests only"
+	@echo "  test-lending-integration - Run integration tests"
+	@echo "  test-lending-benchmark   - Run benchmark tests"
+	@echo "  test-lending-compliance  - Run compliance tests"
+	@echo "  test-lending-coverage    - Generate coverage report"
+	@echo "  test-lending-race        - Run tests with race detection"
+	@echo "  test-interest-rates      - Test interest rate calculations"
+	@echo "  test-eligibility         - Test eligibility checks"
+	@echo "  test-festival-integration- Test festival integration"
+	@echo "  lint-lending             - Lint lending module code"
+	@echo "  clean-lending-tests      - Clean test artifacts"
+
+# Default target
+all: test-lending test-lending-integration test-lending-compliance

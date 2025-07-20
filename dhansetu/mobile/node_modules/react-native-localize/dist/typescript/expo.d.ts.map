@@ -1,0 +1,1 @@
+{"version":3,"file":"expo.d.ts","sourceRoot":"","sources":["../../src/expo.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,IAAI,MAAM,sBAAsB,CAAC;AAO7C,KAAK,KAAK,GAAG;IACX,OAAO,CAAC,EAAE,MAAM,EAAE,GAAG;QAAE,OAAO,CAAC,EAAE,MAAM,EAAE,CAAC;QAAC,GAAG,CAAC,EAAE,MAAM,EAAE,CAAA;KAAE,CAAC;CAC7D,CAAC;;AAmGF,wBAAsE"}

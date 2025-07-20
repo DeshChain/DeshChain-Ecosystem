@@ -103,6 +103,39 @@ import (
 	moneyorder "github.com/deshchain/deshchain/x/moneyorder"
 	moneyorderkeeper "github.com/deshchain/deshchain/x/moneyorder/keeper"
 	moneyordertypes "github.com/deshchain/deshchain/x/moneyorder/types"
+
+	// Cultural imports
+	cultural "github.com/deshchain/deshchain/x/cultural"
+	culturalkeeper "github.com/deshchain/deshchain/x/cultural/keeper"
+	culturaltypes "github.com/deshchain/deshchain/x/cultural/types"
+
+	// NAMO imports
+	namo "github.com/deshchain/deshchain/x/namo"
+	namokeeper "github.com/deshchain/deshchain/x/namo/keeper"
+	namotypes "github.com/deshchain/deshchain/x/namo/types"
+
+	// DhanSetu imports
+	dhansetu "github.com/deshchain/deshchain/x/dhansetu"
+	dhansetukeeper "github.com/deshchain/deshchain/x/dhansetu/keeper"
+	dhansettypes "github.com/deshchain/deshchain/x/dhansetu/types"
+
+	// Sikkebaaz imports
+	sikkebaaz "github.com/deshchain/namo/x/sikkebaaz"
+	sikkebaazkeeper "github.com/deshchain/namo/x/sikkebaaz/keeper"
+	sikkebaaztypes "github.com/deshchain/namo/x/sikkebaaz/types"
+
+	// Lending Suite imports
+	krishimitra "github.com/deshchain/namo/x/krishimitra"
+	krishimitrakeeper "github.com/deshchain/namo/x/krishimitra/keeper"
+	krishimitratypes "github.com/deshchain/namo/x/krishimitra/types"
+
+	vyavasayamitra "github.com/deshchain/namo/x/vyavasayamitra"
+	vyavasayamitrakeeper "github.com/deshchain/namo/x/vyavasayamitra/keeper"
+	vyavasayamitratypes "github.com/deshchain/namo/x/vyavasayamitra/types"
+
+	shikshamitra "github.com/deshchain/namo/x/shikshamitra"
+	shikshamitrakeeper "github.com/deshchain/namo/x/shikshamitra/keeper"
+	shikshamitratypes "github.com/deshchain/namo/x/shikshamitra/types"
 )
 
 const (
@@ -143,6 +176,13 @@ var (
 		vesting.AppModuleBasic{},
 		consensus.AppModuleBasic{},
 		moneyorder.AppModuleBasic{},
+		cultural.AppModuleBasic{},
+		namo.AppModuleBasic{},
+		dhansetu.AppModuleBasic{},
+		sikkebaaz.AppModuleBasic{},
+		krishimitra.AppModuleBasic{},
+		vyavasayamitra.AppModuleBasic{},
+		shikshamitra.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -159,6 +199,47 @@ var (
 		"operations_fund":              nil, // Operations fund wallet
 		"burn_address":                 {authtypes.Burner}, // Token burn address
 		moneyordertypes.ModuleName:     nil, // Money Order module
+		culturaltypes.ModuleName:       nil, // Cultural module
+		namotypes.ModuleName:           nil, // NAMO token module
+		namotypes.VestingPoolName:      nil, // NAMO vesting pool
+		namotypes.BurnPoolName:         {authtypes.Burner}, // NAMO burn pool
+		dhansettypes.ModuleName:        nil, // DhanSetu integration module
+		sikkebaaztypes.ModuleName:      nil, // Sikkebaaz launchpad module
+		// Sikkebaaz Module Accounts
+		sikkebaaztypes.SikkebaazFeeCollector:    nil, // Fee collection
+		sikkebaaztypes.LaunchEscrowAccount:      nil, // Launch escrow
+		sikkebaaztypes.LiquidityLockAccount:     nil, // Liquidity locks
+		sikkebaaztypes.CreatorRewardsPool:       nil, // Creator rewards
+		sikkebaaztypes.CommunityIncentivePool:   nil, // Community incentives
+		sikkebaaztypes.LocalNGOPool:             nil, // Local NGO donations
+		sikkebaaztypes.FestivalBonusPool:        nil, // Festival bonuses
+		sikkebaaztypes.SecurityAuditFund:        nil, // Security audits
+		sikkebaaztypes.EmergencyFund:            nil, // Emergency controls
+		// Platform Revenue Distribution Accounts
+		"platform_development_fund":    nil, // 30% - Platform development
+		"platform_community_treasury":  nil, // 25% - Community programs
+		"platform_liquidity_pool":      nil, // 20% - Market liquidity
+		"ngo_donation_pool":            nil, // 10% - Social impact
+		"platform_emergency_reserve":   nil, // 10% - Risk management
+		"founder_royalty_pool":         nil, // 5% - Founder compensation
+		// Transaction Tax Distribution Accounts (for future use)
+		"validator_pool":               nil, // Validator rewards
+		"community_rewards_pool":       nil, // Community incentives
+		"tech_innovation_pool":         nil, // R&D and acquisitions
+		"operations_pool":              nil, // Platform maintenance
+		"talent_acquisition_pool":      nil, // Global hiring
+		"strategic_reserve_pool":       nil, // Emergency fund
+		"co_founders_pool":             nil, // Co-founder compensation
+		"angel_investors_pool":         nil, // Angel investor rewards
+		// Lending Suite Module Accounts
+		krishimitratypes.ModuleName:     nil, // Agricultural lending
+		vyavasayamitratypes.ModuleName:   nil, // Business lending
+		shikshamitratypes.ModuleName:     nil, // Education loans
+		"krishi_loan_pool":              nil, // Agricultural loan disbursement
+		"vyavasaya_loan_pool":           nil, // Business loan disbursement
+		"shiksha_loan_pool":             nil, // Education loan disbursement
+		"lending_insurance_pool":        nil, // Loan default insurance
+		"lending_subsidy_pool":          nil, // Interest subsidy pool
 	}
 )
 
@@ -210,6 +291,13 @@ type DeshChainApp struct {
 	FeeGrantKeeper        feegrantkeeper.Keeper
 	ConsensusParamsKeeper consensusparamkeeper.Keeper
 	MoneyOrderKeeper      moneyorderkeeper.Keeper
+	CulturalKeeper        culturalkeeper.Keeper
+	NAMOKeeper            namokeeper.Keeper
+	DhanSetuKeeper        dhansetukeeper.Keeper
+	SikkebaazKeeper       sikkebaazkeeper.Keeper
+	KrishiMitraKeeper     krishimitrakeeper.Keeper
+	VyavasayaMitraKeeper  vyavasayamitrakeeper.Keeper
+	ShikshaMitraKeeper    shikshamitrakeeper.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -250,10 +338,16 @@ func New(
 		minttypes.StoreKey, distrtypes.StoreKey, slashingtypes.StoreKey,
 		govtypes.StoreKey, paramstypes.StoreKey, upgradetypes.StoreKey, feegrant.StoreKey,
 		evidencetypes.StoreKey, authzkeeper.StoreKey, consensusparamtypes.StoreKey,
-		moneyordertypes.StoreKey,
+		moneyordertypes.StoreKey, culturaltypes.StoreKey, namotypes.StoreKey, dhansettypes.StoreKey,
+		sikkebaaztypes.StoreKey, krishimitratypes.StoreKey, vyavasayamitratypes.StoreKey, 
+		shikshamitratypes.StoreKey,
 	)
 	tkeys := storetypes.NewTransientStoreKeys(paramstypes.TStoreKey)
-	memKeys := storetypes.NewMemoryStoreKeys()
+	memKeys := storetypes.NewMemoryStoreKeys(
+		dhansettypes.MemStoreKey, sikkebaaztypes.MemStoreKey,
+		krishimitratypes.MemStoreKey, vyavasayamitratypes.MemStoreKey,
+		shikshamitratypes.MemStoreKey,
+	)
 
 	app := &DeshChainApp{
 		BaseApp:           bApp,
@@ -348,6 +442,81 @@ func New(
 		app.GetSubspace(moneyordertypes.ModuleName),
 	)
 
+	// Initialize Cultural Keeper
+	app.CulturalKeeper = culturalkeeper.NewKeeper(
+		appCodec,
+		keys[culturaltypes.StoreKey],
+		app.GetSubspace(culturaltypes.ModuleName),
+	)
+
+	// Initialize NAMO Keeper
+	app.NAMOKeeper = namokeeper.NewKeeper(
+		appCodec,
+		keys[namotypes.StoreKey],
+		app.GetSubspace(namotypes.ModuleName),
+		app.AccountKeeper,
+		app.BankKeeper,
+	)
+
+	// Initialize DhanSetu Keeper
+	app.DhanSetuKeeper = dhansetukeeper.NewKeeper(
+		appCodec,
+		keys[dhansettypes.StoreKey],
+		memKeys[dhansettypes.MemStoreKey],
+		app.GetSubspace(dhansettypes.ModuleName),
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.MoneyOrderKeeper,
+		app.CulturalKeeper,
+		app.NAMOKeeper,
+	)
+
+	// Initialize Sikkebaaz Keeper
+	app.SikkebaazKeeper = sikkebaazkeeper.NewKeeper(
+		appCodec,
+		keys[sikkebaaztypes.StoreKey],
+		memKeys[sikkebaaztypes.MemStoreKey],
+		app.GetSubspace(sikkebaaztypes.ModuleName),
+		app.BankKeeper,
+		app.AccountKeeper,
+		app.CulturalKeeper,
+		app.NAMOKeeper, // Treasury keeper interface
+	)
+
+	// Initialize Lending Suite Keepers
+	// Initialize Krishi Mitra (Agricultural Lending) Keeper
+	app.KrishiMitraKeeper = krishimitrakeeper.NewKeeper(
+		appCodec,
+		keys[krishimitratypes.StoreKey],
+		memKeys[krishimitratypes.MemStoreKey],
+		app.GetSubspace(krishimitratypes.ModuleName),
+		app.BankKeeper,
+		app.AccountKeeper,
+		app.DhanSetuKeeper, // For DhanPata verification
+	)
+
+	// Initialize Vyavasaya Mitra (Business Lending) Keeper
+	app.VyavasayaMitraKeeper = vyavasayamitrakeeper.NewKeeper(
+		appCodec,
+		keys[vyavasayamitratypes.StoreKey],
+		memKeys[vyavasayamitratypes.MemStoreKey],
+		app.GetSubspace(vyavasayamitratypes.ModuleName),
+		app.BankKeeper,
+		app.AccountKeeper,
+		app.DhanSetuKeeper, // For DhanPata verification
+	)
+
+	// Initialize Shiksha Mitra (Education Loans) Keeper
+	app.ShikshaMitraKeeper = shikshamitrakeeper.NewKeeper(
+		appCodec,
+		keys[shikshamitratypes.StoreKey],
+		memKeys[shikshamitratypes.MemStoreKey],
+		app.GetSubspace(shikshamitratypes.ModuleName),
+		app.BankKeeper,
+		app.AccountKeeper,
+		app.DhanSetuKeeper, // For DhanPata verification
+	)
+
 	// NOTE: we may consider parsing `appOpts` inside module constructors. For the moment
 	// we prefer to be more strict in what arguments the modules expect.
 	skipGenesisInvariants := cast.ToBool(appOpts.Get(crisis.FlagSkipGenesisInvariants))
@@ -375,6 +544,13 @@ func New(
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
 		moneyorder.NewAppModule(appCodec, app.MoneyOrderKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(moneyordertypes.ModuleName)),
+		cultural.NewAppModule(appCodec, app.CulturalKeeper, app.AccountKeeper, app.BankKeeper),
+		namo.NewAppModule(appCodec, app.NAMOKeeper, app.AccountKeeper, app.BankKeeper),
+		dhansetu.NewAppModule(appCodec, app.DhanSetuKeeper, app.AccountKeeper, app.BankKeeper),
+		sikkebaaz.NewAppModule(appCodec, app.SikkebaazKeeper, app.AccountKeeper, app.BankKeeper),
+		krishimitra.NewAppModule(appCodec, app.KrishiMitraKeeper, app.AccountKeeper, app.BankKeeper),
+		vyavasayamitra.NewAppModule(appCodec, app.VyavasayaMitraKeeper, app.AccountKeeper, app.BankKeeper),
+		shikshamitra.NewAppModule(appCodec, app.ShikshaMitraKeeper, app.AccountKeeper, app.BankKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -391,6 +567,13 @@ func New(
 		authz.ModuleName,
 		genutiltypes.ModuleName,
 		moneyordertypes.ModuleName,
+		culturaltypes.ModuleName,
+		namotypes.ModuleName,
+		dhansettypes.ModuleName,
+		sikkebaaztypes.ModuleName,
+		krishimitratypes.ModuleName,
+		vyavasayamitratypes.ModuleName,
+		shikshamitratypes.ModuleName,
 	)
 
 	app.mm.SetOrderEndBlockers(
@@ -400,6 +583,13 @@ func New(
 		feegrant.ModuleName,
 		genutiltypes.ModuleName,
 		moneyordertypes.ModuleName,
+		culturaltypes.ModuleName,
+		namotypes.ModuleName,
+		dhansettypes.ModuleName,
+		sikkebaaztypes.ModuleName,
+		krishimitratypes.ModuleName,
+		vyavasayamitratypes.ModuleName,
+		shikshamitratypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -425,6 +615,13 @@ func New(
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		moneyordertypes.ModuleName,
+		culturaltypes.ModuleName,
+		namotypes.ModuleName,
+		dhansettypes.ModuleName,
+		sikkebaaztypes.ModuleName,
+		krishimitratypes.ModuleName,
+		vyavasayamitratypes.ModuleName,
+		shikshamitratypes.ModuleName,
 	}
 	app.mm.SetOrderInitGenesis(genesisModuleOrder...)
 	app.mm.SetOrderExportGenesis(genesisModuleOrder...)
@@ -674,6 +871,9 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(govtypes.ModuleName)
 	paramsKeeper.Subspace(crisistypes.ModuleName)
 	paramsKeeper.Subspace(moneyordertypes.ModuleName)
+	paramsKeeper.Subspace(culturaltypes.ModuleName)
+	paramsKeeper.Subspace(namotypes.ModuleName)
+	paramsKeeper.Subspace(dhansettypes.ModuleName)
 
 	return paramsKeeper
 }

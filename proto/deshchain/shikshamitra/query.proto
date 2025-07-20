@@ -1,0 +1,200 @@
+syntax = "proto3";
+package deshchain.shikshamitra;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "deshchain/shikshamitra/types.proto";
+
+option go_package = "github.com/deshchain/x/shikshamitra/types";
+
+// Query defines the gRPC querier service for education lending
+service Query {
+  // Params queries the parameters of the module
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/deshchain/shikshamitra/params";
+  }
+  
+  // Loan queries a specific education loan by ID
+  rpc Loan(QueryLoanRequest) returns (QueryLoanResponse) {
+    option (google.api.http).get = "/deshchain/shikshamitra/loans/{loan_id}";
+  }
+  
+  // LoansByStudent queries all loans for a specific student
+  rpc LoansByStudent(QueryLoansByStudentRequest) returns (QueryLoansByStudentResponse) {
+    option (google.api.http).get = "/deshchain/shikshamitra/students/{student}/loans";
+  }
+  
+  // LoansByInstitution queries all loans for a specific institution
+  rpc LoansByInstitution(QueryLoansByInstitutionRequest) returns (QueryLoansByInstitutionResponse) {
+    option (google.api.http).get = "/deshchain/shikshamitra/institutions/{institution}/loans";
+  }
+  
+  // StudentProfile queries a student's profile
+  rpc StudentProfile(QueryStudentProfileRequest) returns (QueryStudentProfileResponse) {
+    option (google.api.http).get = "/deshchain/shikshamitra/students/{student}/profile";
+  }
+  
+  // ActiveScholarships queries active scholarship opportunities
+  rpc ActiveScholarships(QueryActiveScholarshipsRequest) returns (QueryActiveScholarshipsResponse) {
+    option (google.api.http).get = "/deshchain/shikshamitra/scholarships/active";
+  }
+  
+  // LoanStatistics queries overall loan statistics
+  rpc LoanStatistics(QueryLoanStatisticsRequest) returns (QueryLoanStatisticsResponse) {
+    option (google.api.http).get = "/deshchain/shikshamitra/statistics";
+  }
+  
+  // FestivalOffers queries active festival offers
+  rpc FestivalOffers(QueryFestivalOffersRequest) returns (QueryFestivalOffersResponse) {
+    option (google.api.http).get = "/deshchain/shikshamitra/festival-offers";
+  }
+  
+  // EligibilityCheck checks loan eligibility for a student
+  rpc EligibilityCheck(QueryEligibilityCheckRequest) returns (QueryEligibilityCheckResponse) {
+    option (google.api.http).get = "/deshchain/shikshamitra/eligibility/{student}";
+  }
+}
+
+// QueryParamsRequest is request for the Query/Params RPC method
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response for the Query/Params RPC method
+message QueryParamsResponse {
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryLoanRequest is request for the Query/Loan RPC method
+message QueryLoanRequest {
+  string loan_id = 1;
+}
+
+// QueryLoanResponse is response for the Query/Loan RPC method
+message QueryLoanResponse {
+  EducationLoan loan = 1;
+}
+
+// QueryLoansByStudentRequest is request for the Query/LoansByStudent RPC method
+message QueryLoansByStudentRequest {
+  string student = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+// QueryLoansByStudentResponse is response for the Query/LoansByStudent RPC method
+message QueryLoansByStudentResponse {
+  repeated EducationLoan loans = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryLoansByInstitutionRequest is request for the Query/LoansByInstitution RPC method
+message QueryLoansByInstitutionRequest {
+  string institution = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+// QueryLoansByInstitutionResponse is response for the Query/LoansByInstitution RPC method
+message QueryLoansByInstitutionResponse {
+  repeated EducationLoan loans = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+  LoanSummary summary = 3;
+}
+
+// LoanSummary provides aggregate statistics
+message LoanSummary {
+  int64 total_loans = 1;
+  string total_amount = 2;
+  string average_interest_rate = 3;
+  int64 active_students = 4;
+  string repayment_rate = 5;
+}
+
+// QueryStudentProfileRequest is request for the Query/StudentProfile RPC method
+message QueryStudentProfileRequest {
+  string student = 1;
+}
+
+// QueryStudentProfileResponse is response for the Query/StudentProfile RPC method
+message QueryStudentProfileResponse {
+  StudentProfile profile = 1;
+  repeated EducationLoan active_loans = 2;
+  string total_borrowed = 3;
+  string total_repaid = 4;
+  string scholarship_amount = 5;
+}
+
+// QueryActiveScholarshipsRequest is request for the Query/ActiveScholarships RPC method
+message QueryActiveScholarshipsRequest {
+  string course_type = 1; // optional filter
+  string institution_type = 2; // optional filter
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
+}
+
+// QueryActiveScholarshipsResponse is response for the Query/ActiveScholarships RPC method
+message QueryActiveScholarshipsResponse {
+  repeated ScholarshipOpportunity scholarships = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// ScholarshipOpportunity represents available scholarships
+message ScholarshipOpportunity {
+  string scholarship_id = 1;
+  string name = 2;
+  string type = 3;
+  string amount = 4;
+  string eligibility_criteria = 5;
+  string application_deadline = 6;
+  repeated string eligible_courses = 7;
+  repeated string eligible_institutions = 8;
+}
+
+// QueryLoanStatisticsRequest is request for the Query/LoanStatistics RPC method
+message QueryLoanStatisticsRequest {
+  string period = 1; // DAILY, WEEKLY, MONTHLY, YEARLY
+}
+
+// QueryLoanStatisticsResponse is response for the Query/LoanStatistics RPC method
+message QueryLoanStatisticsResponse {
+  int64 total_loans = 1;
+  string total_disbursed = 2;
+  string total_repaid = 3;
+  int64 active_loans = 4;
+  int64 loans_in_moratorium = 5;
+  string average_loan_amount = 6;
+  string average_interest_rate = 7;
+  map<string, int64> loans_by_course = 8;
+  map<string, int64> loans_by_institution = 9;
+  string default_rate = 10;
+  string average_cgpa = 11;
+  string employment_rate = 12;
+}
+
+// QueryFestivalOffersRequest is request for the Query/FestivalOffers RPC method
+message QueryFestivalOffersRequest {}
+
+// QueryFestivalOffersResponse is response for the Query/FestivalOffers RPC method
+message QueryFestivalOffersResponse {
+  repeated FestivalOffer active_offers = 1;
+  FestivalOffer upcoming_offer = 2;
+}
+
+// QueryEligibilityCheckRequest is request for the Query/EligibilityCheck RPC method
+message QueryEligibilityCheckRequest {
+  string student = 1;
+  string institution_type = 2;
+  string course_type = 3;
+  string loan_amount = 4;
+  string family_income = 5;
+  string academic_score = 6;
+}
+
+// QueryEligibilityCheckResponse is response for the Query/EligibilityCheck RPC method
+message QueryEligibilityCheckResponse {
+  bool eligible = 1;
+  string estimated_interest_rate = 2;
+  string max_loan_amount = 3;
+  bool collateral_required = 4;
+  repeated string applicable_discounts = 5;
+  string estimated_emi = 6;
+  repeated string requirements = 7;
+  string cultural_tip = 8;
+}

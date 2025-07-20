@@ -1,0 +1,103 @@
+syntax = "proto3";
+package deshchain.liquiditymanager.v1;
+
+import "gogoproto/gogo.proto";
+import "deshchain/liquiditymanager/v1/params.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/liquiditymanager/types";
+
+// GenesisState defines the liquiditymanager module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+  
+  // Pool memberships
+  repeated PoolMembership pool_memberships = 2 [(gogoproto.nullable) = false];
+  
+  // NAMO staking records
+  repeated NAMOStakeRecord namo_stake_records = 3 [(gogoproto.nullable) = false];
+  
+  // Locked collateral records
+  repeated LockedCollateralRecord locked_collateral_records = 4 [(gogoproto.nullable) = false];
+  
+  // Active collateral loans
+  repeated CollateralLoanRecord collateral_loan_records = 5 [(gogoproto.nullable) = false];
+  
+  // Lending statistics
+  LendingStats lending_stats = 6;
+}
+
+// PoolMembership represents pool membership information
+message PoolMembership {
+  string member = 1;
+  string pool_type = 2; // "village" or "urban"
+  string joined_at = 3; // RFC3339 timestamp
+  string contribution = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  bool is_active = 5;
+}
+
+// NAMOStakeRecord represents NAMO staking information
+message NAMOStakeRecord {
+  string staker = 1;
+  string staked_amount = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string staked_at = 3; // RFC3339 timestamp
+}
+
+// LockedCollateralRecord represents locked NAMO collateral
+message LockedCollateralRecord {
+  string user = 1;
+  string locked_amount = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string loan_id = 3;
+}
+
+// CollateralLoanRecord represents an active collateral loan
+message CollateralLoanRecord {
+  string borrower = 1;
+  string loan_amount = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string collateral_amount = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string interest_rate = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string timestamp = 5; // RFC3339 timestamp
+  string due_date = 6; // RFC3339 timestamp
+  bool is_active = 7;
+  string module = 8;
+  string loan_id = 9;
+}
+
+// LendingStats represents lending statistics
+message LendingStats {
+  string total_loans_issued = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string total_collateral_used = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  int64 active_loans = 3;
+  int64 defaulted_loans = 4;
+  string total_interest_earned = 5 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string daily_volume = 6 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}

@@ -1,0 +1,231 @@
+syntax = "proto3";
+package deshchain.cultural.v1;
+
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "gogoproto/gogo.proto";
+import "deshchain/cultural/v1/cultural.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/cultural/types";
+
+// Query defines the gRPC querier service for cultural module
+service Query {
+  // Params queries the parameters of the module
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/deshchain/cultural/v1/params";
+  }
+  
+  // Quote queries a quote by id
+  rpc Quote(QueryQuoteRequest) returns (QueryQuoteResponse) {
+    option (google.api.http).get = "/deshchain/cultural/v1/quotes/{id}";
+  }
+  
+  // Quotes queries all quotes with pagination
+  rpc Quotes(QueryQuotesRequest) returns (QueryQuotesResponse) {
+    option (google.api.http).get = "/deshchain/cultural/v1/quotes";
+  }
+  
+  // QuotesByCategory queries quotes by category
+  rpc QuotesByCategory(QueryQuotesByCategoryRequest) returns (QueryQuotesByCategoryResponse) {
+    option (google.api.http).get = "/deshchain/cultural/v1/quotes/category/{category}";
+  }
+  
+  // QuotesByAuthor queries quotes by author
+  rpc QuotesByAuthor(QueryQuotesByAuthorRequest) returns (QueryQuotesByAuthorResponse) {
+    option (google.api.http).get = "/deshchain/cultural/v1/quotes/author/{author}";
+  }
+  
+  // QuotesByRegion queries quotes by region
+  rpc QuotesByRegion(QueryQuotesByRegionRequest) returns (QueryQuotesByRegionResponse) {
+    option (google.api.http).get = "/deshchain/cultural/v1/quotes/region/{region}";
+  }
+  
+  // DailyQuote queries the quote of the day
+  rpc DailyQuote(QueryDailyQuoteRequest) returns (QueryDailyQuoteResponse) {
+    option (google.api.http).get = "/deshchain/cultural/v1/quotes/daily";
+  }
+  
+  // PopularQuotes queries the most popular quotes
+  rpc PopularQuotes(QueryPopularQuotesRequest) returns (QueryPopularQuotesResponse) {
+    option (google.api.http).get = "/deshchain/cultural/v1/quotes/popular";
+  }
+  
+  // TransactionQuote queries the quote for a specific transaction
+  rpc TransactionQuote(QueryTransactionQuoteRequest) returns (QueryTransactionQuoteResponse) {
+    option (google.api.http).get = "/deshchain/cultural/v1/transaction-quotes/{tx_hash}";
+  }
+  
+  // HistoricalEvent queries a historical event by id
+  rpc HistoricalEvent(QueryHistoricalEventRequest) returns (QueryHistoricalEventResponse) {
+    option (google.api.http).get = "/deshchain/cultural/v1/historical-events/{id}";
+  }
+  
+  // HistoricalEvents queries all historical events with pagination
+  rpc HistoricalEvents(QueryHistoricalEventsRequest) returns (QueryHistoricalEventsResponse) {
+    option (google.api.http).get = "/deshchain/cultural/v1/historical-events";
+  }
+  
+  // CulturalWisdom queries cultural wisdom by id
+  rpc CulturalWisdom(QueryCulturalWisdomRequest) returns (QueryCulturalWisdomResponse) {
+    option (google.api.http).get = "/deshchain/cultural/v1/cultural-wisdom/{id}";
+  }
+  
+  // CulturalWisdomList queries all cultural wisdom with pagination
+  rpc CulturalWisdomList(QueryCulturalWisdomListRequest) returns (QueryCulturalWisdomListResponse) {
+    option (google.api.http).get = "/deshchain/cultural/v1/cultural-wisdom";
+  }
+  
+  // QuoteStatistics queries quote usage statistics
+  rpc QuoteStatistics(QueryQuoteStatisticsRequest) returns (QueryQuoteStatisticsResponse) {
+    option (google.api.http).get = "/deshchain/cultural/v1/statistics/quotes";
+  }
+}
+
+// QueryParamsRequest is request type for the Query/Params RPC method
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method
+message QueryParamsResponse {
+  // params holds all the parameters of this module
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryQuoteRequest is request type for the Query/Quote RPC method
+message QueryQuoteRequest {
+  uint64 id = 1;
+}
+
+// QueryQuoteResponse is response type for the Query/Quote RPC method
+message QueryQuoteResponse {
+  Quote quote = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryQuotesRequest is request type for the Query/Quotes RPC method
+message QueryQuotesRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+// QueryQuotesResponse is response type for the Query/Quotes RPC method
+message QueryQuotesResponse {
+  repeated Quote quotes = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryQuotesByCategoryRequest is request type for the Query/QuotesByCategory RPC method
+message QueryQuotesByCategoryRequest {
+  string category = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+// QueryQuotesByCategoryResponse is response type for the Query/QuotesByCategory RPC method
+message QueryQuotesByCategoryResponse {
+  repeated Quote quotes = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryQuotesByAuthorRequest is request type for the Query/QuotesByAuthor RPC method
+message QueryQuotesByAuthorRequest {
+  string author = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+// QueryQuotesByAuthorResponse is response type for the Query/QuotesByAuthor RPC method
+message QueryQuotesByAuthorResponse {
+  repeated Quote quotes = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryQuotesByRegionRequest is request type for the Query/QuotesByRegion RPC method
+message QueryQuotesByRegionRequest {
+  string region = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+// QueryQuotesByRegionResponse is response type for the Query/QuotesByRegion RPC method
+message QueryQuotesByRegionResponse {
+  repeated Quote quotes = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryDailyQuoteRequest is request type for the Query/DailyQuote RPC method
+message QueryDailyQuoteRequest {}
+
+// QueryDailyQuoteResponse is response type for the Query/DailyQuote RPC method
+message QueryDailyQuoteResponse {
+  Quote quote = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryPopularQuotesRequest is request type for the Query/PopularQuotes RPC method
+message QueryPopularQuotesRequest {
+  uint32 limit = 1;
+}
+
+// QueryPopularQuotesResponse is response type for the Query/PopularQuotes RPC method
+message QueryPopularQuotesResponse {
+  repeated Quote quotes = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryTransactionQuoteRequest is request type for the Query/TransactionQuote RPC method
+message QueryTransactionQuoteRequest {
+  string tx_hash = 1;
+}
+
+// QueryTransactionQuoteResponse is response type for the Query/TransactionQuote RPC method
+message QueryTransactionQuoteResponse {
+  TransactionQuote transaction_quote = 1 [(gogoproto.nullable) = false];
+  Quote quote = 2 [(gogoproto.nullable) = false];
+}
+
+// QueryHistoricalEventRequest is request type for the Query/HistoricalEvent RPC method
+message QueryHistoricalEventRequest {
+  uint64 id = 1;
+}
+
+// QueryHistoricalEventResponse is response type for the Query/HistoricalEvent RPC method
+message QueryHistoricalEventResponse {
+  HistoricalEvent event = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryHistoricalEventsRequest is request type for the Query/HistoricalEvents RPC method
+message QueryHistoricalEventsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+// QueryHistoricalEventsResponse is response type for the Query/HistoricalEvents RPC method
+message QueryHistoricalEventsResponse {
+  repeated HistoricalEvent events = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryCulturalWisdomRequest is request type for the Query/CulturalWisdom RPC method
+message QueryCulturalWisdomRequest {
+  uint64 id = 1;
+}
+
+// QueryCulturalWisdomResponse is response type for the Query/CulturalWisdom RPC method
+message QueryCulturalWisdomResponse {
+  CulturalWisdom wisdom = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryCulturalWisdomListRequest is request type for the Query/CulturalWisdomList RPC method
+message QueryCulturalWisdomListRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+// QueryCulturalWisdomListResponse is response type for the Query/CulturalWisdomList RPC method
+message QueryCulturalWisdomListResponse {
+  repeated CulturalWisdom wisdom = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryQuoteStatisticsRequest is request type for the Query/QuoteStatistics RPC method
+message QueryQuoteStatisticsRequest {}
+
+// QueryQuoteStatisticsResponse is response type for the Query/QuoteStatistics RPC method
+message QueryQuoteStatisticsResponse {
+  uint64 total_quotes = 1;
+  uint64 total_usage = 2;
+  map<string, uint64> category_count = 3;
+  map<string, uint64> author_count = 4;
+  map<string, uint64> language_count = 5;
+}

@@ -1,0 +1,211 @@
+syntax = "proto3";
+package deshchain.shikshamitra;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+option go_package = "github.com/deshchain/x/shikshamitra/types";
+
+// Params defines the parameters for the education lending module
+message Params {
+  option (gogoproto.goproto_stringer) = false;
+  
+  string min_interest_rate = 1; // 4%
+  string max_interest_rate = 2; // 7%
+  string merit_discount = 3; // 1% discount for 80%+ marks
+  string women_student_discount = 4; // 0.5% discount
+  string reserved_category_discount = 5; // 1% discount
+  int64 min_loan_duration = 6; // 12 months
+  int64 max_loan_duration = 7; // 180 months (15 years)
+  cosmos.base.v1beta1.Coin min_loan_amount = 8 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin max_loan_amount = 9 [(gogoproto.nullable) = false];
+  repeated string authorized_approvers = 10;
+  repeated string authorized_disbursers = 11;
+  repeated string education_verifiers = 12;
+  string collateral_threshold = 13; // Loan amount above which collateral required
+  int64 moratorium_period = 14; // Grace period after course completion (months)
+  map<string, string> institution_rankings = 15; // Institution to tier mapping
+  map<string, string> course_interest_rates = 16; // Course-specific rates
+}
+
+// InstitutionType represents different types of educational institutions
+enum InstitutionType {
+  INSTITUTION_TYPE_UNSPECIFIED = 0;
+  INSTITUTION_TYPE_IIT = 1;
+  INSTITUTION_TYPE_IIM = 2;
+  INSTITUTION_TYPE_NIT = 3;
+  INSTITUTION_TYPE_AIIMS = 4;
+  INSTITUTION_TYPE_TIER1_PRIVATE = 5;
+  INSTITUTION_TYPE_TIER2_PRIVATE = 6;
+  INSTITUTION_TYPE_STATE_UNIVERSITY = 7;
+  INSTITUTION_TYPE_FOREIGN = 8;
+  INSTITUTION_TYPE_VOCATIONAL = 9;
+  INSTITUTION_TYPE_ONLINE = 10;
+}
+
+// CourseType represents different types of courses
+enum CourseType {
+  COURSE_TYPE_UNSPECIFIED = 0;
+  COURSE_TYPE_ENGINEERING = 1;
+  COURSE_TYPE_MEDICAL = 2;
+  COURSE_TYPE_MANAGEMENT = 3;
+  COURSE_TYPE_LAW = 4;
+  COURSE_TYPE_ARTS = 5;
+  COURSE_TYPE_SCIENCE = 6;
+  COURSE_TYPE_COMMERCE = 7;
+  COURSE_TYPE_VOCATIONAL = 8;
+  COURSE_TYPE_DIPLOMA = 9;
+  COURSE_TYPE_CERTIFICATION = 10;
+  COURSE_TYPE_PHD = 11;
+}
+
+// LoanStatus represents the status of an education loan
+enum LoanStatus {
+  LOAN_STATUS_UNSPECIFIED = 0;
+  LOAN_STATUS_PENDING = 1;
+  LOAN_STATUS_UNDER_REVIEW = 2;
+  LOAN_STATUS_APPROVED = 3;
+  LOAN_STATUS_REJECTED = 4;
+  LOAN_STATUS_ACTIVE = 5;
+  LOAN_STATUS_IN_MORATORIUM = 6;
+  LOAN_STATUS_REPAYMENT = 7;
+  LOAN_STATUS_REPAID = 8;
+  LOAN_STATUS_DEFAULTED = 9;
+  LOAN_STATUS_RESTRUCTURED = 10;
+}
+
+// EducationLoan represents an education loan application and details
+message EducationLoan {
+  string loan_id = 1;
+  string borrower = 2;
+  string dhanpata_id = 3;
+  string student_name = 4;
+  string co_applicant = 5;
+  string co_applicant_dhanpata_id = 6;
+  string institution_name = 7;
+  InstitutionType institution_type = 8;
+  CourseType course_type = 9;
+  string course_name = 10;
+  int32 course_duration = 11; // in months
+  string academic_year = 12;
+  cosmos.base.v1beta1.Coin loan_amount = 13 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin approved_amount = 14 [(gogoproto.nullable) = false];
+  repeated LoanComponent loan_components = 15;
+  string interest_rate = 16;
+  LoanStatus status = 17;
+  google.protobuf.Timestamp application_date = 18 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp approval_date = 19 [(gogoproto.stdtime) = true];
+  google.protobuf.Timestamp disbursement_date = 20 [(gogoproto.stdtime) = true];
+  google.protobuf.Timestamp course_completion_date = 21 [(gogoproto.stdtime) = true];
+  google.protobuf.Timestamp moratorium_end_date = 22 [(gogoproto.stdtime) = true];
+  google.protobuf.Timestamp repayment_start_date = 23 [(gogoproto.stdtime) = true];
+  string entrance_exam_score = 24;
+  string previous_academic_record = 25; // IPFS hash
+  string admission_letter = 26; // IPFS hash
+  string pincode = 27;
+  cosmos.base.v1beta1.Coin family_income = 28 [(gogoproto.nullable) = false];
+  string collateral_offered = 29;
+  cosmos.base.v1beta1.Coin total_repayment = 30 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin repaid_amount = 31 [(gogoproto.nullable) = false];
+  google.protobuf.Timestamp last_payment_date = 32 [(gogoproto.stdtime) = true];
+  google.protobuf.Timestamp next_payment_date = 33 [(gogoproto.stdtime) = true];
+  cosmos.base.v1beta1.Coin emi_amount = 34 [(gogoproto.nullable) = false];
+  string remarks = 35;
+  string cultural_quote = 36;
+  repeated AcademicProgress academic_progress = 37;
+  repeated RepaymentRecord repayment_history = 38;
+  EmploymentDetails employment_details = 39;
+  repeated ScholarshipRecord scholarships = 40;
+}
+
+// LoanComponent represents different components of education loan
+message LoanComponent {
+  string component_type = 1; // TUITION, HOSTEL, BOOKS, EQUIPMENT, LIVING
+  cosmos.base.v1beta1.Coin amount = 2 [(gogoproto.nullable) = false];
+  string description = 3;
+}
+
+// AcademicProgress tracks student's academic performance
+message AcademicProgress {
+  int32 semester = 1;
+  string grade_point_avg = 2;
+  string attendance = 3; // Percentage
+  string marksheet = 4; // IPFS hash
+  string remarks = 5;
+  string continuation_status = 6; // CONTINUING, DROPPED, COMPLETED
+  google.protobuf.Timestamp update_date = 7 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+// EmploymentDetails tracks post-education employment
+message EmploymentDetails {
+  string employment_status = 1; // EMPLOYED, SELF_EMPLOYED, HIGHER_STUDIES, SEEKING
+  string employer_name = 2;
+  string job_title = 3;
+  cosmos.base.v1beta1.Coin monthly_salary = 4;
+  string joining_date = 5;
+  string offer_letter = 6; // IPFS hash
+  google.protobuf.Timestamp update_date = 7 [(gogoproto.stdtime) = true];
+}
+
+// ScholarshipRecord tracks scholarships received
+message ScholarshipRecord {
+  string scholarship_id = 1;
+  string scholarship_type = 2; // MERIT, NEED, SPORTS, SPECIAL
+  cosmos.base.v1beta1.Coin amount = 3 [(gogoproto.nullable) = false];
+  string academic_year = 4;
+  string status = 5; // APPLIED, APPROVED, DISBURSED
+  google.protobuf.Timestamp award_date = 6 [(gogoproto.stdtime) = true];
+}
+
+// StudentProfile represents a student's profile
+message StudentProfile {
+  string address = 1;
+  string dhanpata_id = 2;
+  string student_name = 3;
+  string current_education_level = 4;
+  repeated EducationHistory education_history = 5;
+  string pincode = 6;
+  int64 total_loans = 7;
+  int64 active_loans = 8;
+  int64 repaid_loans = 9;
+  double overall_cgpa = 10;
+  repeated string achievements = 11;
+  repeated string certifications = 12;
+  bool is_merit_student = 13;
+  bool is_women_student = 14;
+  bool is_reserved_category = 15;
+  google.protobuf.Timestamp joined_date = 16 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+// EducationHistory tracks educational background
+message EducationHistory {
+  string institution_name = 1;
+  string degree = 2;
+  string specialization = 3;
+  string grade = 4;
+  string year_of_completion = 5;
+}
+
+// RepaymentRecord tracks individual repayments
+message RepaymentRecord {
+  cosmos.base.v1beta1.Coin amount = 1 [(gogoproto.nullable) = false];
+  google.protobuf.Timestamp date = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  string transaction_hash = 3;
+  string payment_type = 4; // EMI, PREPAYMENT, FINAL_SETTLEMENT
+  cosmos.base.v1beta1.Coin principal_component = 5 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin interest_component = 6 [(gogoproto.nullable) = false];
+}
+
+// FestivalOffer represents special festival period benefits for students
+message FestivalOffer {
+  string festival_id = 1;
+  string festival_name = 2;
+  string interest_reduction = 3; // e.g., "0.5%"
+  string processing_fee_waiver = 4; // e.g., "100%"
+  google.protobuf.Timestamp start_date = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp end_date = 6 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  repeated CourseType eligible_courses = 7;
+  repeated InstitutionType eligible_institutions = 8;
+  repeated string eligible_pincodes = 9; // empty means all
+}

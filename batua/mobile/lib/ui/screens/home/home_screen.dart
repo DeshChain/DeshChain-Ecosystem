@@ -6,7 +6,7 @@ import '../../widgets/cultural_gradient_text.dart';
 import '../../widgets/namo_balance_widget.dart';
 import '../namo/namo_send_screen.dart';
 import '../namo/namo_receive_screen.dart';
-import '../pension/pension_scheme_screen.dart';
+import '../suraksha/suraksha_scheme_screen.dart';
 import '../agriculture/krishi_mitra_screen.dart';
 import '../../../core/wallet/hd_wallet.dart';
 import '../../../core/tokens/namo_token.dart';
@@ -431,7 +431,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     ),
                     SizedBox(width: 12),
                     Text(
-                      'Gram Pension Scheme',
+                      'Gram Suraksha Pool',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 22,
@@ -474,7 +474,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const PensionSchemeScreen(),
+                        builder: (context) => const SurakshaSchemeScreen(),
                       ),
                     );
                   },
@@ -494,7 +494,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               Expanded(
                 child: ElevatedButton.icon(
                   onPressed: () {
-                    // TODO: Navigate to pension calculator
+                    // TODO: Navigate to suraksha calculator
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.green,

@@ -1,0 +1,17 @@
+syntax = "proto3";
+package deshchain.shikshamitra;
+
+import "gogoproto/gogo.proto";
+import "deshchain/shikshamitra/types.proto";
+
+option go_package = "github.com/deshchain/x/shikshamitra/types";
+
+// GenesisState defines the education lending module's genesis state
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+  repeated EducationLoan loans = 2;
+  repeated StudentProfile student_profiles = 3;
+  repeated FestivalOffer festival_offers = 4;
+  uint64 loan_counter = 5;
+  uint64 scholarship_counter = 6;
+}
