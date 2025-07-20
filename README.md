@@ -158,6 +158,41 @@ Second Chance Conditions:
   - 6-month deadline to prove improvement
 ```
 
+#### Revolutionary Community-Driven Loan Write-Off System
+```yaml
+World's First: Blockchain-based democratic NPA resolution system
+
+NPA Classification:
+  - Stage 1 (90 days): Substandard Asset
+  - Stage 2 (180 days): Doubtful Asset  
+  - Stage 3 (365 days): Loss Asset
+
+Community Write-Off Governance:
+  Write-Off Eligibility:
+    - Minimum 180 days overdue
+    - Active collection efforts documented
+    - Borrower hardship verified
+    - Impact assessment completed
+  
+  Voting Requirements:
+    - Proposal Period: 14 days
+    - Voting Period: 14 days
+    - Required Quorum: 40% of pool stake
+    - Passing Threshold: 80% YES votes
+    - Minimum Stake: 500 NAMO to vote
+  
+  Write-Off Options:
+    - Partial Write-Off: 25-75% of principal
+    - Full Write-Off: 100% of outstanding
+    - Restructuring: Modified terms with extended period
+  
+  Protection Mechanisms:
+    - One-time write-off per borrower
+    - Maximum 5% of pool per quarter
+    - Mandatory 6-month blacklist
+    - Community reputation impact
+```
+
 #### Fund Security Measures
 ```yaml
 Direct College Payment: Prevents fund misuse
@@ -1069,7 +1104,7 @@ Building on our successful Gram Suraksha model, the **Udyamitra Urban Wealth Pro
 - **Database**: PostgreSQL, Redis
 - **Storage**: IPFS (cultural content, NFT metadata)
 - **Privacy**: zk-SNARKs implementation
-- **Mobile**: Flutter (Batua Wallet)
+- **Mobile**: React Native (DhanSetu App) + Flutter (Batua Wallet)
 - **KYC**: Hyperledger Aries + Indy
 
 ### Smart Contracts
@@ -1171,8 +1206,16 @@ DeshChain has achieved a **massive development milestone** with the completion o
 - **Cultural Integration**: 10,000+ quotes with festival bonus system
 
 #### 📱 **Mobile & Web Applications**
+- **DhanSetu Super App (React Native)**: Revolutionary DeFi platform
+  - Complete HD wallet implementation
+  - Money Order DEX integration  
+  - Sikkebaaz launchpad UI
+  - Gram Suraksha pension interface
+  - Lending suite (Krishi/Vyavasaya/Shiksha Mitra)
+  - DhanPata virtual addresses
+  - Cultural quotes on every transaction
+  - Festival-themed dynamic UI
 - **Batua Wallet (Flutter)**: Native mobile wallet with cultural UI
-- **DhanSetu Super App (React Native)**: Unified financial platform
 - **Explorer Frontend (Next.js)**: Real-time blockchain dashboard
 - **Cultural Calendar**: Festival integration across all platforms
 
@@ -1321,11 +1364,20 @@ make test
 ```
 
 ### For Users
-1. **Download Batua Wallet**: Native Flutter app with NAMO integration
-2. **Complete KYC**: Hyperledger Aries + Indy verification
-3. **Get NAMO tokens**: Purchase through official channels
-4. **Start transacting**: Experience culture with every payment
-5. **Join community**: Discord, Telegram, Twitter
+1. **Download DhanSetu App**: Revolutionary React Native DeFi super app
+   - Available on Google Play Store and Apple App Store
+   - All DeshChain features in one app
+   - Cultural UI with festival themes
+2. **Or use Batua Wallet**: Native Flutter wallet for advanced users
+3. **Complete KYC**: Hyperledger Aries + Indy verification
+4. **Get NAMO tokens**: Purchase through official channels
+5. **Explore Features**:
+   - Money Order DEX with PIN-based security
+   - Sikkebaaz memecoin launchpad
+   - Gram Suraksha pension (50% returns)
+   - DhanPata virtual addresses
+   - Lending services (Krishi, Vyavasaya, Shiksha Mitra)
+6. **Join community**: Discord, Telegram, Twitter
 
 ### For Merchants
 1. **Apply for DeshPay**: Free merchant registration
