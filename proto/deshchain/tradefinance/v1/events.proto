@@ -1,0 +1,105 @@
+syntax = "proto3";
+package deshchain.tradefinance;
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/tradefinance/types";
+
+// EventPartyRegistered is emitted when a new trade party is registered
+message EventPartyRegistered {
+  string party_id = 1;
+  string party_type = 2;
+  string name = 3;
+  string desh_address = 4;
+  string country = 5;
+}
+
+// EventLcIssued is emitted when a new LC is issued
+message EventLcIssued {
+  string lc_id = 1;
+  string lc_number = 2;
+  string issuing_bank_id = 3;
+  string applicant_id = 4;
+  string beneficiary_id = 5;
+  cosmos.base.v1beta1.Coin amount = 6 [(gogoproto.nullable) = false];
+  google.protobuf.Timestamp expiry_date = 7 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+// EventLcAccepted is emitted when an LC is accepted
+message EventLcAccepted {
+  string lc_id = 1;
+  string beneficiary_id = 2;
+  google.protobuf.Timestamp accepted_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+// EventDocumentSubmitted is emitted when documents are submitted
+message EventDocumentSubmitted {
+  string document_id = 1;
+  string lc_id = 2;
+  string document_type = 3;
+  string submitter = 4;
+  google.protobuf.Timestamp submitted_at = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+// EventDocumentVerified is emitted when a document is verified
+message EventDocumentVerified {
+  string document_id = 1;
+  string lc_id = 2;
+  string verifier = 3;
+  bool approved = 4;
+  string rejection_reason = 5;
+}
+
+// EventPaymentRequested is emitted when payment is requested
+message EventPaymentRequested {
+  string payment_instruction_id = 1;
+  string lc_id = 2;
+  string beneficiary = 3;
+  cosmos.base.v1beta1.Coin amount = 4 [(gogoproto.nullable) = false];
+}
+
+// EventPaymentCompleted is emitted when payment is completed
+message EventPaymentCompleted {
+  string payment_instruction_id = 1;
+  string lc_id = 2;
+  string payer = 3;
+  string payee = 4;
+  cosmos.base.v1beta1.Coin amount = 5 [(gogoproto.nullable) = false];
+  string transaction_hash = 6;
+}
+
+// EventLcAmended is emitted when an LC is amended
+message EventLcAmended {
+  string lc_id = 1;
+  string amendment_type = 2;
+  string amended_by = 3;
+  google.protobuf.Timestamp amended_at = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+// EventLcCancelled is emitted when an LC is cancelled
+message EventLcCancelled {
+  string lc_id = 1;
+  string cancelled_by = 2;
+  string reason = 3;
+  google.protobuf.Timestamp cancelled_at = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+// EventInsurancePolicyCreated is emitted when insurance is created
+message EventInsurancePolicyCreated {
+  string policy_id = 1;
+  string lc_id = 2;
+  string insurer_id = 3;
+  cosmos.base.v1beta1.Coin coverage_amount = 4 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin premium = 5 [(gogoproto.nullable) = false];
+}
+
+// EventShipmentUpdated is emitted when shipment is updated
+message EventShipmentUpdated {
+  string tracking_id = 1;
+  string lc_id = 2;
+  string status = 3;
+  string location = 4;
+  string event_type = 5;
+}

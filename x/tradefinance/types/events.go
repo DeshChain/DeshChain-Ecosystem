@@ -1,0 +1,53 @@
+package types
+
+// Event types
+const (
+	EventTypePartyRegistered    = "party_registered"
+	EventTypeLcIssued           = "lc_issued"
+	EventTypeLcAccepted         = "lc_accepted"
+	EventTypeDocumentSubmitted  = "document_submitted"
+	EventTypeDocumentVerified   = "document_verified"
+	EventTypePaymentRequested   = "payment_requested"
+	EventTypePaymentCompleted   = "payment_completed"
+	EventTypeLcAmended          = "lc_amended"
+	EventTypeLcCancelled        = "lc_cancelled"
+	EventTypeInsuranceCreated   = "insurance_policy_created"
+	EventTypeShipmentUpdated    = "shipment_updated"
+)
+
+// Attribute keys
+const (
+	AttributeKeyPartyId             = "party_id"
+	AttributeKeyPartyType           = "party_type"
+	AttributeKeyName                = "name"
+	AttributeKeyDeshAddress         = "desh_address"
+	AttributeKeyCountry             = "country"
+	AttributeKeyLcId                = "lc_id"
+	AttributeKeyLcNumber            = "lc_number"
+	AttributeKeyIssuingBank         = "issuing_bank"
+	AttributeKeyApplicant           = "applicant"
+	AttributeKeyBeneficiary         = "beneficiary"
+	AttributeKeyAmount              = "amount"
+	AttributeKeyDocumentId          = "document_id"
+	AttributeKeyDocumentType        = "document_type"
+	AttributeKeySubmitter           = "submitter"
+	AttributeKeyVerifier            = "verifier"
+	AttributeKeyApproved            = "approved"
+	AttributeKeyRejectionReason     = "rejection_reason"
+	AttributeKeyPaymentInstructionId = "payment_instruction_id"
+	AttributeKeyPayer               = "payer"
+	AttributeKeyPayee               = "payee"
+	AttributeKeyTransactionHash     = "transaction_hash"
+	AttributeKeyAmendmentType       = "amendment_type"
+	AttributeKeyAmendedBy           = "amended_by"
+	AttributeKeyCancelledBy         = "cancelled_by"
+	AttributeKeyReason              = "reason"
+	AttributeKeyPolicyId            = "policy_id"
+	AttributeKeyInsurer             = "insurer"
+	AttributeKeyCoverageAmount      = "coverage_amount"
+	AttributeKeyPremium             = "premium"
+	AttributeKeyTrackingId          = "tracking_id"
+	AttributeKeyStatus              = "status"
+	AttributeKeyLocation            = "location"
+	AttributeKeyEventType           = "event_type"
+)

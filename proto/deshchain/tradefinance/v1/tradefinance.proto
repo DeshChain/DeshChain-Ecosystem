@@ -1,0 +1,170 @@
+syntax = "proto3";
+package deshchain.tradefinance;
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/tradefinance/types";
+
+// TradeParty represents a participant in trade finance
+message TradeParty {
+  string party_id = 1;
+  string party_type = 2; // "importer", "exporter", "bank", "insurance"
+  string name = 3;
+  string address = 4;
+  string desh_address = 5; // blockchain address
+  string country = 6;
+  string tax_id = 7;
+  bool is_verified = 8;
+  string kyc_level = 9; // "basic", "intermediate", "advanced"
+  google.protobuf.Timestamp verified_at = 10 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+// LetterOfCredit represents a digital Letter of Credit
+message LetterOfCredit {
+  string lc_id = 1;
+  string lc_number = 2;
+  string status = 3; // "draft", "issued", "accepted", "documents_presented", "discrepant", "paid", "cancelled"
+  
+  // Parties
+  string applicant_id = 4; // Importer
+  string beneficiary_id = 5; // Exporter
+  string issuing_bank_id = 6;
+  string advising_bank_id = 7;
+  string confirming_bank_id = 8;
+  
+  // LC Details
+  cosmos.base.v1beta1.Coin amount = 9 [(gogoproto.nullable) = false];
+  string currency = 10;
+  google.protobuf.Timestamp issue_date = 11 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp expiry_date = 12 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp latest_shipment_date = 13 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // Terms
+  string payment_terms = 14; // "sight", "deferred", "acceptance"
+  uint32 deferred_payment_days = 15;
+  string incoterms = 16; // "FOB", "CIF", "DDP", etc.
+  string port_of_loading = 17;
+  string port_of_discharge = 18;
+  bool partial_shipment_allowed = 19;
+  bool transshipment_allowed = 20;
+  string goods_description = 21;
+  
+  // Documents Required
+  repeated string required_documents = 22;
+  
+  // Blockchain specific
+  cosmos.base.v1beta1.Coin collateral = 23 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin fees_paid = 24 [(gogoproto.nullable) = false];
+  string smart_contract_address = 25;
+  google.protobuf.Timestamp created_at = 26 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated_at = 27 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+// TradeDocument represents documents in trade finance
+message TradeDocument {
+  string document_id = 1;
+  string lc_id = 2;
+  string document_type = 3; // "invoice", "bill_of_lading", "packing_list", "certificate_of_origin", etc.
+  string document_hash = 4; // IPFS hash
+  string issuer = 5;
+  google.protobuf.Timestamp issued_date = 6 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  bool is_verified = 7;
+  string verified_by = 8;
+  google.protobuf.Timestamp verified_at = 9 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  string status = 10; // "submitted", "verified", "rejected", "amended"
+  string rejection_reason = 11;
+}
+
+// InsurancePolicy for trade finance
+message InsurancePolicy {
+  string policy_id = 1;
+  string lc_id = 2;
+  string insurer_id = 3;
+  string policy_type = 4; // "cargo", "credit", "political_risk"
+  cosmos.base.v1beta1.Coin coverage_amount = 5 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin premium = 6 [(gogoproto.nullable) = false];
+  google.protobuf.Timestamp start_date = 7 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp end_date = 8 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  string terms_ipfs_hash = 9;
+  bool is_active = 10;
+  repeated string covered_risks = 11;
+}
+
+// ShipmentTracking for supply chain visibility
+message ShipmentTracking {
+  string tracking_id = 1;
+  string lc_id = 2;
+  string carrier = 3;
+  string vessel_name = 4;
+  string container_number = 5;
+  string current_location = 6;
+  string status = 7; // "booked", "in_transit", "arrived", "delivered"
+  google.protobuf.Timestamp etd = 8 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false]; // Estimated Time of Departure
+  google.protobuf.Timestamp eta = 9 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false]; // Estimated Time of Arrival
+  google.protobuf.Timestamp actual_departure = 10 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp actual_arrival = 11 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  repeated TrackingEvent events = 12;
+}
+
+// TrackingEvent for shipment updates
+message TrackingEvent {
+  google.protobuf.Timestamp timestamp = 1 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  string location = 2;
+  string event_type = 3;
+  string description = 4;
+  string reported_by = 5;
+}
+
+// PaymentInstruction for LC payments
+message PaymentInstruction {
+  string instruction_id = 1;
+  string lc_id = 2;
+  string payer = 3;
+  string payee = 4;
+  cosmos.base.v1beta1.Coin amount = 5 [(gogoproto.nullable) = false];
+  string payment_type = 6; // "advance", "sight", "deferred", "installment"
+  google.protobuf.Timestamp due_date = 7 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  string status = 8; // "pending", "initiated", "completed", "failed"
+  string transaction_hash = 9;
+  google.protobuf.Timestamp paid_at = 10 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+// TradeFinanceStats for analytics
+message TradeFinanceStats {
+  uint64 total_lcs_issued = 1;
+  cosmos.base.v1beta1.Coin total_trade_value = 2 [(gogoproto.nullable) = false];
+  uint64 active_lcs = 3;
+  uint64 completed_trades = 4;
+  uint64 average_processing_hours = 5;
+  string top_trade_corridor = 6;
+  cosmos.base.v1beta1.Coin total_fees_collected = 7 [(gogoproto.nullable) = false];
+  uint64 documents_verified = 8;
+  google.protobuf.Timestamp last_update = 9 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+// FeeStructure for trade finance operations
+message TradeFinanceFees {
+  uint64 lc_issuance_fee = 1; // basis points
+  uint64 lc_amendment_fee = 2; // basis points
+  uint64 document_verification_fee = 3; // flat fee in DINR
+  uint64 swift_message_fee = 4; // flat fee in DINR
+  uint64 insurance_processing_fee = 5; // basis points
+  uint64 early_payment_discount = 6; // basis points
+  uint64 late_payment_penalty = 7; // basis points
+}
+
+// Params defines the parameters for the trade finance module
+message Params {
+  bool module_enabled = 1;
+  TradeFinanceFees fees = 2 [(gogoproto.nullable) = false];
+  uint64 min_lc_amount = 3; // minimum LC amount in DINR
+  uint64 max_lc_duration_days = 4; // maximum LC validity period
+  uint64 document_submission_deadline_hours = 5;
+  repeated string supported_currencies = 6;
+  repeated string supported_document_types = 7;
+  uint64 collateral_ratio = 8; // basis points (e.g., 11000 = 110%)
+  bool auto_release_enabled = 9; // auto-release payment on document verification
+  uint64 dispute_resolution_period_hours = 10;
+}

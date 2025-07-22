@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:web3dart/web3dart.dart';
+import 'package:flutter/material.dart';
 
 import '../../utils/logger.dart';
 import '../../utils/constants.dart';
@@ -317,9 +318,357 @@ class DeshChainClient {
       case 'namo':
       case 'unamo':
         return 6;
+      case 'dinr':
+      case 'udinr':
+        return 6;
       default:
         return 6; // Default decimals
     }
+  }
+  
+  // DINR-specific methods
+  
+  /// Get DINR balance for address
+  Future<BigInt> getDINRBalance(String address) async {
+    try {
+      final balance = await getBalance(address);
+      // Find DINR balance in other tokens
+      final dinrToken = balance.otherTokens.firstWhere(
+        (token) => token.denom == 'dinr' || token.denom == 'udinr',
+        orElse: () => TokenBalance(denom: 'dinr', amount: BigInt.zero, decimals: 6),
+      );
+      return dinrToken.amount;
+    } catch (e) {
+      AppLogger.error('Error getting DINR balance: $e');
+      return BigInt.zero;
+    }
+  }
+  
+  /// Get collateral positions for address
+  Future<List<CollateralPosition>> getCollateralPositions(String address) async {
+    try {
+      final response = await _dio.get('/deshchain/dinr/v1/positions/$address');
+      
+      if (response.statusCode == 200) {
+        final data = response.data;
+        final positions = data['positions'] as List<dynamic>;
+        
+        return positions.map((p) => CollateralPosition.fromJson(p)).toList();
+      } else {
+        throw DeshChainException('Failed to get collateral positions');
+      }
+    } catch (e) {
+      AppLogger.error('Error getting collateral positions: $e');
+      return [];
+    }
+  }
+  
+  /// Mint DINR with collateral
+  Future<String> mintDINR({
+    required String userAddress,
+    required String collateralDenom,
+    required BigInt collateralAmount,
+    required BigInt dinrToMint,
+    required HDWallet wallet,
+    required int accountIndex,
+  }) async {
+    try {
+      // Get account info
+      final accountInfo = await _getAccountInfo(userAddress);
+      
+      // Prepare mint transaction
+      final tx = await _prepareMintDINRTransaction(
+        userAddress: userAddress,
+        collateralDenom: collateralDenom,
+        collateralAmount: collateralAmount,
+        dinrToMint: dinrToMint,
+        accountNumber: accountInfo.accountNumber,
+        sequence: accountInfo.sequence,
+      );
+      
+      // Sign transaction
+      final signedTx = await _signTransaction(tx, wallet, accountIndex);
+      
+      // Broadcast transaction
+      final txHash = await _broadcastTransaction(signedTx);
+      
+      AppLogger.info('DINR minted successfully: $txHash');
+      return txHash;
+    } catch (e) {
+      AppLogger.error('Error minting DINR: $e');
+      throw DeshChainException('Failed to mint DINR: $e');
+    }
+  }
+  
+  /// Burn DINR to retrieve collateral
+  Future<String> burnDINR({
+    required String userAddress,
+    required BigInt dinrToBurn,
+    required HDWallet wallet,
+    required int accountIndex,
+  }) async {
+    try {
+      // Get account info
+      final accountInfo = await _getAccountInfo(userAddress);
+      
+      // Prepare burn transaction
+      final tx = await _prepareBurnDINRTransaction(
+        userAddress: userAddress,
+        dinrToBurn: dinrToBurn,
+        accountNumber: accountInfo.accountNumber,
+        sequence: accountInfo.sequence,
+      );
+      
+      // Sign transaction
+      final signedTx = await _signTransaction(tx, wallet, accountIndex);
+      
+      // Broadcast transaction
+      final txHash = await _broadcastTransaction(signedTx);
+      
+      AppLogger.info('DINR burned successfully: $txHash');
+      return txHash;
+    } catch (e) {
+      AppLogger.error('Error burning DINR: $e');
+      throw DeshChainException('Failed to burn DINR: $e');
+    }
+  }
+  
+  /// Send DINR tokens
+  Future<String> sendDINR({
+    required String fromAddress,
+    required String toAddress,
+    required BigInt amount,
+    required String memo,
+    required HDWallet wallet,
+    required int accountIndex,
+  }) async {
+    try {
+      // Get account info
+      final accountInfo = await _getAccountInfo(fromAddress);
+      
+      // Prepare transaction (similar to NAMO but with DINR denom)
+      final tx = await _prepareSendDINRTransaction(
+        fromAddress: fromAddress,
+        toAddress: toAddress,
+        amount: amount,
+        memo: memo,
+        accountNumber: accountInfo.accountNumber,
+        sequence: accountInfo.sequence,
+      );
+      
+      // Sign transaction
+      final signedTx = await _signTransaction(tx, wallet, accountIndex);
+      
+      // Broadcast transaction
+      final txHash = await _broadcastTransaction(signedTx);
+      
+      AppLogger.info('DINR sent successfully: $txHash');
+      return txHash;
+    } catch (e) {
+      AppLogger.error('Error sending DINR: $e');
+      throw DeshChainException('Failed to send DINR: $e');
+    }
+  }
+  
+  /// Get DINR price data
+  Future<DINRPriceData> getDINRPriceData() async {
+    try {
+      final response = await _dio.get('/deshchain/dinr/v1/price');
+      
+      if (response.statusCode == 200) {
+        final data = response.data;
+        return DINRPriceData.fromJson(data);
+      } else {
+        throw DeshChainException('Failed to get DINR price data');
+      }
+    } catch (e) {
+      AppLogger.error('Error getting DINR price data: $e');
+      // Return default stable price
+      return DINRPriceData(
+        priceINR: 1.00,
+        priceUSD: 0.012,
+        timestamp: DateTime.now(),
+      );
+    }
+  }
+  
+  /// Get DINR stability metrics
+  Future<DINRStabilityMetrics> getDINRStabilityMetrics() async {
+    try {
+      final response = await _dio.get('/deshchain/dinr/v1/stability-metrics');
+      
+      if (response.statusCode == 200) {
+        final data = response.data;
+        return DINRStabilityMetrics.fromJson(data);
+      } else {
+        throw DeshChainException('Failed to get DINR stability metrics');
+      }
+    } catch (e) {
+      AppLogger.error('Error getting DINR stability metrics: $e');
+      return DINRStabilityMetrics.defaultMetrics();
+    }
+  }
+  
+  /// Get supported collateral assets
+  Future<List<CollateralAsset>> getSupportedCollaterals() async {
+    try {
+      final response = await _dio.get('/deshchain/dinr/v1/supported-collaterals');
+      
+      if (response.statusCode == 200) {
+        final data = response.data;
+        final collaterals = data['collaterals'] as List<dynamic>;
+        
+        return collaterals.map((c) => CollateralAsset.fromJson(c)).toList();
+      } else {
+        throw DeshChainException('Failed to get supported collaterals');
+      }
+    } catch (e) {
+      AppLogger.error('Error getting supported collaterals: $e');
+      return [];
+    }
+  }
+  
+  /// Prepare mint DINR transaction
+  Future<Map<String, dynamic>> _prepareMintDINRTransaction({
+    required String userAddress,
+    required String collateralDenom,
+    required BigInt collateralAmount,
+    required BigInt dinrToMint,
+    required int accountNumber,
+    required int sequence,
+  }) async {
+    final chainId = _isTestnet ? 'deshchain-testnet-1' : 'deshchain-1';
+    
+    return {
+      'body': {
+        'messages': [
+          {
+            '@type': '/deshchain.dinr.v1.MsgMintDINR',
+            'minter': userAddress,
+            'collateral': {
+              'denom': collateralDenom,
+              'amount': collateralAmount.toString(),
+            },
+            'dinr_to_mint': {
+              'denom': 'dinr',
+              'amount': dinrToMint.toString(),
+            },
+          }
+        ],
+        'memo': 'Mint DINR with collateral',
+        'timeout_height': '0',
+        'extension_options': [],
+        'non_critical_extension_options': [],
+      },
+      'auth_info': {
+        'signer_infos': [],
+        'fee': {
+          'amount': [
+            {
+              'denom': 'namo',
+              'amount': '5000', // 0.005 NAMO gas fee
+            }
+          ],
+          'gas_limit': '300000',
+          'payer': '',
+          'granter': '',
+        },
+      },
+      'signatures': [],
+    };
+  }
+  
+  /// Prepare burn DINR transaction
+  Future<Map<String, dynamic>> _prepareBurnDINRTransaction({
+    required String userAddress,
+    required BigInt dinrToBurn,
+    required int accountNumber,
+    required int sequence,
+  }) async {
+    final chainId = _isTestnet ? 'deshchain-testnet-1' : 'deshchain-1';
+    
+    return {
+      'body': {
+        'messages': [
+          {
+            '@type': '/deshchain.dinr.v1.MsgBurnDINR',
+            'burner': userAddress,
+            'dinr_to_burn': {
+              'denom': 'dinr',
+              'amount': dinrToBurn.toString(),
+            },
+          }
+        ],
+        'memo': 'Burn DINR to retrieve collateral',
+        'timeout_height': '0',
+        'extension_options': [],
+        'non_critical_extension_options': [],
+      },
+      'auth_info': {
+        'signer_infos': [],
+        'fee': {
+          'amount': [
+            {
+              'denom': 'namo',
+              'amount': '5000', // 0.005 NAMO gas fee
+            }
+          ],
+          'gas_limit': '250000',
+          'payer': '',
+          'granter': '',
+        },
+      },
+      'signatures': [],
+    };
+  }
+  
+  /// Prepare send DINR transaction
+  Future<Map<String, dynamic>> _prepareSendDINRTransaction({
+    required String fromAddress,
+    required String toAddress,
+    required BigInt amount,
+    required String memo,
+    required int accountNumber,
+    required int sequence,
+  }) async {
+    final chainId = _isTestnet ? 'deshchain-testnet-1' : 'deshchain-1';
+    
+    return {
+      'body': {
+        'messages': [
+          {
+            '@type': '/cosmos.bank.v1beta1.MsgSend',
+            'from_address': fromAddress,
+            'to_address': toAddress,
+            'amount': [
+              {
+                'denom': 'dinr',
+                'amount': amount.toString(),
+              }
+            ],
+          }
+        ],
+        'memo': memo,
+        'timeout_height': '0',
+        'extension_options': [],
+        'non_critical_extension_options': [],
+      },
+      'auth_info': {
+        'signer_infos': [],
+        'fee': {
+          'amount': [
+            {
+              'denom': 'namo',
+              'amount': '5000', // 0.005 NAMO gas fee
+            }
+          ],
+          'gas_limit': '200000',
+          'payer': '',
+          'granter': '',
+        },
+      },
+      'signatures': [],
+    };
   }
   
   /// Check if address is valid
@@ -513,6 +862,159 @@ class NetworkInfo {
       version: json['default_node_info']['version'],
       latestBlockHeight: int.parse(json['sync_info']['latest_block_height']),
     );
+  }
+}
+
+/// Collateral Position model for DeshChain client
+class CollateralPosition {
+  final String userAddress;
+  final String collateralDenom;
+  final BigInt collateralAmount;
+  final BigInt dinrMinted;
+  final double collateralRatio;
+  final bool isHealthy;
+  final DateTime lastUpdated;
+  
+  CollateralPosition({
+    required this.userAddress,
+    required this.collateralDenom,
+    required this.collateralAmount,
+    required this.dinrMinted,
+    required this.collateralRatio,
+    required this.isHealthy,
+    required this.lastUpdated,
+  });
+  
+  factory CollateralPosition.fromJson(Map<String, dynamic> json) {
+    return CollateralPosition(
+      userAddress: json['user_address'],
+      collateralDenom: json['collateral_denom'],
+      collateralAmount: BigInt.parse(json['collateral_amount']),
+      dinrMinted: BigInt.parse(json['dinr_minted']),
+      collateralRatio: double.parse(json['collateral_ratio']),
+      isHealthy: json['is_healthy'],
+      lastUpdated: DateTime.parse(json['last_updated']),
+    );
+  }
+}
+
+/// DINR Price Data model
+class DINRPriceData {
+  final double priceINR;
+  final double priceUSD;
+  final DateTime timestamp;
+  
+  DINRPriceData({
+    required this.priceINR,
+    required this.priceUSD,
+    required this.timestamp,
+  });
+  
+  factory DINRPriceData.fromJson(Map<String, dynamic> json) {
+    return DINRPriceData(
+      priceINR: double.parse(json['price_inr']),
+      priceUSD: double.parse(json['price_usd']),
+      timestamp: DateTime.parse(json['timestamp']),
+    );
+  }
+}
+
+/// DINR Stability Metrics model
+class DINRStabilityMetrics {
+  final double currentPrice;
+  final BigInt totalSupply;
+  final double collateralRatio;
+  final double stabilityFee;
+  final double yieldAPY;
+  final bool oracleStatus;
+  final DateTime lastUpdated;
+  
+  DINRStabilityMetrics({
+    required this.currentPrice,
+    required this.totalSupply,
+    required this.collateralRatio,
+    required this.stabilityFee,
+    required this.yieldAPY,
+    required this.oracleStatus,
+    required this.lastUpdated,
+  });
+  
+  factory DINRStabilityMetrics.fromJson(Map<String, dynamic> json) {
+    return DINRStabilityMetrics(
+      currentPrice: double.parse(json['current_price']),
+      totalSupply: BigInt.parse(json['total_supply']),
+      collateralRatio: double.parse(json['collateral_ratio']),
+      stabilityFee: double.parse(json['stability_fee']),
+      yieldAPY: double.parse(json['yield_apy']),
+      oracleStatus: json['oracle_status'],
+      lastUpdated: DateTime.parse(json['last_updated']),
+    );
+  }
+  
+  factory DINRStabilityMetrics.defaultMetrics() {
+    return DINRStabilityMetrics(
+      currentPrice: 1.00,
+      totalSupply: BigInt.from(12500000000000), // 12.5M DINR
+      collateralRatio: 156.0,
+      stabilityFee: 0.1,
+      yieldAPY: 5.2,
+      oracleStatus: true,
+      lastUpdated: DateTime.now(),
+    );
+  }
+  
+  /// Get formatted total supply
+  String get formattedTotalSupply {
+    final value = totalSupply.toDouble() / 1000000;
+    if (value >= 1000000) {
+      return '₹${(value / 1000000).toStringAsFixed(1)}M';
+    } else if (value >= 1000) {
+      return '₹${(value / 1000).toStringAsFixed(1)}K';
+    } else {
+      return '₹${value.toStringAsFixed(0)}';
+    }
+  }
+}
+
+/// Collateral Asset model for DeshChain client
+class CollateralAsset {
+  final String denom;
+  final String name;
+  final String symbol;
+  final int decimals;
+  final int collateralRatio;
+  final int liquidationRatio;
+  final BigInt minCollateralAmount;
+  final Color color;
+  
+  CollateralAsset({
+    required this.denom,
+    required this.name,
+    required this.symbol,
+    required this.decimals,
+    required this.collateralRatio,
+    required this.liquidationRatio,
+    required this.minCollateralAmount,
+    required this.color,
+  });
+  
+  factory CollateralAsset.fromJson(Map<String, dynamic> json) {
+    return CollateralAsset(
+      denom: json['denom'],
+      name: json['name'],
+      symbol: json['symbol'],
+      decimals: json['decimals'],
+      collateralRatio: json['collateral_ratio'],
+      liquidationRatio: json['liquidation_ratio'],
+      minCollateralAmount: BigInt.parse(json['min_collateral_amount']),
+      color: Color(int.parse(json['color'], radix: 16)),
+    );
+  }
+  
+  /// Format collateral amount
+  String formatAmount(BigInt amount) {
+    final value = amount.toDouble() / BigInt.from(10).pow(decimals).toDouble();
+    return value.toStringAsFixed(decimals <= 6 ? decimals : 6);
   }
 }
 

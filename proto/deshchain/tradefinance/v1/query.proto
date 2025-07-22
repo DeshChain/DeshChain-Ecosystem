@@ -1,0 +1,209 @@
+syntax = "proto3";
+package deshchain.tradefinance;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "deshchain/tradefinance/v1/tradefinance.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/tradefinance/types";
+
+// Query defines the gRPC querier service for trade finance module
+service Query {
+  // Params queries the module parameters
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/deshchain/tradefinance/v1/params";
+  }
+  
+  // Party queries a trade party by ID
+  rpc Party(QueryPartyRequest) returns (QueryPartyResponse) {
+    option (google.api.http).get = "/deshchain/tradefinance/v1/party/{party_id}";
+  }
+  
+  // Parties queries all trade parties with pagination
+  rpc Parties(QueryPartiesRequest) returns (QueryPartiesResponse) {
+    option (google.api.http).get = "/deshchain/tradefinance/v1/parties";
+  }
+  
+  // LetterOfCredit queries an LC by ID
+  rpc LetterOfCredit(QueryLetterOfCreditRequest) returns (QueryLetterOfCreditResponse) {
+    option (google.api.http).get = "/deshchain/tradefinance/v1/lc/{lc_id}";
+  }
+  
+  // LettersOfCredit queries all LCs with pagination
+  rpc LettersOfCredit(QueryLettersOfCreditRequest) returns (QueryLettersOfCreditResponse) {
+    option (google.api.http).get = "/deshchain/tradefinance/v1/lcs";
+  }
+  
+  // LcsByParty queries LCs by party involvement
+  rpc LcsByParty(QueryLcsByPartyRequest) returns (QueryLcsByPartyResponse) {
+    option (google.api.http).get = "/deshchain/tradefinance/v1/lcs/party/{party_id}";
+  }
+  
+  // Documents queries documents for an LC
+  rpc Documents(QueryDocumentsRequest) returns (QueryDocumentsResponse) {
+    option (google.api.http).get = "/deshchain/tradefinance/v1/lc/{lc_id}/documents";
+  }
+  
+  // InsurancePolicies queries insurance policies for an LC
+  rpc InsurancePolicies(QueryInsurancePoliciesRequest) returns (QueryInsurancePoliciesResponse) {
+    option (google.api.http).get = "/deshchain/tradefinance/v1/lc/{lc_id}/insurance";
+  }
+  
+  // ShipmentTracking queries shipment tracking for an LC
+  rpc ShipmentTracking(QueryShipmentTrackingRequest) returns (QueryShipmentTrackingResponse) {
+    option (google.api.http).get = "/deshchain/tradefinance/v1/lc/{lc_id}/shipment";
+  }
+  
+  // PaymentInstructions queries payment instructions for an LC
+  rpc PaymentInstructions(QueryPaymentInstructionsRequest) returns (QueryPaymentInstructionsResponse) {
+    option (google.api.http).get = "/deshchain/tradefinance/v1/lc/{lc_id}/payments";
+  }
+  
+  // TradeFinanceStats queries module statistics
+  rpc TradeFinanceStats(QueryTradeFinanceStatsRequest) returns (QueryTradeFinanceStatsResponse) {
+    option (google.api.http).get = "/deshchain/tradefinance/v1/stats";
+  }
+  
+  // EstimateFees estimates fees for LC issuance
+  rpc EstimateFees(QueryEstimateFeesRequest) returns (QueryEstimateFeesResponse) {
+    option (google.api.http).get = "/deshchain/tradefinance/v1/estimate-fees";
+  }
+}
+
+// QueryParamsRequest is request for Query/Params
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response for Query/Params
+message QueryParamsResponse {
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryPartyRequest is request for Query/Party
+message QueryPartyRequest {
+  string party_id = 1;
+}
+
+// QueryPartyResponse is response for Query/Party
+message QueryPartyResponse {
+  TradeParty party = 1;
+}
+
+// QueryPartiesRequest is request for Query/Parties
+message QueryPartiesRequest {
+  string party_type = 1;
+  string country = 2;
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
+}
+
+// QueryPartiesResponse is response for Query/Parties
+message QueryPartiesResponse {
+  repeated TradeParty parties = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryLetterOfCreditRequest is request for Query/LetterOfCredit
+message QueryLetterOfCreditRequest {
+  string lc_id = 1;
+}
+
+// QueryLetterOfCreditResponse is response for Query/LetterOfCredit
+message QueryLetterOfCreditResponse {
+  LetterOfCredit lc = 1;
+}
+
+// QueryLettersOfCreditRequest is request for Query/LettersOfCredit
+message QueryLettersOfCreditRequest {
+  string status = 1;
+  string issuing_bank_id = 2;
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
+}
+
+// QueryLettersOfCreditResponse is response for Query/LettersOfCredit
+message QueryLettersOfCreditResponse {
+  repeated LetterOfCredit lcs = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryLcsByPartyRequest is request for Query/LcsByParty
+message QueryLcsByPartyRequest {
+  string party_id = 1;
+  string role = 2; // "applicant", "beneficiary", "bank"
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
+}
+
+// QueryLcsByPartyResponse is response for Query/LcsByParty
+message QueryLcsByPartyResponse {
+  repeated LetterOfCredit lcs = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryDocumentsRequest is request for Query/Documents
+message QueryDocumentsRequest {
+  string lc_id = 1;
+  string status = 2;
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
+}
+
+// QueryDocumentsResponse is response for Query/Documents
+message QueryDocumentsResponse {
+  repeated TradeDocument documents = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryInsurancePoliciesRequest is request for Query/InsurancePolicies
+message QueryInsurancePoliciesRequest {
+  string lc_id = 1;
+}
+
+// QueryInsurancePoliciesResponse is response for Query/InsurancePolicies
+message QueryInsurancePoliciesResponse {
+  repeated InsurancePolicy policies = 1;
+}
+
+// QueryShipmentTrackingRequest is request for Query/ShipmentTracking
+message QueryShipmentTrackingRequest {
+  string lc_id = 1;
+}
+
+// QueryShipmentTrackingResponse is response for Query/ShipmentTracking
+message QueryShipmentTrackingResponse {
+  ShipmentTracking tracking = 1;
+}
+
+// QueryPaymentInstructionsRequest is request for Query/PaymentInstructions
+message QueryPaymentInstructionsRequest {
+  string lc_id = 1;
+  string status = 2;
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
+}
+
+// QueryPaymentInstructionsResponse is response for Query/PaymentInstructions
+message QueryPaymentInstructionsResponse {
+  repeated PaymentInstruction instructions = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryTradeFinanceStatsRequest is request for Query/TradeFinanceStats
+message QueryTradeFinanceStatsRequest {}
+
+// QueryTradeFinanceStatsResponse is response for Query/TradeFinanceStats
+message QueryTradeFinanceStatsResponse {
+  TradeFinanceStats stats = 1;
+}
+
+// QueryEstimateFeesRequest is request for Query/EstimateFees
+message QueryEstimateFeesRequest {
+  string lc_amount = 1;
+  string payment_terms = 2;
+  bool insurance_required = 3;
+}
+
+// QueryEstimateFeesResponse is response for Query/EstimateFees
+message QueryEstimateFeesResponse {
+  string issuance_fee = 1;
+  string document_fees = 2;
+  string insurance_fee = 3;
+  string total_fees = 4;
+  string processing_time_hours = 5;
+}

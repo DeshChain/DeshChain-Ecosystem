@@ -91,6 +91,14 @@ export const WalletScreen: React.FC = () => {
       color: COLORS.saffron,
     },
     {
+      symbol: 'DINR',
+      name: 'Digital INR',
+      balance: '50,000.00',
+      value: '₹50,000.00',
+      change24h: 0.01,
+      color: COLORS.navy,
+    },
+    {
       symbol: 'ETH',
       name: 'Ethereum',
       balance: '0.5432',
@@ -193,7 +201,7 @@ export const WalletScreen: React.FC = () => {
             <View style={styles.balanceSection}>
               <Text style={styles.totalLabel}>Total Balance</Text>
               <GradientText style={styles.totalBalance}>
-                ₹2,81,296.70
+                ₹3,31,296.70
               </GradientText>
               {currentFestival && (
                 <View style={styles.festivalIndicator}>
@@ -225,13 +233,23 @@ export const WalletScreen: React.FC = () => {
             <Text style={styles.actionText}>Receive</Text>
           </TouchableOpacity>
           
-          <TouchableOpacity
-            style={styles.actionButton}
-            onPress={() => {/* Navigate to swap */}}
-          >
-            <Icon name="swap-horizontal" size={24} color={COLORS.white} />
-            <Text style={styles.actionText}>Swap</Text>
-          </TouchableOpacity>
+          {currentCoin === 'DESHCHAIN' || selectedToken?.symbol === 'DINR' ? (
+            <TouchableOpacity
+              style={styles.actionButton}
+              onPress={() => navigation.navigate('DINRMint')}
+            >
+              <Icon name="plus-circle" size={24} color={COLORS.white} />
+              <Text style={styles.actionText}>Mint DINR</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={styles.actionButton}
+              onPress={() => {/* Navigate to swap */}}
+            >
+              <Icon name="swap-horizontal" size={24} color={COLORS.white} />
+              <Text style={styles.actionText}>Swap</Text>
+            </TouchableOpacity>
+          )}
           
           <TouchableOpacity
             style={styles.actionButton}
@@ -459,6 +477,16 @@ const getMockTransactions = (): Transaction[] => [
   },
   {
     id: '2',
+    type: 'receive',
+    amount: '10000',
+    symbol: 'DINR',
+    address: 'DINR Mint: Multi-collateral backing',
+    timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+    status: 'success',
+    memo: 'Minted DINR with ETH collateral',
+  },
+  {
+    id: '3',
     type: 'send',
     amount: '500',
     symbol: 'NAMO',
@@ -468,7 +496,17 @@ const getMockTransactions = (): Transaction[] => [
     memo: 'Thanks for lunch!',
   },
   {
-    id: '3',
+    id: '4',
+    type: 'send',
+    amount: '2500',
+    symbol: 'DINR',
+    address: 'priya@dhan',
+    timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+    status: 'success',
+    memo: 'Rent payment - stable & secure',
+  },
+  {
+    id: '5',
     type: 'stake',
     amount: '5000',
     symbol: 'NAMO',
@@ -477,7 +515,17 @@ const getMockTransactions = (): Transaction[] => [
     status: 'success',
   },
   {
-    id: '4',
+    id: '6',
+    type: 'reward',
+    amount: '125',
+    symbol: 'DINR',
+    address: 'DINR Yield Strategy',
+    timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+    status: 'success',
+    memo: '5% APY on DINR holdings',
+  },
+  {
+    id: '7',
     type: 'reward',
     amount: '50',
     symbol: 'NAMO',

@@ -1,0 +1,263 @@
+syntax = "proto3";
+package deshchain.remittance.v1;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos_proto/cosmos.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/remittance/types";
+
+// RemittanceTransfer represents a cross-border remittance transfer
+message RemittanceTransfer {
+  string id = 1;
+  string sender_address = 2;
+  string recipient_address = 3;
+  string sender_country = 4;
+  string recipient_country = 5;
+  cosmos.base.v1beta1.Coin amount = 6 [(gogoproto.nullable) = false];
+  string source_currency = 7;
+  string destination_currency = 8;
+  string exchange_rate = 9 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  TransferStatus status = 10;
+  string channel_id = 11;
+  string settlement_method = 12; // bank_account, mobile_wallet, cash_pickup
+  KYCLevel kyc_level = 13;
+  string purpose_code = 14; // Family support, business, investment, etc.
+  repeated Fee fees = 15;
+  google.protobuf.Timestamp created_at = 16 [(gogoproto.stdtime) = true];
+  google.protobuf.Timestamp expires_at = 17 [(gogoproto.stdtime) = true];
+  google.protobuf.Timestamp settled_at = 18 [(gogoproto.stdtime) = true];
+  string memo = 19;
+  ComplianceInfo compliance = 20;
+  string transaction_hash = 21;
+  string settlement_reference = 22;
+}
+
+// TransferStatus represents the status of a remittance transfer
+enum TransferStatus {
+  TRANSFER_STATUS_UNSPECIFIED = 0;
+  TRANSFER_STATUS_PENDING = 1;
+  TRANSFER_STATUS_PROCESSING = 2;
+  TRANSFER_STATUS_SENT = 3;
+  TRANSFER_STATUS_RECEIVED = 4;
+  TRANSFER_STATUS_COMPLETED = 5;
+  TRANSFER_STATUS_FAILED = 6;
+  TRANSFER_STATUS_CANCELLED = 7;
+  TRANSFER_STATUS_EXPIRED = 8;
+  TRANSFER_STATUS_REFUNDED = 9;
+  TRANSFER_STATUS_COMPLIANCE_HOLD = 10;
+}
+
+// KYCLevel represents the KYC verification level
+enum KYCLevel {
+  KYC_LEVEL_UNSPECIFIED = 0;
+  KYC_LEVEL_BASIC = 1;      // Basic identity verification
+  KYC_LEVEL_ENHANCED = 2;   // Enhanced due diligence
+  KYC_LEVEL_SIMPLIFIED = 3; // Simplified due diligence (small amounts)
+}
+
+// Fee represents a fee charged for the remittance
+message Fee {
+  string type = 1; // processing, exchange, partner, network
+  cosmos.base.v1beta1.Coin amount = 2 [(gogoproto.nullable) = false];
+  string description = 3;
+  string recipient = 4; // Who receives this fee
+}
+
+// ComplianceInfo contains compliance and regulatory information
+message ComplianceInfo {
+  bool sanctions_screened = 1;
+  bool pep_screened = 2; // Politically Exposed Person
+  string risk_score = 3 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  string risk_category = 4; // low, medium, high
+  repeated string compliance_flags = 5;
+  google.protobuf.Timestamp last_screened = 6 [(gogoproto.stdtime) = true];
+  string screening_reference = 7;
+  bool manual_review_required = 8;
+  string compliance_officer = 9;
+}
+
+// LiquidityPool represents a currency liquidity pool for remittances
+message LiquidityPool {
+  string pool_id = 1;
+  string base_currency = 2;
+  string quote_currency = 3;
+  cosmos.base.v1beta1.Coin base_reserves = 4 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin quote_reserves = 5 [(gogoproto.nullable) = false];
+  string exchange_rate = 6 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  string last_rate_update = 7 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  google.protobuf.Timestamp last_updated = 8 [(gogoproto.stdtime) = true];
+  repeated LiquidityProvider providers = 9;
+  PoolParameters parameters = 10;
+  PoolStats stats = 11;
+}
+
+// LiquidityProvider represents a liquidity provider in a pool
+message LiquidityProvider {
+  string provider_address = 1;
+  cosmos.base.v1beta1.Coin base_amount = 2 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin quote_amount = 3 [(gogoproto.nullable) = false];
+  string share_percentage = 4 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  cosmos.base.v1beta1.Coin earned_fees = 5 [(gogoproto.nullable) = false];
+  google.protobuf.Timestamp joined_at = 6 [(gogoproto.stdtime) = true];
+}
+
+// PoolParameters contains pool configuration parameters
+message PoolParameters {
+  string trading_fee = 1 [(cosmos_proto.scalar) = "cosmos.Dec"]; // 0.1% = 0.001
+  string rebalancing_threshold = 2 [(cosmos_proto.scalar) = "cosmos.Dec"]; // 5% = 0.05
+  cosmos.base.v1beta1.Coin min_liquidity = 3 [(gogoproto.nullable) = false];
+  bool auto_rebalancing_enabled = 4;
+  uint64 price_oracle_window = 5; // seconds
+}
+
+// PoolStats contains pool statistics
+message PoolStats {
+  uint64 total_transactions = 1;
+  cosmos.base.v1beta1.Coin total_volume = 2 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin daily_volume = 3 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin total_fees_collected = 4 [(gogoproto.nullable) = false];
+  string apy = 5 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  google.protobuf.Timestamp last_rebalance = 6 [(gogoproto.stdtime) = true];
+}
+
+// RemittanceCorridor represents a remittance corridor between two countries
+message RemittanceCorridor {
+  string id = 1;
+  string source_country = 2;
+  string destination_country = 3;
+  string source_currency = 4;
+  string destination_currency = 5;
+  bool is_active = 6;
+  repeated string supported_methods = 7; // bank_transfer, mobile_wallet, cash_pickup
+  CorridorLimits limits = 8;
+  CorridorCompliance compliance_requirements = 9;
+  repeated CorridorPartner partners = 10;
+  CorridorStats stats = 11;
+}
+
+// CorridorLimits defines transaction limits for a corridor
+message CorridorLimits {
+  cosmos.base.v1beta1.Coin min_amount = 1 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin max_amount = 2 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin daily_limit = 3 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin monthly_limit = 4 [(gogoproto.nullable) = false];
+  uint32 daily_transaction_limit = 5;
+  uint32 monthly_transaction_limit = 6;
+}
+
+// CorridorCompliance defines compliance requirements for a corridor
+message CorridorCompliance {
+  KYCLevel required_kyc_level = 1;
+  repeated string required_documents = 2;
+  bool sanctions_screening_required = 3;
+  bool pep_screening_required = 4;
+  bool source_of_funds_required = 5;
+  repeated string purpose_codes = 6;
+  bool manual_review_threshold = 7;
+  cosmos.base.v1beta1.Coin manual_review_amount = 8 [(gogoproto.nullable) = false];
+}
+
+// CorridorPartner represents a partner in a remittance corridor
+message CorridorPartner {
+  string partner_id = 1;
+  string partner_name = 2;
+  string partner_type = 3; // bank, mobile_money, cash_agent, fintech
+  string country = 4;
+  repeated string supported_methods = 5;
+  bool is_active = 6;
+  string settlement_currency = 7;
+  string fee_structure = 8 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  ContactInfo contact_info = 9;
+  ComplianceInfo compliance_info = 10;
+}
+
+// ContactInfo contains partner contact information
+message ContactInfo {
+  string email = 1;
+  string phone = 2;
+  string address = 3;
+  string website = 4;
+  string support_email = 5;
+  string emergency_contact = 6;
+}
+
+// CorridorStats contains corridor statistics
+message CorridorStats {
+  uint64 total_transactions = 1;
+  cosmos.base.v1beta1.Coin total_volume = 2 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin average_amount = 3 [(gogoproto.nullable) = false];
+  uint64 success_rate_percentage = 4; // 95 = 95%
+  uint64 average_settlement_time_minutes = 5;
+  google.protobuf.Timestamp last_transaction = 6 [(gogoproto.stdtime) = true];
+  google.protobuf.Timestamp stats_updated = 7 [(gogoproto.stdtime) = true];
+}
+
+// ExchangeRate represents an exchange rate between currencies
+message ExchangeRate {
+  string base_currency = 1;
+  string quote_currency = 2;
+  string rate = 3 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  string bid = 4 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  string ask = 5 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  string spread = 6 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  string source = 7; // oracle, manual, partner
+  google.protobuf.Timestamp updated_at = 8 [(gogoproto.stdtime) = true];
+  uint64 confidence_score = 9; // 0-100
+  bool is_active = 10;
+  string volatility = 11 [(cosmos_proto.scalar) = "cosmos.Dec"];
+}
+
+// Settlement represents settlement information for a transfer
+message Settlement {
+  string transfer_id = 1;
+  string settlement_method = 2; // bank_transfer, mobile_wallet, cash_pickup
+  SettlementStatus status = 3;
+  string partner_id = 4;
+  string partner_reference = 5;
+  string recipient_account = 6;
+  string recipient_name = 7;
+  string recipient_phone = 8;
+  string recipient_address = 9;
+  cosmos.base.v1beta1.Coin settled_amount = 10 [(gogoproto.nullable) = false];
+  google.protobuf.Timestamp settlement_time = 11 [(gogoproto.stdtime) = true];
+  string settlement_proof = 12; // Hash or reference to settlement proof
+  repeated SettlementInstruction instructions = 13;
+}
+
+// SettlementStatus represents the status of settlement
+enum SettlementStatus {
+  SETTLEMENT_STATUS_UNSPECIFIED = 0;
+  SETTLEMENT_STATUS_PENDING = 1;
+  SETTLEMENT_STATUS_PROCESSING = 2;
+  SETTLEMENT_STATUS_COMPLETED = 3;
+  SETTLEMENT_STATUS_FAILED = 4;
+  SETTLEMENT_STATUS_CANCELLED = 5;
+  SETTLEMENT_STATUS_AWAITING_PICKUP = 6;
+  SETTLEMENT_STATUS_PICKED_UP = 7;
+}
+
+// SettlementInstruction contains instructions for settlement
+message SettlementInstruction {
+  string type = 1; // bank_details, mobile_number, pickup_location
+  string key = 2;
+  string value = 3;
+  bool is_required = 4;
+  bool is_sensitive = 5;
+}
+
+// RemittanceParams contains module parameters
+message RemittanceParams {
+  string default_fee_rate = 1 [(cosmos_proto.scalar) = "cosmos.Dec"]; // 0.1% = 0.001
+  cosmos.base.v1beta1.Coin max_transfer_amount = 2 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin min_transfer_amount = 3 [(gogoproto.nullable) = false];
+  uint64 default_expiry_hours = 4; // 24 hours
+  uint64 max_expiry_hours = 5; // 168 hours (1 week)
+  bool compliance_required = 6;
+  uint64 auto_settlement_threshold_minutes = 7; // Auto settle after X minutes
+  repeated string supported_currencies = 8;
+  bool kyc_required = 9;
+  string treasury_address = 10;
+  cosmos.base.v1beta1.Coin liquidity_pool_min_reserve = 11 [(gogoproto.nullable) = false];
+}

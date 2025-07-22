@@ -1,0 +1,109 @@
+syntax = "proto3";
+package deshchain.dinr;
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/dinr/types";
+
+// CollateralAsset defines a supported collateral type
+message CollateralAsset {
+  string denom = 1;
+  string tier = 2; // tier1_stable, tier2_crypto, tier3_alt
+  uint64 min_collateral_ratio = 3; // in basis points (14000 = 140%)
+  uint64 max_allocation = 4; // max % of total collateral in basis points
+  bool is_active = 5;
+  string oracle_script_id = 6; // oracle price feed identifier
+}
+
+// UserPosition tracks a user's DINR minting position
+message UserPosition {
+  string address = 1;
+  repeated cosmos.base.v1beta1.Coin collateral = 2 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin dinr_minted = 3 [(gogoproto.nullable) = false];
+  uint64 collateral_ratio = 4; // current ratio in basis points
+  google.protobuf.Timestamp last_update = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  bool is_liquidatable = 6;
+  string health_factor = 7; // decimal string
+}
+
+// MintRequest represents a request to mint DINR
+message MintRequest {
+  string user = 1;
+  cosmos.base.v1beta1.Coin collateral = 2 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin dinr_requested = 3 [(gogoproto.nullable) = false];
+  google.protobuf.Timestamp timestamp = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+// BurnRequest represents a request to burn DINR and retrieve collateral
+message BurnRequest {
+  string user = 1;
+  cosmos.base.v1beta1.Coin dinr_to_burn = 2 [(gogoproto.nullable) = false];
+  string collateral_denom = 3;
+  google.protobuf.Timestamp timestamp = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+// LiquidationRequest represents a liquidation event
+message LiquidationRequest {
+  string liquidator = 1;
+  string user = 2;
+  cosmos.base.v1beta1.Coin dinr_to_cover = 3 [(gogoproto.nullable) = false];
+  repeated cosmos.base.v1beta1.Coin collateral_received = 4 [(gogoproto.nullable) = false];
+  uint64 penalty_rate = 5; // in basis points
+  google.protobuf.Timestamp timestamp = 6 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+// StabilityData tracks DINR peg stability metrics
+message StabilityData {
+  string current_price = 1; // DINR price in INR (decimal)
+  string target_price = 2; // Always 1.00 INR
+  int64 price_deviation = 3; // in basis points
+  cosmos.base.v1beta1.Coin total_supply = 4 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin total_collateral_value = 5 [(gogoproto.nullable) = false];
+  uint64 global_collateral_ratio = 6; // in basis points
+  google.protobuf.Timestamp last_update = 7 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+// InsuranceFund tracks the insurance fund for black swan events
+message InsuranceFund {
+  cosmos.base.v1beta1.Coin balance = 1 [(gogoproto.nullable) = false];
+  string target_ratio = 2; // target % of DINR supply (decimal)
+  repeated cosmos.base.v1beta1.Coin assets = 3 [(gogoproto.nullable) = false];
+  google.protobuf.Timestamp last_rebalance = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+// YieldStrategy defines yield generation strategies for idle collateral
+message YieldStrategy {
+  string id = 1;
+  string name = 2;
+  string protocol = 3; // "gramsuraksha", "urbansuraksha", "internal_lending"
+  uint64 allocation = 4; // in basis points
+  string expected_apy = 5; // decimal string
+  bool is_active = 6;
+  cosmos.base.v1beta1.Coin deployed_amount = 7 [(gogoproto.nullable) = false];
+}
+
+// FeeStructure defines all DINR-related fees
+message FeeStructure {
+  uint64 mint_fee = 1; // basis points (10 = 0.1%)
+  string mint_fee_cap = 2; // max fee in DINR (100)
+  uint64 burn_fee = 3; // basis points
+  string burn_fee_cap = 4; // max fee in DINR
+  uint64 liquidation_penalty = 5; // basis points (1000 = 10%)
+  uint64 stability_fee = 6; // annual rate in basis points
+}
+
+// Params defines the module parameters
+message Params {
+  FeeStructure fees = 1 [(gogoproto.nullable) = false];
+  uint64 min_collateral_ratio = 2; // minimum required ratio (15000 = 150%)
+  uint64 liquidation_threshold = 3; // ratio at which liquidation starts (13000 = 130%)
+  uint64 max_supply = 4; // max DINR that can be minted
+  repeated CollateralAsset collateral_assets = 5 [(gogoproto.nullable) = false];
+  bool minting_enabled = 6;
+  bool burning_enabled = 7;
+  uint64 oracle_update_frequency = 8; // in seconds
+  string insurance_fund_ratio = 9; // target ratio as decimal (0.05 = 5%)
+  uint64 yield_to_insurance_ratio = 10; // basis points (e.g., 2000 = 20%)
+}

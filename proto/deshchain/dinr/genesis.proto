@@ -1,0 +1,32 @@
+syntax = "proto3";
+package deshchain.dinr;
+
+import "gogoproto/gogo.proto";
+import "deshchain/dinr/params.proto";
+import "deshchain/dinr/types.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/dinr/types";
+
+// GenesisState defines the DINR module's genesis state
+message GenesisState {
+  // params defines all the module parameters
+  Params params = 1 [(gogoproto.nullable) = false];
+  
+  // user_positions stores all user positions
+  repeated UserPosition user_positions = 2 [(gogoproto.nullable) = false];
+  
+  // stability_data stores current stability metrics
+  StabilityData stability_data = 3 [(gogoproto.nullable) = false];
+  
+  // insurance_fund stores the insurance fund state
+  InsuranceFund insurance_fund = 4 [(gogoproto.nullable) = false];
+  
+  // yield_strategies stores active yield strategies
+  repeated YieldStrategy yield_strategies = 5 [(gogoproto.nullable) = false];
+  
+  // total_dinr_minted tracks total DINR in circulation
+  string total_dinr_minted = 6;
+  
+  // total_fees_collected tracks all fees collected
+  string total_fees_collected = 7;
+}

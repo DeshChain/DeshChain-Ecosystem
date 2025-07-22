@@ -1,0 +1,194 @@
+syntax = "proto3";
+
+package deshchain.oracle.v1;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "deshchain/oracle/v1/oracle.proto";
+import "amino/amino.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/oracle/types";
+
+// Query defines the oracle module's gRPC query service
+service Query {
+  // Params returns the oracle module parameters
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/deshchain/oracle/v1/params";
+  }
+  
+  // Price returns the current price for a specific asset
+  rpc Price(QueryPriceRequest) returns (QueryPriceResponse) {
+    option (google.api.http).get = "/deshchain/oracle/v1/price/{symbol}";
+  }
+  
+  // Prices returns all current prices
+  rpc Prices(QueryPricesRequest) returns (QueryPricesResponse) {
+    option (google.api.http).get = "/deshchain/oracle/v1/prices";
+  }
+  
+  // ExchangeRate returns the exchange rate between two currencies
+  rpc ExchangeRate(QueryExchangeRateRequest) returns (QueryExchangeRateResponse) {
+    option (google.api.http).get = "/deshchain/oracle/v1/exchange-rate/{base}/{target}";
+  }
+  
+  // ExchangeRates returns all exchange rates
+  rpc ExchangeRates(QueryExchangeRatesRequest) returns (QueryExchangeRatesResponse) {
+    option (google.api.http).get = "/deshchain/oracle/v1/exchange-rates";
+  }
+  
+  // OracleValidator returns information about a specific oracle validator
+  rpc OracleValidator(QueryOracleValidatorRequest) returns (QueryOracleValidatorResponse) {
+    option (google.api.http).get = "/deshchain/oracle/v1/validators/{validator}";
+  }
+  
+  // OracleValidators returns all oracle validators
+  rpc OracleValidators(QueryOracleValidatorsRequest) returns (QueryOracleValidatorsResponse) {
+    option (google.api.http).get = "/deshchain/oracle/v1/validators";
+  }
+  
+  // ValidatorSubmissions returns price submissions for a validator
+  rpc ValidatorSubmissions(QueryValidatorSubmissionsRequest) returns (QueryValidatorSubmissionsResponse) {
+    option (google.api.http).get = "/deshchain/oracle/v1/submissions/{validator}";
+  }
+  
+  // PriceHistory returns historical price data
+  rpc PriceHistory(QueryPriceHistoryRequest) returns (QueryPriceHistoryResponse) {
+    option (google.api.http).get = "/deshchain/oracle/v1/history/{symbol}";
+  }
+  
+  // AggregatedPrice returns aggregated price data for current window
+  rpc AggregatedPrice(QueryAggregatedPriceRequest) returns (QueryAggregatedPriceResponse) {
+    option (google.api.http).get = "/deshchain/oracle/v1/aggregated/{symbol}";
+  }
+}
+
+// QueryParamsRequest is the request type for the Query/Params RPC method
+message QueryParamsRequest {}
+
+// QueryParamsResponse is the response type for the Query/Params RPC method
+message QueryParamsResponse {
+  OracleParams params = 1 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
+}
+
+// QueryPriceRequest is the request type for the Query/Price RPC method
+message QueryPriceRequest {
+  string symbol = 1;
+}
+
+// QueryPriceResponse is the response type for the Query/Price RPC method
+message QueryPriceResponse {
+  PriceData price = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryPricesRequest is the request type for the Query/Prices RPC method
+message QueryPricesRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+// QueryPricesResponse is the response type for the Query/Prices RPC method
+message QueryPricesResponse {
+  repeated PriceData prices = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryExchangeRateRequest is the request type for the Query/ExchangeRate RPC method
+message QueryExchangeRateRequest {
+  string base = 1;
+  string target = 2;
+}
+
+// QueryExchangeRateResponse is the response type for the Query/ExchangeRate RPC method
+message QueryExchangeRateResponse {
+  ExchangeRate rate = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryExchangeRatesRequest is the request type for the Query/ExchangeRates RPC method
+message QueryExchangeRatesRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+// QueryExchangeRatesResponse is the response type for the Query/ExchangeRates RPC method
+message QueryExchangeRatesResponse {
+  repeated ExchangeRate rates = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryOracleValidatorRequest is the request type for the Query/OracleValidator RPC method
+message QueryOracleValidatorRequest {
+  string validator = 1;
+}
+
+// QueryOracleValidatorResponse is the response type for the Query/OracleValidator RPC method
+message QueryOracleValidatorResponse {
+  OracleValidator oracle_validator = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryOracleValidatorsRequest is the request type for the Query/OracleValidators RPC method
+message QueryOracleValidatorsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+// QueryOracleValidatorsResponse is the response type for the Query/OracleValidators RPC method
+message QueryOracleValidatorsResponse {
+  repeated OracleValidator oracle_validators = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryValidatorSubmissionsRequest is the request type for the Query/ValidatorSubmissions RPC method
+message QueryValidatorSubmissionsRequest {
+  string validator = 1;
+  string symbol = 2; // Optional: filter by symbol
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
+}
+
+// QueryValidatorSubmissionsResponse is the response type for the Query/ValidatorSubmissions RPC method
+message QueryValidatorSubmissionsResponse {
+  repeated ValidatorPriceSubmission submissions = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryPriceHistoryRequest is the request type for the Query/PriceHistory RPC method
+message QueryPriceHistoryRequest {
+  string symbol = 1;
+  uint64 limit = 2; // Maximum number of historical entries to return
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
+}
+
+// QueryPriceHistoryResponse is the response type for the Query/PriceHistory RPC method
+message QueryPriceHistoryResponse {
+  repeated HistoricalPrice history = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryAggregatedPriceRequest is the request type for the Query/AggregatedPrice RPC method
+message QueryAggregatedPriceRequest {
+  string symbol = 1;
+}
+
+// QueryAggregatedPriceResponse is the response type for the Query/AggregatedPrice RPC method
+message QueryAggregatedPriceResponse {
+  PriceAggregation aggregation = 1 [(gogoproto.nullable) = false];
+}
+
+// HistoricalPrice represents a historical price entry
+message HistoricalPrice {
+  // Asset symbol
+  string symbol = 1;
+  
+  // Price at this point in time
+  string price = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Block height when this price was recorded
+  uint64 block_height = 3;
+  
+  // Timestamp when price was recorded
+  google.protobuf.Timestamp timestamp = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // Number of validators who contributed to this price
+  uint64 validator_count = 5;
+}

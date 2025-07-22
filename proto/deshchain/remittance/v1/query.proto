@@ -1,0 +1,427 @@
+syntax = "proto3";
+package deshchain.remittance.v1;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "cosmos_proto/cosmos.proto";
+import "deshchain/remittance/v1/remittance.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/remittance/types";
+
+// Query defines the gRPC querier service for the remittance module
+service Query {
+  // Params queries module parameters
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/deshchain/remittance/v1/params";
+  }
+
+  // Transfer queries a specific remittance transfer
+  rpc Transfer(QueryTransferRequest) returns (QueryTransferResponse) {
+    option (google.api.http).get = "/deshchain/remittance/v1/transfers/{transfer_id}";
+  }
+
+  // Transfers queries remittance transfers with optional filters
+  rpc Transfers(QueryTransfersRequest) returns (QueryTransfersResponse) {
+    option (google.api.http).get = "/deshchain/remittance/v1/transfers";
+  }
+
+  // TransfersBySender queries transfers by sender address
+  rpc TransfersBySender(QueryTransfersBySenderRequest) returns (QueryTransfersBySenderResponse) {
+    option (google.api.http).get = "/deshchain/remittance/v1/transfers/sender/{sender}";
+  }
+
+  // TransfersByRecipient queries transfers by recipient address
+  rpc TransfersByRecipient(QueryTransfersByRecipientRequest) returns (QueryTransfersByRecipientResponse) {
+    option (google.api.http).get = "/deshchain/remittance/v1/transfers/recipient/{recipient}";
+  }
+
+  // TransferStatus queries the status of a transfer
+  rpc TransferStatus(QueryTransferStatusRequest) returns (QueryTransferStatusResponse) {
+    option (google.api.http).get = "/deshchain/remittance/v1/transfers/{transfer_id}/status";
+  }
+
+  // EstimateTransfer estimates costs and timing for a transfer
+  rpc EstimateTransfer(QueryEstimateTransferRequest) returns (QueryEstimateTransferResponse) {
+    option (google.api.http).get = "/deshchain/remittance/v1/estimate";
+  }
+
+  // LiquidityPool queries a specific liquidity pool
+  rpc LiquidityPool(QueryLiquidityPoolRequest) returns (QueryLiquidityPoolResponse) {
+    option (google.api.http).get = "/deshchain/remittance/v1/pools/{pool_id}";
+  }
+
+  // LiquidityPools queries all liquidity pools
+  rpc LiquidityPools(QueryLiquidityPoolsRequest) returns (QueryLiquidityPoolsResponse) {
+    option (google.api.http).get = "/deshchain/remittance/v1/pools";
+  }
+
+  // ExchangeRate queries exchange rate for a currency pair
+  rpc ExchangeRate(QueryExchangeRateRequest) returns (QueryExchangeRateResponse) {
+    option (google.api.http).get = "/deshchain/remittance/v1/rates/{base_currency}/{quote_currency}";
+  }
+
+  // ExchangeRates queries all exchange rates
+  rpc ExchangeRates(QueryExchangeRatesRequest) returns (QueryExchangeRatesResponse) {
+    option (google.api.http).get = "/deshchain/remittance/v1/rates";
+  }
+
+  // Corridor queries a specific remittance corridor
+  rpc Corridor(QueryCorridorRequest) returns (QueryCorridorResponse) {
+    option (google.api.http).get = "/deshchain/remittance/v1/corridors/{corridor_id}";
+  }
+
+  // Corridors queries all remittance corridors
+  rpc Corridors(QueryCorridorsRequest) returns (QueryCorridorsResponse) {
+    option (google.api.http).get = "/deshchain/remittance/v1/corridors";
+  }
+
+  // CorridorsByCountry queries corridors by source or destination country
+  rpc CorridorsByCountry(QueryCorridorsByCountryRequest) returns (QueryCorridorsByCountryResponse) {
+    option (google.api.http).get = "/deshchain/remittance/v1/corridors/country/{country}";
+  }
+
+  // Partner queries a specific settlement partner
+  rpc Partner(QueryPartnerRequest) returns (QueryPartnerResponse) {
+    option (google.api.http).get = "/deshchain/remittance/v1/partners/{partner_id}";
+  }
+
+  // Partners queries all settlement partners
+  rpc Partners(QueryPartnersRequest) returns (QueryPartnersResponse) {
+    option (google.api.http).get = "/deshchain/remittance/v1/partners";
+  }
+
+  // PartnersByCountry queries partners by country
+  rpc PartnersByCountry(QueryPartnersByCountryRequest) returns (QueryPartnersByCountryResponse) {
+    option (google.api.http).get = "/deshchain/remittance/v1/partners/country/{country}";
+  }
+
+  // ComplianceStatus queries compliance status for a transfer
+  rpc ComplianceStatus(QueryComplianceStatusRequest) returns (QueryComplianceStatusResponse) {
+    option (google.api.http).get = "/deshchain/remittance/v1/transfers/{transfer_id}/compliance";
+  }
+
+  // Statistics queries remittance statistics
+  rpc Statistics(QueryStatisticsRequest) returns (QueryStatisticsResponse) {
+    option (google.api.http).get = "/deshchain/remittance/v1/statistics";
+  }
+
+  // Volume queries volume statistics
+  rpc Volume(QueryVolumeRequest) returns (QueryVolumeResponse) {
+    option (google.api.http).get = "/deshchain/remittance/v1/volume";
+  }
+}
+
+// QueryParamsRequest is the request type for the Query/Params RPC method
+message QueryParamsRequest {}
+
+// QueryParamsResponse is the response type for the Query/Params RPC method
+message QueryParamsResponse {
+  RemittanceParams params = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryTransferRequest is the request type for the Query/Transfer RPC method
+message QueryTransferRequest {
+  string transfer_id = 1;
+}
+
+// QueryTransferResponse is the response type for the Query/Transfer RPC method
+message QueryTransferResponse {
+  RemittanceTransfer transfer = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryTransfersRequest is the request type for the Query/Transfers RPC method
+message QueryTransfersRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+  string status = 2; // Filter by status
+  string sender = 3; // Filter by sender
+  string recipient = 4; // Filter by recipient
+  string source_country = 5; // Filter by source country
+  string destination_country = 6; // Filter by destination country
+  string source_currency = 7; // Filter by source currency
+  string destination_currency = 8; // Filter by destination currency
+}
+
+// QueryTransfersResponse is the response type for the Query/Transfers RPC method
+message QueryTransfersResponse {
+  repeated RemittanceTransfer transfers = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryTransfersBySenderRequest is the request type for the Query/TransfersBySender RPC method
+message QueryTransfersBySenderRequest {
+  string sender = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+// QueryTransfersBySenderResponse is the response type for the Query/TransfersBySender RPC method
+message QueryTransfersBySenderResponse {
+  repeated RemittanceTransfer transfers = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryTransfersByRecipientRequest is the request type for the Query/TransfersByRecipient RPC method
+message QueryTransfersByRecipientRequest {
+  string recipient = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+// QueryTransfersByRecipientResponse is the response type for the Query/TransfersByRecipient RPC method
+message QueryTransfersByRecipientResponse {
+  repeated RemittanceTransfer transfers = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryTransferStatusRequest is the request type for the Query/TransferStatus RPC method
+message QueryTransferStatusRequest {
+  string transfer_id = 1;
+}
+
+// QueryTransferStatusResponse is the response type for the Query/TransferStatus RPC method
+message QueryTransferStatusResponse {
+  TransferStatus status = 1;
+  uint32 completion_percentage = 2; // 0-100
+  string estimated_completion_time = 3;
+  repeated StatusUpdate status_updates = 4;
+}
+
+// StatusUpdate represents a status update in the transfer timeline
+message StatusUpdate {
+  TransferStatus status = 1;
+  google.protobuf.Timestamp timestamp = 2 [(gogoproto.stdtime) = true];
+  string message = 3;
+  string updated_by = 4; // system, partner, user
+}
+
+// QueryEstimateTransferRequest is the request type for the Query/EstimateTransfer RPC method
+message QueryEstimateTransferRequest {
+  string source_country = 1;
+  string destination_country = 2;
+  string source_currency = 3;
+  string destination_currency = 4;
+  string amount = 5 [(cosmos_proto.scalar) = "cosmos.Int"];
+  string settlement_method = 6;
+}
+
+// QueryEstimateTransferResponse is the response type for the Query/EstimateTransfer RPC method
+message QueryEstimateTransferResponse {
+  string exchange_rate = 1 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  repeated Fee fees = 2;
+  cosmos.base.v1beta1.Coin total_fees = 3 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin recipient_amount = 4 [(gogoproto.nullable) = false];
+  uint64 estimated_settlement_minutes = 5;
+  bool available = 6;
+  string unavailable_reason = 7;
+  repeated string required_documents = 8;
+}
+
+// QueryLiquidityPoolRequest is the request type for the Query/LiquidityPool RPC method
+message QueryLiquidityPoolRequest {
+  string pool_id = 1;
+}
+
+// QueryLiquidityPoolResponse is the response type for the Query/LiquidityPool RPC method
+message QueryLiquidityPoolResponse {
+  LiquidityPool pool = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryLiquidityPoolsRequest is the request type for the Query/LiquidityPools RPC method
+message QueryLiquidityPoolsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+  string base_currency = 2;
+  string quote_currency = 3;
+}
+
+// QueryLiquidityPoolsResponse is the response type for the Query/LiquidityPools RPC method
+message QueryLiquidityPoolsResponse {
+  repeated LiquidityPool pools = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryExchangeRateRequest is the request type for the Query/ExchangeRate RPC method
+message QueryExchangeRateRequest {
+  string base_currency = 1;
+  string quote_currency = 2;
+}
+
+// QueryExchangeRateResponse is the response type for the Query/ExchangeRate RPC method
+message QueryExchangeRateResponse {
+  ExchangeRate rate = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryExchangeRatesRequest is the request type for the Query/ExchangeRates RPC method
+message QueryExchangeRatesRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+  string base_currency = 2;
+  string quote_currency = 3;
+}
+
+// QueryExchangeRatesResponse is the response type for the Query/ExchangeRates RPC method
+message QueryExchangeRatesResponse {
+  repeated ExchangeRate rates = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryCorridorRequest is the request type for the Query/Corridor RPC method
+message QueryCorridorRequest {
+  string corridor_id = 1;
+}
+
+// QueryCorridorResponse is the response type for the Query/Corridor RPC method
+message QueryCorridorResponse {
+  RemittanceCorridor corridor = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryCorridorsRequest is the request type for the Query/Corridors RPC method
+message QueryCorridorsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+  string source_country = 2;
+  string destination_country = 3;
+  bool active_only = 4;
+}
+
+// QueryCorridorsResponse is the response type for the Query/Corridors RPC method
+message QueryCorridorsResponse {
+  repeated RemittanceCorridor corridors = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryCorridorsByCountryRequest is the request type for the Query/CorridorsByCountry RPC method
+message QueryCorridorsByCountryRequest {
+  string country = 1;
+  bool as_source = 2; // true for source country, false for destination
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
+}
+
+// QueryCorridorsByCountryResponse is the response type for the Query/CorridorsByCountry RPC method
+message QueryCorridorsByCountryResponse {
+  repeated RemittanceCorridor corridors = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryPartnerRequest is the request type for the Query/Partner RPC method
+message QueryPartnerRequest {
+  string partner_id = 1;
+}
+
+// QueryPartnerResponse is the response type for the Query/Partner RPC method
+message QueryPartnerResponse {
+  CorridorPartner partner = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryPartnersRequest is the request type for the Query/Partners RPC method
+message QueryPartnersRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+  string country = 2;
+  string partner_type = 3;
+  bool active_only = 4;
+}
+
+// QueryPartnersResponse is the response type for the Query/Partners RPC method
+message QueryPartnersResponse {
+  repeated CorridorPartner partners = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryPartnersByCountryRequest is the request type for the Query/PartnersByCountry RPC method
+message QueryPartnersByCountryRequest {
+  string country = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+// QueryPartnersByCountryResponse is the response type for the Query/PartnersByCountry RPC method
+message QueryPartnersByCountryResponse {
+  repeated CorridorPartner partners = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryComplianceStatusRequest is the request type for the Query/ComplianceStatus RPC method
+message QueryComplianceStatusRequest {
+  string transfer_id = 1;
+}
+
+// QueryComplianceStatusResponse is the response type for the Query/ComplianceStatus RPC method
+message QueryComplianceStatusResponse {
+  ComplianceInfo compliance = 1 [(gogoproto.nullable) = false];
+  bool approved = 2;
+  repeated string pending_checks = 3;
+  string compliance_officer = 4;
+}
+
+// QueryStatisticsRequest is the request type for the Query/Statistics RPC method
+message QueryStatisticsRequest {
+  string time_period = 1; // daily, weekly, monthly, yearly
+  string start_date = 2;   // YYYY-MM-DD format
+  string end_date = 3;     // YYYY-MM-DD format
+  string country = 4;      // Optional country filter
+  string currency = 5;     // Optional currency filter
+}
+
+// QueryStatisticsResponse is the response type for the Query/Statistics RPC method
+message QueryStatisticsResponse {
+  RemittanceStatistics statistics = 1 [(gogoproto.nullable) = false];
+}
+
+// RemittanceStatistics contains various statistics
+message RemittanceStatistics {
+  uint64 total_transfers = 1;
+  cosmos.base.v1beta1.Coin total_volume = 2 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin average_transfer_amount = 3 [(gogoproto.nullable) = false];
+  uint64 success_rate_percentage = 4; // 0-100
+  uint64 average_settlement_time_minutes = 5;
+  repeated CountryStats top_source_countries = 6;
+  repeated CountryStats top_destination_countries = 7;
+  repeated CurrencyStats currency_breakdown = 8;
+  repeated MethodStats method_breakdown = 9;
+}
+
+// CountryStats contains statistics for a specific country
+message CountryStats {
+  string country = 1;
+  string country_name = 2;
+  uint64 transfer_count = 3;
+  cosmos.base.v1beta1.Coin total_volume = 4 [(gogoproto.nullable) = false];
+  string percentage = 5 [(cosmos_proto.scalar) = "cosmos.Dec"];
+}
+
+// CurrencyStats contains statistics for a specific currency
+message CurrencyStats {
+  string currency = 1;
+  uint64 transfer_count = 2;
+  cosmos.base.v1beta1.Coin total_volume = 3 [(gogoproto.nullable) = false];
+  string percentage = 4 [(cosmos_proto.scalar) = "cosmos.Dec"];
+}
+
+// MethodStats contains statistics for a settlement method
+message MethodStats {
+  string method = 1;
+  uint64 transfer_count = 2;
+  cosmos.base.v1beta1.Coin total_volume = 3 [(gogoproto.nullable) = false];
+  string percentage = 4 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  uint64 average_settlement_time_minutes = 5;
+}
+
+// QueryVolumeRequest is the request type for the Query/Volume RPC method
+message QueryVolumeRequest {
+  string time_period = 1; // hourly, daily, weekly, monthly
+  uint32 limit = 2;       // Number of periods to return
+  string currency = 3;    // Optional currency filter
+  string country = 4;     // Optional country filter
+}
+
+// QueryVolumeResponse is the response type for the Query/Volume RPC method
+message QueryVolumeResponse {
+  repeated VolumeData volume_data = 1;
+  cosmos.base.v1beta1.Coin total_volume = 2 [(gogoproto.nullable) = false];
+  uint64 total_transfers = 3;
+}
+
+// VolumeData contains volume data for a specific time period
+message VolumeData {
+  string period = 1;      // Time period identifier
+  google.protobuf.Timestamp start_time = 2 [(gogoproto.stdtime) = true];
+  google.protobuf.Timestamp end_time = 3 [(gogoproto.stdtime) = true];
+  cosmos.base.v1beta1.Coin volume = 4 [(gogoproto.nullable) = false];
+  uint64 transfer_count = 5;
+  cosmos.base.v1beta1.Coin average_amount = 6 [(gogoproto.nullable) = false];
+}

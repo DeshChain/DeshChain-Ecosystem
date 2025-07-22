@@ -1,0 +1,148 @@
+syntax = "proto3";
+
+package deshchain.oracle.v1;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "cosmos/msg/v1/msg.proto";
+import "cosmos_proto/cosmos.proto";
+import "amino/amino.proto";
+import "deshchain/oracle/v1/oracle.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/oracle/types";
+
+// Msg defines the oracle module's transaction messages
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+  
+  // SubmitPrice allows oracle validators to submit price data
+  rpc SubmitPrice(MsgSubmitPrice) returns (MsgSubmitPriceResponse);
+  
+  // SubmitExchangeRate allows authorized validators to submit exchange rates
+  rpc SubmitExchangeRate(MsgSubmitExchangeRate) returns (MsgSubmitExchangeRateResponse);
+  
+  // RegisterOracleValidator registers a new oracle validator
+  rpc RegisterOracleValidator(MsgRegisterOracleValidator) returns (MsgRegisterOracleValidatorResponse);
+  
+  // UpdateOracleValidator updates oracle validator configuration
+  rpc UpdateOracleValidator(MsgUpdateOracleValidator) returns (MsgUpdateOracleValidatorResponse);
+  
+  // UpdateParams updates oracle module parameters
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+}
+
+// MsgSubmitPrice defines the message for submitting price data
+message MsgSubmitPrice {
+  option (cosmos.msg.v1.signer) = "validator";
+  option (amino.name) = "deshchain/oracle/MsgSubmitPrice";
+  
+  // Validator address submitting the price
+  string validator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // Asset symbol (e.g., "BTC", "ETH")
+  string symbol = 2;
+  
+  // Price in INR (with 6 decimal places)
+  string price = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Source of price data (e.g., "coinbase", "binance")
+  string source = 4;
+  
+  // Timestamp when price was fetched
+  google.protobuf.Timestamp timestamp = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+// MsgSubmitPriceResponse defines the response for MsgSubmitPrice
+message MsgSubmitPriceResponse {}
+
+// MsgSubmitExchangeRate defines the message for submitting exchange rates
+message MsgSubmitExchangeRate {
+  option (cosmos.msg.v1.signer) = "validator";
+  option (amino.name) = "deshchain/oracle/MsgSubmitExchangeRate";
+  
+  // Validator address submitting the rate
+  string validator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // Base currency (e.g., "USD")
+  string base = 2;
+  
+  // Target currency (e.g., "INR")
+  string target = 3;
+  
+  // Exchange rate from base to target
+  string rate = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Source of exchange rate data
+  string source = 5;
+  
+  // Timestamp when rate was fetched
+  google.protobuf.Timestamp timestamp = 6 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+// MsgSubmitExchangeRateResponse defines the response for MsgSubmitExchangeRate
+message MsgSubmitExchangeRateResponse {}
+
+// MsgRegisterOracleValidator defines the message for registering an oracle validator
+message MsgRegisterOracleValidator {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "deshchain/oracle/MsgRegisterOracleValidator";
+  
+  // Address of the account creating this registration (must be governance or admin)
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // Validator address to register
+  string validator = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // Power/weight for this validator
+  uint64 power = 3;
+  
+  // Description of the validator's oracle setup
+  string description = 4;
+}
+
+// MsgRegisterOracleValidatorResponse defines the response for MsgRegisterOracleValidator
+message MsgRegisterOracleValidatorResponse {}
+
+// MsgUpdateOracleValidator defines the message for updating oracle validator
+message MsgUpdateOracleValidator {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "deshchain/oracle/MsgUpdateOracleValidator";
+  
+  // Address of the account updating (must be governance, admin, or the validator itself)
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // Validator address to update
+  string validator = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // New power/weight for this validator (optional)
+  uint64 power = 3;
+  
+  // Whether the validator should be active (optional)
+  bool active = 4;
+}
+
+// MsgUpdateOracleValidatorResponse defines the response for MsgUpdateOracleValidator
+message MsgUpdateOracleValidatorResponse {}
+
+// MsgUpdateParams defines the message for updating oracle parameters
+message MsgUpdateParams {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "deshchain/oracle/MsgUpdateParams";
+  
+  // Authority is the address that controls the module (defaults to x/gov unless overwritten)
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // New parameters for the oracle module
+  OracleParams params = 2 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
+}
+
+// MsgUpdateParamsResponse defines the response for MsgUpdateParams
+message MsgUpdateParamsResponse {}

@@ -1,0 +1,165 @@
+syntax = "proto3";
+package deshchain.dinr;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "deshchain/dinr/params.proto";
+import "deshchain/dinr/types.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/dinr/types";
+
+// Query defines the gRPC querier service
+service Query {
+  // Params queries the module parameters
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/deshchain/dinr/params";
+  }
+  
+  // UserPosition queries a user's DINR position
+  rpc UserPosition(QueryUserPositionRequest) returns (QueryUserPositionResponse) {
+    option (google.api.http).get = "/deshchain/dinr/position/{address}";
+  }
+  
+  // AllPositions queries all DINR positions with pagination
+  rpc AllPositions(QueryAllPositionsRequest) returns (QueryAllPositionsResponse) {
+    option (google.api.http).get = "/deshchain/dinr/positions";
+  }
+  
+  // CollateralAsset queries information about a specific collateral type
+  rpc CollateralAsset(QueryCollateralAssetRequest) returns (QueryCollateralAssetResponse) {
+    option (google.api.http).get = "/deshchain/dinr/collateral/{denom}";
+  }
+  
+  // AllCollateralAssets queries all supported collateral types
+  rpc AllCollateralAssets(QueryAllCollateralAssetsRequest) returns (QueryAllCollateralAssetsResponse) {
+    option (google.api.http).get = "/deshchain/dinr/collateral";
+  }
+  
+  // StabilityInfo queries current stability metrics
+  rpc StabilityInfo(QueryStabilityInfoRequest) returns (QueryStabilityInfoResponse) {
+    option (google.api.http).get = "/deshchain/dinr/stability";
+  }
+  
+  // InsuranceFund queries the insurance fund status
+  rpc InsuranceFund(QueryInsuranceFundRequest) returns (QueryInsuranceFundResponse) {
+    option (google.api.http).get = "/deshchain/dinr/insurance";
+  }
+  
+  // EstimateMint estimates the result of a mint operation
+  rpc EstimateMint(QueryEstimateMintRequest) returns (QueryEstimateMintResponse) {
+    option (google.api.http).get = "/deshchain/dinr/estimate/mint";
+  }
+  
+  // EstimateBurn estimates the result of a burn operation
+  rpc EstimateBurn(QueryEstimateBurnRequest) returns (QueryEstimateBurnResponse) {
+    option (google.api.http).get = "/deshchain/dinr/estimate/burn";
+  }
+  
+  // LiquidatablePositions queries positions eligible for liquidation
+  rpc LiquidatablePositions(QueryLiquidatablePositionsRequest) returns (QueryLiquidatablePositionsResponse) {
+    option (google.api.http).get = "/deshchain/dinr/liquidatable";
+  }
+}
+
+// QueryParamsRequest is request for Params
+message QueryParamsRequest {}
+
+message QueryParamsResponse {
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryUserPositionRequest queries a specific user position
+message QueryUserPositionRequest {
+  string address = 1;
+}
+
+message QueryUserPositionResponse {
+  UserPosition position = 1;
+}
+
+// QueryAllPositionsRequest queries all positions with pagination
+message QueryAllPositionsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllPositionsResponse {
+  repeated UserPosition positions = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryCollateralAssetRequest queries a specific collateral type
+message QueryCollateralAssetRequest {
+  string denom = 1;
+}
+
+message QueryCollateralAssetResponse {
+  CollateralAsset asset = 1;
+  string current_price = 2; // current price in INR
+  string total_deposited = 3; // total amount deposited
+}
+
+// QueryAllCollateralAssetsRequest queries all collateral types
+message QueryAllCollateralAssetsRequest {}
+
+message QueryAllCollateralAssetsResponse {
+  repeated CollateralAsset assets = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryStabilityInfoRequest queries stability metrics
+message QueryStabilityInfoRequest {}
+
+message QueryStabilityInfoResponse {
+  StabilityData stability = 1 [(gogoproto.nullable) = false];
+  string recommended_action = 2; // "expand", "contract", "stable"
+}
+
+// QueryInsuranceFundRequest queries insurance fund
+message QueryInsuranceFundRequest {}
+
+message QueryInsuranceFundResponse {
+  InsuranceFund fund = 1 [(gogoproto.nullable) = false];
+  string coverage_ratio = 2; // current coverage as decimal
+}
+
+// QueryEstimateMintRequest estimates mint operation
+message QueryEstimateMintRequest {
+  string minter = 1;
+  string collateral_denom = 2;
+  string collateral_amount = 3;
+  string dinr_amount = 4;
+}
+
+message QueryEstimateMintResponse {
+  string dinr_mintable = 1;
+  string fee = 2;
+  string resulting_ratio = 3;
+  bool is_valid = 4;
+  string error_message = 5;
+}
+
+// QueryEstimateBurnRequest estimates burn operation
+message QueryEstimateBurnRequest {
+  string burner = 1;
+  string dinr_amount = 2;
+  string collateral_denom = 3;
+}
+
+message QueryEstimateBurnResponse {
+  string collateral_returnable = 1;
+  string fee = 2;
+  string resulting_ratio = 3;
+  bool is_valid = 4;
+  string error_message = 5;
+}
+
+// QueryLiquidatablePositionsRequest queries liquidatable positions
+message QueryLiquidatablePositionsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryLiquidatablePositionsResponse {
+  repeated UserPosition positions = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+  string total_liquidatable_value = 3;
+}

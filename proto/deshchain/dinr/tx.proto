@@ -1,0 +1,111 @@
+syntax = "proto3";
+package deshchain.dinr;
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos/msg/v1/msg.proto";
+import "deshchain/dinr/types.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/dinr/types";
+
+// Msg defines the Msg service for DINR operations
+service Msg {
+  // MintDINR allows users to mint DINR by depositing collateral
+  rpc MintDINR(MsgMintDINR) returns (MsgMintDINRResponse);
+  
+  // BurnDINR allows users to burn DINR and retrieve collateral
+  rpc BurnDINR(MsgBurnDINR) returns (MsgBurnDINRResponse);
+  
+  // DepositCollateral adds more collateral to an existing position
+  rpc DepositCollateral(MsgDepositCollateral) returns (MsgDepositCollateralResponse);
+  
+  // WithdrawCollateral removes excess collateral from a position
+  rpc WithdrawCollateral(MsgWithdrawCollateral) returns (MsgWithdrawCollateralResponse);
+  
+  // Liquidate allows liquidation of undercollateralized positions
+  rpc Liquidate(MsgLiquidate) returns (MsgLiquidateResponse);
+  
+  // UpdateParams updates the module parameters (governance only)
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+}
+
+// MsgMintDINR defines a message to mint DINR tokens
+message MsgMintDINR {
+  option (cosmos.msg.v1.signer) = "minter";
+  
+  string minter = 1;
+  cosmos.base.v1beta1.Coin collateral = 2 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin dinr_to_mint = 3 [(gogoproto.nullable) = false];
+}
+
+message MsgMintDINRResponse {
+  cosmos.base.v1beta1.Coin dinr_minted = 1 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin fee_charged = 2 [(gogoproto.nullable) = false];
+  uint64 collateral_ratio = 3; // resulting ratio in basis points
+}
+
+// MsgBurnDINR defines a message to burn DINR and retrieve collateral
+message MsgBurnDINR {
+  option (cosmos.msg.v1.signer) = "burner";
+  
+  string burner = 1;
+  cosmos.base.v1beta1.Coin dinr_to_burn = 2 [(gogoproto.nullable) = false];
+  string collateral_denom = 3; // which collateral to retrieve
+}
+
+message MsgBurnDINRResponse {
+  cosmos.base.v1beta1.Coin collateral_returned = 1 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin fee_charged = 2 [(gogoproto.nullable) = false];
+  uint64 remaining_collateral_ratio = 3;
+}
+
+// MsgDepositCollateral adds collateral to improve position health
+message MsgDepositCollateral {
+  option (cosmos.msg.v1.signer) = "depositor";
+  
+  string depositor = 1;
+  cosmos.base.v1beta1.Coin collateral = 2 [(gogoproto.nullable) = false];
+}
+
+message MsgDepositCollateralResponse {
+  uint64 new_collateral_ratio = 1;
+  string health_factor = 2; // decimal string
+}
+
+// MsgWithdrawCollateral removes excess collateral
+message MsgWithdrawCollateral {
+  option (cosmos.msg.v1.signer) = "withdrawer";
+  
+  string withdrawer = 1;
+  cosmos.base.v1beta1.Coin collateral = 2 [(gogoproto.nullable) = false];
+}
+
+message MsgWithdrawCollateralResponse {
+  cosmos.base.v1beta1.Coin withdrawn = 1 [(gogoproto.nullable) = false];
+  uint64 new_collateral_ratio = 2;
+}
+
+// MsgLiquidate liquidates an undercollateralized position
+message MsgLiquidate {
+  option (cosmos.msg.v1.signer) = "liquidator";
+  
+  string liquidator = 1;
+  string user = 2; // position to liquidate
+  cosmos.base.v1beta1.Coin dinr_to_cover = 3 [(gogoproto.nullable) = false];
+}
+
+message MsgLiquidateResponse {
+  repeated cosmos.base.v1beta1.Coin collateral_received = 1 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin penalty_applied = 2 [(gogoproto.nullable) = false];
+  bool position_closed = 3;
+}
+
+// MsgUpdateParams updates module parameters
+message MsgUpdateParams {
+  option (cosmos.msg.v1.signer) = "authority";
+  
+  string authority = 1;
+  Params params = 2 [(gogoproto.nullable) = false];
+}
+
+message MsgUpdateParamsResponse {}

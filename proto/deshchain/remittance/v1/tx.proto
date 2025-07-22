@@ -1,0 +1,345 @@
+syntax = "proto3";
+package deshchain.remittance.v1;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos/msg/v1/msg.proto";
+import "cosmos_proto/cosmos.proto";
+import "deshchain/remittance/v1/remittance.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/remittance/types";
+
+// Msg defines the remittance module's transaction messages
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+
+  // InitiateTransfer initiates a new remittance transfer
+  rpc InitiateTransfer(MsgInitiateTransfer) returns (MsgInitiateTransferResponse);
+
+  // ConfirmTransfer confirms receipt of a remittance transfer
+  rpc ConfirmTransfer(MsgConfirmTransfer) returns (MsgConfirmTransferResponse);
+
+  // CancelTransfer cancels a pending remittance transfer
+  rpc CancelTransfer(MsgCancelTransfer) returns (MsgCancelTransferResponse);
+
+  // RefundTransfer processes a refund for a failed transfer
+  rpc RefundTransfer(MsgRefundTransfer) returns (MsgRefundTransferResponse);
+
+  // AddLiquidity adds liquidity to a remittance pool
+  rpc AddLiquidity(MsgAddLiquidity) returns (MsgAddLiquidityResponse);
+
+  // RemoveLiquidity removes liquidity from a remittance pool
+  rpc RemoveLiquidity(MsgRemoveLiquidity) returns (MsgRemoveLiquidityResponse);
+
+  // CreateCorridor creates a new remittance corridor
+  rpc CreateCorridor(MsgCreateCorridor) returns (MsgCreateCorridorResponse);
+
+  // UpdateCorridor updates an existing remittance corridor
+  rpc UpdateCorridor(MsgUpdateCorridor) returns (MsgUpdateCorridorResponse);
+
+  // RegisterPartner registers a new settlement partner
+  rpc RegisterPartner(MsgRegisterPartner) returns (MsgRegisterPartnerResponse);
+
+  // UpdatePartner updates partner information
+  rpc UpdatePartner(MsgUpdatePartner) returns (MsgUpdatePartnerResponse);
+
+  // UpdateExchangeRate updates exchange rate for a currency pair
+  rpc UpdateExchangeRate(MsgUpdateExchangeRate) returns (MsgUpdateExchangeRateResponse);
+
+  // ProcessSettlement processes settlement for a transfer
+  rpc ProcessSettlement(MsgProcessSettlement) returns (MsgProcessSettlementResponse);
+
+  // SubmitCompliance submits compliance information for a transfer
+  rpc SubmitCompliance(MsgSubmitCompliance) returns (MsgSubmitComplianceResponse);
+
+  // UpdateParams updates module parameters
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+}
+
+// MsgInitiateTransfer initiates a new remittance transfer
+message MsgInitiateTransfer {
+  option (cosmos.msg.v1.signer) = "sender";
+
+  string sender = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string recipient_address = 2;
+  string sender_country = 3;
+  string recipient_country = 4;
+  cosmos.base.v1beta1.Coin amount = 5 [(gogoproto.nullable) = false];
+  string source_currency = 6;
+  string destination_currency = 7;
+  string settlement_method = 8; // bank_account, mobile_wallet, cash_pickup
+  string purpose_code = 9;
+  string memo = 10;
+  google.protobuf.Timestamp expires_at = 11 [(gogoproto.stdtime) = true];
+  RecipientInfo recipient_info = 12;
+  SettlementDetails settlement_details = 13;
+}
+
+// MsgInitiateTransferResponse returns the response for InitiateTransfer
+message MsgInitiateTransferResponse {
+  string transfer_id = 1;
+  string estimated_rate = 2 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  cosmos.base.v1beta1.Coin estimated_fees = 3 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin recipient_amount = 4 [(gogoproto.nullable) = false];
+  uint64 estimated_settlement_minutes = 5;
+  string tracking_number = 6;
+}
+
+// RecipientInfo contains recipient information
+message RecipientInfo {
+  string full_name = 1;
+  string phone_number = 2;
+  string email = 3;
+  string address = 4;
+  string city = 5;
+  string state_province = 6;
+  string postal_code = 7;
+  string country = 8;
+  string identification_type = 9; // passport, national_id, driver_license
+  string identification_number = 10;
+  google.protobuf.Timestamp date_of_birth = 11 [(gogoproto.stdtime) = true];
+}
+
+// SettlementDetails contains settlement-specific details
+message SettlementDetails {
+  string method = 1; // bank_account, mobile_wallet, cash_pickup
+  string bank_name = 2;
+  string bank_code = 3;
+  string account_number = 4;
+  string account_type = 5; // savings, checking
+  string swift_code = 6;
+  string iban = 7;
+  string mobile_number = 8;
+  string mobile_provider = 9;
+  string pickup_location_id = 10;
+  string pickup_location_name = 11;
+  string pickup_location_address = 12;
+  repeated string additional_instructions = 13;
+}
+
+// MsgConfirmTransfer confirms receipt of a remittance transfer
+message MsgConfirmTransfer {
+  option (cosmos.msg.v1.signer) = "recipient";
+
+  string recipient = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string transfer_id = 2;
+  string confirmation_code = 3;
+  string settlement_proof = 4; // Hash or reference to settlement proof
+}
+
+// MsgConfirmTransferResponse returns the response for ConfirmTransfer
+message MsgConfirmTransferResponse {
+  bool success = 1;
+  google.protobuf.Timestamp confirmed_at = 2 [(gogoproto.stdtime) = true];
+}
+
+// MsgCancelTransfer cancels a pending remittance transfer
+message MsgCancelTransfer {
+  option (cosmos.msg.v1.signer) = "sender";
+
+  string sender = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string transfer_id = 2;
+  string reason = 3;
+}
+
+// MsgCancelTransferResponse returns the response for CancelTransfer
+message MsgCancelTransferResponse {
+  bool success = 1;
+  cosmos.base.v1beta1.Coin refund_amount = 2 [(gogoproto.nullable) = false];
+  google.protobuf.Timestamp cancelled_at = 3 [(gogoproto.stdtime) = true];
+}
+
+// MsgRefundTransfer processes a refund for a failed transfer
+message MsgRefundTransfer {
+  option (cosmos.msg.v1.signer) = "authority";
+
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string transfer_id = 2;
+  string reason = 3;
+  cosmos.base.v1beta1.Coin refund_amount = 4 [(gogoproto.nullable) = false];
+}
+
+// MsgRefundTransferResponse returns the response for RefundTransfer
+message MsgRefundTransferResponse {
+  bool success = 1;
+  google.protobuf.Timestamp refunded_at = 2 [(gogoproto.stdtime) = true];
+}
+
+// MsgAddLiquidity adds liquidity to a remittance pool
+message MsgAddLiquidity {
+  option (cosmos.msg.v1.signer) = "provider";
+
+  string provider = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string pool_id = 2;
+  cosmos.base.v1beta1.Coin base_amount = 3 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin quote_amount = 4 [(gogoproto.nullable) = false];
+  string min_lp_tokens = 5 [(cosmos_proto.scalar) = "cosmos.Int"];
+}
+
+// MsgAddLiquidityResponse returns the response for AddLiquidity
+message MsgAddLiquidityResponse {
+  string lp_tokens_minted = 1 [(cosmos_proto.scalar) = "cosmos.Int"];
+  string pool_share_percentage = 2 [(cosmos_proto.scalar) = "cosmos.Dec"];
+}
+
+// MsgRemoveLiquidity removes liquidity from a remittance pool
+message MsgRemoveLiquidity {
+  option (cosmos.msg.v1.signer) = "provider";
+
+  string provider = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string pool_id = 2;
+  string lp_tokens = 3 [(cosmos_proto.scalar) = "cosmos.Int"];
+  cosmos.base.v1beta1.Coin min_base_amount = 4 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin min_quote_amount = 5 [(gogoproto.nullable) = false];
+}
+
+// MsgRemoveLiquidityResponse returns the response for RemoveLiquidity
+message MsgRemoveLiquidityResponse {
+  cosmos.base.v1beta1.Coin base_amount = 1 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin quote_amount = 2 [(gogoproto.nullable) = false];
+}
+
+// MsgCreateCorridor creates a new remittance corridor
+message MsgCreateCorridor {
+  option (cosmos.msg.v1.signer) = "authority";
+
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string source_country = 2;
+  string destination_country = 3;
+  string source_currency = 4;
+  string destination_currency = 5;
+  repeated string supported_methods = 6;
+  CorridorLimits limits = 7;
+  CorridorCompliance compliance_requirements = 8;
+}
+
+// MsgCreateCorridorResponse returns the response for CreateCorridor
+message MsgCreateCorridorResponse {
+  string corridor_id = 1;
+}
+
+// MsgUpdateCorridor updates an existing remittance corridor
+message MsgUpdateCorridor {
+  option (cosmos.msg.v1.signer) = "authority";
+
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string corridor_id = 2;
+  bool is_active = 3;
+  repeated string supported_methods = 4;
+  CorridorLimits limits = 5;
+  CorridorCompliance compliance_requirements = 6;
+}
+
+// MsgUpdateCorridorResponse returns the response for UpdateCorridor
+message MsgUpdateCorridorResponse {
+  bool success = 1;
+}
+
+// MsgRegisterPartner registers a new settlement partner
+message MsgRegisterPartner {
+  option (cosmos.msg.v1.signer) = "authority";
+
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string partner_name = 2;
+  string partner_type = 3; // bank, mobile_money, cash_agent, fintech
+  string country = 4;
+  repeated string supported_methods = 5;
+  string settlement_currency = 6;
+  string fee_structure = 7 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  ContactInfo contact_info = 8;
+}
+
+// MsgRegisterPartnerResponse returns the response for RegisterPartner
+message MsgRegisterPartnerResponse {
+  string partner_id = 1;
+}
+
+// MsgUpdatePartner updates partner information
+message MsgUpdatePartner {
+  option (cosmos.msg.v1.signer) = "authority";
+
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string partner_id = 2;
+  bool is_active = 3;
+  repeated string supported_methods = 4;
+  string fee_structure = 5 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  ContactInfo contact_info = 6;
+}
+
+// MsgUpdatePartnerResponse returns the response for UpdatePartner
+message MsgUpdatePartnerResponse {
+  bool success = 1;
+}
+
+// MsgUpdateExchangeRate updates exchange rate for a currency pair
+message MsgUpdateExchangeRate {
+  option (cosmos.msg.v1.signer) = "authority";
+
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string base_currency = 2;
+  string quote_currency = 3;
+  string rate = 4 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  string bid = 5 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  string ask = 6 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  string source = 7;
+  uint64 confidence_score = 8;
+}
+
+// MsgUpdateExchangeRateResponse returns the response for UpdateExchangeRate
+message MsgUpdateExchangeRateResponse {
+  bool success = 1;
+}
+
+// MsgProcessSettlement processes settlement for a transfer
+message MsgProcessSettlement {
+  option (cosmos.msg.v1.signer) = "authority";
+
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string transfer_id = 2;
+  string partner_id = 3;
+  string partner_reference = 4;
+  string settlement_proof = 5;
+  cosmos.base.v1beta1.Coin settled_amount = 6 [(gogoproto.nullable) = false];
+}
+
+// MsgProcessSettlementResponse returns the response for ProcessSettlement
+message MsgProcessSettlementResponse {
+  bool success = 1;
+  google.protobuf.Timestamp settlement_time = 2 [(gogoproto.stdtime) = true];
+}
+
+// MsgSubmitCompliance submits compliance information for a transfer
+message MsgSubmitCompliance {
+  option (cosmos.msg.v1.signer) = "authority";
+
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string transfer_id = 2;
+  bool sanctions_cleared = 3;
+  bool pep_cleared = 4;
+  string risk_score = 5 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  string risk_category = 6;
+  repeated string compliance_flags = 7;
+  string screening_reference = 8;
+  bool manual_review_required = 9;
+  string compliance_officer = 10;
+}
+
+// MsgSubmitComplianceResponse returns the response for SubmitCompliance
+message MsgSubmitComplianceResponse {
+  bool success = 1;
+  bool transfer_approved = 2;
+}
+
+// MsgUpdateParams updates module parameters
+message MsgUpdateParams {
+  option (cosmos.msg.v1.signer) = "authority";
+
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  RemittanceParams params = 2 [(gogoproto.nullable) = false];
+}
+
+// MsgUpdateParamsResponse returns the response for UpdateParams
+message MsgUpdateParamsResponse {
+  bool success = 1;
+}

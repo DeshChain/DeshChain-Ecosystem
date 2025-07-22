@@ -1,0 +1,32 @@
+package types
+
+import (
+	sdkerrors "cosmossdk.io/errors"
+)
+
+// DONTCOVER
+
+// x/oracle module sentinel errors
+var (
+	ErrInvalidSigner              = sdkerrors.Register(ModuleName, 1100, "expected gov account as only signer for proposal message")
+	ErrInvalidSymbol              = sdkerrors.Register(ModuleName, 1101, "invalid asset symbol")
+	ErrInvalidPrice               = sdkerrors.Register(ModuleName, 1102, "invalid price value")
+	ErrInvalidValidator           = sdkerrors.Register(ModuleName, 1103, "invalid validator address")
+	ErrValidatorNotFound          = sdkerrors.Register(ModuleName, 1104, "oracle validator not found")
+	ErrValidatorNotActive         = sdkerrors.Register(ModuleName, 1105, "oracle validator is not active")
+	ErrUnauthorizedValidator      = sdkerrors.Register(ModuleName, 1106, "validator not authorized for oracle submissions")
+	ErrPriceNotFound              = sdkerrors.Register(ModuleName, 1107, "price data not found for symbol")
+	ErrExchangeRateNotFound       = sdkerrors.Register(ModuleName, 1108, "exchange rate not found")
+	ErrInvalidExchangeRate        = sdkerrors.Register(ModuleName, 1109, "invalid exchange rate")
+	ErrInvalidCurrency            = sdkerrors.Register(ModuleName, 1110, "invalid currency code")
+	ErrInsufficientValidators     = sdkerrors.Register(ModuleName, 1111, "insufficient number of validators for price consensus")
+	ErrPriceDeviationTooHigh      = sdkerrors.Register(ModuleName, 1112, "price deviation exceeds maximum allowed")
+	ErrStalePrice                 = sdkerrors.Register(ModuleName, 1113, "price data is too old")
+	ErrDuplicateSubmission        = sdkerrors.Register(ModuleName, 1114, "duplicate price submission within aggregation window")
+	ErrInvalidTimestamp           = sdkerrors.Register(ModuleName, 1115, "invalid timestamp")
+	ErrInvalidSource              = sdkerrors.Register(ModuleName, 1116, "invalid price source")
+	ErrValidatorSlashed           = sdkerrors.Register(ModuleName, 1117, "validator has been slashed for oracle misbehavior")
+	ErrAggregationWindowNotReady  = sdkerrors.Register(ModuleName, 1118, "aggregation window is not ready for finalization")
+	ErrInvalidPower               = sdkerrors.Register(ModuleName, 1119, "invalid validator power")
+	ErrValidatorAlreadyExists     = sdkerrors.Register(ModuleName, 1120, "oracle validator already exists")
+)

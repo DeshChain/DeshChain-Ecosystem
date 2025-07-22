@@ -1,0 +1,192 @@
+syntax = "proto3";
+
+package deshchain.oracle.v1;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "amino/amino.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/oracle/types";
+
+// OracleParams defines the parameters for the oracle module
+message OracleParams {
+  // Maximum deviation percentage for price updates (e.g., 5.0 for 5%)
+  string max_price_deviation = 1 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Minimum number of validators required to submit a price
+  uint64 min_validators = 2;
+  
+  // Window size in blocks for price aggregation
+  uint64 aggregation_window = 3;
+  
+  // Heartbeat interval in blocks
+  uint64 heartbeat_interval = 4;
+  
+  // Slash fraction for oracle misbehavior
+  string slash_fraction = 5 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// PriceData represents price information for an asset
+message PriceData {
+  // Asset symbol (e.g., "BTC", "ETH", "USDT")
+  string symbol = 1;
+  
+  // Price in INR (with 6 decimal places)
+  string price = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Timestamp when price was last updated
+  google.protobuf.Timestamp last_updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // Source of the price data
+  string source = 4;
+  
+  // Number of validators who provided this price
+  uint64 validator_count = 5;
+  
+  // Standard deviation of submitted prices
+  string deviation = 6 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// ValidatorPriceSubmission represents a price submission by a validator
+message ValidatorPriceSubmission {
+  // Validator address
+  string validator = 1;
+  
+  // Asset symbol
+  string symbol = 2;
+  
+  // Submitted price in INR
+  string price = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Block height when submitted
+  uint64 block_height = 4;
+  
+  // Timestamp of submission
+  google.protobuf.Timestamp timestamp = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // Source identifier (e.g., "coinbase", "binance", "coingecko")
+  string source = 6;
+}
+
+// OracleValidator represents a validator authorized to submit price data
+message OracleValidator {
+  // Validator address
+  string validator = 1;
+  
+  // Power/weight for this validator in oracle consensus
+  uint64 power = 2;
+  
+  // Whether the validator is currently active
+  bool active = 3;
+  
+  // Number of successful submissions
+  uint64 successful_submissions = 4;
+  
+  // Number of failed submissions
+  uint64 failed_submissions = 5;
+  
+  // Last submission timestamp
+  google.protobuf.Timestamp last_submission = 6 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // Slash count for misbehavior
+  uint64 slash_count = 7;
+}
+
+// PriceAggregation represents aggregated price data
+message PriceAggregation {
+  // Asset symbol
+  string symbol = 1;
+  
+  // List of submitted prices for this window
+  repeated string prices = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Validators who submitted prices
+  repeated string validators = 3;
+  
+  // Block height range for this aggregation
+  uint64 start_height = 4;
+  uint64 end_height = 5;
+  
+  // Median price calculated from submissions
+  string median_price = 6 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Mean price calculated from submissions
+  string mean_price = 7 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Standard deviation of prices
+  string std_deviation = 8 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// ExchangeRate represents conversion rates between different currencies
+message ExchangeRate {
+  // Base currency (e.g., "USD")
+  string base = 1;
+  
+  // Target currency (e.g., "INR")
+  string target = 2;
+  
+  // Exchange rate from base to target
+  string rate = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Last updated timestamp
+  google.protobuf.Timestamp last_updated = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+// GenesisState defines the oracle module's genesis state
+message GenesisState {
+  // Module parameters
+  OracleParams params = 1 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
+  
+  // Current price data for all tracked assets
+  repeated PriceData price_data = 2 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
+  
+  // Oracle validators
+  repeated OracleValidator oracle_validators = 3 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
+  
+  // Exchange rates
+  repeated ExchangeRate exchange_rates = 4 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
+  
+  // Validator price submissions (for current aggregation window)
+  repeated ValidatorPriceSubmission validator_submissions = 5 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
+}

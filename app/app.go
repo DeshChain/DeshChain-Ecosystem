@@ -44,6 +44,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/server/api"
 	"github.com/cosmos/cosmos-sdk/server/config"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
+	abci "github.com/tendermint/tendermint/abci/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
@@ -119,6 +120,21 @@ import (
 	dhansetukeeper "github.com/deshchain/deshchain/x/dhansetu/keeper"
 	dhansettypes "github.com/deshchain/deshchain/x/dhansetu/types"
 
+	// DINR imports
+	dinr "github.com/deshchain/deshchain/x/dinr"
+	dinrkeeper "github.com/deshchain/deshchain/x/dinr/keeper"
+	dinrtypes "github.com/deshchain/deshchain/x/dinr/types"
+
+	// Trade Finance imports
+	tradefinance "github.com/deshchain/deshchain/x/tradefinance"
+	tradefinancekeeper "github.com/deshchain/deshchain/x/tradefinance/keeper"
+	tradefinancetypes "github.com/deshchain/deshchain/x/tradefinance/types"
+
+	// Oracle imports
+	oracle "github.com/deshchain/deshchain/x/oracle"
+	oraclekeeper "github.com/deshchain/deshchain/x/oracle/keeper"
+	oracletypes "github.com/deshchain/deshchain/x/oracle/types"
+
 	// Sikkebaaz imports
 	sikkebaaz "github.com/deshchain/namo/x/sikkebaaz"
 	sikkebaazkeeper "github.com/deshchain/namo/x/sikkebaaz/keeper"
@@ -179,6 +195,9 @@ var (
 		cultural.AppModuleBasic{},
 		namo.AppModuleBasic{},
 		dhansetu.AppModuleBasic{},
+		dinr.AppModuleBasic{},
+		tradefinance.AppModuleBasic{},
+		oracle.AppModuleBasic{},
 		sikkebaaz.AppModuleBasic{},
 		krishimitra.AppModuleBasic{},
 		vyavasayamitra.AppModuleBasic{},
@@ -204,6 +223,9 @@ var (
 		namotypes.VestingPoolName:      nil, // NAMO vesting pool
 		namotypes.BurnPoolName:         {authtypes.Burner}, // NAMO burn pool
 		dhansettypes.ModuleName:        nil, // DhanSetu integration module
+		dinrtypes.ModuleName:           {authtypes.Minter, authtypes.Burner}, // DINR stablecoin module
+		tradefinancetypes.ModuleName:   nil, // Trade Finance module
+		oracletypes.ModuleName:         nil, // Oracle price feeds module
 		sikkebaaztypes.ModuleName:      nil, // Sikkebaaz launchpad module
 		// Sikkebaaz Module Accounts
 		sikkebaaztypes.SikkebaazFeeCollector:    nil, // Fee collection
@@ -294,6 +316,9 @@ type DeshChainApp struct {
 	CulturalKeeper        culturalkeeper.Keeper
 	NAMOKeeper            namokeeper.Keeper
 	DhanSetuKeeper        dhansetukeeper.Keeper
+	DINRKeeper            dinrkeeper.Keeper
+	TradeFinanceKeeper    tradefinancekeeper.Keeper
+	OracleKeeper          oraclekeeper.Keeper
 	SikkebaazKeeper       sikkebaazkeeper.Keeper
 	KrishiMitraKeeper     krishimitrakeeper.Keeper
 	VyavasayaMitraKeeper  vyavasayamitrakeeper.Keeper
@@ -339,12 +364,12 @@ func New(
 		govtypes.StoreKey, paramstypes.StoreKey, upgradetypes.StoreKey, feegrant.StoreKey,
 		evidencetypes.StoreKey, authzkeeper.StoreKey, consensusparamtypes.StoreKey,
 		moneyordertypes.StoreKey, culturaltypes.StoreKey, namotypes.StoreKey, dhansettypes.StoreKey,
-		sikkebaaztypes.StoreKey, krishimitratypes.StoreKey, vyavasayamitratypes.StoreKey, 
+		dinrtypes.StoreKey, tradefinancetypes.StoreKey, oracletypes.StoreKey, sikkebaaztypes.StoreKey, krishimitratypes.StoreKey, vyavasayamitratypes.StoreKey, 
 		shikshamitratypes.StoreKey,
 	)
 	tkeys := storetypes.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := storetypes.NewMemoryStoreKeys(
-		dhansettypes.MemStoreKey, sikkebaaztypes.MemStoreKey,
+		dhansettypes.MemStoreKey, tradefinancetypes.MemStoreKey, oracletypes.MemStoreKey, sikkebaaztypes.MemStoreKey,
 		krishimitratypes.MemStoreKey, vyavasayamitratypes.MemStoreKey,
 		shikshamitratypes.MemStoreKey,
 	)
@@ -471,6 +496,41 @@ func New(
 		app.NAMOKeeper,
 	)
 
+	// Initialize Oracle Keeper (must be initialized before DINR)
+	app.OracleKeeper = oraclekeeper.NewKeeper(
+		appCodec,
+		keys[oracletypes.StoreKey],
+		memKeys[oracletypes.MemStoreKey],
+		app.GetSubspace(oracletypes.ModuleName),
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.StakingKeeper,
+	)
+
+	// Initialize DINR Keeper (now with oracle keeper available)
+	app.DINRKeeper = dinrkeeper.NewKeeper(
+		appCodec,
+		keys[dinrtypes.StoreKey],
+		app.GetSubspace(dinrtypes.ModuleName),
+		app.AccountKeeper,
+		app.BankKeeper,
+		&app.OracleKeeper, // Oracle keeper is now available
+		nil, // Revenue keeper will be added later
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
+	// Initialize Trade Finance Keeper
+	app.TradeFinanceKeeper = tradefinancekeeper.NewKeeper(
+		appCodec,
+		keys[tradefinancetypes.StoreKey],
+		memKeys[tradefinancetypes.MemStoreKey],
+		app.GetSubspace(tradefinancetypes.ModuleName),
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.DINRKeeper, // For DINR integration
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
 	// Initialize Sikkebaaz Keeper
 	app.SikkebaazKeeper = sikkebaazkeeper.NewKeeper(
 		appCodec,
@@ -547,6 +607,9 @@ func New(
 		cultural.NewAppModule(appCodec, app.CulturalKeeper, app.AccountKeeper, app.BankKeeper),
 		namo.NewAppModule(appCodec, app.NAMOKeeper, app.AccountKeeper, app.BankKeeper),
 		dhansetu.NewAppModule(appCodec, app.DhanSetuKeeper, app.AccountKeeper, app.BankKeeper),
+		dinr.NewAppModule(appCodec, app.DINRKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(dinrtypes.ModuleName)),
+		tradefinance.NewAppModule(appCodec, app.TradeFinanceKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(tradefinancetypes.ModuleName)),
+		oracle.NewAppModule(appCodec, app.OracleKeeper, app.AccountKeeper, app.BankKeeper),
 		sikkebaaz.NewAppModule(appCodec, app.SikkebaazKeeper, app.AccountKeeper, app.BankKeeper),
 		krishimitra.NewAppModule(appCodec, app.KrishiMitraKeeper, app.AccountKeeper, app.BankKeeper),
 		vyavasayamitra.NewAppModule(appCodec, app.VyavasayaMitraKeeper, app.AccountKeeper, app.BankKeeper),
@@ -570,6 +633,9 @@ func New(
 		culturaltypes.ModuleName,
 		namotypes.ModuleName,
 		dhansettypes.ModuleName,
+		oracletypes.ModuleName,
+		dinrtypes.ModuleName,
+		tradefinancetypes.ModuleName,
 		sikkebaaztypes.ModuleName,
 		krishimitratypes.ModuleName,
 		vyavasayamitratypes.ModuleName,
@@ -586,6 +652,9 @@ func New(
 		culturaltypes.ModuleName,
 		namotypes.ModuleName,
 		dhansettypes.ModuleName,
+		oracletypes.ModuleName,
+		dinrtypes.ModuleName,
+		tradefinancetypes.ModuleName,
 		sikkebaaztypes.ModuleName,
 		krishimitratypes.ModuleName,
 		vyavasayamitratypes.ModuleName,
@@ -618,6 +687,9 @@ func New(
 		culturaltypes.ModuleName,
 		namotypes.ModuleName,
 		dhansettypes.ModuleName,
+		oracletypes.ModuleName,
+		dinrtypes.ModuleName,
+		tradefinancetypes.ModuleName,
 		sikkebaaztypes.ModuleName,
 		krishimitratypes.ModuleName,
 		vyavasayamitratypes.ModuleName,
@@ -678,6 +750,10 @@ func (app *DeshChainApp) GetBaseApp() *baseapp.BaseApp { return app.BaseApp }
 
 // BeginBlocker application updates every begin block
 func (app *DeshChainApp) BeginBlocker(ctx sdk.Context) (sdk.BeginBlock, error) {
+	// Run DINR begin blocker
+	dinr.BeginBlocker(ctx, abci.RequestBeginBlock{}, app.DINRKeeper)
+	// Run Trade Finance begin blocker
+	tradefinance.BeginBlocker(ctx, abci.RequestBeginBlock{}, app.TradeFinanceKeeper)
 	return app.mm.BeginBlock(ctx)
 }
 

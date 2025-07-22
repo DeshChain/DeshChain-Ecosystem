@@ -1,0 +1,24 @@
+syntax = "proto3";
+package deshchain.tradefinance;
+
+import "gogoproto/gogo.proto";
+import "deshchain/tradefinance/v1/tradefinance.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/tradefinance/types";
+
+// GenesisState defines the trade finance module's genesis state
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+  repeated TradeParty parties = 2 [(gogoproto.nullable) = false];
+  repeated LetterOfCredit letters_of_credit = 3 [(gogoproto.nullable) = false];
+  repeated TradeDocument documents = 4 [(gogoproto.nullable) = false];
+  repeated InsurancePolicy insurance_policies = 5 [(gogoproto.nullable) = false];
+  repeated ShipmentTracking shipments = 6 [(gogoproto.nullable) = false];
+  repeated PaymentInstruction payment_instructions = 7 [(gogoproto.nullable) = false];
+  uint64 next_party_id = 8;
+  uint64 next_lc_id = 9;
+  uint64 next_document_id = 10;
+  uint64 next_policy_id = 11;
+  uint64 next_instruction_id = 12;
+  TradeFinanceStats stats = 13 [(gogoproto.nullable) = false];
+}

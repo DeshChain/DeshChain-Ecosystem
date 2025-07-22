@@ -1,0 +1,405 @@
+syntax = "proto3";
+
+package deshchain.remittance.v1;
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/remittance/types";
+
+// RemittanceTransfer represents a complete international money transfer
+message RemittanceTransfer {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // Transfer identification
+  string id = 1 [(gogoproto.moretags) = "yaml:\"id\""];
+  string reference_number = 2 [(gogoproto.moretags) = "yaml:\"reference_number\""];
+  
+  // Sender information
+  string sender_address = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string sender_name = 4 [(gogoproto.moretags) = "yaml:\"sender_name\""];
+  string sender_country = 5 [(gogoproto.moretags) = "yaml:\"sender_country\""];
+  string sender_phone = 6 [(gogoproto.moretags) = "yaml:\"sender_phone\""];
+  string sender_document_type = 7 [(gogoproto.moretags) = "yaml:\"sender_document_type\""];
+  string sender_document_number = 8 [(gogoproto.moretags) = "yaml:\"sender_document_number\""];
+  
+  // Recipient information
+  string recipient_address = 9 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string recipient_name = 10 [(gogoproto.moretags) = "yaml:\"recipient_name\""];
+  string recipient_country = 11 [(gogoproto.moretags) = "yaml:\"recipient_country\""];
+  string recipient_phone = 12 [(gogoproto.moretags) = "yaml:\"recipient_phone\""];
+  string recipient_document_type = 13 [(gogoproto.moretags) = "yaml:\"recipient_document_type\""];
+  string recipient_document_number = 14 [(gogoproto.moretags) = "yaml:\"recipient_document_number\""];
+  
+  // Financial details
+  cosmos.base.v1beta1.Coin amount = 15 [(gogoproto.nullable) = false];
+  string source_currency = 16 [(gogoproto.moretags) = "yaml:\"source_currency\""];
+  string destination_currency = 17 [(gogoproto.moretags) = "yaml:\"destination_currency\""];
+  string exchange_rate = 18 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin fee = 19 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin expected_amount = 20 [(gogoproto.nullable) = false];
+  
+  // Transfer status and routing
+  TransferStatus status = 21;
+  string corridor_id = 22 [(gogoproto.moretags) = "yaml:\"corridor_id\""];
+  SettlementMethod settlement_method = 23;
+  string settlement_details = 24 [(gogoproto.moretags) = "yaml:\"settlement_details\""];
+  
+  // Sewa Mitra network integration
+  bool uses_seva_mitra = 25 [(gogoproto.moretags) = "yaml:\"uses_seva_mitra\""];
+  string seva_mitra_agent_id = 26 [(gogoproto.moretags) = "yaml:\"seva_mitra_agent_id\""];
+  cosmos.base.v1beta1.Coin seva_mitra_commission = 27 [(gogoproto.nullable) = false];
+  string seva_mitra_location = 28 [(gogoproto.moretags) = "yaml:\"seva_mitra_location\""];
+  
+  // Compliance and verification
+  ComplianceStatus compliance_status = 29;
+  repeated ComplianceCheck compliance_checks = 30 [(gogoproto.nullable) = false];
+  KYCLevel kyc_level = 31;
+  bool aml_cleared = 32 [(gogoproto.moretags) = "yaml:\"aml_cleared\""];
+  
+  // Processing information
+  string pool_id = 33 [(gogoproto.moretags) = "yaml:\"pool_id\""];
+  string route_path = 34 [(gogoproto.moretags) = "yaml:\"route_path\""];
+  int64 estimated_confirmation_time = 35 [(gogoproto.moretags) = "yaml:\"estimated_confirmation_time\""];
+  
+  // Timestamps
+  google.protobuf.Timestamp created_at = 36 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated_at = 37 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp expires_at = 38 [(gogoproto.stdtime) = true];
+  google.protobuf.Timestamp confirmed_at = 39 [(gogoproto.stdtime) = true];
+  
+  // Metadata and tracking
+  string purpose_of_transfer = 40 [(gogoproto.moretags) = "yaml:\"purpose_of_transfer\""];
+  string source_of_funds = 41 [(gogoproto.moretags) = "yaml:\"source_of_funds\""];
+  repeated string transaction_hashes = 42 [(gogoproto.moretags) = "yaml:\"transaction_hashes\""];
+  string failure_reason = 43 [(gogoproto.moretags) = "yaml:\"failure_reason\""];
+  map<string, string> metadata = 44;
+}
+
+// SewaMitraAgent represents a Sewa Mitra network agent
+message SewaMitraAgent {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // Agent identification
+  string agent_id = 1 [(gogoproto.moretags) = "yaml:\"agent_id\""];
+  string agent_address = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string agent_name = 3 [(gogoproto.moretags) = "yaml:\"agent_name\""];
+  string business_name = 4 [(gogoproto.moretags) = "yaml:\"business_name\""];
+  
+  // Location and contact
+  string country = 5 [(gogoproto.moretags) = "yaml:\"country\""];
+  string state = 6 [(gogoproto.moretags) = "yaml:\"state\""];
+  string city = 7 [(gogoproto.moretags) = "yaml:\"city\""];
+  string postal_code = 8 [(gogoproto.moretags) = "yaml:\"postal_code\""];
+  string address_line1 = 9 [(gogoproto.moretags) = "yaml:\"address_line1\""];
+  string address_line2 = 10 [(gogoproto.moretags) = "yaml:\"address_line2\""];
+  string phone = 11 [(gogoproto.moretags) = "yaml:\"phone\""];
+  string email = 12 [(gogoproto.moretags) = "yaml:\"email\""];
+  
+  // Operational details
+  AgentStatus status = 13;
+  repeated string supported_currencies = 14 [(gogoproto.moretags) = "yaml:\"supported_currencies\""];
+  repeated SettlementMethod supported_methods = 15 [(gogoproto.moretags) = "yaml:\"supported_methods\""];
+  cosmos.base.v1beta1.Coin liquidity_limit = 16 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin daily_limit = 17 [(gogoproto.nullable) = false];
+  
+  // Commission structure
+  string base_commission_rate = 18 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string volume_bonus_rate = 19 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin minimum_commission = 20 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin maximum_commission = 21 [(gogoproto.nullable) = false];
+  
+  // Performance metrics
+  int64 total_transactions = 22 [(gogoproto.moretags) = "yaml:\"total_transactions\""];
+  cosmos.base.v1beta1.Coin total_volume = 23 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin total_commissions_earned = 24 [(gogoproto.nullable) = false];
+  string success_rate = 25 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string average_processing_time = 26 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  
+  // Verification and compliance
+  KYCLevel kyc_level = 27;
+  bool background_verified = 28 [(gogoproto.moretags) = "yaml:\"background_verified\""];
+  repeated string certifications = 29 [(gogoproto.moretags) = "yaml:\"certifications\""];
+  google.protobuf.Timestamp last_audit = 30 [(gogoproto.stdtime) = true];
+  
+  // Timestamps
+  google.protobuf.Timestamp created_at = 31 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated_at = 32 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp suspended_until = 33 [(gogoproto.stdtime) = true];
+  
+  // Metadata
+  map<string, string> metadata = 34;
+}
+
+// SewaMitraCommission represents commission earned by an agent
+message SewaMitraCommission {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string commission_id = 1 [(gogoproto.moretags) = "yaml:\"commission_id\""];
+  string agent_id = 2 [(gogoproto.moretags) = "yaml:\"agent_id\""];
+  string transfer_id = 3 [(gogoproto.moretags) = "yaml:\"transfer_id\""];
+  cosmos.base.v1beta1.Coin base_commission = 4 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin volume_bonus = 5 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin total_commission = 6 [(gogoproto.nullable) = false];
+  CommissionStatus status = 7;
+  google.protobuf.Timestamp earned_at = 8 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp paid_at = 9 [(gogoproto.stdtime) = true];
+}
+
+// LiquidityPool represents a multi-currency pool for remittances
+message LiquidityPool {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string pool_id = 1 [(gogoproto.moretags) = "yaml:\"pool_id\""];
+  string name = 2 [(gogoproto.moretags) = "yaml:\"name\""];
+  repeated string supported_currencies = 3 [(gogoproto.moretags) = "yaml:\"supported_currencies\""];
+  repeated cosmos.base.v1beta1.Coin liquidity = 4 [(gogoproto.nullable) = false];
+  repeated cosmos.base.v1beta1.Coin reserved = 5 [(gogoproto.nullable) = false];
+  PoolStatus status = 6;
+  
+  // AMM parameters
+  string swap_fee = 7 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string exit_fee = 8 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  
+  // Sewa Mitra integration
+  bool accepts_seva_mitra = 9 [(gogoproto.moretags) = "yaml:\"accepts_seva_mitra\""];
+  cosmos.base.v1beta1.Coin seva_mitra_reserve = 10 [(gogoproto.nullable) = false];
+  
+  google.protobuf.Timestamp created_at = 11 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated_at = 12 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+// ExchangeRate represents currency exchange rates
+message ExchangeRate {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string base_currency = 1 [(gogoproto.moretags) = "yaml:\"base_currency\""];
+  string quote_currency = 2 [(gogoproto.moretags) = "yaml:\"quote_currency\""];
+  string rate = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string spread = 4 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated_at = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  string source = 6 [(gogoproto.moretags) = "yaml:\"source\""];
+}
+
+// Settlement represents the final delivery of funds
+message Settlement {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string settlement_id = 1 [(gogoproto.moretags) = "yaml:\"settlement_id\""];
+  string transfer_id = 2 [(gogoproto.moretags) = "yaml:\"transfer_id\""];
+  SettlementMethod method = 3;
+  SettlementStatus status = 4;
+  
+  // Settlement details
+  cosmos.base.v1beta1.Coin amount_settled = 5 [(gogoproto.nullable) = false];
+  string settlement_details = 6 [(gogoproto.moretags) = "yaml:\"settlement_details\""];
+  string external_reference = 7 [(gogoproto.moretags) = "yaml:\"external_reference\""];
+  
+  // Sewa Mitra settlement
+  bool processed_by_seva_mitra = 8 [(gogoproto.moretags) = "yaml:\"processed_by_seva_mitra\""];
+  string seva_mitra_agent_id = 9 [(gogoproto.moretags) = "yaml:\"seva_mitra_agent_id\""];
+  string seva_mitra_transaction_id = 10 [(gogoproto.moretags) = "yaml:\"seva_mitra_transaction_id\""];
+  
+  // Timestamps
+  google.protobuf.Timestamp initiated_at = 11 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp completed_at = 12 [(gogoproto.stdtime) = true];
+  google.protobuf.Timestamp failed_at = 13 [(gogoproto.stdtime) = true];
+  
+  string failure_reason = 14 [(gogoproto.moretags) = "yaml:\"failure_reason\""];
+  map<string, string> metadata = 15;
+}
+
+// ComplianceCheck represents individual compliance verification
+message ComplianceCheck {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string check_type = 1 [(gogoproto.moretags) = "yaml:\"check_type\""];
+  ComplianceStatus status = 2;
+  string result = 3 [(gogoproto.moretags) = "yaml:\"result\""];
+  string details = 4 [(gogoproto.moretags) = "yaml:\"details\""];
+  google.protobuf.Timestamp performed_at = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+// Remittance Corridor represents a transfer route between countries
+message RemittanceCorridor {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string corridor_id = 1 [(gogoproto.moretags) = "yaml:\"corridor_id\""];
+  string source_country = 2 [(gogoproto.moretags) = "yaml:\"source_country\""];
+  string destination_country = 3 [(gogoproto.moretags) = "yaml:\"destination_country\""];
+  string source_currency = 4 [(gogoproto.moretags) = "yaml:\"source_currency\""];
+  string destination_currency = 5 [(gogoproto.moretags) = "yaml:\"destination_currency\""];
+  
+  // Corridor configuration
+  bool active = 6 [(gogoproto.moretags) = "yaml:\"active\""];
+  cosmos.base.v1beta1.Coin minimum_amount = 7 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin maximum_amount = 8 [(gogoproto.nullable) = false];
+  string base_fee_rate = 9 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin fixed_fee = 10 [(gogoproto.nullable) = false];
+  
+  // Sewa Mitra corridor support
+  bool supports_seva_mitra = 11 [(gogoproto.moretags) = "yaml:\"supports_seva_mitra\""];
+  int64 seva_mitra_agent_count = 12 [(gogoproto.moretags) = "yaml:\"seva_mitra_agent_count\""];
+  string seva_mitra_commission_rate = 13 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  
+  // Settlement methods available
+  repeated SettlementMethod supported_methods = 14;
+  int64 average_processing_time = 15 [(gogoproto.moretags) = "yaml:\"average_processing_time\""];
+  
+  // Performance metrics
+  int64 total_transfers = 16 [(gogoproto.moretags) = "yaml:\"total_transfers\""];
+  cosmos.base.v1beta1.Coin total_volume = 17 [(gogoproto.nullable) = false];
+  string success_rate = 18 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  
+  google.protobuf.Timestamp created_at = 19 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated_at = 20 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+// ========== ENUMS ==========
+
+enum TransferStatus {
+  TRANSFER_STATUS_UNSPECIFIED = 0;
+  TRANSFER_STATUS_PENDING = 1;
+  TRANSFER_STATUS_KYC_REQUIRED = 2;
+  TRANSFER_STATUS_COMPLIANCE_CHECK = 3;
+  TRANSFER_STATUS_PROCESSING = 4;
+  TRANSFER_STATUS_AWAITING_PICKUP = 5;
+  TRANSFER_STATUS_COMPLETED = 6;
+  TRANSFER_STATUS_FAILED = 7;
+  TRANSFER_STATUS_CANCELLED = 8;
+  TRANSFER_STATUS_REFUNDED = 9;
+  TRANSFER_STATUS_EXPIRED = 10;
+}
+
+enum SettlementMethod {
+  SETTLEMENT_METHOD_UNSPECIFIED = 0;
+  SETTLEMENT_METHOD_BANK_TRANSFER = 1;
+  SETTLEMENT_METHOD_MOBILE_WALLET = 2;
+  SETTLEMENT_METHOD_CASH_PICKUP = 3;
+  SETTLEMENT_METHOD_SEVA_MITRA_AGENT = 4; // New Sewa Mitra method
+  SETTLEMENT_METHOD_HOME_DELIVERY = 5;
+  SETTLEMENT_METHOD_CARD_DEPOSIT = 6;
+  SETTLEMENT_METHOD_CRYPTO_WALLET = 7;
+}
+
+enum ComplianceStatus {
+  COMPLIANCE_STATUS_UNSPECIFIED = 0;
+  COMPLIANCE_STATUS_PENDING = 1;
+  COMPLIANCE_STATUS_APPROVED = 2;
+  COMPLIANCE_STATUS_REJECTED = 3;
+  COMPLIANCE_STATUS_MANUAL_REVIEW = 4;
+}
+
+enum KYCLevel {
+  KYC_LEVEL_UNSPECIFIED = 0;
+  KYC_LEVEL_BASIC = 1;      // ₹10,000 limit
+  KYC_LEVEL_INTERMEDIATE = 2; // ₹50,000 limit
+  KYC_LEVEL_ADVANCED = 3;    // ₹200,000 limit
+  KYC_LEVEL_PREMIUM = 4;     // No limit
+}
+
+enum AgentStatus {
+  AGENT_STATUS_UNSPECIFIED = 0;
+  AGENT_STATUS_PENDING_VERIFICATION = 1;
+  AGENT_STATUS_ACTIVE = 2;
+  AGENT_STATUS_SUSPENDED = 3;
+  AGENT_STATUS_DEACTIVATED = 4;
+  AGENT_STATUS_BLACKLISTED = 5;
+}
+
+enum CommissionStatus {
+  COMMISSION_STATUS_UNSPECIFIED = 0;
+  COMMISSION_STATUS_EARNED = 1;
+  COMMISSION_STATUS_PENDING_PAYMENT = 2;
+  COMMISSION_STATUS_PAID = 3;
+  COMMISSION_STATUS_DISPUTED = 4;
+  COMMISSION_STATUS_CANCELLED = 5;
+}
+
+enum PoolStatus {
+  POOL_STATUS_UNSPECIFIED = 0;
+  POOL_STATUS_ACTIVE = 1;
+  POOL_STATUS_PAUSED = 2;
+  POOL_STATUS_DRAINING = 3;
+  POOL_STATUS_CLOSED = 4;
+}
+
+enum SettlementStatus {
+  SETTLEMENT_STATUS_UNSPECIFIED = 0;
+  SETTLEMENT_STATUS_PENDING = 1;
+  SETTLEMENT_STATUS_PROCESSING = 2;
+  SETTLEMENT_STATUS_COMPLETED = 3;
+  SETTLEMENT_STATUS_FAILED = 4;
+  SETTLEMENT_STATUS_CANCELLED = 5;
+}
+
+// ========== COUNTERS ==========
+
+message Counters {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  uint64 next_transfer_id = 1 [(gogoproto.moretags) = "yaml:\"next_transfer_id\""];
+  uint64 next_pool_id = 2 [(gogoproto.moretags) = "yaml:\"next_pool_id\""];
+  uint64 next_corridor_id = 3 [(gogoproto.moretags) = "yaml:\"next_corridor_id\""];
+  uint64 next_partner_id = 4 [(gogoproto.moretags) = "yaml:\"next_partner_id\""];
+  uint64 next_settlement_id = 5 [(gogoproto.moretags) = "yaml:\"next_settlement_id\""];
+  uint64 next_agent_id = 6 [(gogoproto.moretags) = "yaml:\"next_agent_id\""];
+  uint64 next_commission_id = 7 [(gogoproto.moretags) = "yaml:\"next_commission_id\""];
+  
+  // Global statistics
+  uint64 total_transfers = 8 [(gogoproto.moretags) = "yaml:\"total_transfers\""];
+  uint64 total_volume_usd = 9 [(gogoproto.moretags) = "yaml:\"total_volume_usd\""];
+  uint64 total_seva_mitra_agents = 10 [(gogoproto.moretags) = "yaml:\"total_seva_mitra_agents\""];
+  uint64 total_seva_mitra_transactions = 11 [(gogoproto.moretags) = "yaml:\"total_seva_mitra_transactions\""];
+}
+
+// ========== PARAMETERS ==========
+
+message RemittanceParams {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // Fee configuration
+  string base_fee_rate = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin minimum_fee = 2 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin maximum_fee = 3 [(gogoproto.nullable) = false];
+  
+  // Transfer limits
+  cosmos.base.v1beta1.Coin minimum_transfer_amount = 4 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin maximum_transfer_amount = 5 [(gogoproto.nullable) = false];
+  
+  // Sewa Mitra configuration
+  bool enable_seva_mitra = 6 [(gogoproto.moretags) = "yaml:\"enable_seva_mitra\""];
+  string seva_mitra_base_commission = 7 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string seva_mitra_volume_bonus_threshold = 8 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string seva_mitra_volume_bonus_rate = 9 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin seva_mitra_minimum_liquidity = 10 [(gogoproto.nullable) = false];
+  
+  // Processing timeouts
+  int64 transfer_timeout_seconds = 11 [(gogoproto.moretags) = "yaml:\"transfer_timeout_seconds\""];
+  int64 settlement_timeout_seconds = 12 [(gogoproto.moretags) = "yaml:\"settlement_timeout_seconds\""];
+  
+  // Compliance settings
+  bool require_kyc = 13 [(gogoproto.moretags) = "yaml:\"require_kyc\""];
+  bool enable_aml_screening = 14 [(gogoproto.moretags) = "yaml:\"enable_aml_screening\""];
+  repeated string blocked_countries = 15 [(gogoproto.moretags) = "yaml:\"blocked_countries\""];
+  
+  // Pool management
+  string pool_swap_fee = 16 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string pool_exit_fee = 17 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  
+  // Bridge configuration
+  repeated string supported_chains = 18 [(gogoproto.moretags) = "yaml:\"supported_chains\""];
+  string bridge_fee_rate = 19 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+}

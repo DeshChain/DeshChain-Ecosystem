@@ -1,0 +1,127 @@
+syntax = "proto3";
+package deshchain.remittance.v1;
+
+import "gogoproto/gogo.proto";
+import "deshchain/remittance/v1/remittance.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/remittance/types";
+
+// GenesisState defines the remittance module's genesis state
+message GenesisState {
+  // Module parameters
+  RemittanceParams params = 1 [(gogoproto.nullable) = false];
+
+  // Remittance transfers
+  repeated RemittanceTransfer transfers = 2 [(gogoproto.nullable) = false];
+
+  // Liquidity pools
+  repeated LiquidityPool liquidity_pools = 3 [(gogoproto.nullable) = false];
+
+  // Exchange rates
+  repeated ExchangeRate exchange_rates = 4 [(gogoproto.nullable) = false];
+
+  // Remittance corridors
+  repeated RemittanceCorridor corridors = 5 [(gogoproto.nullable) = false];
+
+  // Settlement partners
+  repeated CorridorPartner partners = 6 [(gogoproto.nullable) = false];
+
+  // Settlement records
+  repeated Settlement settlements = 7 [(gogoproto.nullable) = false];
+
+  // Module counters and sequences
+  Counters counters = 8 [(gogoproto.nullable) = false];
+
+  // Supported countries and their configurations
+  repeated CountryConfig countries = 9 [(gogoproto.nullable) = false];
+
+  // Supported currencies and their configurations  
+  repeated CurrencyConfig currencies = 10 [(gogoproto.nullable) = false];
+}
+
+// Counters contains various counters for ID generation
+message Counters {
+  uint64 next_transfer_id = 1;
+  uint64 next_pool_id = 2;
+  uint64 next_corridor_id = 3;
+  uint64 next_partner_id = 4;
+  uint64 next_settlement_id = 5;
+  uint64 total_transfers = 6;
+  uint64 total_volume_usd = 7; // Total volume in USD equivalent
+}
+
+// CountryConfig defines configuration for a supported country
+message CountryConfig {
+  string country_code = 1;     // ISO 3166-1 alpha-2 country code (US, IN, GB)
+  string country_name = 2;     // Full country name
+  string currency_code = 3;    // ISO 4217 currency code (USD, INR, GBP)
+  bool is_active = 4;          // Whether the country is active for remittances
+  bool requires_kyc = 5;       // Whether KYC is required
+  KYCLevel min_kyc_level = 6;  // Minimum KYC level required
+  
+  // Transaction limits for this country
+  cosmos.base.v1beta1.Coin min_send_amount = 7 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin max_send_amount = 8 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin min_receive_amount = 9 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin max_receive_amount = 10 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin daily_limit = 11 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin monthly_limit = 12 [(gogoproto.nullable) = false];
+  
+  // Supported settlement methods
+  repeated string supported_methods = 13; // bank_transfer, mobile_wallet, cash_pickup
+  
+  // Regulatory information
+  repeated string required_documents = 14; // passport, national_id, etc.
+  repeated string prohibited_purposes = 15; // gambling, etc.
+  bool sanctions_screening_required = 16;
+  bool pep_screening_required = 17;
+  
+  // Operational information
+  string timezone = 18;                    // Timezone for business hours
+  repeated BusinessHours business_hours = 19; // Business hours for each day
+  repeated string holidays = 20;           // Holiday dates (YYYY-MM-DD)
+  
+  // Compliance and regulatory
+  string regulatory_authority = 21;        // Name of regulatory authority
+  string license_number = 22;             // License number if applicable
+  google.protobuf.Timestamp license_expiry = 23 [(gogoproto.stdtime) = true];
+  bool reporting_required = 24;           // Whether reporting is required
+  uint64 reporting_threshold = 25;        // Amount threshold for reporting
+}
+
+// BusinessHours defines business hours for a day
+message BusinessHours {
+  string day = 1;        // monday, tuesday, etc.
+  string open_time = 2;  // 09:00
+  string close_time = 3; // 17:00
+  bool is_open = 4;      // Whether open on this day
+}
+
+// CurrencyConfig defines configuration for a supported currency
+message CurrencyConfig {
+  string currency_code = 1;    // ISO 4217 currency code
+  string currency_name = 2;    // Full currency name
+  string symbol = 3;           // Currency symbol ($, €, ₹)
+  uint32 decimal_places = 4;   // Number of decimal places
+  bool is_active = 5;          // Whether the currency is active
+  bool is_crypto = 6;          // Whether it's a cryptocurrency
+  bool is_stable = 7;          // Whether it's a stablecoin
+  
+  // Minimum amounts for various operations
+  cosmos.base.v1beta1.Coin min_transfer_amount = 8 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin max_transfer_amount = 9 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin min_liquidity_amount = 10 [(gogoproto.nullable) = false];
+  
+  // Exchange rate information
+  string base_currency = 11;   // Base currency for rate calculation (usually USD)
+  bool oracle_supported = 12;  // Whether oracle provides rates for this currency
+  repeated string rate_sources = 13; // coinbase, binance, forex, etc.
+  
+  // Risk and compliance
+  string risk_category = 14;   // low, medium, high
+  bool aml_enhanced = 15;      // Whether enhanced AML is required
+  repeated string restricted_countries = 16; // Countries where this currency is restricted
+}
+
+// DefaultGenesis returns the default genesis state for the remittance module
+// This will be implemented in the Go code, but we define the structure here
