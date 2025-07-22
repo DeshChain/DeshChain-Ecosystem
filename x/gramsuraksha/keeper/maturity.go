@@ -47,8 +47,15 @@ func (k Keeper) ProcessMaturity(ctx sdk.Context, participantID string) error {
 		return types.ErrSchemeNotFound
 	}
 
-	// Calculate maturity amount
-	maturityAmount := scheme.CalculateMaturityAmount(participant.TotalContributed)
+	// Get current chain performance metrics
+	metrics := k.GetChainPerformanceMetrics(ctx)
+	params := k.GetDynamicPayoutParams(ctx)
+	
+	// Calculate dynamic payout rate based on chain performance
+	dynamicPayoutRate := types.CalculateDynamicPayout(metrics, params)
+	
+	// Calculate maturity amount using dynamic rate
+	maturityAmount := scheme.CalculateDynamicMaturityAmount(participant.TotalContributed, dynamicPayoutRate)
 	
 	// Add any bonuses earned
 	maturityAmount = maturityAmount.Add(participant.BonusEarned)
@@ -60,6 +67,14 @@ func (k Keeper) ProcessMaturity(ctx sdk.Context, participantID string) error {
 			maturityAmount = sdk.NewCoin(maturityAmount.Denom, sdk.ZeroInt())
 		}
 	}
+	
+	// Log payout rate for transparency
+	ctx.Logger().Info("Processing pension maturity with dynamic payout",
+		"participant_id", participantID,
+		"payout_rate", dynamicPayoutRate.String(),
+		"health_score", metrics.HealthScore.String(),
+		"risk_score", metrics.RiskScore.String(),
+	)
 
 	// Create maturity record
 	maturity := types.SurakshaMaturity{

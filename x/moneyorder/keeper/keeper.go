@@ -391,3 +391,41 @@ func (k Keeper) UpdateFestivalStatus(ctx sdk.Context) {
 		store.Delete([]byte("festival:name"))
 	}
 }
+
+// GetDynamicPensionRate retrieves the current dynamic pension payout rate
+// This integrates with the Gram Suraksha module's performance-based system
+func (k Keeper) GetDynamicPensionRate(ctx sdk.Context) sdk.Dec {
+	// Default to 30% if no rate is set
+	defaultRate := sdk.NewDecWithPrec(30, 2)
+	
+	// Get the rate from storage (set by Gram Suraksha module)
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.KeyDynamicPensionRate)
+	if bz == nil {
+		return defaultRate
+	}
+	
+	rate, err := sdk.NewDecFromStr(string(bz))
+	if err != nil {
+		return defaultRate
+	}
+	
+	// Ensure rate is within bounds (8% to 50%)
+	minRate := sdk.NewDecWithPrec(8, 2)
+	maxRate := sdk.NewDecWithPrec(50, 2)
+	
+	if rate.LT(minRate) {
+		return minRate
+	}
+	if rate.GT(maxRate) {
+		return maxRate
+	}
+	
+	return rate
+}
+
+// SetDynamicPensionRate updates the dynamic pension payout rate
+func (k Keeper) SetDynamicPensionRate(ctx sdk.Context, rate sdk.Dec) {
+	store := ctx.KVStore(k.storeKey)
+	store.Set(types.KeyDynamicPensionRate, []byte(rate.String()))
+}

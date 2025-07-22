@@ -533,6 +533,25 @@ Never Private:
 - Profitability: 45% margin by Year 3
 - ROI: 170x in 5 years
 - Market Cap: ₹50,000 Cr potential
+- 10-Year Revenue: ₹236,387 Cr
+- 10-Year NGO Impact: ₹47,277 Cr
+- Net Margin: 38.5% by Year 10
+- Success Probability: 75% (conservative)
+```
+
+### Validator Economics
+```yaml
+Genesis Validators (First 21):
+  Investment: $250,000 ($100K + $150K NAMO)
+  10-Year Returns: $15.42M (61.7x ROI)
+  
+Comparison to Other Chains:
+  DeshChain: 61.7x returns
+  Cosmos Hub: 2.0x returns
+  Ethereum: 0.57x returns
+  Solana Small: -2.0x (loses money)
+  
+For detailed analysis see: docs/chain_economics.md
 ```
 
 ### Social Success

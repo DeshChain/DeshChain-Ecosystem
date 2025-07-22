@@ -310,11 +310,15 @@ func (k Keeper) CalculatePensionReturns(
 	// Total revenue from DEX + Agricultural lending
 	totalMonthlyRevenue := pool.MonthlyDexRevenue.Add(pool.MonthlyLendingRevenue...)
 	
-	// Calculate pension share (prioritized to ensure 50% returns)
+	// Calculate pension share based on dynamic performance metrics
+	// Get dynamic payout rate from Gram Suraksha module
+	dynamicRate := k.GetDynamicPensionRate(ctx)
+	
 	// Monthly contribution: 1000 NAMO * Active accounts
-	// Required monthly return: 4.17% (to achieve 50% in 12 months)
+	// Required monthly return: dynamic rate / 12 (to achieve target in 12 months)
 	monthlyContributions := sdk.NewInt(1000).Mul(sdk.NewInt(int64(pool.ActivePensionAccounts)))
-	requiredReturn := monthlyContributions.ToDec().Mul(sdk.NewDecWithPrec(417, 4)) // 4.17%
+	monthlyRate := dynamicRate.Quo(sdk.NewDec(12))
+	requiredReturn := monthlyContributions.ToDec().Mul(monthlyRate)
 	
 	pensionReturns := sdk.NewCoins()
 	for _, revenue := range totalMonthlyRevenue {

@@ -289,6 +289,25 @@ const (
 	DefaultRiskThreshold             = "0.70" // 70%
 )
 
+// Additional key prefixes for dynamic payout system
+var (
+	KeyPrefixPerformanceMetrics = []byte{0x20}
+	KeyPrefixPayoutParams       = []byte{0x21}
+	KeyPrefixVerifierMessages   = []byte{0x22}
+	KeyPrefixPayoutHistory      = []byte{0x23}
+	
+	KeyCurrentMetrics  = []byte("current_metrics")
+	KeyPayoutParams    = []byte("payout_params")
+	KeyLastPayoutRate  = []byte("last_payout_rate")
+)
+
+// Event types for dynamic payout system
+const (
+	EventTypeWriteoffRecorded = "writeoff_recorded"
+	EventTypeFraudDetected    = "fraud_detected"
+	EventTypePayoutRateChanged = "payout_rate_changed"
+)
+
 // Status values
 const (
 	StatusActive     = "active"

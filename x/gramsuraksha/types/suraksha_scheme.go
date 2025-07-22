@@ -195,6 +195,14 @@ func (ps SurakshaScheme) CalculateMaturityAmount(totalContributed sdk.Coin) sdk.
 	return sdk.NewCoin(totalContributed.Denom, totalAmount)
 }
 
+// CalculateDynamicMaturityAmount calculates maturity with dynamic performance-based returns
+func (ps SurakshaScheme) CalculateDynamicMaturityAmount(totalContributed sdk.Coin, payoutRate sdk.Dec) sdk.Coin {
+	// Use dynamic payout rate instead of fixed MaturityBonus
+	bonusAmount := totalContributed.Amount.ToDec().Mul(payoutRate).TruncateInt()
+	totalAmount := totalContributed.Amount.Add(bonusAmount)
+	return sdk.NewCoin(totalContributed.Denom, totalAmount)
+}
+
 // CalculateEarlyWithdrawalAmount calculates amount after penalty
 func (ps SurakshaScheme) CalculateEarlyWithdrawalAmount(totalContributed sdk.Coin) sdk.Coin {
 	penaltyAmount := totalContributed.Amount.ToDec().Mul(ps.EarlyWithdrawalPenalty).TruncateInt()

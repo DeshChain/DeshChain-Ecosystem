@@ -94,6 +94,7 @@ var (
 	KeyPrefixSurakshaContribution  = []byte{0x1B}
 	KeyPrefixAgriLoan             = []byte{0x1C}
 	KeyNextLoanId                 = []byte{0x1D}
+	KeyDynamicPensionRate         = []byte{0x1E}
 	
 	// P2P and Escrow prefixes
 	P2POrderPrefix                = []byte{0x50}
