@@ -8,14 +8,14 @@
 ## Table of Contents
 
 1. [Executive Summary](#executive-summary)
-2. [Vision: From Blockchain to Parallel Governance](#vision)
+2. [Vision: From Blockchain to On-Chain Democracy](#vision)
 3. [The Problem: Disconnected Governance](#the-problem)
 4. [The Solution: DeshChain Ecosystem](#the-solution)
 5. [Technical Architecture](#technical-architecture)
 6. [Tokenomics & Economic Model](#tokenomics)
 7. [Product Suite](#product-suite)
 8. [Cultural Integration](#cultural-integration)
-9. [50-Year Roadmap to Parallel Governance](#roadmap)
+9. [50-Year Roadmap to On-Chain Democracy](#roadmap)
 10. [Implementation Strategy](#implementation)
 11. [Risk Analysis & Mitigation](#risk-analysis)
 12. [Conclusion](#conclusion)
@@ -82,7 +82,7 @@ Drawing from ancient Indian governance concepts:
 
 - Traditional governance systems struggle with transparency
 - Rising inequality despite technological progress
-- Need for parallel systems that empower citizens
+- Need for complementary systems that empower citizens
 - Blockchain's potential remains unrealized for social good
 
 ---
@@ -304,7 +304,7 @@ Founder Royalty:   5%
 
 ---
 
-## 9. 50-Year Roadmap to Parallel Governance {#roadmap}
+## 9. 50-Year Roadmap to On-Chain Democracy {#roadmap}
 
 ### Phase 1: Foundation (Years 1-5)
 **Goal**: Establish blockchain infrastructure and user base
@@ -334,8 +334,8 @@ Founder Royalty:   5%
 - Health records on-chain
 - ₹50,000 Cr daily volume
 
-### Phase 4: Parallel Services (Years 21-30)
-**Goal**: Provide government-like services
+### Phase 4: Complementary Services (Years 21-30)
+**Goal**: Provide community-driven services
 
 - **Digital Ration Cards**: Subsidy distribution
 - **Pension Management**: All schemes on-chain

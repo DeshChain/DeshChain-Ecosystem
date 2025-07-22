@@ -208,7 +208,7 @@ DeshChain Transformation:
 - Craft NFT marketplace
 - Language preservation rewards
 
-### 6. Creating Parallel Financial System
+### 6. Creating Complementary Financial System
 
 #### DeshChain Financial Stack
 ```

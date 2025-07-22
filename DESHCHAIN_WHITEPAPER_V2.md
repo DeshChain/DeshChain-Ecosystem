@@ -42,7 +42,7 @@ This tribute ensures that every transaction on DeshChain carries forward the spi
 
 1. [NAMO Token Tribute](#namo-tribute)
 2. [Executive Summary](#executive-summary)
-3. [Vision: From Blockchain to Parallel Governance](#vision)
+3. [Vision: From Blockchain to On-Chain Democracy](#vision)
    - [Social Causes We Champion](#social-causes)
 4. [The Problem: Disconnected Governance](#the-problem)
 5. [The Solution: DeshChain Ecosystem](#the-solution)
@@ -53,7 +53,7 @@ This tribute ensures that every transaction on DeshChain carries forward the spi
 10. [Advanced Financial Products](#advanced-financial-products)
 11. [Cultural Integration](#cultural-integration)
 12. [Udyamitra Urban Ecosystem](#udyamitra-urban-ecosystem)
-13. [50-Year Roadmap to Parallel Governance](#roadmap)
+13. [50-Year Roadmap to On-Chain Democracy](#roadmap)
 14. [Implementation Strategy](#implementation)
 15. [Risk Analysis & Mitigation](#risk-analysis)
 16. [Conclusion](#conclusion)
@@ -270,7 +270,7 @@ DeshChain is built on the foundation of serving society. Our commitment to socia
 
 - Traditional governance systems struggle with transparency
 - Rising inequality despite technological progress
-- Need for parallel systems that empower citizens
+- Need for complementary systems that empower citizens
 - Blockchain's potential remains unrealized for social good
 
 ---
@@ -1971,7 +1971,7 @@ Building on the success of our Gram Suraksha Pool, DeshChain introduces the **Ud
 
 ---
 
-## 11. 50-Year Roadmap to Parallel Governance {#roadmap}
+## 11. 50-Year Roadmap to On-Chain Democracy {#roadmap}
 
 ### Phase 1: Foundation (Years 1-5)
 **Goal**: Establish blockchain infrastructure and user base
@@ -2006,8 +2006,8 @@ Building on the success of our Gram Suraksha Pool, DeshChain introduces the **Ud
 - ₹50,000 Cr daily volume
 - Complete transparency ecosystem
 
-### Phase 4: Parallel Services (Years 21-30)
-**Goal**: Provide government-like services
+### Phase 4: Complementary Services (Years 21-30)
+**Goal**: Provide community-driven services
 
 - **Digital Ration Cards**: Subsidy distribution
 - **Wealth Management**: All protocols on-chain

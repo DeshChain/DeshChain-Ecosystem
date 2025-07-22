@@ -336,7 +336,7 @@ Years 41-50:  Post-scarcity abundance
 - 500M active users
 - ₹1,00,000 Cr annual charity
 - Complete financial inclusion
-- Parallel justice system active
+- Community-based dispute resolution active
 
 ### Decade 3 (Years 21-30)
 - 800M active users
