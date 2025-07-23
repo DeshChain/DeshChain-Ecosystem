@@ -1,0 +1,166 @@
+syntax = "proto3";
+package deshchain.dusd.v1;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "deshchain/dusd/v1/types.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/dusd/types";
+
+// Query defines the gRPC querier service
+service Query {
+  // Params returns the module parameters
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/deshchain/dusd/v1/params";
+  }
+  
+  // Position returns a specific DUSD position
+  rpc Position(QueryPositionRequest) returns (QueryPositionResponse) {
+    option (google.api.http).get = "/deshchain/dusd/v1/position/{position_id}";
+  }
+  
+  // Positions returns all positions for an owner
+  rpc Positions(QueryPositionsRequest) returns (QueryPositionsResponse) {
+    option (google.api.http).get = "/deshchain/dusd/v1/positions/{owner}";
+  }
+  
+  // AllPositions returns all positions with pagination
+  rpc AllPositions(QueryAllPositionsRequest) returns (QueryAllPositionsResponse) {
+    option (google.api.http).get = "/deshchain/dusd/v1/positions";
+  }
+  
+  // Price returns current USD price data
+  rpc Price(QueryPriceRequest) returns (QueryPriceResponse) {
+    option (google.api.http).get = "/deshchain/dusd/v1/price";
+  }
+  
+  // PriceHistory returns historical price data
+  rpc PriceHistory(QueryPriceHistoryRequest) returns (QueryPriceHistoryResponse) {
+    option (google.api.http).get = "/deshchain/dusd/v1/price/history";
+  }
+  
+  // ReserveStats returns USD reserve statistics
+  rpc ReserveStats(QueryReserveStatsRequest) returns (QueryReserveStatsResponse) {
+    option (google.api.http).get = "/deshchain/dusd/v1/reserves";
+  }
+  
+  // HealthFactor calculates health factor for a position
+  rpc HealthFactor(QueryHealthFactorRequest) returns (QueryHealthFactorResponse) {
+    option (google.api.http).get = "/deshchain/dusd/v1/health/{position_id}";
+  }
+  
+  // LiquidatablePositions returns positions that can be liquidated
+  rpc LiquidatablePositions(QueryLiquidatablePositionsRequest) returns (QueryLiquidatablePositionsResponse) {
+    option (google.api.http).get = "/deshchain/dusd/v1/liquidatable";
+  }
+  
+  // StabilityActions returns recent stability actions
+  rpc StabilityActions(QueryStabilityActionsRequest) returns (QueryStabilityActionsResponse) {
+    option (google.api.http).get = "/deshchain/dusd/v1/stability";
+  }
+  
+  // TotalSupply returns total DUSD supply statistics
+  rpc TotalSupply(QueryTotalSupplyRequest) returns (QueryTotalSupplyResponse) {
+    option (google.api.http).get = "/deshchain/dusd/v1/supply";
+  }
+}
+
+message QueryParamsRequest {}
+
+message QueryParamsResponse {
+  DUSDParams params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryPositionRequest {
+  string position_id = 1;
+}
+
+message QueryPositionResponse {
+  DUSDPosition position = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryPositionsRequest {
+  string owner = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message QueryPositionsResponse {
+  repeated DUSDPosition positions = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryAllPositionsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllPositionsResponse {
+  repeated DUSDPosition positions = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryPriceRequest {}
+
+message QueryPriceResponse {
+  repeated PriceData prices = 1 [(gogoproto.nullable) = false];
+  string consensus_price = 2 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  string deviation = 3 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  bool is_stable = 4;
+}
+
+message QueryPriceHistoryRequest {
+  int64 hours = 1; // number of hours to look back
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message QueryPriceHistoryResponse {
+  repeated PriceData historical_prices = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryReserveStatsRequest {}
+
+message QueryReserveStatsResponse {
+  ReserveStats stats = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryHealthFactorRequest {
+  string position_id = 1;
+}
+
+message QueryHealthFactorResponse {
+  string health_factor = 1 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  bool is_healthy = 2;
+  bool is_liquidatable = 3;
+  string required_collateral = 4 [(cosmos_proto.scalar) = "cosmos.Dec"];
+}
+
+message QueryLiquidatablePositionsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryLiquidatablePositionsResponse {
+  repeated DUSDPosition positions = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryStabilityActionsRequest {
+  int64 hours = 1; // number of hours to look back
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message QueryStabilityActionsResponse {
+  repeated StabilityAction actions = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryTotalSupplyRequest {}
+
+message QueryTotalSupplyResponse {
+  cosmos.base.v1beta1.Coin total_supply = 1 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin total_collateral = 2 [(gogoproto.nullable) = false];
+  string global_health_factor = 3 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  int64 total_positions = 4;
+  string average_health_factor = 5 [(cosmos_proto.scalar) = "cosmos.Dec"];
+}

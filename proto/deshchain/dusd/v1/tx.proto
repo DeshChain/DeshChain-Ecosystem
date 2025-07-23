@@ -1,0 +1,138 @@
+syntax = "proto3";
+package deshchain.dusd.v1;
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos/msg/v1/msg.proto";
+import "deshchain/dusd/v1/types.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/dusd/types";
+
+// Msg defines the dusd Msg service
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+  
+  // MintDUSD creates new DUSD tokens against collateral
+  rpc MintDUSD(MsgMintDUSD) returns (MsgMintDUSDResponse);
+  
+  // BurnDUSD destroys DUSD tokens and releases collateral
+  rpc BurnDUSD(MsgBurnDUSD) returns (MsgBurnDUSDResponse);
+  
+  // AddCollateral adds more collateral to an existing position
+  rpc AddCollateral(MsgAddCollateral) returns (MsgAddCollateralResponse);
+  
+  // RemoveCollateral removes collateral from a position
+  rpc RemoveCollateral(MsgRemoveCollateral) returns (MsgRemoveCollateralResponse);
+  
+  // LiquidatePosition liquidates an unhealthy position
+  rpc LiquidatePosition(MsgLiquidatePosition) returns (MsgLiquidatePositionResponse);
+  
+  // UpdateParams updates module parameters (governance only)
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+  
+  // EmergencyAction performs emergency stability actions
+  rpc EmergencyAction(MsgEmergencyAction) returns (MsgEmergencyActionResponse);
+}
+
+// MsgMintDUSD mints new DUSD tokens
+message MsgMintDUSD {
+  option (cosmos.msg.v1.signer) = "creator";
+  
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  cosmos.base.v1beta1.Coin collateral_amount = 2 [(gogoproto.nullable) = false];
+  string collateral_type = 3;
+  cosmos.base.v1beta1.Coin dusd_amount = 4 [(gogoproto.nullable) = false];
+}
+
+message MsgMintDUSDResponse {
+  string position_id = 1;
+  cosmos.base.v1beta1.Coin minted_amount = 2 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin fee_paid = 3 [(gogoproto.nullable) = false];
+  string health_factor = 4 [(cosmos_proto.scalar) = "cosmos.Dec"];
+}
+
+// MsgBurnDUSD burns DUSD tokens and releases collateral
+message MsgBurnDUSD {
+  option (cosmos.msg.v1.signer) = "creator";
+  
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string position_id = 2;
+  cosmos.base.v1beta1.Coin dusd_amount = 3 [(gogoproto.nullable) = false];
+}
+
+message MsgBurnDUSDResponse {
+  cosmos.base.v1beta1.Coin burned_amount = 1 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin collateral_released = 2 [(gogoproto.nullable) = false];
+  string remaining_health_factor = 3 [(cosmos_proto.scalar) = "cosmos.Dec"];
+}
+
+// MsgAddCollateral adds collateral to existing position
+message MsgAddCollateral {
+  option (cosmos.msg.v1.signer) = "creator";
+  
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string position_id = 2;
+  cosmos.base.v1beta1.Coin collateral_amount = 3 [(gogoproto.nullable) = false];
+}
+
+message MsgAddCollateralResponse {
+  cosmos.base.v1beta1.Coin total_collateral = 1 [(gogoproto.nullable) = false];
+  string new_health_factor = 2 [(cosmos_proto.scalar) = "cosmos.Dec"];
+}
+
+// MsgRemoveCollateral removes collateral from position
+message MsgRemoveCollateral {
+  option (cosmos.msg.v1.signer) = "creator";
+  
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string position_id = 2;
+  cosmos.base.v1beta1.Coin collateral_amount = 3 [(gogoproto.nullable) = false];
+}
+
+message MsgRemoveCollateralResponse {
+  cosmos.base.v1beta1.Coin removed_collateral = 1 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin remaining_collateral = 2 [(gogoproto.nullable) = false];
+  string new_health_factor = 3 [(cosmos_proto.scalar) = "cosmos.Dec"];
+}
+
+// MsgLiquidatePosition liquidates an unhealthy position
+message MsgLiquidatePosition {
+  option (cosmos.msg.v1.signer) = "liquidator";
+  
+  string liquidator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string position_id = 2;
+  cosmos.base.v1beta1.Coin dusd_amount = 3 [(gogoproto.nullable) = false];
+}
+
+message MsgLiquidatePositionResponse {
+  cosmos.base.v1beta1.Coin liquidated_amount = 1 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin collateral_reward = 2 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin liquidation_fee = 3 [(gogoproto.nullable) = false];
+}
+
+// MsgUpdateParams updates module parameters
+message MsgUpdateParams {
+  option (cosmos.msg.v1.signer) = "authority";
+  
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  DUSDParams params = 2 [(gogoproto.nullable) = false];
+}
+
+message MsgUpdateParamsResponse {}
+
+// MsgEmergencyAction performs emergency stability actions
+message MsgEmergencyAction {
+  option (cosmos.msg.v1.signer) = "authority";
+  
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string action_type = 2; // "emergency_halt", "circuit_breaker", "force_rebalance"
+  string reason = 3;
+  cosmos.base.v1beta1.Coin amount = 4 [(gogoproto.nullable) = false];
+}
+
+message MsgEmergencyActionResponse {
+  string action_id = 1;
+  string result = 2;
+  cosmos.base.v1beta1.Coin amount_processed = 3 [(gogoproto.nullable) = false];
+}

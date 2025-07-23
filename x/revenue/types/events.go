@@ -16,6 +16,9 @@ limitations under the License.
 
 package types
 
+// QuerierRoute defines the module's query routing key
+const QuerierRoute = ModuleName
+
 // Event types for revenue module
 const (
 	EventTypeRevenueCollected   = "revenue_collected"
@@ -30,6 +33,8 @@ const (
 
 // Attribute keys for revenue events
 const (
+	AttributeKeySource           = "source"
+	AttributeKeyAmount          = "amount"
 	AttributeKeyStreamID         = "stream_id"
 	AttributeKeyStreamType       = "stream_type"
 	AttributeKeyRevenueAmount    = "revenue_amount"

@@ -29,6 +29,7 @@ import (
 
 	"github.com/deshchain/namo/x/sikkebaaz/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	moneyordertypes "github.com/deshchain/deshchain/x/moneyorder/types"
 )
 
 type Keeper struct {
@@ -37,10 +38,12 @@ type Keeper struct {
 	memKey     storetypes.StoreKey
 	paramstore paramtypes.Subspace
 
-	bankKeeper    types.BankKeeper
-	accountKeeper types.AccountKeeper
-	culturalKeeper types.CulturalKeeper
-	treasuryKeeper types.TreasuryKeeper
+	bankKeeper       types.BankKeeper
+	accountKeeper    types.AccountKeeper
+	culturalKeeper   types.CulturalKeeper
+	treasuryKeeper   types.TreasuryKeeper
+	revenueKeeper    types.RevenueKeeper
+	moneyOrderKeeper types.MoneyOrderKeeper
 }
 
 func NewKeeper(
@@ -52,6 +55,8 @@ func NewKeeper(
 	accountKeeper types.AccountKeeper,
 	culturalKeeper types.CulturalKeeper,
 	treasuryKeeper types.TreasuryKeeper,
+	revenueKeeper types.RevenueKeeper,
+	moneyOrderKeeper types.MoneyOrderKeeper,
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -59,14 +64,16 @@ func NewKeeper(
 	}
 
 	return &Keeper{
-		cdc:            cdc,
-		storeKey:       storeKey,
-		memKey:         memKey,
-		paramstore:     ps,
-		bankKeeper:     bankKeeper,
-		accountKeeper:  accountKeeper,
-		culturalKeeper: culturalKeeper,
-		treasuryKeeper: treasuryKeeper,
+		cdc:              cdc,
+		storeKey:         storeKey,
+		memKey:           memKey,
+		paramstore:       ps,
+		bankKeeper:       bankKeeper,
+		accountKeeper:    accountKeeper,
+		culturalKeeper:   culturalKeeper,
+		treasuryKeeper:   treasuryKeeper,
+		revenueKeeper:    revenueKeeper,
+		moneyOrderKeeper: moneyOrderKeeper,
 	}
 }
 
@@ -111,7 +118,8 @@ func (k Keeper) CreateTokenLaunch(ctx sdk.Context, creator string, msg *types.To
 	}
 
 	feeCoins := sdk.NewCoins(sdk.NewCoin(types.DefaultDenom, launchFee))
-	if err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, creatorAddr, types.SikkebaazFeeCollector, feeCoins); err != nil {
+	// Use revenue keeper to collect launch fee - handles collection and distribution
+	if err := k.revenueKeeper.CollectLaunchFee(ctx, types.ModuleName, creatorAddr, feeCoins, msg.TokenSymbol); err != nil {
 		return types.ErrInsufficientFees
 	}
 
@@ -320,6 +328,12 @@ func (k Keeper) deployToken(ctx sdk.Context, launch *types.TokenLaunch) error {
 
 	k.setCreatorReward(ctx, creatorReward)
 
+	// Create liquidity pool on MoneyOrder DEX
+	if err := k.createLiquidityPool(ctx, launch); err != nil {
+		k.Logger(ctx).Error("Failed to create liquidity pool", "error", err, "token", launch.TokenSymbol)
+		// Don't fail deployment, pool can be created manually later
+	}
+
 	// Distribute fees according to DeshChain Platform Revenue Model
 	return k.distributeLaunchFees(ctx, launch)
 }
@@ -362,39 +376,74 @@ func (k Keeper) initializeWalletLimits(ctx sdk.Context, launch *types.TokenLaunc
 	k.setTradingMetrics(ctx, metrics)
 }
 
+// createLiquidityPool creates an AMM pool on MoneyOrder DEX for the newly deployed token
+func (k Keeper) createLiquidityPool(ctx sdk.Context, launch *types.TokenLaunch) error {
+	// Skip if MoneyOrderKeeper is not available
+	if k.moneyOrderKeeper == nil {
+		return nil
+	}
+
+	// Calculate liquidity amounts
+	// Use 80% of raised NAMO for liquidity (as per anti-pump config)
+	liquidityPercent := launch.AntiPumpConfig.MinLiquidityPercent
+	namoLiquidity := launch.RaisedAmount.MulRaw(int64(liquidityPercent)).QuoRaw(100)
+	
+	// Calculate proportional token amount for initial price
+	// Initial price = RaisedAmount / TotalSupply
+	tokenLiquidity := launch.TotalSupply.MulRaw(int64(liquidityPercent)).QuoRaw(100)
+
+	// Get creator address
+	creatorAddr, err := sdk.AccAddressFromBech32(launch.Creator)
+	if err != nil {
+		return err
+	}
+
+	// Create pool assets
+	poolAssets := []moneyordertypes.PoolAsset{
+		{
+			Denom:  types.DefaultDenom, // NAMO
+			Amount: namoLiquidity,
+			Weight: sdk.NewInt(50), // 50% weight
+		},
+		{
+			Denom:  launch.TokenSymbol,
+			Amount: tokenLiquidity,
+			Weight: sdk.NewInt(50), // 50% weight
+		},
+	}
+
+	// Default swap fee (0.3%)
+	swapFee := sdk.MustNewDecFromStr("0.003")
+
+	// Create AMM pool
+	poolId, err := k.moneyOrderKeeper.CreateAMMPool(ctx, creatorAddr, poolAssets, swapFee)
+	if err != nil {
+		return err
+	}
+
+	// Store pool ID with launch for reference
+	launch.LiquidityPoolId = poolId
+	k.SetTokenLaunch(ctx, launch)
+
+	// Emit event
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			"liquidity_pool_created",
+			sdk.NewAttribute("launch_id", launch.LaunchID),
+			sdk.NewAttribute("pool_id", fmt.Sprintf("%d", poolId)),
+			sdk.NewAttribute("token", launch.TokenSymbol),
+			sdk.NewAttribute("namo_liquidity", namoLiquidity.String()),
+			sdk.NewAttribute("token_liquidity", tokenLiquidity.String()),
+		),
+	)
+
+	return nil
+}
+
 // distributeLaunchFees distributes launch fees according to DeshChain revenue model
 func (k Keeper) distributeLaunchFees(ctx sdk.Context, launch *types.TokenLaunch) error {
-	totalFee := launch.LaunchFee
-
-	// Calculate distribution per Platform Revenue Model
-	developmentShare := totalFee.MulRaw(30).QuoRaw(100)   // 30% Development Fund
-	communityShare := totalFee.MulRaw(25).QuoRaw(100)     // 25% Community Treasury
-	liquidityShare := totalFee.MulRaw(20).QuoRaw(100)     // 20% Liquidity Provision
-	ngoShare := totalFee.MulRaw(10).QuoRaw(100)          // 10% NGO Donations
-	emergencyShare := totalFee.MulRaw(10).QuoRaw(100)     // 10% Emergency Reserve
-	founderShare := totalFee.MulRaw(5).QuoRaw(100)       // 5% Founder Royalty
-
-	// Distribute to respective accounts
-	distributions := map[string]sdk.Int{
-		"development_fund":    developmentShare,
-		"community_treasury":  communityShare,
-		"liquidity_provision": liquidityShare,
-		"ngo_donations":      ngoShare,
-		"emergency_reserve":   emergencyShare,
-		"founder_royalty":     founderShare,
-	}
-
-	for account, amount := range distributions {
-		if amount.IsPositive() {
-			coins := sdk.NewCoins(sdk.NewCoin(types.DefaultDenom, amount))
-			if err := k.bankKeeper.SendCoinsFromModuleToModule(ctx, types.SikkebaazFeeCollector, account, coins); err != nil {
-				k.Logger(ctx).Error("Failed to distribute fees", "account", account, "amount", amount, "error", err)
-				continue
-			}
-		}
-	}
-
-	// Send charity allocation to local NGO based on creator's pincode
+	// Platform fees are already distributed by revenue keeper when collected
+	// Just handle the charity allocation which is separate from platform fees
 	if launch.CharityAllocation.IsPositive() {
 		charityCoins := sdk.NewCoins(sdk.NewCoin(types.DefaultDenom, launch.CharityAllocation))
 		// This would integrate with treasury module for local NGO allocation
@@ -483,9 +532,22 @@ func (k Keeper) hasParticipated(ctx sdk.Context, participant, launchID string) b
 
 func (k Keeper) setLaunchParticipation(ctx sdk.Context, participation types.LaunchParticipation) {
 	store := ctx.KVStore(k.storeKey)
-	key := append([]byte(participation.LaunchID), []byte(participation.Participant)...)
+	key := types.GetLaunchParticipationKey(participation.LaunchID, participation.Participant)
 	bz := k.cdc.MustMarshal(&participation)
 	store.Set(key, bz)
+}
+
+func (k Keeper) getLaunchParticipation(ctx sdk.Context, participant, launchID string) (types.LaunchParticipation, bool) {
+	store := ctx.KVStore(k.storeKey)
+	key := types.GetLaunchParticipationKey(launchID, participant)
+	bz := store.Get(key)
+	if bz == nil {
+		return types.LaunchParticipation{}, false
+	}
+	
+	var participation types.LaunchParticipation
+	k.cdc.MustUnmarshal(bz, &participation)
+	return participation, true
 }
 
 func (k Keeper) setLiquidityLock(ctx sdk.Context, lock types.LiquidityLock) {
@@ -498,6 +560,18 @@ func (k Keeper) setCreatorReward(ctx sdk.Context, reward types.CreatorReward) {
 	store := ctx.KVStore(k.storeKey)
 	bz := k.cdc.MustMarshal(&reward)
 	store.Set(types.GetCreatorRewardsKey(reward.Creator, reward.TokenAddress), bz)
+}
+
+func (k Keeper) getCreatorReward(ctx sdk.Context, creator, tokenAddress string) (types.CreatorReward, bool) {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.GetCreatorRewardsKey(creator, tokenAddress))
+	if bz == nil {
+		return types.CreatorReward{}, false
+	}
+	
+	var reward types.CreatorReward
+	k.cdc.MustUnmarshal(bz, &reward)
+	return reward, true
 }
 
 func (k Keeper) setWalletLimits(ctx sdk.Context, limits types.WalletLimits) {

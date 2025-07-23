@@ -58,11 +58,28 @@ func (k Keeper) MakeContribution(ctx sdk.Context, participantID string, amount s
 		return types.ErrInvalidContribution
 	}
 
+	// Calculate admin fee (0.1% of contribution)
+	adminFeeRate := sdk.MustNewDecFromStr(types.DefaultSchemeAdminFee)
+	adminFee := amount.Amount.ToDec().Mul(adminFeeRate).TruncateInt()
+	adminFeeCoin := sdk.NewCoin(amount.Denom, adminFee)
+	
+	// Net contribution after admin fee
+	netContribution := sdk.NewCoin(amount.Denom, amount.Amount.Sub(adminFee))
+	
 	// Transfer funds from contributor to module account
 	if err := k.bankKeeper.SendCoinsFromAccountToModule(
 		ctx, participant.Address, types.ModuleName, sdk.NewCoins(amount),
 	); err != nil {
 		return err
+	}
+	
+	// Collect admin fee using revenue keeper
+	if adminFee.IsPositive() && k.revenueKeeper != nil {
+		feeCoins := sdk.NewCoins(adminFeeCoin)
+		if err := k.revenueKeeper.CollectServiceFee(ctx, types.ModuleName, participant.Address, feeCoins, "pension_contribution"); err != nil {
+			k.Logger(ctx).Error("Failed to collect admin fee", "error", err, "participant", participantID, "fee", adminFee)
+			// Continue even if fee collection fails
+		}
 	}
 
 	// Create contribution record
@@ -102,8 +119,8 @@ func (k Keeper) MakeContribution(ctx sdk.Context, participantID string, amount s
 		contribution.CulturalQuote = quote
 	}
 
-	// Update participant totals
-	participant.TotalContributed = participant.TotalContributed.Add(amount)
+	// Update participant totals (use net contribution after admin fee)
+	participant.TotalContributed = participant.TotalContributed.Add(netContribution)
 	participant.LastContribution = ctx.BlockTime()
 
 	// Handle liquidity provision if enabled

@@ -1,0 +1,91 @@
+syntax = "proto3";
+package deshchain.dusd.v1;
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/deshchain/deshchain/x/dusd/types";
+
+// DUSD represents the USD stablecoin with algorithmic stability
+message DUSD {
+  string id = 1;
+  string owner = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  cosmos.base.v1beta1.Coin amount = 3 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin collateral = 4 [(gogoproto.nullable) = false];
+  string health_factor = 5 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  google.protobuf.Timestamp created_at = 6 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  google.protobuf.Timestamp updated_at = 7 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  bool is_active = 8;
+}
+
+// DUSDParams defines the module parameters
+message DUSDParams {
+  // Stability parameters (same logic as DINR)
+  string target_price = 1 [(cosmos_proto.scalar) = "cosmos.Dec"]; // $1.00 USD
+  string price_tolerance = 2 [(cosmos_proto.scalar) = "cosmos.Dec"]; // 0.01 (1%)
+  string min_collateral_ratio = 3 [(cosmos_proto.scalar) = "cosmos.Dec"]; // 1.50 (150%)
+  string liquidation_ratio = 4 [(cosmos_proto.scalar) = "cosmos.Dec"]; // 1.20 (120%)
+  
+  // Fee structure (USD equivalent)
+  string base_fee_usd = 5 [(cosmos_proto.scalar) = "cosmos.Dec"]; // $0.10
+  string max_fee_usd = 6 [(cosmos_proto.scalar) = "cosmos.Dec"]; // $1.00
+  string fee_percentage = 7 [(cosmos_proto.scalar) = "cosmos.Dec"]; // 0.0025 (0.25%)
+  
+  // Oracle parameters
+  repeated string oracle_sources = 8; // ["chainlink", "federal_reserve", "band", "pyth"]
+  string price_deviation_threshold = 9 [(cosmos_proto.scalar) = "cosmos.Dec"]; // 0.005 (0.5%)
+  int64 oracle_timeout_seconds = 10; // 300 (5 minutes)
+  
+  // Stability mechanism parameters
+  string rebalance_threshold = 11 [(cosmos_proto.scalar) = "cosmos.Dec"]; // 0.005 (0.5%)
+  string emergency_threshold = 12 [(cosmos_proto.scalar) = "cosmos.Dec"]; // 0.02 (2%)
+  bool circuit_breaker_enabled = 13;
+  
+  // Reserve management
+  string reserve_ratio = 14 [(cosmos_proto.scalar) = "cosmos.Dec"]; // 0.20 (20%)
+  repeated string accepted_collateral = 15; // ["NAMO", "USDC", "USDT"]
+}
+
+// DUSDPosition represents a user's DUSD minting position
+message DUSDPosition {
+  string id = 1;
+  string owner = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  cosmos.base.v1beta1.Coin minted_amount = 3 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin collateral_amount = 4 [(gogoproto.nullable) = false];
+  string collateral_type = 5;
+  string health_factor = 6 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  google.protobuf.Timestamp last_update = 7 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  bool is_liquidatable = 8;
+}
+
+// PriceData represents USD price information from oracles
+message PriceData {
+  string source = 1; // "chainlink", "federal_reserve", etc.
+  string price = 2 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  google.protobuf.Timestamp timestamp = 3 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  int64 block_height = 4;
+  bool is_valid = 5;
+}
+
+// StabilityAction represents rebalancing actions
+message StabilityAction {
+  string id = 1;
+  string action_type = 2; // "expand_supply", "contract_supply", "emergency_halt"
+  string trigger_price = 3 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  string target_price = 4 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  cosmos.base.v1beta1.Coin amount_adjusted = 5 [(gogoproto.nullable) = false];
+  google.protobuf.Timestamp executed_at = 6 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  string result = 7;
+}
+
+// ReserveStats represents USD reserve statistics
+message ReserveStats {
+  cosmos.base.v1beta1.Coin total_reserves = 1 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin total_supply = 2 [(gogoproto.nullable) = false];
+  string reserve_ratio = 3 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  string health_score = 4 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  repeated cosmos.base.v1beta1.Coin collateral_breakdown = 5 [(gogoproto.nullable) = false];
+  google.protobuf.Timestamp last_updated = 6 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+}

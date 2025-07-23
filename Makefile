@@ -1,27 +1,19 @@
 #!/usr/bin/make -f
-# Copyright 2024 DeshChain Foundation
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
 
-PACKAGES_SIMTEST=$(shell go list ./... | grep '/simulation')
+PACKAGES_SIMTEST=$(shell go list ./... | grep -v '/simulation')
 VERSION := $(shell echo $(shell git describe --tags) | sed 's/^v//')
 COMMIT := $(shell git log -1 --format='%H')
 LEDGER_ENABLED ?= true
 SDK_PACK := $(shell go list -m github.com/cosmos/cosmos-sdk | sed  's/ /\@/g')
-BUILDDIR ?= $(CURDIR)/build
-DOCKER := $(shell which docker)
 BINDIR ?= $(GOPATH)/bin
 SIMAPP = ./app
+
+# for dockerized protobuf tools
+DOCKER := $(shell which docker)
+PROTO_CONTAINER := cosmwasm/proto-builder:0.11.2
+HTTPS_GIT := https://github.com/aeye-employed/Desh-Chain-The-Blockchain-of-India.git
+
+export GO111MODULE = on
 
 # process build tags
 build_tags = netgo
@@ -48,14 +40,6 @@ ifeq ($(LEDGER_ENABLED),true)
   endif
 endif
 
-ifeq (cleveldb,$(findstring cleveldb,$(DESHCHAIN_BUILD_OPTIONS)))
-  build_tags += gcc cleveldb
-endif
-
-ifeq (rocksdb,$(findstring rocksdb,$(DESHCHAIN_BUILD_OPTIONS)))
-  build_tags += gcc rocksdb
-endif
-
 build_tags += $(BUILD_TAGS)
 build_tags := $(strip $(build_tags))
 
@@ -71,123 +55,278 @@ ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=deshchain \
 		  -X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \
 		  -X "github.com/cosmos/cosmos-sdk/version.BuildTags=$(build_tags_comma_sep)"
 
-ifeq (cleveldb,$(findstring cleveldb,$(DESHCHAIN_BUILD_OPTIONS)))
-  ldflags += -X github.com/cosmos/cosmos-sdk/types.DBBackend=cleveldb
-endif
-ifeq (rocksdb,$(findstring rocksdb,$(DESHCHAIN_BUILD_OPTIONS)))
-  ldflags += -X github.com/cosmos/cosmos-sdk/types.DBBackend=rocksdb
-endif
-ifeq (,$(findstring nostrip,$(DESHCHAIN_BUILD_OPTIONS)))
-  ldflags += -w -s
+ifeq ($(LINK_STATICALLY),true)
+	ldflags += -linkmode=external -extldflags "-Wl,-z,muldefs -static"
 endif
 ldflags += $(LDFLAGS)
 ldflags := $(strip $(ldflags))
 
 BUILD_FLAGS := -tags "$(build_tags)" -ldflags '$(ldflags)'
 
-# check for nostrip option
-ifeq (,$(findstring nostrip,$(DESHCHAIN_BUILD_OPTIONS)))
-  BUILD_FLAGS += -trimpath
-endif
+all: install
+
+install: go.sum
+	go install -mod=readonly $(BUILD_FLAGS) ./cmd/deshchaind
+
+build:
+	go build $(BUILD_FLAGS) -o bin/deshchaind ./cmd/deshchaind
 
 ###############################################################################
-###                                  Build                                  ###
+###                                Protobuf                                 ###
 ###############################################################################
 
-all: install lint test
+proto-all: proto-format proto-gen
 
-BUILD_TARGETS := build install
+proto-gen:
+	@echo "Generating Protobuf files"
+	@$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace $(PROTO_CONTAINER) \
+		sh ./scripts/protocgen.sh
 
-build: BUILD_ARGS=-o $(BUILDDIR)/
+proto-format:
+	@$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace $(PROTO_CONTAINER) \
+		find ./ -name "*.proto" -exec clang-format -i {} \;
 
-$(BUILD_TARGETS): go.sum $(BUILDDIR)/
-	go $@ -mod=readonly $(BUILD_FLAGS) $(BUILD_ARGS) ./cmd/deshchaind
+proto-swagger-gen:
+	@./scripts/protoc-swagger-gen.sh
 
-$(BUILDDIR)/:
-	mkdir -p $(BUILDDIR)/
+proto-lint:
+	@$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace $(PROTO_CONTAINER) \
+		buf lint --error-format=json
 
-.PHONY: build install
+proto-check-breaking:
+	@$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace $(PROTO_CONTAINER) \
+		buf breaking --against $(HTTPS_GIT)#branch=main
 
 ###############################################################################
-###                                Testing                                   ###
+###                                 Devdoc                                  ###
 ###############################################################################
 
-test: test-unit
-test-all: test-unit test-integration test-e2e
+DEVDOC_SAVE = docker commit `docker ps -a -n 1 -q` devdoc:local
+
+devdoc-init:
+	docker run -it -v "$(CURDIR):/go/src/github.com/deshchain/deshchain" -w "/go/src/github.com/deshchain/deshchain" tendermint/devdoc echo
+	# TODO make this safer
+	$(call DEVDOC_SAVE)
+
+devdoc:
+	docker run -it -v "$(CURDIR):/go/src/github.com/deshchain/deshchain" -w "/go/src/github.com/deshchain/deshchain" devdoc:local bash
+
+devdoc-save:
+	# TODO make this safer
+	$(call DEVDOC_SAVE)
+
+devdoc-clean:
+	docker rmi -f $$(docker images -f "dangling=true" -q)
+
+devdoc-update:
+	docker pull tendermint/devdoc
+
+###############################################################################
+###                                Localnet                                 ###
+###############################################################################
+
+# Run a single node
+localnet: build
+	./scripts/localnet.sh
+
+###############################################################################
+###                               Deployment                                ###
+###############################################################################
+
+init-testnet:
+	./scripts/init-testnet.sh
+
+init-mainnet:
+	./scripts/init-mainnet.sh
+
+start:
+	./bin/deshchaind start
+
+start-testnet:
+	./bin/deshchaind start --home ~/.deshchain-testnet
+
+start-mainnet:
+	./bin/deshchaind start --home ~/.deshchain
+
+deploy-testnet:
+	@echo "Deploying to testnet..."
+	./scripts/deploy-testnet.sh
+
+deploy-mainnet:
+	@echo "Deploying to mainnet..."
+	@echo "WARNING: This will deploy to mainnet. Are you sure? [y/N]"
+	@read -r response; \
+	if [ "$$response" = "y" ]; then \
+		./scripts/deploy-mainnet.sh; \
+	else \
+		echo "Deployment cancelled."; \
+	fi
+
+###############################################################################
+###                                  Test                                   ###
+###############################################################################
+
+test: test-unit test-build
 
 test-unit:
-	@VERSION=$(VERSION) go test -mod=readonly -tags='ledger test_ledger_mock' ./...
+	@VERSION=$(VERSION) go test -mod=readonly -tags='ledger test_ledger_mock' -ldflags '$(ldflags)' ./...
+
+test-race:
+	@VERSION=$(VERSION) go test -mod=readonly -race -tags='ledger test_ledger_mock' ./...
+
+test-cover:
+	@go test -mod=readonly -timeout 30m -race -coverprofile=coverage.txt -covermode=atomic -tags='ledger test_ledger_mock' ./...
+
+test-build: build
+	@go test -mod=readonly -p 4 -tags='ledger test_ledger_mock' ./...
 
 test-integration:
-	@echo "Running integration tests..."
-	@VERSION=$(VERSION) go test -mod=readonly -tags='ledger test_ledger_mock' -timeout 30m ./tests/integration/...
+	@go test -mod=readonly -tags='ledger test_ledger_mock integration' ./integration_test.go
 
 test-e2e:
-	@echo "Running e2e tests..."
-	@VERSION=$(VERSION) go test -mod=readonly -tags='ledger test_ledger_mock' -timeout 30m ./tests/e2e/...
+	@go test -mod=readonly -tags='ledger test_ledger_mock e2e' ./e2e/...
 
 test-load:
-	@echo "Running load tests..."
-	@VERSION=$(VERSION) go test -mod=readonly -tags='ledger test_ledger_mock' -timeout 30m ./tests/load/...
+	@echo "Running basic load test..."
+	@go run scripts/load-testing/load-test.go -workers=10 -tx-per-worker=100
 
-.PHONY: test test-all test-unit test-integration test-e2e test-load
+test-stress:
+	@echo "Running stress test suite..."
+	@./scripts/load-testing/stress-test.sh
+
+test-benchmark:
+	@echo "Running comprehensive benchmark suite..."
+	@./scripts/load-testing/benchmark-suite.sh
+
+test-performance:
+	@echo "Starting performance monitoring (60s)..."
+	@python3 scripts/load-testing/performance-monitor.py --duration=60 --interval=10
+
+# Quick performance validation
+test-perf-quick:
+	@echo "Running quick performance validation..."
+	@go run scripts/load-testing/load-test.go -workers=5 -tx-per-worker=50 -output=quick-perf.json
+	@echo "Quick performance test completed. Results in quick-perf.json"
+
+# CI/CD performance gate
+test-perf-gate:
+	@echo "Running performance gate for CI/CD..."
+	@go run scripts/load-testing/load-test.go -workers=20 -tx-per-worker=100 -output=ci-perf.json
+	@SUCCESS_RATE=$$(jq -r '.results.success_rate' ci-perf.json); \
+	if [ "$$(echo "$$SUCCESS_RATE < 95" | bc -l)" -eq 1 ]; then \
+		echo "Performance gate failed: Success rate $$SUCCESS_RATE% < 95%"; \
+		exit 1; \
+	else \
+		echo "Performance gate passed: Success rate $$SUCCESS_RATE%"; \
+	fi
+
+test-sim-import-export: runsim
+	@echo "Running application import/export simulation. This may take several minutes..."
+	@$(BINDIR)/runsim -Jobs=4 -SimAppPkg=$(SIMAPP) -ExitOnFail 50 5 TestAppImportExport
+
+test-sim-multi-seed-short: runsim
+	@echo "Running short multi-seed application simulation. This may take awhile!"
+	@$(BINDIR)/runsim -Jobs=4 -SimAppPkg=$(SIMAPP) -ExitOnFail 50 5 TestFullAppSimulation
+
+benchmark:
+	@go test -mod=readonly -bench=. ./...
 
 ###############################################################################
 ###                                Linting                                  ###
 ###############################################################################
 
-format:
-	@echo "Formatting Go files..."
-	@go fmt ./...
-
 lint:
-	@echo "Running linter..."
-	@golangci-lint run --timeout=10m
+	golangci-lint run --out-format=tab
 
 lint-fix:
-	@echo "Running linter with fix..."
-	@golangci-lint run --fix --timeout=10m
+	golangci-lint run --fix --out-format=tab --issues-exit-code=0
 
-.PHONY: format lint lint-fix
+# Security audit
+audit:
+	@echo "Running security audit..."
+	@./scripts/security/audit.sh
 
-###############################################################################
-###                                Docker                                   ###
-###############################################################################
+# Network security scan
+network-scan:
+	@echo "Running network security scan..."
+	@./scripts/security/network-scan.sh localhost
 
-build-docker:
-	@echo "Building Docker image..."
-	@$(DOCKER) build -t deshchain:local .
+# Comprehensive security check
+security-check: audit network-scan
+	@echo "Security checks completed"
 
-build-docker-testnet:
-	@echo "Building Docker image for testnet..."
-	@$(DOCKER) build -f Dockerfile.testnet -t deshchain:testnet .
-
-.PHONY: build-docker build-docker-testnet
-
-###############################################################################
-###                               Development                               ###
-###############################################################################
-
-init-testnet:
-	@echo "Initializing testnet..."
-	@./scripts/init-testnet.sh
-
+# Clean build artifacts
 clean:
-	@echo "Cleaning build artifacts..."
-	@rm -rf $(BUILDDIR)
+	rm -rf bin/ build/ artifacts/
 
-.PHONY: init-testnet clean
+# Format code
+format:
+	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -name "*.pb.go" -not -name "*.pb.gw.go" | xargs gofmt -w -s
+	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -name "*.pb.go" -not -name "*.pb.gw.go" | xargs goimports -w -local github.com/deshchain/namo
 
 ###############################################################################
-###                                 Cosmos                                  ###
+###                            Optimization                                ###
 ###############################################################################
 
-go.sum: go.mod
-	@echo "Ensuring dependencies have not been modified..."
-	@go mod verify
+# Complete optimization suite
+optimize:
+	@echo "Running complete optimization analysis..."
+	@./scripts/optimization/run-all-optimizations.sh
 
-mod-tidy:
-	@echo "Tidying go.mod..."
-	@go mod tidy
+# Individual optimization tools
+optimize-memory:
+	@echo "Running memory optimization analysis..."
+	@./scripts/optimization/memory-optimizer.sh
 
-.PHONY: go.sum mod-tidy
+optimize-cpu:
+	@echo "Running CPU performance profiling..."
+	@./scripts/optimization/cpu-profiler.sh
+
+optimize-blockchain:
+	@echo "Running blockchain optimization analysis..."
+	@python3 scripts/optimization/blockchain-optimizer.py --duration=300
+
+optimize-application:
+	@echo "Running application profiling..."
+	@go run scripts/optimization/performance-profiler.go -duration=5m
+
+# Quick optimization check
+optimize-quick:
+	@echo "Running quick optimization check..."
+	@ANALYSIS_DURATION=120 ./scripts/optimization/run-all-optimizations.sh
+
+.PHONY: all build install proto-gen proto-format proto-lint test test-unit test-race test-cover test-build test-integration test-e2e test-load test-stress test-benchmark test-performance test-perf-quick test-perf-gate benchmark lint lint-fix audit network-scan security-check clean format optimize optimize-memory optimize-cpu optimize-blockchain optimize-application optimize-quick
+
+###############################################################################
+###                                 Devdoc                                  ###
+###############################################################################
+
+contract-tests:
+	@go test -mod=readonly -v ./x/wasm/...
+
+###############################################################################
+###                                Releasing                                ###
+###############################################################################
+
+GORELEASER_DEBUG := false
+
+ifdef GITHUB_TOKEN
+release:
+	docker run \
+		--rm \
+		--env GITHUB_TOKEN=$(GITHUB_TOKEN) \
+		--env GORELEASER_CURRENT_TAG=$(VERSION) \
+		--env GORELEASER_DEBUG=$(GORELEASER_DEBUG) \
+		--env COSMOVISOR_ENABLED=$(COSMOVISOR_ENABLED) \
+		-v /var/run/docker.sock:/var/run/docker.sock \
+		-v $(CURDIR):/workspace \
+		-w /workspace \
+		goreleaser/goreleaser-cross:latest \
+		release \
+		--clean
+else
+release:
+	@echo "Error: GITHUB_TOKEN not defined. Please define it before running 'make release'."
+endif
+
+.PHONY: release

@@ -131,24 +131,32 @@ func (k Keeper) ProcessYieldStrategies(ctx sdk.Context) {
 
 // ProcessLiquidations checks and processes liquidatable positions
 func (k Keeper) ProcessLiquidations(ctx sdk.Context) {
-	params := k.GetParams(ctx)
+	collateralManager := k.GetCollateralManager()
 
 	k.IterateAllUserPositions(ctx, func(position types.UserPosition) bool {
-		// Calculate current collateral ratio
-		collateralValue := k.calculateTotalCollateralValue(ctx, position.Collateral)
-		collateralRatio := k.calculateCollateralRatio(collateralValue, position.DinrMinted.Amount)
+		// Check if position is liquidatable using CollateralManager
+		isLiquidatable, _, err := collateralManager.CheckLiquidationEligibility(ctx, position.Address)
+		if err != nil {
+			return false // Continue to next position
+		}
 
-		// Check if position is liquidatable
-		if collateralRatio < uint64(params.LiquidationThreshold) {
-			// Mark position for liquidation
-			// In a real implementation, this would trigger a liquidation auction
-			// For now, we just emit an event
+		if isLiquidatable {
+			// Calculate current collateral ratio for event
+			collateralValue, err := collateralManager.CalculateCollateralValue(ctx, position.Collateral)
+			if err != nil {
+				return false
+			}
+			
+			healthFactor := collateralManager.CalculateHealthFactor(ctx, collateralValue, position.DinrMinted.Amount)
+			
+			// Emit liquidatable position event
 			ctx.EventManager().EmitEvent(
 				sdk.NewEvent(
 					"position_liquidatable",
 					sdk.NewAttribute(types.AttributeKeyUser, position.Address),
-					sdk.NewAttribute("collateral_ratio", fmt.Sprintf("%d", collateralRatio)),
-					sdk.NewAttribute("liquidation_threshold", fmt.Sprintf("%d", params.LiquidationThreshold)),
+					sdk.NewAttribute("health_factor", healthFactor.String()),
+					sdk.NewAttribute("collateral_value", collateralValue.String()),
+					sdk.NewAttribute("debt_amount", position.DinrMinted.String()),
 				),
 			)
 		}
@@ -190,4 +198,219 @@ func (k Keeper) IncrementTotalFeesCollected(ctx sdk.Context, amount sdk.Int) {
 	// Increment and save
 	total = total.Add(amount)
 	store.Set(key, []byte(total.String()))
+}
+
+// StabilityController manages DINR price stability mechanisms
+type StabilityController struct {
+	keeper      Keeper
+	targetPrice sdk.Dec
+	tolerance   sdk.Dec // Allowed deviation percentage (e.g., 0.01 = 1%)
+}
+
+// NewStabilityController creates a new stability controller
+func NewStabilityController(keeper Keeper) *StabilityController {
+	return &StabilityController{
+		keeper:      keeper,
+		targetPrice: sdk.OneDec(), // $1.00 target
+		tolerance:   sdk.NewDecWithPrec(1, 2), // 1% tolerance
+	}
+}
+
+// MaintainPeg checks current price and executes stability actions if needed
+func (sc *StabilityController) MaintainPeg(ctx sdk.Context) error {
+	// Get current DINR price from oracle
+	currentPrice, err := sc.keeper.GetCurrentPrice(ctx, "DINR")
+	if err != nil {
+		return fmt.Errorf("failed to get DINR price: %w", err)
+	}
+
+	// Calculate deviation from target
+	deviation := sc.calculateDeviation(currentPrice)
+	
+	// Check if intervention is needed
+	if deviation.Abs().GT(sc.tolerance) {
+		return sc.executeStabilityAction(ctx, currentPrice, deviation)
+	}
+
+	return nil
+}
+
+// calculateDeviation returns the percentage deviation from target price
+func (sc *StabilityController) calculateDeviation(currentPrice sdk.Dec) sdk.Dec {
+	if sc.targetPrice.IsZero() {
+		return sdk.ZeroDec()
+	}
+	
+	// (currentPrice - targetPrice) / targetPrice
+	return currentPrice.Sub(sc.targetPrice).Quo(sc.targetPrice)
+}
+
+// executeStabilityAction performs minting/burning to stabilize price
+func (sc *StabilityController) executeStabilityAction(ctx sdk.Context, currentPrice, deviation sdk.Dec) error {
+	params := sc.keeper.GetParams(ctx)
+	
+	// Calculate intervention amount based on deviation magnitude
+	interventionAmount := sc.calculateInterventionAmount(ctx, deviation)
+	
+	if deviation.IsPositive() {
+		// Price above target - increase supply (mint DINR)
+		return sc.executeMinting(ctx, interventionAmount, params)
+	} else {
+		// Price below target - decrease supply (burn DINR)
+		return sc.executeBurning(ctx, interventionAmount, params)
+	}
+}
+
+// calculateInterventionAmount determines how much to mint/burn
+func (sc *StabilityController) calculateInterventionAmount(ctx sdk.Context, deviation sdk.Dec) sdk.Int {
+	// Get current DINR supply
+	supply := sc.keeper.bankKeeper.GetSupply(ctx, "dinr")
+	
+	// Base intervention: 1% of supply per 1% deviation (with max cap)
+	interventionRate := deviation.Abs()
+	maxIntervention := sdk.NewDecWithPrec(5, 2) // 5% max intervention
+	
+	if interventionRate.GT(maxIntervention) {
+		interventionRate = maxIntervention
+	}
+	
+	interventionAmount := supply.Amount.ToDec().Mul(interventionRate).TruncateInt()
+	
+	// Minimum intervention threshold
+	minIntervention := sdk.NewInt(1000000) // 1 DINR minimum
+	if interventionAmount.LT(minIntervention) {
+		interventionAmount = minIntervention
+	}
+	
+	return interventionAmount
+}
+
+// executeMinting mints new DINR to increase supply
+func (sc *StabilityController) executeMinting(ctx sdk.Context, amount sdk.Int, params types.Params) error {
+	// Check if minting is enabled and within limits
+	if !params.MintingEnabled {
+		return types.ErrMintingDisabled
+	}
+	
+	// Check daily minting limit
+	dailyMinted := sc.keeper.GetDailyMintedAmount(ctx)
+	if dailyMinted.Add(amount).GT(sdk.NewInt(int64(params.MaxDailyMinting))) {
+		// Reduce to maximum allowed
+		amount = sdk.NewInt(int64(params.MaxDailyMinting)).Sub(dailyMinted)
+		if amount.IsZero() || amount.IsNegative() {
+			return types.ErrDailyMintingLimitExceeded
+		}
+	}
+	
+	// Mint DINR to stability pool
+	coins := sdk.NewCoins(sdk.NewCoin("dinr", amount))
+	stabilityPoolAddr := sc.keeper.accountKeeper.GetModuleAddress(types.StabilityPoolName)
+	
+	err := sc.keeper.bankKeeper.MintCoins(ctx, types.ModuleName, coins)
+	if err != nil {
+		return fmt.Errorf("failed to mint DINR: %w", err)
+	}
+	
+	err = sc.keeper.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, stabilityPoolAddr, coins)
+	if err != nil {
+		return fmt.Errorf("failed to send minted DINR to stability pool: %w", err)
+	}
+	
+	// Update daily minting tracking
+	sc.keeper.SetDailyMintedAmount(ctx, dailyMinted.Add(amount))
+	
+	// Emit event
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeStabilityMint,
+			sdk.NewAttribute(types.AttributeKeyAmount, amount.String()),
+			sdk.NewAttribute(types.AttributeKeyReason, "price_above_target"),
+		),
+	)
+	
+	return nil
+}
+
+// executeBurning burns DINR to decrease supply
+func (sc *StabilityController) executeBurning(ctx sdk.Context, amount sdk.Int, params types.Params) error {
+	// Check if burning is enabled
+	if !params.BurningEnabled {
+		return types.ErrBurningDisabled
+	}
+	
+	// Check stability pool balance
+	stabilityPoolAddr := sc.keeper.accountKeeper.GetModuleAddress(types.StabilityPoolName)
+	balance := sc.keeper.bankKeeper.GetBalance(ctx, stabilityPoolAddr, "dinr")
+	
+	if balance.Amount.LT(amount) {
+		// Burn only what's available
+		amount = balance.Amount
+		if amount.IsZero() {
+			return types.ErrInsufficientStabilityPoolBalance
+		}
+	}
+	
+	// Check daily burning limit
+	dailyBurned := sc.keeper.GetDailyBurnedAmount(ctx)
+	if dailyBurned.Add(amount).GT(sdk.NewInt(int64(params.MaxDailyBurning))) {
+		// Reduce to maximum allowed
+		amount = sdk.NewInt(int64(params.MaxDailyBurning)).Sub(dailyBurned)
+		if amount.IsZero() || amount.IsNegative() {
+			return types.ErrDailyBurningLimitExceeded
+		}
+	}
+	
+	// Burn DINR from stability pool
+	coins := sdk.NewCoins(sdk.NewCoin("dinr", amount))
+	
+	err := sc.keeper.bankKeeper.SendCoinsFromAccountToModule(ctx, stabilityPoolAddr, types.ModuleName, coins)
+	if err != nil {
+		return fmt.Errorf("failed to send DINR from stability pool: %w", err)
+	}
+	
+	err = sc.keeper.bankKeeper.BurnCoins(ctx, types.ModuleName, coins)
+	if err != nil {
+		return fmt.Errorf("failed to burn DINR: %w", err)
+	}
+	
+	// Update daily burning tracking
+	sc.keeper.SetDailyBurnedAmount(ctx, dailyBurned.Add(amount))
+	
+	// Emit event
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeStabilityBurn,
+			sdk.NewAttribute(types.AttributeKeyAmount, amount.String()),
+			sdk.NewAttribute(types.AttributeKeyReason, "price_below_target"),
+		),
+	)
+	
+	return nil
+}
+
+// CheckStabilityHealth returns health metrics for the stability system
+func (sc *StabilityController) CheckStabilityHealth(ctx sdk.Context) (*types.StabilityHealth, error) {
+	currentPrice, err := sc.keeper.GetCurrentPrice(ctx, "DINR")
+	if err != nil {
+		return nil, err
+	}
+	
+	deviation := sc.calculateDeviation(currentPrice)
+	stabilityPoolAddr := sc.keeper.accountKeeper.GetModuleAddress(types.StabilityPoolName)
+	poolBalance := sc.keeper.bankKeeper.GetBalance(ctx, stabilityPoolAddr, "dinr")
+	totalSupply := sc.keeper.bankKeeper.GetSupply(ctx, "dinr")
+	
+	health := &types.StabilityHealth{
+		CurrentPrice:    currentPrice.String(),
+		TargetPrice:     sc.targetPrice.String(),
+		Deviation:       deviation.String(),
+		PoolBalance:     poolBalance.Amount.String(),
+		TotalSupply:     totalSupply.Amount.String(),
+		WithinTolerance: deviation.Abs().LTE(sc.tolerance),
+		DailyMinted:     sc.keeper.GetDailyMintedAmount(ctx).String(),
+		DailyBurned:     sc.keeper.GetDailyBurnedAmount(ctx).String(),
+		LastUpdate:      ctx.BlockTime(),
+	}
+	
+	return health, nil
 }

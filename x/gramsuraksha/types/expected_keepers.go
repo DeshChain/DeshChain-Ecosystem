@@ -97,6 +97,12 @@ type DonationKeeper interface {
 	GetNGODetails(ctx sdk.Context, ngoId string) (NGODetails, error)
 }
 
+// RevenueKeeper defines the expected revenue keeper interface
+type RevenueKeeper interface {
+	CollectServiceFee(ctx sdk.Context, moduleName string, user sdk.AccAddress, fee sdk.Coins, service string) error
+	RecordRevenue(ctx sdk.Context, source, category string, amount sdk.Coins, description string) error
+}
+
 // NGODetails represents basic NGO information
 type NGODetails struct {
 	ID          string

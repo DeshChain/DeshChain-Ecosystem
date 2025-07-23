@@ -593,9 +593,7 @@ func (k msgServer) processRefunds(ctx sdk.Context, launch *types.TokenLaunch) er
 }
 
 func (k msgServer) getLaunchParticipation(ctx sdk.Context, participant, launchID string) (types.LaunchParticipation, bool) {
-	// Implementation would retrieve participation record
-	// Simplified for now
-	return types.LaunchParticipation{}, false
+	return k.Keeper.getLaunchParticipation(ctx, participant, launchID)
 }
 
 func (k msgServer) getCommunityVeto(ctx sdk.Context, launchID string) *types.CommunityVeto {
@@ -610,9 +608,7 @@ func (k msgServer) setCommunityVeto(ctx sdk.Context, veto types.CommunityVeto) {
 }
 
 func (k msgServer) getCreatorReward(ctx sdk.Context, creator, tokenAddress string) (types.CreatorReward, bool) {
-	// Implementation would retrieve creator reward
-	// Simplified for now
-	return types.CreatorReward{}, false
+	return k.Keeper.getCreatorReward(ctx, creator, tokenAddress)
 }
 
 func (k msgServer) setEmergencyControl(ctx sdk.Context, control types.EmergencyControl) {

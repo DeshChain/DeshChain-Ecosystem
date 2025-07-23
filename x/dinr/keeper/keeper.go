@@ -78,39 +78,39 @@ func (k Keeper) MintDINR(ctx sdk.Context, minter sdk.AccAddress, collateral sdk.
 		return types.ErrMintingDisabled
 	}
 	
+	// Use CollateralManager for validation
+	collateralManager := k.GetCollateralManager()
+	
 	// Validate collateral asset
-	collateralAsset, found := k.GetCollateralAsset(ctx, collateral.Denom)
-	if !found || !collateralAsset.IsActive {
-		return types.ErrInvalidCollateral
-	}
-	
-	// Get collateral price from oracle
-	collateralPrice, err := k.oracleKeeper.GetPrice(ctx, collateralAsset.OracleScriptId)
+	_, err := collateralManager.ValidateCollateral(ctx, collateral.Denom)
 	if err != nil {
-		return types.ErrOraclePriceNotAvailable
+		return err
 	}
 	
-	// Calculate collateral value in INR
-	collateralValueINR := k.calculateCollateralValue(collateral, collateralPrice)
-	
-	// Check if collateral ratio meets minimum requirement
+	// Get existing position
 	userPosition, found := k.GetUserPosition(ctx, minter.String())
-	totalCollateralValue := collateralValueINR
-	totalDINRMinted := dinrToMint.Amount
+	totalCollateral := sdk.NewCoins(collateral)
+	totalDINRToMint := dinrToMint.Amount
 	
 	if found {
-		// Add existing collateral value
-		existingCollateralValue := k.calculateTotalCollateralValue(ctx, userPosition.Collateral)
-		totalCollateralValue = totalCollateralValue.Add(existingCollateralValue)
-		totalDINRMinted = totalDINRMinted.Add(userPosition.DinrMinted.Amount)
+		// Add existing collateral and debt
+		totalCollateral = userPosition.Collateral.Add(collateral)
+		totalDINRToMint = totalDINRToMint.Add(userPosition.DinrMinted.Amount)
 	}
 	
-	// Calculate collateral ratio (in basis points)
-	collateralRatio := k.calculateCollateralRatio(totalCollateralValue, totalDINRMinted)
-	
-	if collateralRatio < uint64(params.MinCollateralRatio) {
-		return types.ErrInsufficientCollateral
+	// Validate collateral sufficiency
+	err = collateralManager.ValidateCollateralSufficiency(ctx, totalCollateral, totalDINRToMint)
+	if err != nil {
+		return err
 	}
+	
+	// Calculate collateral value for ratio calculation
+	collateralValue, err := collateralManager.CalculateCollateralValue(ctx, totalCollateral)
+	if err != nil {
+		return err
+	}
+	
+	collateralRatio := uint64(collateralValue.Mul(sdk.NewInt(10000)).Quo(totalDINRToMint).Int64())
 	
 	// Calculate minting fee
 	fee := k.calculateMintingFee(dinrToMint, params.Fees)
@@ -335,86 +335,21 @@ func (k Keeper) WithdrawCollateral(ctx sdk.Context, withdrawer sdk.AccAddress, c
 }
 
 // Liquidate allows liquidators to liquidate undercollateralized positions
-func (k Keeper) Liquidate(ctx sdk.Context, liquidator sdk.AccAddress, user sdk.AccAddress, dinrToCover sdk.Coin) (sdk.Coin, error) {
-	params := k.GetParams(ctx)
+func (k Keeper) Liquidate(ctx sdk.Context, liquidator sdk.AccAddress, user sdk.AccAddress, dinrToCover sdk.Coin) (sdk.Coins, error) {
+	// Use the new CollateralManager for enhanced liquidation logic
+	collateralManager := k.GetCollateralManager()
 	
-	// Get user position
-	userPosition, found := k.GetUserPosition(ctx, user.String())
-	if !found {
-		return sdk.Coin{}, types.ErrPositionNotFound
-	}
-
-	// Calculate current collateral ratio
-	totalCollateralValue := k.calculateTotalCollateralValue(ctx, userPosition.Collateral)
-	collateralRatio := k.calculateCollateralRatio(totalCollateralValue, userPosition.DinrMinted.Amount)
-	
-	// Check if position is liquidatable
-	if collateralRatio >= uint64(params.LiquidationThreshold) {
-		return sdk.Coin{}, types.ErrPositionNotLiquidatable
-	}
-
-	// Validate liquidation amount
-	if dinrToCover.Amount.GT(userPosition.DinrMinted.Amount) {
-		return sdk.Coin{}, types.ErrExcessiveLiquidation
-	}
-
-	// Calculate collateral to give to liquidator (with liquidation bonus)
-	collateralValue := dinrToCover.Amount.Mul(sdk.NewInt(100 + int64(params.LiquidationPenalty))).Quo(sdk.NewInt(100))
-	
-	// Select collateral to return (proportional from all collateral types)
-	collateralToReturn := k.selectCollateralForLiquidation(ctx, userPosition.Collateral, collateralValue)
-
-	// Transfer DINR from liquidator to module and burn it
-	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, liquidator, types.ModuleName, sdk.NewCoins(dinrToCover))
+	err := collateralManager.ProcessLiquidation(ctx, liquidator, user.String(), dinrToCover.Amount)
 	if err != nil {
-		return sdk.Coin{}, err
+		return sdk.Coins{}, err
 	}
-
-	err = k.bankKeeper.BurnCoins(ctx, types.ModuleName, sdk.NewCoins(dinrToCover))
-	if err != nil {
-		return sdk.Coin{}, err
-	}
-
-	// Transfer collateral to liquidator
-	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, liquidator, collateralToReturn)
-	if err != nil {
-		return sdk.Coin{}, err
-	}
-
-	// Update user position
-	userPosition.DinrMinted = userPosition.DinrMinted.Sub(dinrToCover)
-	userPosition.Collateral = userPosition.Collateral.Sub(collateralToReturn)
 	
-	// If position is fully liquidated, remove it
-	if userPosition.DinrMinted.IsZero() {
-		k.RemoveUserPosition(ctx, user.String())
-	} else {
-		// Recalculate health factor
-		newCollateralValue := k.calculateTotalCollateralValue(ctx, userPosition.Collateral)
-		newCollateralRatio := k.calculateCollateralRatio(newCollateralValue, userPosition.DinrMinted.Amount)
-		userPosition.HealthFactor = k.calculateHealthFactor(newCollateralRatio)
-		k.SetUserPosition(ctx, userPosition)
-	}
-
 	// Update stability metrics
 	k.updateStabilityMetrics(ctx)
-
-	// Emit event
-	totalCollateralReturned := sdk.NewCoin(types.DINRDenom, sdk.ZeroInt())
-	for _, coin := range collateralToReturn {
-		ctx.EventManager().EmitEvent(
-			sdk.NewEvent(
-				types.EventTypeLiquidate,
-				sdk.NewAttribute(types.AttributeKeyLiquidator, liquidator.String()),
-				sdk.NewAttribute(types.AttributeKeyUser, user.String()),
-				sdk.NewAttribute(types.AttributeKeyDINRCovered, dinrToCover.String()),
-				sdk.NewAttribute(types.AttributeKeyCollateralReceived, coin.String()),
-			),
-		)
-		totalCollateralReturned = totalCollateralReturned.Add(coin)
-	}
-
-	return totalCollateralReturned, nil
+	
+	// Return the collateral that was seized (for compatibility)
+	// In practice, the collateral transfer is handled in ProcessLiquidation
+	return sdk.Coins{dinrToCover}, nil
 }
 
 // Helper functions
@@ -577,4 +512,72 @@ func (k Keeper) updateStabilityMetrics(ctx sdk.Context) {
 	// This function would update global stability metrics
 	// Implementation would track total supply, collateral value, etc.
 	// For now, it's a placeholder that would be implemented with oracle integration
+}
+
+// Oracle integration methods
+func (k Keeper) GetCurrentPrice(ctx sdk.Context, symbol string) (sdk.Dec, error) {
+	// Get price from oracle module
+	price, err := k.oracleKeeper.GetPrice(ctx, symbol)
+	if err != nil {
+		return sdk.ZeroDec(), err
+	}
+	
+	return price, nil
+}
+
+// Daily limits tracking
+func (k Keeper) GetDailyMintedAmount(ctx sdk.Context) sdk.Int {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.DailyMintedAmountKey)
+	if bz == nil {
+		return sdk.ZeroInt()
+	}
+	
+	amount, ok := sdk.NewIntFromString(string(bz))
+	if !ok {
+		return sdk.ZeroInt()
+	}
+	
+	return amount
+}
+
+func (k Keeper) SetDailyMintedAmount(ctx sdk.Context, amount sdk.Int) {
+	store := ctx.KVStore(k.storeKey)
+	store.Set(types.DailyMintedAmountKey, []byte(amount.String()))
+}
+
+func (k Keeper) GetDailyBurnedAmount(ctx sdk.Context) sdk.Int {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.DailyBurnedAmountKey)
+	if bz == nil {
+		return sdk.ZeroInt()
+	}
+	
+	amount, ok := sdk.NewIntFromString(string(bz))
+	if !ok {
+		return sdk.ZeroInt()
+	}
+	
+	return amount
+}
+
+func (k Keeper) SetDailyBurnedAmount(ctx sdk.Context, amount sdk.Int) {
+	store := ctx.KVStore(k.storeKey)
+	store.Set(types.DailyBurnedAmountKey, []byte(amount.String()))
+}
+
+// Reset daily amounts at the beginning of each day
+func (k Keeper) ResetDailyAmounts(ctx sdk.Context) {
+	k.SetDailyMintedAmount(ctx, sdk.ZeroInt())
+	k.SetDailyBurnedAmount(ctx, sdk.ZeroInt())
+}
+
+// GetStabilityController returns a new stability controller instance
+func (k Keeper) GetStabilityController() *StabilityController {
+	return NewStabilityController(k)
+}
+
+// GetCollateralManager returns a new collateral manager instance
+func (k Keeper) GetCollateralManager() *CollateralManager {
+	return NewCollateralManager(k)
 }

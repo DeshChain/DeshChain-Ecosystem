@@ -100,6 +100,13 @@ type ICS20Keeper interface {
 	) error
 }
 
+// RevenueKeeper defines the expected revenue keeper interface
+type RevenueKeeper interface {
+	CollectTradingFee(ctx sdk.Context, moduleName string, trader sdk.AccAddress, fee sdk.Coins, pair string) error
+	CollectServiceFee(ctx sdk.Context, moduleName string, user sdk.AccAddress, fee sdk.Coins, service string) error
+	RecordRevenue(ctx sdk.Context, source, category string, amount sdk.Coins, description string) error
+}
+
 // MoneyOrderHooks defines the hooks for money order module
 type MoneyOrderHooks interface {
 	// Pool lifecycle hooks

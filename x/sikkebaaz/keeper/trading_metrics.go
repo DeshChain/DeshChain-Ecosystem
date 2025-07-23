@@ -76,6 +76,28 @@ func (k Keeper) UpdateTradingMetrics(ctx sdk.Context, tokenAddress string, trade
 
 // ProcessTrade processes a trade and updates all relevant metrics
 func (k Keeper) ProcessTrade(ctx sdk.Context, tokenAddress, trader string, volume sdk.Int, price sdk.Dec, isBuy bool) error {
+	// Calculate and collect platform trading fee (0.3%)
+	tradingFeeRate := sdk.MustNewDecFromStr(types.PlatformTradingFee)
+	tradingFee := volume.ToDec().Mul(tradingFeeRate).TruncateInt()
+	
+	if tradingFee.IsPositive() {
+		// Create fee coins
+		feeCoins := sdk.NewCoins(sdk.NewCoin(types.DefaultDenom, tradingFee))
+		
+		// Get trader address
+		traderAddr, err := sdk.AccAddressFromBech32(trader)
+		if err != nil {
+			return err
+		}
+		
+		// Collect trading fee using revenue keeper
+		pair := tokenAddress + "-NAMO" // Trading pair
+		if err := k.revenueKeeper.CollectTradingFee(ctx, types.ModuleName, traderAddr, feeCoins, pair); err != nil {
+			k.Logger(ctx).Error("Failed to collect trading fee", "error", err, "trader", trader, "fee", tradingFee)
+			// Continue processing even if fee collection fails
+		}
+	}
+
 	// Update trading metrics
 	priceChange := k.calculatePriceChange(ctx, tokenAddress, price)
 	if err := k.UpdateTradingMetrics(ctx, tokenAddress, volume, 1, priceChange); err != nil {
@@ -99,6 +121,7 @@ func (k Keeper) ProcessTrade(ctx sdk.Context, tokenAddress, trader string, volum
 			sdk.NewAttribute("trader", trader),
 			sdk.NewAttribute("volume", volume.String()),
 			sdk.NewAttribute("price", price.String()),
+			sdk.NewAttribute("trading_fee", tradingFee.String()),
 			sdk.NewAttribute("type", func() string {
 				if isBuy {
 					return "buy"

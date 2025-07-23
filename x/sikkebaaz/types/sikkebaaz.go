@@ -65,6 +65,7 @@ type TokenLaunch struct {
 	ParticipantCount uint64             `json:"participant_count" yaml:"participant_count"`
 	Whitelist       []string            `json:"whitelist" yaml:"whitelist"`
 	Metadata        map[string]string   `json:"metadata" yaml:"metadata"`
+	LiquidityPoolId uint64              `json:"liquidity_pool_id" yaml:"liquidity_pool_id"`
 	
 	// Timestamps
 	CreatedAt       time.Time `json:"created_at" yaml:"created_at"`

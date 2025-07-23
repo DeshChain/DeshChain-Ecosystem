@@ -1,0 +1,36 @@
+{
+  "failure_rate": 1.0,
+  "success_rate": 0.0,
+  "failure_reasons": {
+    "Unsustainable burn rate": 5795,
+    "Insolvency": 2924,
+    "User base collapse": 1273,
+    "Regulatory shutdown": 2,
+    "Catastrophic tech failure": 6
+  },
+  "avg_failure_month": 35.484,
+  "critical_factors": {
+    "failure_thresholds": {
+      "crypto_adoption_rate": {
+        "mean": 0.2972375807754682,
+        "std": 0.1367065558564904
+      },
+      "user_churn_rate": {
+        "mean": 0.09965627673256122,
+        "std": 0.0641227675284303
+      },
+      "cultural_adoption": {
+        "mean": 0.6992753345595258,
+        "std": 0.1387154035807116
+      },
+      "government_support": {
+        "mean": 0.5999982648385122,
+        "std": 0.14674607835987
+      }
+    },
+    "success_thresholds": {},
+    "critical_differences": {}
+  },
+  "success_metrics": {},
+  "total_simulations": 10000
+}

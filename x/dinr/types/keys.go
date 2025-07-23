@@ -31,6 +31,9 @@ var (
 	TotalDINRMintedKey         = []byte{0x07}
 	TotalFeesCollectedKey      = []byte{0x08}
 	LastYieldProcessingTimeKey = []byte{0x09}
+	DailyMintedAmountKey       = []byte{0x0A}
+	DailyBurnedAmountKey       = []byte{0x0B}
+	StabilityPoolName          = "stability_pool"
 )
 
 // GetUserPositionKey returns the store key for a user position

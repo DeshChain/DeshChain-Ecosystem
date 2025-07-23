@@ -465,4 +465,107 @@ func (k Keeper) GetRequiredDocuments(cropType string) []string {
 	
 	return docs
 }
-EOF < /dev/null
+
+// GetCreditScoringEngine returns a new credit scoring engine
+func (k Keeper) GetCreditScoringEngine() *CreditScoringEngine {
+	return NewCreditScoringEngine(k)
+}
+
+// GetInsuranceEngine returns a new insurance engine
+func (k Keeper) GetInsuranceEngine() *InsuranceEngine {
+	return NewInsuranceEngine(k)
+}
+
+// GetLoanProcessor returns a new loan processor
+func (k Keeper) GetLoanProcessor() *LoanProcessor {
+	return NewLoanProcessor(k)
+}
+
+// ProcessAgriculturalLoan processes a complete agricultural loan from application to disbursement
+func (k Keeper) ProcessAgriculturalLoan(ctx sdk.Context, applicationID string) error {
+	loanProcessor := k.GetLoanProcessor()
+	
+	// Process loan application
+	loan, err := loanProcessor.ProcessLoanApplication(ctx, applicationID)
+	if err != nil {
+		return fmt.Errorf("failed to process loan application: %w", err)
+	}
+	
+	// Auto-disburse if all conditions are met
+	if loan.Status == types.LoanStatusApproved && !loan.CollateralRequired && 
+	   (!loan.InsuranceRequired || loan.InsurancePolicyID != "") {
+		err = loanProcessor.DisburseLoan(ctx, loan.LoanID)
+		if err != nil {
+			k.Logger(ctx).Error("Failed to auto-disburse loan", "loan_id", loan.LoanID, "error", err)
+		}
+	}
+	
+	return nil
+}
+
+// CreateComprehensiveCropInsurance creates crop insurance with weather derivatives
+func (k Keeper) CreateComprehensiveCropInsurance(ctx sdk.Context, farmerID, cropType string, loanID string) (string, error) {
+	insuranceEngine := k.GetInsuranceEngine()
+	
+	// Get farmer profile for insurance calculation
+	farmerProfile, found := k.GetFarmerProfile(ctx, farmerID)
+	if !found {
+		return "", fmt.Errorf("farmer profile not found: %s", farmerID)
+	}
+	
+	// Create insurance policy request
+	request := &types.InsurancePolicyRequest{
+		FarmerID:     farmerID,
+		LoanID:       loanID,
+		CropType:     cropType,
+		CropVariety:  "STANDARD", // Could be enhanced to specify variety
+		SeasonType:   k.determineCurrentSeason(ctx),
+		SowingArea:   farmerProfile.TotalLandArea,
+		CoverageType: "COMPREHENSIVE",
+		SowingDate:   ctx.BlockTime(),
+		HarvestDate:  k.calculateHarvestDate(ctx, cropType),
+	}
+	
+	// Create insurance policy
+	policy, err := insuranceEngine.CreateCropInsurancePolicy(ctx, request)
+	if err != nil {
+		return "", fmt.Errorf("failed to create insurance policy: %w", err)
+	}
+	
+	return policy.PolicyID, nil
+}
+
+// Helper functions for KrishiMitra operations
+
+func (k Keeper) determineCurrentSeason(ctx sdk.Context) string {
+	currentTime := ctx.BlockTime()
+	month := currentTime.Month()
+	
+	if month >= 6 && month <= 11 { // June to November
+		return "KHARIF"
+	} else if month >= 11 || month <= 3 { // November to March
+		return "RABI"
+	} else { // March to June
+		return "ZAID"
+	}
+}
+
+func (k Keeper) calculateHarvestDate(ctx sdk.Context, cropType string) time.Time {
+	currentTime := ctx.BlockTime()
+	
+	// Crop duration map (in months)
+	cropDurations := map[string]int{
+		"RICE":       4,
+		"WHEAT":      5,
+		"COTTON":     6,
+		"SUGARCANE":  12,
+		"VEGETABLES": 3,
+		"PULSES":     4,
+	}
+	
+	if duration, found := cropDurations[cropType]; found {
+		return currentTime.AddDate(0, duration, 0)
+	}
+	
+	return currentTime.AddDate(0, 5, 0) // Default 5 months
+}

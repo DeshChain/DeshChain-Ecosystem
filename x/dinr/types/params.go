@@ -20,6 +20,9 @@ var (
 	KeyBurningEnabled         = []byte("BurningEnabled")
 	KeyOracleUpdateFrequency  = []byte("OracleUpdateFrequency")
 	KeyInsuranceFundRatio     = []byte("InsuranceFundRatio")
+	KeyMaxDailyMinting        = []byte("MaxDailyMinting")
+	KeyMaxDailyBurning        = []byte("MaxDailyBurning")
+	KeyEmergencyPause         = []byte("EmergencyPause")
 )
 
 // Default parameter values
@@ -36,6 +39,8 @@ const (
 	DefaultOracleUpdateFrequency = uint64(300)  // 5 minutes
 	DefaultInsuranceFundRatio   = "0.05"        // 5% of total supply
 	DefaultYieldToInsuranceRatio = uint64(2000) // 20% of yield to insurance fund
+	DefaultMaxDailyMinting      = uint64(10000000) // 10M DINR max daily minting
+	DefaultMaxDailyBurning      = uint64(10000000) // 10M DINR max daily burning
 )
 
 // ParamKeyTable the param key table for launch module
@@ -54,6 +59,9 @@ func NewParams(
 	burningEnabled bool,
 	oracleUpdateFrequency uint64,
 	insuranceFundRatio string,
+	maxDailyMinting uint64,
+	maxDailyBurning uint64,
+	emergencyPause bool,
 ) Params {
 	return Params{
 		Fees:                  fees,
@@ -65,6 +73,9 @@ func NewParams(
 		BurningEnabled:        burningEnabled,
 		OracleUpdateFrequency: oracleUpdateFrequency,
 		InsuranceFundRatio:    insuranceFundRatio,
+		MaxDailyMinting:       maxDailyMinting,
+		MaxDailyBurning:       maxDailyBurning,
+		EmergencyPause:        emergencyPause,
 	}
 }
 
@@ -149,6 +160,9 @@ func DefaultParams() Params {
 		true,  // burning enabled
 		DefaultOracleUpdateFrequency,
 		DefaultInsuranceFundRatio,
+		DefaultMaxDailyMinting,
+		DefaultMaxDailyBurning,
+		false, // emergency pause disabled
 	)
 }
 
@@ -164,6 +178,9 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(KeyBurningEnabled, &p.BurningEnabled, validateBool),
 		paramtypes.NewParamSetPair(KeyOracleUpdateFrequency, &p.OracleUpdateFrequency, validateOracleUpdateFrequency),
 		paramtypes.NewParamSetPair(KeyInsuranceFundRatio, &p.InsuranceFundRatio, validateInsuranceFundRatio),
+		paramtypes.NewParamSetPair(KeyMaxDailyMinting, &p.MaxDailyMinting, validateMaxSupply),
+		paramtypes.NewParamSetPair(KeyMaxDailyBurning, &p.MaxDailyBurning, validateMaxSupply),
+		paramtypes.NewParamSetPair(KeyEmergencyPause, &p.EmergencyPause, validateBool),
 	}
 }
 

@@ -49,7 +49,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	"github.com/cosmos/cosmos-sdk/x/auth/ante"
+	sdkante "github.com/cosmos/cosmos-sdk/x/auth/ante"
+	"github.com/deshchain/namo/app/ante"
 	authcodec "github.com/cosmos/cosmos-sdk/x/auth/codec"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
@@ -152,6 +153,31 @@ import (
 	shikshamitra "github.com/deshchain/namo/x/shikshamitra"
 	shikshamitrakeeper "github.com/deshchain/namo/x/shikshamitra/keeper"
 	shikshamitratypes "github.com/deshchain/namo/x/shikshamitra/types"
+
+	// Tax Module imports
+	tax "github.com/deshchain/namo/x/tax"
+	taxkeeper "github.com/deshchain/namo/x/tax/keeper"
+	taxtypes "github.com/deshchain/namo/x/tax/types"
+
+	// Revenue Module imports
+	revenue "github.com/deshchain/namo/x/revenue"
+	revenuekeeper "github.com/deshchain/namo/x/revenue/keeper"
+	revenuetypes "github.com/deshchain/namo/x/revenue/types"
+
+	// Donation Module imports
+	donation "github.com/deshchain/namo/x/donation"
+	donationkeeper "github.com/deshchain/namo/x/donation/keeper"
+	donationtypes "github.com/deshchain/namo/x/donation/types"
+
+	// GramSuraksha Module imports
+	grampension "github.com/deshchain/namo/x/gramsuraksha"
+	gramsurakshakeep "github.com/deshchain/namo/x/gramsuraksha/keeper"
+	gramsurakshatypes "github.com/deshchain/namo/x/gramsuraksha/types"
+
+	// Governance Module imports
+	governance "github.com/deshchain/namo/x/governance"
+	governancekeeper "github.com/deshchain/namo/x/governance/keeper"
+	governancetypes "github.com/deshchain/namo/x/governance/types"
 )
 
 const (
@@ -202,6 +228,11 @@ var (
 		krishimitra.AppModuleBasic{},
 		vyavasayamitra.AppModuleBasic{},
 		shikshamitra.AppModuleBasic{},
+		tax.AppModuleBasic{},
+		revenue.AppModuleBasic{},
+		donation.AppModuleBasic{},
+		grampension.AppModuleBasic{},
+		governance.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -262,6 +293,22 @@ var (
 		"shiksha_loan_pool":             nil, // Education loan disbursement
 		"lending_insurance_pool":        nil, // Loan default insurance
 		"lending_subsidy_pool":          nil, // Interest subsidy pool
+		// Tax, Revenue and Donation Module Accounts
+		taxtypes.ModuleName:             nil, // Tax collection module
+		revenuetypes.ModuleName:         nil, // Revenue distribution module
+		donationtypes.ModuleName:        nil, // Donation management module
+		gramsurakshatypes.ModuleName:    nil, // Gram Suraksha pension module
+		// Tax Distribution Accounts
+		taxtypes.ValidatorRewardsPool:   nil, // Validator rewards (10%)
+		taxtypes.CommunityRewardsPool:   nil, // Community rewards (15%)
+		taxtypes.BurnPool:               {authtypes.Burner}, // Burn pool (15%)
+		taxtypes.TechInnovationFund:     nil, // Tech innovation (10%)
+		taxtypes.MarketingPool:          nil, // Marketing (10%)
+		taxtypes.OperationsPool:         nil, // Operations (10%)
+		taxtypes.TalentPool:             nil, // Talent acquisition (10%)
+		taxtypes.StrategicReserve:       nil, // Strategic reserve (10%)
+		taxtypes.CoFoundersPool:         nil, // Co-founders (5%)
+		taxtypes.AngelInvestorsPool:     nil, // Angel investors (5%)
 	}
 )
 
@@ -323,6 +370,11 @@ type DeshChainApp struct {
 	KrishiMitraKeeper     krishimitrakeeper.Keeper
 	VyavasayaMitraKeeper  vyavasayamitrakeeper.Keeper
 	ShikshaMitraKeeper    shikshamitrakeeper.Keeper
+	TaxKeeper             taxkeeper.Keeper
+	RevenueKeeper         revenuekeeper.Keeper
+	DonationKeeper        donationkeeper.Keeper
+	GramSurakshaKeeper    gramsurakshakeep.Keeper
+	GovernanceKeeper      governancekeeper.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -365,13 +417,13 @@ func New(
 		evidencetypes.StoreKey, authzkeeper.StoreKey, consensusparamtypes.StoreKey,
 		moneyordertypes.StoreKey, culturaltypes.StoreKey, namotypes.StoreKey, dhansettypes.StoreKey,
 		dinrtypes.StoreKey, tradefinancetypes.StoreKey, oracletypes.StoreKey, sikkebaaztypes.StoreKey, krishimitratypes.StoreKey, vyavasayamitratypes.StoreKey, 
-		shikshamitratypes.StoreKey,
+		shikshamitratypes.StoreKey, taxtypes.StoreKey, revenuetypes.StoreKey, donationtypes.StoreKey, gramsurakshatypes.StoreKey, governancetypes.StoreKey,
 	)
 	tkeys := storetypes.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := storetypes.NewMemoryStoreKeys(
 		dhansettypes.MemStoreKey, tradefinancetypes.MemStoreKey, oracletypes.MemStoreKey, sikkebaaztypes.MemStoreKey,
 		krishimitratypes.MemStoreKey, vyavasayamitratypes.MemStoreKey,
-		shikshamitratypes.MemStoreKey,
+		shikshamitratypes.MemStoreKey, gramsurakshatypes.MemStoreKey, governancetypes.MemStoreKey,
 	)
 
 	app := &DeshChainApp{
@@ -452,6 +504,25 @@ func New(
 		),
 	)
 
+	// Initialize Governance Keeper (DeshChain custom governance with founder protections)
+	app.GovernanceKeeper = *governancekeeper.NewKeeper(
+		appCodec,
+		keys[governancetypes.StoreKey],
+		memKeys[governancetypes.MemStoreKey],
+		app.AccountKeeper,
+		app.BankKeeper,
+		&app.GovKeeper,
+		app.StakingKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
+	// Update GovKeeper hooks to include governance hooks
+	app.GovKeeper = *app.GovKeeper.SetHooks(
+		govtypes.NewMultiGovHooks(
+			app.GovernanceKeeper.Hooks(),
+		),
+	)
+
 	// Create evidence Keeper for to register the IBC light client misbehaviour evidence route
 	evidenceKeeper := evidencekeeper.NewKeeper(
 		appCodec, runtime.NewKVStoreService(keys[evidencetypes.StoreKey]), app.StakingKeeper, app.SlashingKeeper, app.AccountKeeper.AddressCodec(),
@@ -461,10 +532,15 @@ func New(
 	// Initialize Money Order Keeper
 	app.MoneyOrderKeeper = moneyorderkeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(keys[moneyordertypes.StoreKey]),
+		keys[moneyordertypes.StoreKey],
+		memKeys[moneyordertypes.MemStoreKey],
+		app.GetSubspace(moneyordertypes.ModuleName),
 		app.AccountKeeper,
 		app.BankKeeper,
-		app.GetSubspace(moneyordertypes.ModuleName),
+		app.DistrKeeper,
+		app.AuthKeeper,
+		&app.RevenueKeeper,
+		authtypes.FeeCollectorName,
 	)
 
 	// Initialize Cultural Keeper
@@ -507,7 +583,33 @@ func New(
 		app.StakingKeeper,
 	)
 
-	// Initialize DINR Keeper (now with oracle keeper available)
+	// Initialize Tax Keeper (must be initialized before Revenue)
+	app.TaxKeeper = taxkeeper.NewKeeper(
+		appCodec,
+		runtime.NewKVStoreService(keys[taxtypes.StoreKey]),
+		app.BankKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
+	// Initialize Revenue Keeper (must be initialized before DINR)
+	app.RevenueKeeper = revenuekeeper.NewKeeper(
+		appCodec,
+		runtime.NewKVStoreService(keys[revenuetypes.StoreKey]),
+		app.BankKeeper,
+		app.TaxKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
+	// Initialize Donation Keeper
+	app.DonationKeeper = donationkeeper.NewKeeper(
+		appCodec,
+		runtime.NewKVStoreService(keys[donationtypes.StoreKey]),
+		app.BankKeeper,
+		app.AccountKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
+	// Initialize DINR Keeper (now with oracle and revenue keeper available)
 	app.DINRKeeper = dinrkeeper.NewKeeper(
 		appCodec,
 		keys[dinrtypes.StoreKey],
@@ -515,7 +617,7 @@ func New(
 		app.AccountKeeper,
 		app.BankKeeper,
 		&app.OracleKeeper, // Oracle keeper is now available
-		nil, // Revenue keeper will be added later
+		&app.RevenueKeeper, // Revenue keeper is now available
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
@@ -541,6 +643,8 @@ func New(
 		app.AccountKeeper,
 		app.CulturalKeeper,
 		app.NAMOKeeper, // Treasury keeper interface
+		&app.RevenueKeeper, // Revenue keeper for fee collection
+		&app.MoneyOrderKeeper, // MoneyOrder keeper for DEX integration
 	)
 
 	// Initialize Lending Suite Keepers
@@ -576,6 +680,24 @@ func New(
 		app.AccountKeeper,
 		app.DhanSetuKeeper, // For DhanPata verification
 	)
+
+	// Initialize Gram Suraksha (Pension) Keeper
+	app.GramSurakshaKeeper = gramsurakshakeep.NewKeeper(
+		appCodec,
+		keys[gramsurakshatypes.StoreKey],
+		memKeys[gramsurakshatypes.MemStoreKey],
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.StakingKeeper,
+		app.MoneyOrderKeeper,
+		app.CulturalKeeper,
+		app.TaxKeeper,
+		app.DonationKeeper,
+		nil, // KYC keeper will be added later
+		&app.RevenueKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
 
 	// NOTE: we may consider parsing `appOpts` inside module constructors. For the moment
 	// we prefer to be more strict in what arguments the modules expect.
@@ -614,6 +736,11 @@ func New(
 		krishimitra.NewAppModule(appCodec, app.KrishiMitraKeeper, app.AccountKeeper, app.BankKeeper),
 		vyavasayamitra.NewAppModule(appCodec, app.VyavasayaMitraKeeper, app.AccountKeeper, app.BankKeeper),
 		shikshamitra.NewAppModule(appCodec, app.ShikshaMitraKeeper, app.AccountKeeper, app.BankKeeper),
+		tax.NewAppModule(appCodec, app.TaxKeeper, app.AccountKeeper, app.BankKeeper),
+		revenue.NewAppModule(appCodec, app.RevenueKeeper, app.AccountKeeper, app.BankKeeper),
+		donation.NewAppModule(appCodec, app.DonationKeeper, app.AccountKeeper, app.BankKeeper),
+		grampension.NewAppModule(appCodec, app.GramSurakshaKeeper, app.AccountKeeper, app.BankKeeper),
+		governance.NewAppModule(appCodec, app.GovernanceKeeper, app.GovKeeper, app.AccountKeeper, app.BankKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -640,6 +767,11 @@ func New(
 		krishimitratypes.ModuleName,
 		vyavasayamitratypes.ModuleName,
 		shikshamitratypes.ModuleName,
+		taxtypes.ModuleName,
+		revenuetypes.ModuleName,
+		donationtypes.ModuleName,
+		gramsurakshatypes.ModuleName,
+		governancetypes.ModuleName,
 	)
 
 	app.mm.SetOrderEndBlockers(
@@ -659,6 +791,11 @@ func New(
 		krishimitratypes.ModuleName,
 		vyavasayamitratypes.ModuleName,
 		shikshamitratypes.ModuleName,
+		taxtypes.ModuleName,
+		revenuetypes.ModuleName,
+		donationtypes.ModuleName,
+		gramsurakshatypes.ModuleName,
+		governancetypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -694,6 +831,11 @@ func New(
 		krishimitratypes.ModuleName,
 		vyavasayamitratypes.ModuleName,
 		shikshamitratypes.ModuleName,
+		taxtypes.ModuleName,
+		revenuetypes.ModuleName,
+		donationtypes.ModuleName,
+		gramsurakshatypes.ModuleName,
+		governancetypes.ModuleName,
 	}
 	app.mm.SetOrderInitGenesis(genesisModuleOrder...)
 	app.mm.SetOrderExportGenesis(genesisModuleOrder...)
@@ -717,18 +859,14 @@ func New(
 	app.SetInitChainer(app.InitChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
 
-	anteHandler, err := ante.NewAnteHandler(
-		ante.HandlerOptions{
-			AccountKeeper:   app.AccountKeeper,
-			BankKeeper:      app.BankKeeper,
-			SignModeHandler: txConfig.SignModeHandler(),
-			FeegrantKeeper:  app.FeeGrantKeeper,
-			SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
-		},
+	anteHandler := ante.NewAnteHandler(
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.TaxKeeper,
+		txConfig.SignModeHandler(),
+		app.FeeGrantKeeper,
+		sdkante.DefaultSigVerificationGasConsumer,
 	)
-	if err != nil {
-		panic(err)
-	}
 
 	app.SetAnteHandler(anteHandler)
 	app.SetEndBlocker(app.EndBlocker)
@@ -950,6 +1088,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(culturaltypes.ModuleName)
 	paramsKeeper.Subspace(namotypes.ModuleName)
 	paramsKeeper.Subspace(dhansettypes.ModuleName)
+	paramsKeeper.Subspace(gramsurakshatypes.ModuleName)
 
 	return paramsKeeper
 }

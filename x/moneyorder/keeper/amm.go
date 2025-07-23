@@ -187,10 +187,18 @@ func (k Keeper) SwapExactAmountIn(
 		return tokenOut, err
 	}
 	
-	// Distribute fees
+	// Collect and distribute trading fees
 	feeAmount := tokenIn.Amount.ToDec().Mul(effectiveFee).TruncateInt()
-	if feeAmount.GT(sdk.ZeroInt()) {
-		k.distributeFees(ctx, sdk.NewCoin(tokenIn.Denom, feeAmount))
+	if feeAmount.GT(sdk.ZeroInt()) && k.revenueKeeper != nil {
+		feeCoin := sdk.NewCoin(tokenIn.Denom, feeAmount)
+		feeCoins := sdk.NewCoins(feeCoin)
+		
+		// Collect trading fee using revenue keeper
+		pair := tokenIn.Denom + "-" + tokenOutDenom
+		if err := k.revenueKeeper.CollectTradingFee(ctx, types.ModuleName, sender, feeCoins, pair); err != nil {
+			k.Logger(ctx).Error("Failed to collect trading fee", "error", err, "sender", sender, "fee", feeAmount)
+			// Continue even if fee collection fails
+		}
 	}
 	
 	// Update pool

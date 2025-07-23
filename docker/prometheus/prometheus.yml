@@ -1,0 +1,69 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: 'deshchain-monitor'
+    environment: 'production'
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - alertmanager:9093
+
+# Load rules once and periodically evaluate them
+rule_files:
+  - "alerts/*.yml"
+
+# Scrape configurations
+scrape_configs:
+  # DeshChain node metrics
+  - job_name: 'deshchain'
+    static_configs:
+      - targets: ['deshchain:26660']
+        labels:
+          instance: 'main-node'
+          chain_id: 'deshchain-1'
+      - targets: ['deshchain-validator:26660']
+        labels:
+          instance: 'validator'
+          chain_id: 'deshchain-1'
+
+  # Tendermint metrics
+  - job_name: 'tendermint'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['deshchain:26657']
+        labels:
+          instance: 'main-node'
+          component: 'tendermint'
+
+  # Node exporter for system metrics
+  - job_name: 'node'
+    static_configs:
+      - targets: ['node-exporter:9100']
+        labels:
+          instance: 'docker-host'
+
+  # Process exporter
+  - job_name: 'processes'
+    static_configs:
+      - targets: ['process-exporter:9256']
+        labels:
+          instance: 'docker-host'
+
+  # Prometheus self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Grafana monitoring
+  - job_name: 'grafana'
+    static_configs:
+      - targets: ['grafana:3000']
+
+  # Alert manager
+  - job_name: 'alertmanager'
+    static_configs:
+      - targets: ['alertmanager:9093']

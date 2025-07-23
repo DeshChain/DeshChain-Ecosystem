@@ -381,4 +381,14 @@ var (
 	ErrEmergencyRecovery     = errors.Register(ModuleName, 298, "emergency recovery")
 	ErrEmergencyBackup       = errors.Register(ModuleName, 299, "emergency backup")
 	ErrEmergencyRestore      = errors.Register(ModuleName, 300, "emergency restore")
+	
+	// Additional errors for our implementation
+	ErrInvalidType           = errors.Register(ModuleName, 301, "invalid type")
+	ErrInvalidAddressValue   = errors.Register(ModuleName, 302, "invalid address")
+	ErrModuleDisabled        = errors.Register(ModuleName, 303, "module disabled")
 )
+
+// WrapInvalidAddress helper function for address errors
+func WrapInvalidAddress(name string, err error) error {
+	return errors.Wrapf(ErrInvalidAddressValue, "%s: %v", name, err)
+}

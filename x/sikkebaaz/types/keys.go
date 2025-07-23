@@ -116,6 +116,9 @@ const (
 	// Creator rewards
 	CreatorTradingReward = "0.02"      // 2% of trading volume
 	
+	// Trading fees
+	PlatformTradingFee = "0.003"       // 0.3% trading fee (standard DEX fee)
+	
 	// Charity allocation
 	LocalNGOAllocation = "0.01"        // 1% to local NGO
 	
@@ -215,4 +218,10 @@ func GetCommunityVetoKey(launchId string) []byte {
 func GetWalletLimitsKey(tokenAddress, wallet string) []byte {
 	key := append(KeyPrefixWalletLimits, []byte(tokenAddress)...)
 	return append(key, []byte(wallet)...)
+}
+
+// GetLaunchParticipationKey returns the store key for launch participation
+func GetLaunchParticipationKey(launchID, participant string) []byte {
+	key := append(KeyPrefixTokenLaunch, []byte(launchID)...)
+	return append(key, []byte(participant)...)
 }

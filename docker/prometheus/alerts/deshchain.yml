@@ -1,0 +1,112 @@
+groups:
+  - name: deshchain_alerts
+    interval: 30s
+    rules:
+      # Node is down
+      - alert: DeshChainNodeDown
+        expr: up{job="deshchain"} == 0
+        for: 5m
+        labels:
+          severity: critical
+          component: node
+        annotations:
+          summary: "DeshChain node {{ $labels.instance }} is down"
+          description: "The DeshChain node {{ $labels.instance }} has been down for more than 5 minutes."
+
+      # Node not syncing
+      - alert: DeshChainNodeNotSyncing
+        expr: tendermint_consensus_height{job="tendermint"} - tendermint_consensus_latest_block_height{job="tendermint"} > 100
+        for: 10m
+        labels:
+          severity: warning
+          component: consensus
+        annotations:
+          summary: "DeshChain node {{ $labels.instance }} is not syncing"
+          description: "Node {{ $labels.instance }} is more than 100 blocks behind."
+
+      # High memory usage
+      - alert: HighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 90
+        for: 5m
+        labels:
+          severity: warning
+          component: system
+        annotations:
+          summary: "High memory usage on {{ $labels.instance }}"
+          description: "Memory usage is above 90% (current: {{ $value }}%)"
+
+      # High CPU usage
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 10m
+        labels:
+          severity: warning
+          component: system
+        annotations:
+          summary: "High CPU usage on {{ $labels.instance }}"
+          description: "CPU usage is above 80% (current: {{ $value }}%)"
+
+      # Disk space running out
+      - alert: LowDiskSpace
+        expr: (node_filesystem_avail_bytes{fstype!~"tmpfs|fuse.lxcfs|squashfs|vfat"} / node_filesystem_size_bytes) * 100 < 10
+        for: 5m
+        labels:
+          severity: critical
+          component: system
+        annotations:
+          summary: "Low disk space on {{ $labels.instance }}"
+          description: "Disk space is below 10% (current: {{ $value }}%)"
+
+      # Validator missing blocks
+      - alert: ValidatorMissingBlocks
+        expr: increase(tendermint_consensus_validator_missed_blocks[5m]) > 10
+        for: 5m
+        labels:
+          severity: warning
+          component: validator
+        annotations:
+          summary: "Validator {{ $labels.address }} is missing blocks"
+          description: "Validator has missed {{ $value }} blocks in the last 5 minutes"
+
+      # P2P peers low
+      - alert: LowP2PPeers
+        expr: tendermint_p2p_peers < 3
+        for: 10m
+        labels:
+          severity: warning
+          component: p2p
+        annotations:
+          summary: "Low number of P2P peers on {{ $labels.instance }}"
+          description: "Node has only {{ $value }} peers connected"
+
+      # Transaction pool full
+      - alert: MempoolFull
+        expr: tendermint_mempool_size > 5000
+        for: 5m
+        labels:
+          severity: warning
+          component: mempool
+        annotations:
+          summary: "Mempool is getting full on {{ $labels.instance }}"
+          description: "Mempool has {{ $value }} transactions pending"
+
+      # Slow block time
+      - alert: SlowBlockTime
+        expr: rate(tendermint_consensus_height[1m]) < 0.1
+        for: 5m
+        labels:
+          severity: warning
+          component: consensus
+        annotations:
+          summary: "Slow block production on {{ $labels.instance }}"
+          description: "Block production rate is {{ $value }} blocks/second"
+
+      # Governance proposal voting
+      - alert: GovernanceProposalActive
+        expr: tendermint_governance_proposals_active > 0
+        labels:
+          severity: info
+          component: governance
+        annotations:
+          summary: "Active governance proposal"
+          description: "There are {{ $value }} active governance proposals"

@@ -46,6 +46,7 @@ type Keeper struct {
 	bankKeeper    types.BankKeeper
 	distrKeeper   types.DistributionKeeper
 	authKeeper    types.AuthKeeper
+	revenueKeeper types.RevenueKeeper
 	
 	// Module account names
 	feeCollectorName string
@@ -67,6 +68,7 @@ func NewKeeper(
 	bankKeeper types.BankKeeper,
 	distrKeeper types.DistributionKeeper,
 	authKeeper types.AuthKeeper,
+	revenueKeeper types.RevenueKeeper,
 	feeCollectorName string,
 ) *Keeper {
 	// Set KeyTable if it has not already been set
@@ -83,6 +85,7 @@ func NewKeeper(
 		bankKeeper:       bankKeeper,
 		distrKeeper:      distrKeeper,
 		authKeeper:       authKeeper,
+		revenueKeeper:    revenueKeeper,
 		feeCollectorName: feeCollectorName,
 	}
 	
@@ -95,6 +98,20 @@ func NewKeeper(
 // Logger returns a module-specific logger
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
+}
+
+// distributeFees distributes collected fees using the revenue keeper
+func (k Keeper) distributeFees(ctx sdk.Context, fee sdk.Coin) error {
+	if fee.Amount.IsZero() || k.revenueKeeper == nil {
+		return nil
+	}
+	
+	// The fee has already been collected in the module account
+	// Now report it to revenue keeper for distribution
+	feeCoins := sdk.NewCoins(fee)
+	
+	// Report the revenue for distribution
+	return k.revenueKeeper.RecordRevenue(ctx, types.ModuleName, "trading_fee", feeCoins, "AMM swap fee")
 }
 
 // SetHooks sets the money order hooks

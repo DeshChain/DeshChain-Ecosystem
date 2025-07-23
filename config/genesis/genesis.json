@@ -1,0 +1,404 @@
+{
+  "genesis_time": "2024-01-15T00:00:00Z",
+  "chain_id": "deshchain-mainnet-1",
+  "initial_height": "1",
+  "consensus_params": {
+    "block": {
+      "max_bytes": "22020096",
+      "max_gas": "10000000",
+      "time_iota_ms": "1000"
+    },
+    "evidence": {
+      "max_age_num_blocks": "100000",
+      "max_age_duration": "172800000000000",
+      "max_bytes": "1048576"
+    },
+    "validator": {
+      "pub_key_types": ["ed25519"]
+    },
+    "version": {}
+  },
+  "app_hash": "",
+  "app_state": {
+    "auth": {
+      "params": {
+        "max_memo_characters": "256",
+        "tx_sig_limit": "7",
+        "tx_size_cost_per_byte": "10",
+        "sig_verify_cost_ed25519": "590",
+        "sig_verify_cost_secp256k1": "1000"
+      },
+      "accounts": []
+    },
+    "bank": {
+      "params": {
+        "send_enabled": [],
+        "default_send_enabled": true
+      },
+      "balances": [],
+      "supply": [
+        {
+          "denom": "namo",
+          "amount": "100000000000000000"
+        }
+      ],
+      "denom_metadata": [
+        {
+          "description": "The native staking token of DeshChain",
+          "denom_units": [
+            {
+              "denom": "namo",
+              "exponent": 0
+            },
+            {
+              "denom": "NAMO",
+              "exponent": 6
+            }
+          ],
+          "base": "namo",
+          "display": "NAMO",
+          "name": "NAMO Token",
+          "symbol": "NAMO"
+        }
+      ]
+    },
+    "staking": {
+      "params": {
+        "unbonding_time": "1814400s",
+        "max_validators": 100,
+        "max_entries": 7,
+        "historical_entries": 10000,
+        "bond_denom": "namo",
+        "min_commission_rate": "0.050000000000000000"
+      },
+      "last_total_power": "0",
+      "last_validator_powers": [],
+      "validators": [],
+      "delegations": [],
+      "unbonding_delegations": [],
+      "redelegations": [],
+      "exported": false
+    },
+    "mint": {
+      "minter": {
+        "inflation": "0.100000000000000000",
+        "annual_provisions": "0.000000000000000000"
+      },
+      "params": {
+        "mint_denom": "namo",
+        "inflation_rate_change": "0.130000000000000000",
+        "inflation_max": "0.200000000000000000",
+        "inflation_min": "0.070000000000000000",
+        "goal_bonded": "0.670000000000000000",
+        "blocks_per_year": "6311520"
+      }
+    },
+    "distribution": {
+      "params": {
+        "community_tax": "0.100000000000000000",
+        "base_proposer_reward": "0.010000000000000000",
+        "bonus_proposer_reward": "0.040000000000000000",
+        "withdraw_addr_enabled": true
+      },
+      "fee_pool": {
+        "community_pool": []
+      },
+      "delegator_withdraw_infos": [],
+      "previous_proposer": "",
+      "outstanding_rewards": [],
+      "validator_accumulated_commissions": [],
+      "validator_historical_rewards": [],
+      "validator_current_rewards": [],
+      "delegator_starting_infos": [],
+      "validator_slash_events": []
+    },
+    "gov": {
+      "voting_params": {
+        "voting_period": "172800s"
+      },
+      "deposit_params": {
+        "min_deposit": [
+          {
+            "denom": "namo",
+            "amount": "10000000000"
+          }
+        ],
+        "max_deposit_period": "172800s"
+      },
+      "tally_params": {
+        "quorum": "0.334000000000000000",
+        "threshold": "0.500000000000000000",
+        "veto_threshold": "0.334000000000000000"
+      },
+      "deposits": [],
+      "votes": [],
+      "proposals": []
+    },
+    "slashing": {
+      "params": {
+        "signed_blocks_window": "100",
+        "min_signed_per_window": "0.500000000000000000",
+        "downtime_jail_duration": "600s",
+        "slash_fraction_double_sign": "0.050000000000000000",
+        "slash_fraction_downtime": "0.010000000000000000"
+      },
+      "signing_infos": [],
+      "missed_blocks": []
+    },
+    "tax": {
+      "params": {
+        "enabled": true,
+        "tax_rate": "0.025000000000000000",
+        "ngo_pool_percent": "0.100000000000000000",
+        "founder_pool_percent": "0.100000000000000000",
+        "development_pool_percent": "0.100000000000000000",
+        "community_pool_percent": "0.100000000000000000",
+        "research_pool_percent": "0.100000000000000000",
+        "marketing_pool_percent": "0.100000000000000000",
+        "operations_pool_percent": "0.100000000000000000",
+        "talent_pool_percent": "0.100000000000000000",
+        "strategic_reserve_percent": "0.100000000000000000",
+        "co_founders_pool_percent": "0.050000000000000000",
+        "angel_investors_pool_percent": "0.050000000000000000"
+      }
+    },
+    "revenue": {
+      "params": {
+        "enabled": true,
+        "liquidity_pool_percent": "0.300000000000000000",
+        "marketing_pool_percent": "0.200000000000000000",
+        "operations_pool_percent": "0.150000000000000000",
+        "founder_pool_percent": "0.100000000000000000",
+        "talent_pool_percent": "0.100000000000000000",
+        "strategic_reserve_percent": "0.100000000000000000",
+        "co_founders_pool_percent": "0.050000000000000000"
+      },
+      "module_revenues": []
+    },
+    "donation": {
+      "params": {
+        "min_donation_amount": [
+          {
+            "denom": "namo",
+            "amount": "1000000"
+          }
+        ],
+        "max_ngos_per_payout": "50",
+        "payout_frequency": "604800"
+      },
+      "ngos": [
+        {
+          "id": "ngo-001",
+          "name": "Akshaya Patra Foundation",
+          "description": "Providing mid-day meals to school children across India",
+          "website": "https://www.akshayapatra.org",
+          "wallet_address": "desh1akshayapatra0000000000000000000000000001",
+          "category": "education",
+          "is_active": true
+        },
+        {
+          "id": "ngo-002",
+          "name": "Pratham Education Foundation",
+          "description": "Working to provide quality education to underprivileged children in India",
+          "website": "https://www.pratham.org",
+          "wallet_address": "desh1pratham00000000000000000000000000000002",
+          "category": "education",
+          "is_active": true
+        },
+        {
+          "id": "ngo-003",
+          "name": "Goonj",
+          "description": "Addressing basic needs of rural India through urban surplus",
+          "website": "https://goonj.org",
+          "wallet_address": "desh1goonj0000000000000000000000000000000003",
+          "category": "rural_development",
+          "is_active": true
+        },
+        {
+          "id": "ngo-004",
+          "name": "HelpAge India",
+          "description": "Working for disadvantaged elderly in India",
+          "website": "https://www.helpageindia.org",
+          "wallet_address": "desh1helpage00000000000000000000000000000004",
+          "category": "elderly_care",
+          "is_active": true
+        },
+        {
+          "id": "ngo-005",
+          "name": "CRY - Child Rights and You",
+          "description": "Ensuring happier childhoods for India's children",
+          "website": "https://www.cry.org",
+          "wallet_address": "desh1cry000000000000000000000000000000000005",
+          "category": "child_welfare",
+          "is_active": true
+        }
+      ],
+      "payouts": [],
+      "next_payout_id": "1"
+    },
+    "deshgovernance": {
+      "founder_address": "desh1founder00000000000000000000000000000001",
+      "current_phase": 0,
+      "genesis_time": "2024-01-15T00:00:00Z",
+      "protected_params": [
+        {
+          "name": "founder_token_allocation",
+          "protection": 1
+        },
+        {
+          "name": "founder_tax_royalty",
+          "protection": 1
+        },
+        {
+          "name": "founder_platform_royalty",
+          "protection": 1
+        },
+        {
+          "name": "founder_inheritance_mechanism",
+          "protection": 1
+        },
+        {
+          "name": "founder_minimum_voting_power",
+          "protection": 1
+        },
+        {
+          "name": "chain_upgrade_handler",
+          "protection": 2
+        },
+        {
+          "name": "crisis_module_permissions",
+          "protection": 2
+        },
+        {
+          "name": "slashing_parameters",
+          "protection": 2
+        },
+        {
+          "name": "consensus_parameters",
+          "protection": 2
+        },
+        {
+          "name": "governance_voting_period",
+          "protection": 3
+        },
+        {
+          "name": "governance_deposit_amount",
+          "protection": 3
+        },
+        {
+          "name": "distribution_community_tax",
+          "protection": 3
+        },
+        {
+          "name": "mint_inflation_rate",
+          "protection": 3
+        }
+      ],
+      "vetoed_proposals": []
+    },
+    "moneyorder": {
+      "params": {
+        "pool_creation_fee": [
+          {
+            "denom": "namo",
+            "amount": "1000000000"
+          }
+        ],
+        "exit_fee": "0.003000000000000000",
+        "swap_fee": "0.002000000000000000",
+        "governance_address": "desh1qypqxpq9qcrsszgse4wwrm07l3eyqq4mnz44tx"
+      },
+      "pools": [],
+      "pool_count": "0"
+    },
+    "sikkebaaz": {
+      "params": {
+        "platform_fee_percent": "0.025000000000000000",
+        "min_launch_duration": "3600",
+        "max_launch_duration": "2592000",
+        "min_vesting_duration": "86400",
+        "max_vesting_duration": "31536000"
+      },
+      "launches": [],
+      "next_launch_id": "1"
+    },
+    "gramsuraksha": {
+      "params": {
+        "min_deposit": [
+          {
+            "denom": "namo",
+            "amount": "100000000"
+          }
+        ],
+        "max_deposit": [
+          {
+            "denom": "namo",
+            "amount": "100000000000"
+          }
+        ],
+        "guaranteed_return_rate": "0.500000000000000000",
+        "platform_fee_percent": "0.020000000000000000",
+        "admin_fee_percent": "0.010000000000000000",
+        "early_withdrawal_penalty": "0.100000000000000000",
+        "min_lock_period": "15552000",
+        "max_beneficiaries": "5",
+        "treasury_address": "desh1treasury0000000000000000000000000000001"
+      },
+      "accounts": [],
+      "investments": [],
+      "payouts": [],
+      "next_account_id": "1"
+    },
+    "namo": {
+      "params": {
+        "founder_allocation": "0.100000000000000000",
+        "community_allocation": "0.150000000000000000",
+        "ecosystem_allocation": "0.200000000000000000",
+        "liquidity_allocation": "0.200000000000000000",
+        "staking_rewards_allocation": "0.150000000000000000",
+        "team_allocation": "0.100000000000000000",
+        "advisor_allocation": "0.050000000000000000",
+        "reserve_allocation": "0.050000000000000000"
+      }
+    },
+    "cultural": {
+      "params": {
+        "quote_submission_fee": [
+          {
+            "denom": "namo",
+            "amount": "1000000"
+          }
+        ],
+        "max_quotes_per_block": "10",
+        "min_patriotism_score": "70"
+      },
+      "quotes": [],
+      "languages": [
+        "hindi",
+        "english",
+        "bengali",
+        "telugu",
+        "marathi",
+        "tamil",
+        "gujarati",
+        "urdu",
+        "kannada",
+        "odia",
+        "malayalam",
+        "punjabi",
+        "assamese",
+        "maithili",
+        "santali",
+        "kashmiri",
+        "nepali",
+        "konkani",
+        "sindhi",
+        "dogri",
+        "manipuri",
+        "bodo"
+      ],
+      "festivals": [],
+      "achievements": []
+    }
+  }
+}

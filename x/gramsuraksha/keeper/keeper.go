@@ -40,6 +40,7 @@ type Keeper struct {
 	taxKeeper        types.TaxKeeper
 	donationKeeper   types.DonationKeeper
 	kycKeeper        types.KYCKeeper
+	revenueKeeper    types.RevenueKeeper
 
 	// Hooks
 	hooks types.GramPensionHooks
@@ -61,6 +62,7 @@ func NewKeeper(
 	taxKeeper types.TaxKeeper,
 	donationKeeper types.DonationKeeper,
 	kycKeeper types.KYCKeeper,
+	revenueKeeper types.RevenueKeeper,
 	authority string,
 ) *Keeper {
 	return &Keeper{
@@ -75,6 +77,7 @@ func NewKeeper(
 		taxKeeper:        taxKeeper,
 		donationKeeper:   donationKeeper,
 		kycKeeper:        kycKeeper,
+		revenueKeeper:    revenueKeeper,
 		authority:        authority,
 	}
 }

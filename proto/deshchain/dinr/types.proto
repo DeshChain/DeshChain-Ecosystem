@@ -84,6 +84,19 @@ message YieldStrategy {
   cosmos.base.v1beta1.Coin deployed_amount = 7 [(gogoproto.nullable) = false];
 }
 
+// StabilityHealth represents the health metrics of the stability system
+message StabilityHealth {
+  string current_price = 1; // Current DINR price (decimal)
+  string target_price = 2; // Target price (always 1.00)
+  string deviation = 3; // Price deviation (decimal percentage)
+  string pool_balance = 4; // Stability pool balance
+  string total_supply = 5; // Total DINR supply
+  bool within_tolerance = 6; // Whether price is within tolerance
+  string daily_minted = 7; // Amount minted today
+  string daily_burned = 8; // Amount burned today
+  google.protobuf.Timestamp last_update = 9 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
 // FeeStructure defines all DINR-related fees
 message FeeStructure {
   uint64 mint_fee = 1; // basis points (10 = 0.1%)
@@ -105,4 +118,7 @@ message Params {
   bool burning_enabled = 7;
   uint64 oracle_update_frequency = 8; // in seconds
   string insurance_fund_ratio = 9; // target ratio as decimal (0.05 = 5%)
+  uint64 max_daily_minting = 10; // max DINR that can be minted per day
+  uint64 max_daily_burning = 11; // max DINR that can be burned per day
+  bool emergency_pause = 12; // emergency pause for all operations
 }

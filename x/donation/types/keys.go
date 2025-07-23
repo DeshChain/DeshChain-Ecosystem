@@ -16,7 +16,13 @@ limitations under the License.
 
 package types
 
-import "cosmossdk.io/collections"
+import (
+	"cosmossdk.io/collections"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+)
+
+// QuerierRoute defines the module's query routing key
+const QuerierRoute = ModuleName
 
 const (
 	// ModuleName defines the module name

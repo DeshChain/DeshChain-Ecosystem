@@ -1,0 +1,62 @@
+{
+  "deshgovernance": {
+    "founder_address": "desh1qypqxpq9qcrsszgse4wwrm07l3eyqq4mnz44tx",
+    "current_phase": 0,
+    "genesis_time": "2024-01-01T00:00:00Z",
+    "protected_params": [
+      {
+        "name": "founder_token_allocation",
+        "protection": 1
+      },
+      {
+        "name": "founder_tax_royalty",
+        "protection": 1
+      },
+      {
+        "name": "founder_platform_royalty",
+        "protection": 1
+      },
+      {
+        "name": "founder_inheritance_mechanism",
+        "protection": 1
+      },
+      {
+        "name": "founder_minimum_voting_power",
+        "protection": 1
+      },
+      {
+        "name": "chain_upgrade_handler",
+        "protection": 2
+      },
+      {
+        "name": "crisis_module_permissions",
+        "protection": 2
+      },
+      {
+        "name": "slashing_parameters",
+        "protection": 2
+      },
+      {
+        "name": "consensus_parameters",
+        "protection": 2
+      },
+      {
+        "name": "governance_voting_period",
+        "protection": 3
+      },
+      {
+        "name": "governance_deposit_amount",
+        "protection": 3
+      },
+      {
+        "name": "distribution_community_tax",
+        "protection": 3
+      },
+      {
+        "name": "mint_inflation_rate",
+        "protection": 3
+      }
+    ],
+    "vetoed_proposals": []
+  }
+}

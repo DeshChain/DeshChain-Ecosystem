@@ -11,6 +11,11 @@ const (
 	EventTypeStabilityUpdate   = "stability_update"
 	EventTypeYieldDistribution = "yield_distribution"
 	EventTypeInsuranceFundUpdate = "insurance_fund_update"
+	EventTypeStabilityMint     = "stability_mint"
+	EventTypeStabilityBurn     = "stability_burn"
+	EventTypeEmergencyPause    = "emergency_pause"
+	EventTypeTargetPriceUpdate = "target_price_update"
+	EventTypeToleranceUpdate   = "tolerance_update"
 
 	AttributeKeyMinter             = "minter"
 	AttributeKeyBurner             = "burner"
@@ -32,6 +37,12 @@ const (
 	AttributeKeyYieldAmount        = "yield_amount"
 	AttributeKeyStrategy           = "strategy"
 	AttributeKeyInsuranceBalance   = "insurance_balance"
+	AttributeKeyAmount             = "amount"
+	AttributeKeyReason             = "reason"
+	AttributeKeyOldPrice           = "old_price"
+	AttributeKeyNewPrice           = "new_price"
+	AttributeKeyOldTolerance       = "old_tolerance"
+	AttributeKeyNewTolerance       = "new_tolerance"
 
 	AttributeValueCategory = ModuleName
 )
