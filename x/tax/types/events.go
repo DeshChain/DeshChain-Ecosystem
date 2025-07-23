@@ -6,6 +6,7 @@ const (
 	EventTypeTaxDistributed = "tax_distributed"
 	EventTypeTaxRefunded = "tax_refunded"
 	EventTypeTaxExempted = "tax_exempted"
+	EventTypeSustainableFeeUpdate = "sustainable_fee_update"
 	
 	AttributeKeyAmount = "amount"
 	AttributeKeyFrom = "from"

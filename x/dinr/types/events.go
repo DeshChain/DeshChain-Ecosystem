@@ -10,6 +10,7 @@ const (
 	EventTypeUpdateParams      = "update_params"
 	EventTypeStabilityUpdate   = "stability_update"
 	EventTypeYieldDistribution = "yield_distribution"
+	EventTypeYieldDistributed  = "yield_distributed"
 	EventTypeInsuranceFundUpdate = "insurance_fund_update"
 	EventTypeStabilityMint     = "stability_mint"
 	EventTypeStabilityBurn     = "stability_burn"

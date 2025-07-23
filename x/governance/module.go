@@ -154,6 +154,9 @@ func (AppModule) ConsensusVersion() uint64 { return 1 }
 func (am AppModule) BeginBlock(ctx sdk.Context, req abci.RequestBeginBlock) {
 	// Process governance phase transitions
 	am.keeper.ProcessPhaseTransitions(ctx)
+	
+	// Update charity allocation based on years since genesis
+	am.keeper.UpdateCharityAllocationYearly(ctx)
 }
 
 // EndBlock returns the end blocker for the governance module. It returns no validator updates.

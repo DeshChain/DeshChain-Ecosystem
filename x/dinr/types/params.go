@@ -28,9 +28,9 @@ var (
 // Default parameter values
 const (
 	DefaultMintFee              = uint64(10)    // 0.1% in basis points
-	DefaultMintFeeCap           = "100"         // 100 DINR cap
+	DefaultMintFeeCap           = ""            // No cap for sustainability
 	DefaultBurnFee              = uint64(10)    // 0.1% in basis points
-	DefaultBurnFeeCap           = "100"         // 100 DINR cap
+	DefaultBurnFeeCap           = ""            // No cap for sustainability
 	DefaultLiquidationPenalty   = uint64(1000)  // 10% in basis points
 	DefaultStabilityFee         = uint64(200)   // 2% annual in basis points
 	DefaultMinCollateralRatio   = uint64(15000) // 150% in basis points
@@ -88,6 +88,8 @@ func DefaultParams() Params {
 		BurnFeeCap:         DefaultBurnFeeCap,
 		LiquidationPenalty: DefaultLiquidationPenalty,
 		StabilityFee:       DefaultStabilityFee,
+		YieldRateMin:       0,    // 0% minimum (performance-based)
+		YieldRateMax:       800,  // 8% maximum in basis points
 	}
 
 	// Default collateral assets with NO NAMO to prevent circular dependency

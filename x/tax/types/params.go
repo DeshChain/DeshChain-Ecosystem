@@ -65,9 +65,9 @@ var (
 
 // Default parameter values
 var (
-	DefaultBaseTaxRate             = "0.025"    // 2.5%
-	DefaultMaxTaxAmount            = "1000"     // ₹1,000 equivalent
-	DefaultMinTaxAmount            = "0"        // ₹0
+	DefaultBaseTaxRate             = "0.005"    // 0.5% sustainable minimum
+	DefaultMaxTaxAmount            = "10000"    // ₹10,000 equivalent (no artificial cap)
+	DefaultMinTaxAmount            = "1"        // ₹1 minimum
 	DefaultVolumeDiscountEnabled   = true
 	DefaultPatriotismDiscountEnabled = true
 	DefaultCulturalDiscountEnabled = true

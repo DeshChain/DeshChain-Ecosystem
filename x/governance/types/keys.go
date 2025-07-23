@@ -62,6 +62,12 @@ var (
 	
 	// Key for genesis time
 	KeyGenesisTime = []byte{0x08}
+	
+	// Key for charity allocation params
+	KeyCharityAllocationParams = []byte{0x09}
+	
+	// Key for last charity update year
+	KeyLastCharityUpdateYear = []byte{0x0A}
 )
 
 // Governance phases

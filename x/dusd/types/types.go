@@ -33,8 +33,8 @@ var (
 	// Max fee: $1.00 USD  
 	MaxFeeUSD = sdk.NewDecWithPrec(100, 2) // 1.00
 	
-	// Default fee percentage: 0.25%
-	DefaultFeePercentage = sdk.NewDecWithPrec(25, 4) // 0.0025
+	// Default fee percentage: 0.30% (sustainable rate)
+	DefaultFeePercentage = sdk.NewDecWithPrec(30, 4) // 0.0030
 	
 	// Target price: $1.00 USD
 	TargetPriceUSD = sdk.OneDec()
@@ -57,6 +57,10 @@ var (
 	StabilityActionKey = []byte{0x04}
 	ReserveStatsKey    = []byte{0x05}
 	SupplyStatsKey     = []byte{0x06}
+	
+	// Sustainable fee keys
+	KeySustainableDUSDFeeStructure = []byte{0x07}
+	KeyMonthlyVolume               = []byte{0x08}
 )
 
 // GetPositionStoreKey returns the store key for a position

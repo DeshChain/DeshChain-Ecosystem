@@ -65,10 +65,10 @@ This tribute ensures that every transaction on DeshChain carries forward the spi
 DeshChain is not merely a blockchain platform; it is the foundation for a community-driven social impact ecosystem that will evolve over 50 years to become a true "by the people, for the people" platform for financial inclusion and social welfare. Built on Cosmos SDK, DeshChain integrates India's cultural heritage with cutting-edge blockchain technology to create a self-sustaining, charitable, and democratic digital nation.
 
 ### Key Innovations:
-- **World's First 40% Social Impact Blockchain**: 0.75% transaction tax + 10% of all revenues go to verified NGOs
-- **Revolutionary Transparency Framework**: Real-time tracking of all fund allocations with multi-signature governance
-- **DINR Algorithmic Stablecoin**: Industry's lowest fees (0.1% capped at ₹100) with 4-6% yield generation
-- **DUSD Multi-Currency Stablecoin**: USD stablecoin for global trade finance with $0.10-$1.00 fees and 40x market expansion
+- **Graduated Social Impact Model**: Starting at 10% in Year 1, scaling to 40% by Year 5 for sustainable growth
+- **Revolutionary Transparency Framework**: Real-time tracking with sustainable 0.50% minimum transaction fees for platform viability
+- **DINR Algorithmic Stablecoin**: Tiered fee structure (0.02%-0.10% based on volume) with 0-8% performance-based yield
+- **DUSD Multi-Currency Stablecoin**: USD stablecoin with sustainable 0.30% average fees (0.10%-0.30% tiered) for 40x market expansion
 - **DeshTrade Blockchain Trade Finance**: 97% faster LC processing (2 hours vs 20 days) with 60-70% lower costs
 - **DeshRemit Global Payments**: 10-50x cheaper remittances (0.1-0.5% vs 5-12%) with 2-10 minute settlements
 - **Unified Liquidity Pool**: Community savings power DEX trading and agricultural lending while earning 8-50% dynamic returns
@@ -137,7 +137,7 @@ DeshChain is not merely a blockchain platform; it is the foundation for a commun
 ### Success Metrics (Year 5 Projections):
 - Daily Transaction Volume: ₹487 Cr (73.2% probability)
 - Annual Charity Impact: ₹1,714 Cr
-- DINR Supply: ₹2,500 Cr (5% yield to holders = ₹125 Cr annually)
+- DINR Supply: ₹2,500 Cr (0-8% performance-based yield to holders)
 - DeshTrade Volume: $2 Billion annually ($20 Million revenue)
 - DeshRemit Volume: $5 Billion annually ($31 Million revenue + Sewa Mitra network)
 - Urban Wealth Protocol Members: 50,000+ (50K × ₹45K = ₹225 Cr invested)
@@ -251,7 +251,7 @@ DeshChain is built on the foundation of serving society. Our commitment to socia
 - **Local language** interfaces
 - **₹25 Cr technology fund**
 
-**Total Social Impact Commitment: ₹47,277 Cr over 10 years (40% of all revenue)**
+**Total Social Impact Commitment: ₹47,277 Cr over 10 years (graduated 10%-40% over 5 years)**
 
 ---
 
@@ -345,7 +345,7 @@ DeshChain has achieved a **massive technical breakthrough** with the completion 
 - **Dynamic Tax System**: Volume-based reduction (2.5% → 0.25%)
 - **Unified Liquidity Pool**: Three-in-one financial ecosystem
 - **Cultural Preservation**: First blockchain with heritage integration
-- **Social Impact**: 40% of all fees to verified NGOs
+- **Social Impact**: Graduated charity model (10% Year 1 to 40% Year 5) for sustainability
 - **Bollywood Gamification**: Developer experience with cultural themes
 
 #### 🌍 **Production Readiness**
@@ -1325,8 +1325,8 @@ DeshChain introduces **DINR (Decentralized INR)**, India's first algorithmic sta
 ```yaml
 Peg Mechanism: 1 DINR = ₹1.00 (algorithmically maintained)
 Collateral Assets: BTC, ETH, USDT, USDC (150% minimum ratio)
-Minting Fee: 0.1% (capped at ₹100 - industry's lowest)
-Burning Fee: 0.1% (capped at ₹100 - industry's lowest)  
+Minting Fee: 0.1% tiered structure (0.02%-0.10% based on volume, no cap)
+Burning Fee: 0.1% tiered structure (0.02%-0.10% based on volume, no cap)  
 Oracle Network: Multi-validator consensus pricing
 Liquidation Threshold: 120% collateral ratio
 ```
@@ -1335,14 +1335,17 @@ Liquidation Threshold: 120% collateral ratio
 **Most Competitive Fee Structure:**
 ```yaml
 DINR Fees vs Competition:
-  DINR Mint/Burn: 0.1% (max ₹100)
+  DINR Mint/Burn: Tiered 0.02%-0.10% (sustainable model)
   Tether (USDT): 0.1% (no cap - can be ₹10,000+)
   Circle (USDC): 0.1% (no cap - can be ₹10,000+)
   MakerDAO (DAI): 1-8% annual stability fee
   
-Savings Example (₹10L transaction):
-  DINR: ₹100 (99.99% cheaper!)
-  Other stablecoins: ₹1,000-10,000+
+Tiered Structure Example:
+  < ₹10K: 0.10% (min ₹10)
+  ₹10K-₹1L: 0.08%
+  ₹1L-₹10L: 0.06%
+  ₹10L-₹1Cr: 0.04%
+  > ₹1Cr: 0.02% (no cap)
 ```
 
 #### Multi-Collateral Architecture
@@ -1369,17 +1372,17 @@ Liquidation Process:
 ```
 
 #### Yield Generation for Holders
-**Sustainable 4-6% APY:**
+**Performance-Based 0-8% APY:**
 ```yaml
 Revenue Sources for Yield:
-  - Platform transaction fees: 35%
-  - DEX trading fees: 25%
+  - Platform profitability: 40% weight
+  - Trading volume growth: 20% weight
   - Lending interest: 20%
   - Cross-border remittance: 15%
   - Trade finance fees: 5%
   
 Yield Distribution:
-  DINR Holders: 60% of revenue (4-6% APY)
+  DINR Holders: Performance-based (0-8% APY)
   Insurance Fund: 25% of revenue
   Platform Development: 15% of revenue
 ```
@@ -1388,8 +1391,8 @@ Yield Distribution:
 ```yaml
 Expected Performance:
   DINR Supply: ₹2,500 Cr
-  Annual Yield to Holders: ₹125 Cr (5% average)
-  Individual Returns: ₹5,000 per ₹1L invested
+  Annual Yield to Holders: 0-8% based on platform performance
+  Individual Returns: ₹0-8,000 per ₹1L invested
   Peg Stability: 99.9% uptime
   Liquidation Events: <0.1% of positions
 ```
@@ -2276,7 +2279,7 @@ DeshChain represents more than a blockchain platform; it embodies a vision for a
 - **Most Comprehensive DeFi Suite**: Lending, DEX, launchpad, wealth protocols - all implemented
 - **Production-Ready Mobile Apps**: Native Flutter and React Native applications
 - **Complete Developer Ecosystem**: JavaScript and Python SDKs with full API coverage
-- **Industry-Leading Social Impact**: 40% of all fees to charity built into smart contracts
+- **Industry-Leading Social Impact**: Graduated 10%-40% charity model built into smart contracts
 - **Revolutionary Governance**: Founder protection with systematic community transition
 
 **Technical Excellence Metrics:**
@@ -2293,7 +2296,7 @@ This level of completion is **unprecedented in the Indian blockchain space** and
 
 1. **Unprecedented Transparency**: Real-time tracking of all funds
 2. **Cultural Alignment**: Deep integration with Indian values
-3. **Social Impact**: 40% of all fees to charity (industry-leading)
+3. **Social Impact**: Graduated 10%-40% charity allocation (sustainable industry-leading model)
 4. **Economic Sustainability**: Multiple revenue streams including Money Order DEX
 5. **Technical Excellence**: Cosmos SDK foundation with IBC support
 6. **Regulatory Compliance**: Carefully designed to avoid traditional finance regulations

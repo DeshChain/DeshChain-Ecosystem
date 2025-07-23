@@ -86,6 +86,9 @@ var (
 
 	// TaxNewsPrefix is the prefix for tax news and updates
 	TaxNewsPrefix = collections.NewPrefix(15)
+	
+	// KeySustainableFeeStructure is the key for sustainable fee structure
+	KeySustainableFeeStructure = []byte("sustainable_fee_structure")
 )
 
 // Secondary index prefixes
