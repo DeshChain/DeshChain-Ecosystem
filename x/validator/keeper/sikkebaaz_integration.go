@@ -395,3 +395,36 @@ func (si *SikkebaazIntegration) isTokenSymbolTaken(ctx sdk.Context, symbol strin
     // For now, assume symbols are unique
     return false
 }
+
+// UpdateTokenParameters updates token parameters on Sikkebaaz platform
+func (si *SikkebaazIntegration) UpdateTokenParameters(
+    ctx sdk.Context,
+    token types.ValidatorToken,
+    params types.TokenUpdateParams,
+) error {
+    updateParams := map[string]interface{}{
+        "token_id": token.TokenID,
+    }
+    
+    if params.SellTaxPercent != nil {
+        updateParams["sell_tax"] = params.SellTaxPercent.String()
+    }
+    if params.BuyTaxPercent != nil {
+        updateParams["buy_tax"] = params.BuyTaxPercent.String()
+    }
+    if params.CooldownSeconds != nil {
+        updateParams["cooldown"] = *params.CooldownSeconds
+    }
+    
+    // This would call Sikkebaaz API to update parameters
+    // For now, emit event
+    ctx.EventManager().EmitEvent(
+        sdk.NewEvent(
+            "sikkebaaz_token_parameters_updated",
+            sdk.NewAttribute("token_id", fmt.Sprintf("%d", token.TokenID)),
+            sdk.NewAttribute("updated_by", token.ValidatorAddr),
+        ),
+    )
+    
+    return nil
+}

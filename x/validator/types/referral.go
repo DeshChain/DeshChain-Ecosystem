@@ -194,3 +194,169 @@ type ValidatorTokenDistribution struct {
     DevelopmentAllocation sdk.Int
     InitialLiquidity      sdk.Int
 }
+
+// Token Management Types
+
+// TokenUpdateParams holds parameters for token updates
+type TokenUpdateParams struct {
+    SellTaxPercent   *sdk.Dec `json:"sell_tax_percent,omitempty"`
+    BuyTaxPercent    *sdk.Dec `json:"buy_tax_percent,omitempty"`
+    CooldownSeconds  *uint64  `json:"cooldown_seconds,omitempty"`
+}
+
+// AirdropRecord tracks token airdrops
+type AirdropRecord struct {
+    TokenID       uint64              `json:"token_id"`
+    ValidatorAddr string              `json:"validator_address"`
+    Recipients    []AirdropRecipient  `json:"recipients"`
+    TotalAmount   sdk.Int             `json:"total_amount"`
+    AirdropTime   time.Time           `json:"airdrop_time"`
+    BlockHeight   int64               `json:"block_height"`
+}
+
+// TokenPerformance provides comprehensive token metrics
+type TokenPerformance struct {
+    TokenID       uint64    `json:"token_id"`
+    TokenName     string    `json:"token_name"`
+    TokenSymbol   string    `json:"token_symbol"`
+    LaunchedAt    time.Time `json:"launched_at"`
+    ValidatorAddr string    `json:"validator_address"`
+    
+    // Price metrics
+    CurrentPrice   sdk.Dec `json:"current_price"`
+    MarketCap      sdk.Int `json:"market_cap"`
+    PriceChange24h sdk.Dec `json:"price_change_24h"` // Percentage
+    PriceChange7d  sdk.Dec `json:"price_change_7d"`  // Percentage
+    
+    // Volume metrics
+    Volume24h sdk.Int `json:"volume_24h"`
+    Volume7d  sdk.Int `json:"volume_7d"`
+    
+    // Liquidity metrics
+    LiquidityLocked   sdk.Int `json:"liquidity_locked"`
+    LiquidityProvider string  `json:"liquidity_provider"`
+    
+    // Holder metrics
+    HolderCount uint32        `json:"holder_count"`
+    TopHolders  []TokenHolder `json:"top_holders"`
+    
+    // Tax metrics
+    TaxCollected    sdk.Int         `json:"tax_collected"`
+    TaxDistribution TaxDistribution `json:"tax_distribution"`
+}
+
+// TokenHolder represents a token holder
+type TokenHolder struct {
+    Address    string  `json:"address"`
+    Balance    sdk.Int `json:"balance"`
+    Percentage sdk.Dec `json:"percentage"`
+}
+
+// TaxDistribution shows how tax is distributed
+type TaxDistribution struct {
+    LiquidityPercent sdk.Dec `json:"liquidity_percent"`
+    ValidatorPercent sdk.Dec `json:"validator_percent"`
+    PlatformPercent  sdk.Dec `json:"platform_percent"`
+}
+
+// TokenAllocations shows remaining token allocations
+type TokenAllocations struct {
+    ValidatorAllocation sdk.Int `json:"validator_allocation"`
+    AirdropAllocation   sdk.Int `json:"airdrop_allocation"`
+    LiquidityAllocation sdk.Int `json:"liquidity_allocation"`
+}
+
+// TokenManagementInfo provides comprehensive token management data
+type TokenManagementInfo struct {
+    ValidatorAddr         string                    `json:"validator_address"`
+    TokenLaunched         bool                      `json:"token_launched"`
+    TokenID               uint64                    `json:"token_id,omitempty"`
+    Token                 *ValidatorToken           `json:"token,omitempty"`
+    Performance           *TokenPerformance         `json:"performance,omitempty"`
+    AirdropHistory        []AirdropRecord           `json:"airdrop_history,omitempty"`
+    AvailableAllocations  TokenAllocations          `json:"available_allocations,omitempty"`
+    LaunchEligible        bool                      `json:"launch_eligible,omitempty"`
+    LaunchConditions      TokenLaunchConditions     `json:"launch_conditions,omitempty"`
+}
+
+// Airdrop Types
+
+// AirdropStatus represents the status of an airdrop campaign
+type AirdropStatus string
+
+const (
+    AirdropStatusPending   AirdropStatus = "pending"
+    AirdropStatusCompleted AirdropStatus = "completed"
+    AirdropStatusCancelled AirdropStatus = "cancelled"
+)
+
+// AirdropType represents the type of airdrop campaign
+type AirdropType string
+
+const (
+    AirdropTypeInstant  AirdropType = "instant"
+    AirdropTypeBulk     AirdropType = "bulk"
+    AirdropTypeTimed    AirdropType = "timed"
+    AirdropTypeVesting  AirdropType = "vesting"
+)
+
+// AirdropCampaign represents an airdrop campaign
+type AirdropCampaign struct {
+    CampaignID       uint64              `json:"campaign_id"`
+    TokenID          uint64              `json:"token_id"`
+    ValidatorAddr    string              `json:"validator_address"`
+    CampaignName     string              `json:"campaign_name"`
+    Description      string              `json:"description"`
+    Recipients       []AirdropRecipient  `json:"recipients"`
+    TotalAmount      sdk.Int             `json:"total_amount"`
+    StartTime        time.Time           `json:"start_time"`
+    CreatedAt        time.Time           `json:"created_at"`
+    ExecutedAt       time.Time           `json:"executed_at,omitempty"`
+    Status           AirdropStatus       `json:"status"`
+    CampaignType     AirdropType         `json:"campaign_type"`
+    VestingSchedule  *VestingSchedule    `json:"vesting_schedule,omitempty"`
+    SuccessfulDrops  uint32              `json:"successful_drops"`
+    FailedRecipients []AirdropRecipient  `json:"failed_recipients,omitempty"`
+}
+
+// VestingSchedule defines token vesting parameters
+type VestingSchedule struct {
+    DurationMonths    uint32  `json:"duration_months"`    // Total vesting duration
+    CliffMonths       uint32  `json:"cliff_months"`       // Cliff period before any unlocks
+    UnlockPercentage  sdk.Dec `json:"unlock_percentage"`  // Percentage unlocked per month after cliff
+}
+
+// AirdropExecution tracks airdrop execution details
+type AirdropExecution struct {
+    CampaignID       uint64    `json:"campaign_id"`
+    ExecutedAt       time.Time `json:"executed_at"`
+    ExecutedBy       string    `json:"executed_by"`
+    SuccessfulDrops  uint32    `json:"successful_drops"`
+    FailedDrops      uint32    `json:"failed_drops"`
+    TotalDistributed sdk.Int   `json:"total_distributed"`
+    BlockHeight      int64     `json:"block_height"`
+}
+
+// VestingAirdrop tracks individual vesting airdrop accounts
+type VestingAirdrop struct {
+    CampaignID      uint64          `json:"campaign_id"`
+    RecipientAddr   string          `json:"recipient_address"`
+    TotalAmount     sdk.Int         `json:"total_amount"`
+    UnlockedAmount  sdk.Int         `json:"unlocked_amount"`
+    VestingSchedule VestingSchedule `json:"vesting_schedule"`
+    CreatedAt       time.Time       `json:"created_at"`
+    LastUnlockTime  time.Time       `json:"last_unlock_time"`
+}
+
+// AirdropAnalytics provides analytics for validator's airdrop campaigns
+type AirdropAnalytics struct {
+    ValidatorAddr      string  `json:"validator_address"`
+    TotalCampaigns     uint32  `json:"total_campaigns"`
+    PendingCampaigns   uint32  `json:"pending_campaigns"`
+    CompletedCampaigns uint32  `json:"completed_campaigns"`
+    CancelledCampaigns uint32  `json:"cancelled_campaigns"`
+    TotalRecipients    uint32  `json:"total_recipients"`
+    SuccessfulDrops    uint32  `json:"successful_drops"`
+    TotalDistributed   sdk.Int `json:"total_distributed"`
+    SuccessRate        sdk.Dec `json:"success_rate"` // Percentage
+}
