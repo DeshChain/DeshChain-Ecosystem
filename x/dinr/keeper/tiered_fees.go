@@ -1,8 +1,11 @@
 package keeper
 
 import (
+	"fmt"
+	
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/deshchain/namo/x/dinr/types"
+	taxtypes "github.com/deshchain/namo/x/tax/types"
 )
 
 // TieredFeeStructure defines the tiered fee structure for DINR operations
@@ -18,39 +21,33 @@ type FeeTier struct {
 	MinFee    sdk.Int  // Minimum fee for this tier
 }
 
-// GetDefaultTieredFeeStructure returns the default tiered fee structure
+// GetDefaultTieredFeeStructure returns the default tiered fee structure with ₹830 cap
 func GetDefaultTieredFeeStructure() TieredFeeStructure {
 	return TieredFeeStructure{
 		Tiers: []FeeTier{
 			{
 				MinAmount: sdk.NewInt(0),
 				MaxAmount: sdk.NewInt(10000),      // Up to ₹10,000
-				FeeRate:   sdk.NewDecWithPrec(10, 4), // 0.10%
+				FeeRate:   sdk.NewDecWithPrec(50, 4), // 0.50%
 				MinFee:    sdk.NewInt(10),          // Min ₹10
 			},
 			{
 				MinAmount: sdk.NewInt(10000),
 				MaxAmount: sdk.NewInt(100000),     // ₹10K - ₹1L
-				FeeRate:   sdk.NewDecWithPrec(8, 4),  // 0.08%
-				MinFee:    sdk.NewInt(10),          // Min ₹10
+				FeeRate:   sdk.NewDecWithPrec(40, 4),  // 0.40%
+				MinFee:    sdk.NewInt(50),          // Min ₹50
 			},
 			{
 				MinAmount: sdk.NewInt(100000),
 				MaxAmount: sdk.NewInt(1000000),    // ₹1L - ₹10L
-				FeeRate:   sdk.NewDecWithPrec(6, 4),  // 0.06%
-				MinFee:    sdk.NewInt(80),          // Min ₹80
+				FeeRate:   sdk.NewDecWithPrec(30, 4),  // 0.30%
+				MinFee:    sdk.NewInt(400),         // Min ₹400
 			},
 			{
 				MinAmount: sdk.NewInt(1000000),
-				MaxAmount: sdk.NewInt(10000000),   // ₹10L - ₹1Cr
-				FeeRate:   sdk.NewDecWithPrec(4, 4),  // 0.04%
-				MinFee:    sdk.NewInt(600),         // Min ₹600
-			},
-			{
-				MinAmount: sdk.NewInt(10000000),
-				MaxAmount: sdk.Int{},               // ₹1 Cr+
-				FeeRate:   sdk.NewDecWithPrec(2, 4),  // 0.02% (no cap)
-				MinFee:    sdk.NewInt(4000),        // Min ₹4,000
+				MaxAmount: sdk.Int{},               // ₹10L+
+				FeeRate:   sdk.NewDecWithPrec(20, 4),  // 0.20%
+				MinFee:    sdk.NewInt(830),         // Min ₹830 (cap)
 			},
 		},
 	}
@@ -82,7 +79,11 @@ func (k Keeper) CalculateTieredFee(ctx sdk.Context, amount sdk.Int, operation st
 		fee = applicableTier.MinFee
 	}
 	
-	// No maximum cap for sustainability
+	// Apply ₹830 cap (830 * 1000000 micro units)
+	maxFee := sdk.NewInt(830000000)
+	if fee.GT(maxFee) {
+		fee = maxFee
+	}
 	
 	// Emit event
 	ctx.EventManager().EmitEvent(
@@ -155,12 +156,19 @@ func (k Keeper) GetFeeInfo(ctx sdk.Context, amount sdk.Int) types.FeeInfo {
 		fee = applicableTier.MinFee
 	}
 	
+	// Apply ₹830 cap
+	maxFee := sdk.NewInt(830000000)
+	if fee.GT(maxFee) {
+		fee = maxFee
+	}
+	
 	return types.FeeInfo{
 		Amount:     amount,
 		FeeRate:    applicableTier.FeeRate,
 		Fee:        fee,
 		TierIndex:  tierIndex,
 		MinFee:     applicableTier.MinFee,
-		HasCap:     false, // No cap for sustainability
+		MaxFee:     maxFee,
+		HasCap:     true,
 	}
 }

@@ -10,6 +10,7 @@ const (
 	EventTypeDUSDPositionCreated = "dusd_position_created"
 	EventTypeDUSDPositionClosed  = "dusd_position_closed"
 	EventTypeDUSDLiquidation     = "dusd_liquidation"
+	EventTypeDUSDFeeCollected    = "dusd_fee_collected"
 	
 	AttributeKeyMinter          = "minter"
 	AttributeKeyAmount          = "amount"

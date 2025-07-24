@@ -1,8 +1,11 @@
 package keeper
 
 import (
+	"fmt"
+	
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/deshchain/namo/x/dusd/types"
+	taxkeeper "github.com/deshchain/namo/x/tax/keeper"
 )
 
 // SustainableDUSDFeeStructure defines the sustainable fee structure for DUSD
@@ -83,8 +86,11 @@ func (k Keeper) CalculateSustainableDUSDFee(ctx sdk.Context, amount sdk.Dec, mon
 		percentageFee = feeStructure.MaxFeeUSD
 	}
 	
-	// Convert to integer
-	feeAmount := percentageFee.TruncateInt()
+	// Convert to integer (in micro units)
+	feeAmount := percentageFee.Mul(sdk.NewDec(1000000)).TruncateInt()
+	
+	// Convert USD fee to NAMO (1 USD = 83 NAMO)
+	feeNAMO := feeAmount.Mul(sdk.NewInt(83))
 	
 	// Emit event
 	ctx.EventManager().EmitEvent(
@@ -93,11 +99,12 @@ func (k Keeper) CalculateSustainableDUSDFee(ctx sdk.Context, amount sdk.Dec, mon
 			sdk.NewAttribute("amount", amount.String()),
 			sdk.NewAttribute("monthly_volume", monthlyVolume.String()),
 			sdk.NewAttribute("fee_rate", applicableRate.String()),
-			sdk.NewAttribute("fee", feeAmount.String()),
+			sdk.NewAttribute("fee_usd", percentageFee.String()),
+			sdk.NewAttribute("fee_namo", feeNAMO.String()),
 		),
 	)
 	
-	return sdk.NewCoin(types.DUSDDenom, feeAmount)
+	return sdk.NewCoin("namo", feeNAMO)
 }
 
 // GetSustainableDUSDFeeStructure retrieves the sustainable DUSD fee structure
@@ -134,7 +141,11 @@ func (k Keeper) CalculateCrossCurrencyFee(ctx sdk.Context, amount sdk.Dec, fromC
 		fee = minCrossCurrencyFee
 	}
 	
-	return sdk.NewCoin(types.DUSDDenom, fee.TruncateInt())
+	// Convert to micro units and then to NAMO
+	feeAmount := fee.Mul(sdk.NewDec(1000000)).TruncateInt()
+	feeNAMO := feeAmount.Mul(sdk.NewInt(83)) // 1 USD = 83 NAMO
+	
+	return sdk.NewCoin("namo", feeNAMO)
 }
 
 // GetMonthlyVolume retrieves monthly volume for an address

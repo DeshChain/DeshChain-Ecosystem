@@ -140,19 +140,45 @@ func (tc *TaxCalculator) CalculateTax(transactionAmount sdk.Coin, messageType st
 	return result, nil
 }
 
-// calculateBaseTax calculates the base tax amount before any discounts
+// calculateBaseTax calculates the base tax amount with progressive structure
 func (tc *TaxCalculator) calculateBaseTax(amount sdk.Coin) sdk.Coin {
-	baseTaxRate, _ := strconv.ParseFloat(tc.config.BaseTaxRate, 64)
+	// Convert amount to INR equivalent (assuming 1 NAMO = 1 INR with 6 decimals)
+	amountINR := amount.Amount.Int64() / 1000000
 	
-	// Convert amount to big.Int for precise calculation
-	amountBigInt := new(big.Int).Set(amount.Amount.BigInt())
+	// Progressive tax structure
+	var taxAmount int64
 	
-	// Calculate base tax: amount * rate
-	baseTaxRate = baseTaxRate * float64(PercentageMultiplier)
-	baseTaxBigInt := new(big.Int).Mul(amountBigInt, big.NewInt(int64(baseTaxRate)))
-	baseTaxBigInt = baseTaxBigInt.Div(baseTaxBigInt, big.NewInt(PercentageMultiplier*100))
+	switch {
+	case amountINR < 100:
+		// < ₹100: FREE (0%)
+		taxAmount = 0
+	case amountINR >= 100 && amountINR < 500:
+		// ₹100 - ₹500: ₹0.01 fixed
+		taxAmount = 10000 // 0.01 NAMO in micro units
+	case amountINR >= 500 && amountINR < 1000:
+		// ₹500 - ₹1,000: ₹0.05 fixed
+		taxAmount = 50000 // 0.05 NAMO in micro units
+	case amountINR >= 1000 && amountINR < 10000:
+		// ₹1,000 - ₹10,000: 0.25%
+		taxAmount = amount.Amount.Int64() * 25 / 10000
+	case amountINR >= 10000 && amountINR < 100000:
+		// ₹10,000 - ₹1 lakh: 0.5%
+		taxAmount = amount.Amount.Int64() * 50 / 10000
+	case amountINR >= 100000 && amountINR < 1000000:
+		// ₹1 lakh - ₹10 lakh: 0.3%
+		taxAmount = amount.Amount.Int64() * 30 / 10000
+	default:
+		// > ₹10 lakh: 0.2%
+		taxAmount = amount.Amount.Int64() * 20 / 10000
+	}
 	
-	return sdk.NewCoin(amount.Denom, math.NewIntFromBigInt(baseTaxBigInt))
+	// Apply ₹1,000 cap for large transactions
+	maxTaxINR := int64(1000) * 1000000 // ₹1,000 in micro units
+	if taxAmount > maxTaxINR {
+		taxAmount = maxTaxINR
+	}
+	
+	return sdk.NewCoin("namo", math.NewInt(taxAmount))
 }
 
 // calculateVolumeDiscount calculates the volume-based discount rate
@@ -231,39 +257,10 @@ func (tc *TaxCalculator) applyDiscount(taxAmount sdk.Coin, discountRate float64)
 	return sdk.NewCoin(taxAmount.Denom, math.NewIntFromBigInt(discountAmount))
 }
 
-// applyTaxCap applies the tax cap to the calculated tax amount
+// applyTaxCap ensures tax doesn't exceed ₹1,000 cap (already handled in calculateBaseTax)
 func (tc *TaxCalculator) applyTaxCap(taxAmount sdk.Coin, transactionAmount sdk.Coin) sdk.Coin {
-	// Convert max tax amount from string to sdk.Coin
-	maxTaxAmountINR, _ := strconv.ParseInt(DefaultMaxTaxAmountINR, 10, 64)
-	
-	// For simplicity, we'll assume 1 NAMO = 1 INR for tax cap calculation
-	// In production, this would use real-time exchange rates
-	maxTaxAmount := sdk.NewCoin(taxAmount.Denom, math.NewInt(maxTaxAmountINR*1000000)) // Assuming 6 decimals
-	
-	// Apply progressive tax caps based on transaction amount
-	transactionAmountINR := transactionAmount.Amount.Int64() / 1000000 // Convert to INR equivalent
-	
-	switch {
-	case transactionAmountINR > TaxBracket3Limit:
-		// Above ₹40,00,000: Flat ₹1,000 cap
-		if taxAmount.Amount.GT(maxTaxAmount.Amount) {
-			return maxTaxAmount
-		}
-	case transactionAmountINR > TaxBracket2Limit:
-		// ₹4,00,001 - ₹40,00,000: ₹1,000 cap
-		if taxAmount.Amount.GT(maxTaxAmount.Amount) {
-			return maxTaxAmount
-		}
-	case transactionAmountINR > TaxBracket1Limit:
-		// ₹40,001 - ₹4,00,000: ₹1,000 cap
-		if taxAmount.Amount.GT(maxTaxAmount.Amount) {
-			return maxTaxAmount
-		}
-	default:
-		// ₹0 - ₹40,000: No cap, full percentage applies
-		return taxAmount
-	}
-	
+	// Tax cap is already applied in calculateBaseTax method
+	// This method is kept for backward compatibility
 	return taxAmount
 }
 

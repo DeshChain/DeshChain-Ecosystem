@@ -19,5 +19,6 @@ type FeeInfo struct {
 	Fee        sdk.Int `json:"fee"`
 	TierIndex  int     `json:"tier_index"`
 	MinFee     sdk.Int `json:"min_fee"`
+	MaxFee     sdk.Int `json:"max_fee"`
 	HasCap     bool    `json:"has_cap"`
 }

@@ -8,7 +8,7 @@ import (
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/tendermint/tendermint/libs/log"
 	
-	"github.com/deshchain/deshchain/x/tax/types"
+	"github.com/deshchain/namo/x/tax/types"
 )
 
 type Keeper struct {
@@ -19,18 +19,12 @@ type Keeper struct {
 	// Dependencies
 	bankKeeper    types.BankKeeper
 	revenueKeeper types.RevenueKeeper
+	dexKeeper     types.DEXKeeper
+	oracleKeeper  types.OracleKeeper
 	
-	// Tax recipients
-	ngoWallet         string
-	validatorPool     string
-	communityPool     string
-	techInnovation    string
-	operations        string
-	talentAcquisition string
-	strategicReserve  string
-	founderWallet     string
-	coFoundersWallet  string
-	angelWallet       string
+	// Managers
+	namoBurnManager *NAMOBurnManager
+	namoSwapRouter  *NAMOSwapRouter
 }
 
 func NewKeeper(
@@ -39,20 +33,29 @@ func NewKeeper(
 	ps paramtypes.Subspace,
 	bankKeeper types.BankKeeper,
 	revenueKeeper types.RevenueKeeper,
+	dexKeeper types.DEXKeeper,
+	oracleKeeper types.OracleKeeper,
 ) *Keeper {
 	// Set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
 		ps = ps.WithKeyTable(types.ParamKeyTable())
 	}
 
-	return &Keeper{
+	k := &Keeper{
 		cdc:           cdc,
 		storeKey:      storeKey,
 		paramSpace:    ps,
 		bankKeeper:    bankKeeper,
 		revenueKeeper: revenueKeeper,
-		// Initialize wallet addresses from genesis
+		dexKeeper:     dexKeeper,
+		oracleKeeper:  oracleKeeper,
 	}
+	
+	// Initialize managers
+	k.namoBurnManager = NewNAMOBurnManager(k)
+	k.namoSwapRouter = NewNAMOSwapRouter(k)
+	
+	return k
 }
 
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
@@ -60,93 +63,93 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 }
 
 // CollectTax deducts tax from a transaction and distributes it
-func (k Keeper) CollectTax(ctx sdk.Context, from sdk.AccAddress, amount sdk.Coins) error {
-	params := k.GetParams(ctx)
-	if !params.Enabled {
+func (k Keeper) CollectTax(ctx sdk.Context, from sdk.AccAddress, amount sdk.Coin, msgType string) error {
+	// Create tax calculator with current config
+	taxCalculator := types.NewTaxCalculator(k.GetTaxConfig(ctx))
+	
+	// Calculate tax using progressive structure
+	taxResult, err := taxCalculator.CalculateTax(amount, msgType)
+	if err != nil {
+		return err
+	}
+	
+	if taxResult.TaxAmount.IsZero() {
 		return nil
 	}
 	
-	// Calculate tax amount (2.5% base rate)
-	taxAmount := sdk.Coins{}
-	for _, coin := range amount {
-		taxCoin := sdk.NewCoin(
-			coin.Denom,
-			coin.Amount.ToDec().Mul(params.TaxRate).TruncateInt(),
-		)
-		if taxCoin.Amount.IsPositive() {
-			taxAmount = taxAmount.Add(taxCoin)
+	// Handle NAMO payment for tax
+	finalTaxAmount := taxResult.TaxAmount
+	if amount.Denom != "namo" {
+		// User paying in different token - swap for NAMO
+		namoTax, err := k.namoSwapRouter.SwapForNAMOFee(ctx, from, taxResult.TaxAmount, amount, false)
+		if err != nil {
+			return fmt.Errorf("failed to swap for NAMO tax: %w", err)
 		}
-	}
-	
-	if taxAmount.IsZero() {
-		return nil
+		finalTaxAmount = namoTax
 	}
 	
 	// Deduct tax from sender
 	if err := k.bankKeeper.SendCoinsFromAccountToModule(
-		ctx, from, types.ModuleName, taxAmount,
+		ctx, from, types.ModuleName, sdk.NewCoins(finalTaxAmount),
 	); err != nil {
 		return err
 	}
 	
+	// Emit tax collected event
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeTaxCollected,
+			sdk.NewAttribute(types.AttributeKeyAmount, finalTaxAmount.String()),
+			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
+			sdk.NewAttribute(types.AttributeKeyTaxRate, taxResult.EffectiveRate),
+		),
+	)
+	
 	// Distribute tax according to distribution percentages
-	return k.DistributeTax(ctx, taxAmount)
+	return k.DistributeTax(ctx, finalTaxAmount)
 }
 
 // DistributeTax distributes collected tax to various recipients
-func (k Keeper) DistributeTax(ctx sdk.Context, taxAmount sdk.Coins) error {
-	moduleAddr := k.GetTaxModuleAccount(ctx)
+func (k Keeper) DistributeTax(ctx sdk.Context, taxAmount sdk.Coin) error {
+	// Get tax distribution configuration
+	taxDist := types.NewDefaultTaxDistribution()
 	
-	// Distribution percentages from types/distribution.go
-	distribution := types.GetTaxDistribution()
+	// Calculate amounts for each recipient
+	amounts := taxDist.CalculateTaxAmounts(taxAmount)
 	
-	for recipient, percentage := range distribution {
-		recipientAmount := sdk.Coins{}
-		for _, coin := range taxAmount {
-			amt := coin.Amount.ToDec().Mul(percentage).TruncateInt()
-			if amt.IsPositive() {
-				recipientAmount = recipientAmount.Add(sdk.NewCoin(coin.Denom, amt))
-			}
+	// Distribute to each recipient
+	for poolName, amount := range amounts {
+		if amount.IsZero() {
+			continue
 		}
 		
-		if !recipientAmount.IsZero() {
-			var recipientAddr sdk.AccAddress
-			var err error
-			
-			switch recipient {
-			case types.RecipientNGO:
-				recipientAddr, err = sdk.AccAddressFromBech32(k.ngoWallet)
-			case types.RecipientValidators:
-				// Send to validator rewards pool
-				err = k.SendToValidatorRewards(ctx, recipientAmount)
-				continue
-			case types.RecipientCommunity:
-				// Send to community pool
-				err = k.SendToCommunityPool(ctx, recipientAmount)
-				continue
-			case types.RecipientTechInnovation:
-				recipientAddr, err = sdk.AccAddressFromBech32(k.techInnovation)
-			case types.RecipientOperations:
-				recipientAddr, err = sdk.AccAddressFromBech32(k.operations)
-			case types.RecipientTalentAcquisition:
-				recipientAddr, err = sdk.AccAddressFromBech32(k.talentAcquisition)
-			case types.RecipientStrategicReserve:
-				recipientAddr, err = sdk.AccAddressFromBech32(k.strategicReserve)
-			case types.RecipientFounder:
-				recipientAddr, err = sdk.AccAddressFromBech32(k.founderWallet)
-			case types.RecipientCoFounders:
-				recipientAddr, err = sdk.AccAddressFromBech32(k.coFoundersWallet)
-			case types.RecipientAngelInvestors:
-				recipientAddr, err = sdk.AccAddressFromBech32(k.angelWallet)
-			}
-			
+		// Handle NAMO burn separately
+		if poolName == types.NAMOBurnPoolName {
+			err := k.namoBurnManager.BurnFromDistribution(ctx, amounts)
 			if err != nil {
-				return err
+				return fmt.Errorf("failed to burn NAMO: %w", err)
 			}
-			
-			if recipientAddr != nil {
-				if err := k.bankKeeper.SendCoinsFromModuleToAccount(
-					ctx, types.ModuleName, recipientAddr, recipientAmount,
+			continue
+		}
+		
+		// Send to module accounts
+		err := k.bankKeeper.SendCoinsFromModuleToModule(
+			ctx,
+			types.ModuleName,
+			poolName,
+			sdk.NewCoins(amount),
+		)
+		if err != nil {
+			return fmt.Errorf("failed to distribute to %s: %w", poolName, err)
+		}
+	}
+	
+	// Emit distribution event
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeTaxDistributed,
+			sdk.NewAttribute(types.AttributeKeyAmount, taxAmount.String()),
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 				); err != nil {
 					return err
 				}
@@ -217,4 +220,70 @@ func (k Keeper) SetRecipientAddresses(
 	k.founderWallet = founder
 	k.coFoundersWallet = coFounders
 	k.angelWallet = angels
+}
+
+// GetTaxConfig returns the current tax configuration
+func (k Keeper) GetTaxConfig(ctx sdk.Context) *types.TaxConfig {
+	params := k.GetParams(ctx)
+	return &types.TaxConfig{
+		Enabled:                  params.Enabled,
+		ExemptMessages:          params.ExemptMessages,
+		ExemptAddresses:         params.ExemptAddresses,
+		OptimizationEnabled:     true,
+		DefaultOptimizationMode: "automatic",
+	}
+}
+
+// GetModuleAddress returns the module address for a given module name
+func (k Keeper) GetModuleAddress(moduleName string) sdk.AccAddress {
+	return k.bankKeeper.GetModuleAddress(moduleName)
+}
+
+// DistributePlatformRevenue distributes platform revenue according to the distribution model
+func (k Keeper) DistributePlatformRevenue(ctx sdk.Context, revenueSource string, revenue sdk.Coin) error {
+	// Get platform distribution configuration
+	platformDist := types.NewDefaultPlatformDistribution()
+	
+	// Calculate amounts for each recipient
+	amounts := platformDist.CalculatePlatformAmounts(revenue)
+	
+	// Distribute to each recipient
+	for poolName, amount := range amounts {
+		if amount.IsZero() {
+			continue
+		}
+		
+		// Handle NAMO burn separately
+		if poolName == types.NAMOBurnPoolName {
+			err := k.namoBurnManager.BurnFromPlatformRevenue(ctx, revenueSource, revenue)
+			if err != nil {
+				return fmt.Errorf("failed to burn NAMO: %w", err)
+			}
+			continue
+		}
+		
+		// Send to module accounts
+		err := k.bankKeeper.SendCoinsFromModuleToModule(
+			ctx,
+			types.ModuleName,
+			poolName,
+			sdk.NewCoins(amount),
+		)
+		if err != nil {
+			return fmt.Errorf("failed to distribute to %s: %w", poolName, err)
+		}
+	}
+	
+	return nil
+}
+
+// GetNAMOBurnManager returns the NAMO burn manager
+func (k Keeper) GetNAMOBurnManager() *NAMOBurnManager {
+	return k.namoBurnManager
+}
+
+// GetNAMOSwapRouter returns the NAMO swap router
+func (k Keeper) GetNAMOSwapRouter() *NAMOSwapRouter {
+	return k.namoSwapRouter
+}
 }

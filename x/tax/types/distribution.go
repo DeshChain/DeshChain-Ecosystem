@@ -22,58 +22,65 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// Tax distribution percentages (of the 2.5% base tax) - v2.0 Economic Model
+// Tax distribution percentages (from calculated tax) - New Model
 const (
-	// NGO Donation Rate - 30% of base tax (0.75% of transaction)
-	DefaultNGODonationRate = "0.0075" // 0.75%
+	// NGO Donation Rate - 28% of calculated tax
+	DefaultNGODonationRate = "0.28" // 28%
 	
-	// Validators Rate - 25% of base tax (0.625% of transaction)
-	DefaultValidatorsRate = "0.00625" // 0.625%
+	// Validators Rate - 25% of calculated tax
+	DefaultValidatorsRate = "0.25" // 25%
 	
-	// Community Rewards Rate - 20% of base tax (0.50% of transaction)
-	DefaultCommunityRewardsRate = "0.0050" // 0.50%
+	// Community Rewards Rate - 18% of calculated tax
+	DefaultCommunityRewardsRate = "0.18" // 18%
 	
-	// Tech Innovation Rate - 6% of base tax (0.15% of transaction)
-	DefaultTechInnovationRate = "0.0015" // 0.15%
+	// Tech Innovation Rate - 8% of calculated tax
+	DefaultTechInnovationRate = "0.08" // 8%
 	
-	// Operations Rate - 5% of base tax (0.125% of transaction)
-	DefaultOperationsRate = "0.00125" // 0.125%
+	// Operations Rate - 6% of calculated tax
+	DefaultOperationsRate = "0.06" // 6%
 	
-	// Talent Acquisition Rate - 4% of base tax (0.10% of transaction)
-	DefaultTalentAcquisitionRate = "0.0010" // 0.10%
+	// Founder Rate - 5% of calculated tax (consistent across all sources)
+	DefaultFounderRate = "0.05" // 5%
 	
-	// Strategic Reserve Rate - 4% of base tax (0.10% of transaction)
-	DefaultStrategicReserveRate = "0.0010" // 0.10%
+	// Strategic Reserve Rate - 5% of calculated tax
+	DefaultStrategicReserveRate = "0.05" // 5%
 	
-	// Founder Rate - 3.5% of base tax (0.0875% of transaction)
-	DefaultFounderRate = "0.000875" // 0.0875%
+	// Co-Founders Rate - 3% of calculated tax
+	DefaultCoFoundersRate = "0.03" // 3%
 	
-	// Co-Founders Rate - 1.8% of base tax (0.045% of transaction)
-	DefaultCoFoundersRate = "0.00045" // 0.045%
+	// NAMO Burn Rate - 2% of calculated tax
+	DefaultNAMOBurnRate = "0.02" // 2%
 	
-	// Angel Investors Rate - 0.7% of base tax (0.0175% of transaction)
-	DefaultAngelInvestorsRate = "0.000175" // 0.0175%
+	// Module account names for NAMO burn
+	NAMOBurnPoolName = "namo_burn_pool"
+	FounderRoyaltyPoolName = "founder_royalty_pool"
 )
 
-// Platform revenue distribution percentages
+// Platform revenue distribution percentages - New Model
 const (
-	// Development Fund - 30% of platform revenues
-	PlatformDevelopmentShare = "0.30" // 30%
+	// Development Fund - 25% of platform revenues
+	PlatformDevelopmentShare = "0.25" // 25%
 	
-	// Community Treasury - 25% of platform revenues
-	PlatformCommunityShare = "0.25" // 25%
+	// Community Treasury - 24% of platform revenues
+	PlatformCommunityShare = "0.24" // 24%
 	
-	// Liquidity Provision - 20% of platform revenues
-	PlatformLiquidityShare = "0.20" // 20%
+	// Liquidity Provision - 18% of platform revenues
+	PlatformLiquidityShare = "0.18" // 18%
 	
 	// NGO Donations - 10% of platform revenues
 	PlatformNGOShare = "0.10" // 10%
 	
-	// Emergency Reserve - 10% of platform revenues
-	PlatformEmergencyShare = "0.10" // 10%
+	// Emergency Reserve - 8% of platform revenues
+	PlatformEmergencyShare = "0.08" // 8%
 	
-	// Founder Royalty - 5% of platform revenues
+	// Validators - 8% of platform revenues
+	PlatformValidatorShare = "0.08" // 8%
+	
+	// Founder Royalty - 5% of platform revenues (consistent)
 	PlatformFounderShare = "0.05" // 5%
+	
+	// NAMO Burn - 2% of platform revenues
+	PlatformNAMOBurnShare = "0.02" // 2%
 )
 
 // Module account names for tax distribution - v2.0 Economic Model
@@ -102,28 +109,29 @@ const (
 	DevelopmentPoolName = "development_pool"
 )
 
-// TaxDistribution represents the distribution of transaction tax - v2.0 Economic Model
+// TaxDistribution represents the distribution of transaction tax - New Model
 type TaxDistribution struct {
-	NGODonations      sdk.Dec `json:"ngo_donations"`      // 30%
+	NGODonations      sdk.Dec `json:"ngo_donations"`      // 28%
 	Validators        sdk.Dec `json:"validators"`          // 25%
-	CommunityRewards  sdk.Dec `json:"community_rewards"`  // 20%
-	TechInnovation    sdk.Dec `json:"tech_innovation"`    // 6%
-	Operations        sdk.Dec `json:"operations"`          // 5%
-	TalentAcquisition sdk.Dec `json:"talent_acquisition"` // 4%
-	StrategicReserve  sdk.Dec `json:"strategic_reserve"`  // 4%
-	Founder           sdk.Dec `json:"founder"`             // 3.5%
-	CoFounders        sdk.Dec `json:"co_founders"`         // 1.8%
-	AngelInvestors    sdk.Dec `json:"angel_investors"`     // 0.7%
+	CommunityRewards  sdk.Dec `json:"community_rewards"`  // 18%
+	TechInnovation    sdk.Dec `json:"tech_innovation"`    // 8%
+	Operations        sdk.Dec `json:"operations"`          // 6%
+	Founder           sdk.Dec `json:"founder"`             // 5%
+	StrategicReserve  sdk.Dec `json:"strategic_reserve"`  // 5%
+	CoFounders        sdk.Dec `json:"co_founders"`         // 3%
+	NAMOBurn          sdk.Dec `json:"namo_burn"`           // 2%
 }
 
 // PlatformRevenueDistribution represents the distribution of platform revenues
 type PlatformRevenueDistribution struct {
-	Development    sdk.Dec `json:"development"`
-	Community      sdk.Dec `json:"community"`
-	Liquidity      sdk.Dec `json:"liquidity"`
-	NGODonation    sdk.Dec `json:"ngo_donation"`
-	Emergency      sdk.Dec `json:"emergency"`
-	FounderRoyalty sdk.Dec `json:"founder_royalty"`
+	Development    sdk.Dec `json:"development"`     // 25%
+	Community      sdk.Dec `json:"community"`       // 24%
+	Liquidity      sdk.Dec `json:"liquidity"`       // 18%
+	NGODonation    sdk.Dec `json:"ngo_donation"`    // 10%
+	Emergency      sdk.Dec `json:"emergency"`       // 8%
+	Validators     sdk.Dec `json:"validators"`      // 8%
+	FounderRoyalty sdk.Dec `json:"founder_royalty"` // 5%
+	NAMOBurn       sdk.Dec `json:"namo_burn"`       // 2%
 }
 
 // NewDefaultTaxDistribution creates default tax distribution - v2.0 Economic Model
@@ -133,23 +141,21 @@ func NewDefaultTaxDistribution() TaxDistribution {
 	community, _ := sdk.NewDecFromStr(DefaultCommunityRewardsRate)
 	techInnovation, _ := sdk.NewDecFromStr(DefaultTechInnovationRate)
 	ops, _ := sdk.NewDecFromStr(DefaultOperationsRate)
-	talent, _ := sdk.NewDecFromStr(DefaultTalentAcquisitionRate)
-	strategic, _ := sdk.NewDecFromStr(DefaultStrategicReserveRate)
 	founder, _ := sdk.NewDecFromStr(DefaultFounderRate)
+	strategic, _ := sdk.NewDecFromStr(DefaultStrategicReserveRate)
 	coFounders, _ := sdk.NewDecFromStr(DefaultCoFoundersRate)
-	angels, _ := sdk.NewDecFromStr(DefaultAngelInvestorsRate)
+	namoBurn, _ := sdk.NewDecFromStr(DefaultNAMOBurnRate)
 	
 	return TaxDistribution{
-		NGODonations:      ngo,
-		Validators:        validators,
-		CommunityRewards:  community,
-		TechInnovation:    techInnovation,
-		Operations:        ops,
-		TalentAcquisition: talent,
-		StrategicReserve:  strategic,
-		Founder:           founder,
-		CoFounders:        coFounders,
-		AngelInvestors:    angels,
+		NGODonations:     ngo,
+		Validators:       validators,
+		CommunityRewards: community,
+		TechInnovation:   techInnovation,
+		Operations:       ops,
+		Founder:          founder,
+		StrategicReserve: strategic,
+		CoFounders:       coFounders,
+		NAMOBurn:         namoBurn,
 	}
 }
 
@@ -160,7 +166,9 @@ func NewDefaultPlatformDistribution() PlatformRevenueDistribution {
 	liquidity, _ := sdk.NewDecFromStr(PlatformLiquidityShare)
 	ngo, _ := sdk.NewDecFromStr(PlatformNGOShare)
 	emergency, _ := sdk.NewDecFromStr(PlatformEmergencyShare)
+	validators, _ := sdk.NewDecFromStr(PlatformValidatorShare)
 	founder, _ := sdk.NewDecFromStr(PlatformFounderShare)
+	namoBurn, _ := sdk.NewDecFromStr(PlatformNAMOBurnShare)
 	
 	return PlatformRevenueDistribution{
 		Development:    dev,
@@ -168,35 +176,34 @@ func NewDefaultPlatformDistribution() PlatformRevenueDistribution {
 		Liquidity:      liquidity,
 		NGODonation:    ngo,
 		Emergency:      emergency,
+		Validators:     validators,
 		FounderRoyalty: founder,
+		NAMOBurn:       namoBurn,
 	}
 }
 
-// Base tax rate constant
-const DefaultBaseTaxRate = "0.025" // 2.5%
+// Progressive tax structure - rates determined by transaction amount
+// No fixed base rate as tax is calculated based on transaction value
 
 // Validate validates the tax distribution
 func (td TaxDistribution) Validate() error {
 	// Check that all rates are non-negative
 	if td.NGODonations.IsNegative() || td.Validators.IsNegative() || 
 		td.CommunityRewards.IsNegative() || td.TechInnovation.IsNegative() || 
-		td.Operations.IsNegative() || td.TalentAcquisition.IsNegative() ||
-		td.StrategicReserve.IsNegative() || td.Founder.IsNegative() ||
-		td.CoFounders.IsNegative() || td.AngelInvestors.IsNegative() {
+		td.Operations.IsNegative() || td.StrategicReserve.IsNegative() || 
+		td.Founder.IsNegative() || td.CoFounders.IsNegative() || 
+		td.NAMOBurn.IsNegative() {
 		return fmt.Errorf("all distribution rates must be non-negative")
 	}
 	
 	// Calculate total rate
 	total := td.NGODonations.Add(td.Validators).Add(td.CommunityRewards).
-		Add(td.TechInnovation).Add(td.Operations).Add(td.TalentAcquisition).
-		Add(td.StrategicReserve).Add(td.Founder).Add(td.CoFounders).Add(td.AngelInvestors)
+		Add(td.TechInnovation).Add(td.Operations).Add(td.StrategicReserve).
+		Add(td.Founder).Add(td.CoFounders).Add(td.NAMOBurn)
 	
-	// Base tax rate
-	baseTax, _ := sdk.NewDecFromStr(DefaultBaseTaxRate)
-	
-	// Check that total equals base tax rate (2.5%)
-	if !total.Equal(baseTax) {
-		return fmt.Errorf("total distribution (%s) must equal base tax rate (%s)", total, baseTax)
+	// Check that total equals 100%
+	if !total.Equal(sdk.OneDec()) {
+		return fmt.Errorf("total distribution (%s) must equal 1.0 (100%%)", total)
 	}
 	
 	return nil
@@ -207,14 +214,16 @@ func (pd PlatformRevenueDistribution) Validate() error {
 	// Check that all shares are non-negative
 	if pd.Development.IsNegative() || pd.Community.IsNegative() || 
 		pd.Liquidity.IsNegative() || pd.NGODonation.IsNegative() || 
-		pd.Emergency.IsNegative() || pd.FounderRoyalty.IsNegative() {
+		pd.Emergency.IsNegative() || pd.Validators.IsNegative() || 
+		pd.FounderRoyalty.IsNegative() || pd.NAMOBurn.IsNegative() {
 		return fmt.Errorf("all distribution shares must be non-negative")
 	}
 	
 	// Calculate total share
 	total := pd.Development.Add(pd.Community).
 		Add(pd.Liquidity).Add(pd.NGODonation).
-		Add(pd.Emergency).Add(pd.FounderRoyalty)
+		Add(pd.Emergency).Add(pd.Validators).
+		Add(pd.FounderRoyalty).Add(pd.NAMOBurn)
 	
 	// Check that total equals 100%
 	if !total.Equal(sdk.OneDec()) {
@@ -225,39 +234,36 @@ func (pd PlatformRevenueDistribution) Validate() error {
 }
 
 // CalculateTaxAmounts calculates the actual amounts for each distribution category
-func (td TaxDistribution) CalculateTaxAmounts(transactionAmount sdk.Coin) map[string]sdk.Coin {
+func (td TaxDistribution) CalculateTaxAmounts(taxAmount sdk.Coin) map[string]sdk.Coin {
 	amounts := make(map[string]sdk.Coin)
 	
-	// Calculate each distribution amount
-	amounts[NGOPoolName] = sdk.NewCoin(transactionAmount.Denom, 
-		td.NGODonations.MulInt(transactionAmount.Amount).TruncateInt())
+	// Calculate each distribution amount from the collected tax
+	amounts[NGOPoolName] = sdk.NewCoin(taxAmount.Denom, 
+		td.NGODonations.MulInt(taxAmount.Amount).TruncateInt())
 	
-	amounts[ValidatorPoolName] = sdk.NewCoin(transactionAmount.Denom, 
-		td.Validators.MulInt(transactionAmount.Amount).TruncateInt())
+	amounts[ValidatorPoolName] = sdk.NewCoin(taxAmount.Denom, 
+		td.Validators.MulInt(taxAmount.Amount).TruncateInt())
 	
-	amounts[CommunityRewardsPoolName] = sdk.NewCoin(transactionAmount.Denom, 
-		td.CommunityRewards.MulInt(transactionAmount.Amount).TruncateInt())
+	amounts[CommunityRewardsPoolName] = sdk.NewCoin(taxAmount.Denom, 
+		td.CommunityRewards.MulInt(taxAmount.Amount).TruncateInt())
 	
-	amounts[TechInnovationPoolName] = sdk.NewCoin(transactionAmount.Denom, 
-		td.TechInnovation.MulInt(transactionAmount.Amount).TruncateInt())
+	amounts[TechInnovationPoolName] = sdk.NewCoin(taxAmount.Denom, 
+		td.TechInnovation.MulInt(taxAmount.Amount).TruncateInt())
 	
-	amounts[OperationsPoolName] = sdk.NewCoin(transactionAmount.Denom, 
-		td.Operations.MulInt(transactionAmount.Amount).TruncateInt())
+	amounts[OperationsPoolName] = sdk.NewCoin(taxAmount.Denom, 
+		td.Operations.MulInt(taxAmount.Amount).TruncateInt())
 	
-	amounts[TalentAcquisitionPoolName] = sdk.NewCoin(transactionAmount.Denom, 
-		td.TalentAcquisition.MulInt(transactionAmount.Amount).TruncateInt())
+	amounts[StrategicReservePoolName] = sdk.NewCoin(taxAmount.Denom, 
+		td.StrategicReserve.MulInt(taxAmount.Amount).TruncateInt())
 	
-	amounts[StrategicReservePoolName] = sdk.NewCoin(transactionAmount.Denom, 
-		td.StrategicReserve.MulInt(transactionAmount.Amount).TruncateInt())
+	amounts[FounderPoolName] = sdk.NewCoin(taxAmount.Denom, 
+		td.Founder.MulInt(taxAmount.Amount).TruncateInt())
 	
-	amounts[FounderPoolName] = sdk.NewCoin(transactionAmount.Denom, 
-		td.Founder.MulInt(transactionAmount.Amount).TruncateInt())
+	amounts[CoFoundersPoolName] = sdk.NewCoin(taxAmount.Denom, 
+		td.CoFounders.MulInt(taxAmount.Amount).TruncateInt())
 	
-	amounts[CoFoundersPoolName] = sdk.NewCoin(transactionAmount.Denom, 
-		td.CoFounders.MulInt(transactionAmount.Amount).TruncateInt())
-	
-	amounts[AngelInvestorsPoolName] = sdk.NewCoin(transactionAmount.Denom, 
-		td.AngelInvestors.MulInt(transactionAmount.Amount).TruncateInt())
+	amounts[NAMOBurnPoolName] = sdk.NewCoin(taxAmount.Denom, 
+		td.NAMOBurn.MulInt(taxAmount.Amount).TruncateInt())
 	
 	return amounts
 }
@@ -282,30 +288,36 @@ func (pd PlatformRevenueDistribution) CalculatePlatformAmounts(revenueAmount sdk
 	amounts[PlatformEmergencyPoolName] = sdk.NewCoin(revenueAmount.Denom, 
 		pd.Emergency.MulInt(revenueAmount.Amount).TruncateInt())
 	
+	amounts[ValidatorPoolName] = sdk.NewCoin(revenueAmount.Denom, 
+		pd.Validators.MulInt(revenueAmount.Amount).TruncateInt())
+	
 	amounts[FounderRoyaltyPoolName] = sdk.NewCoin(revenueAmount.Denom, 
 		pd.FounderRoyalty.MulInt(revenueAmount.Amount).TruncateInt())
+	
+	amounts[NAMOBurnPoolName] = sdk.NewCoin(revenueAmount.Denom, 
+		pd.NAMOBurn.MulInt(revenueAmount.Amount).TruncateInt())
 	
 	return amounts
 }
 
-// GetTotalTaxRate returns the total tax rate (should be 2.5%)
-func (td TaxDistribution) GetTotalTaxRate() sdk.Dec {
+// GetTotalDistribution returns the total distribution (should be 100%)
+func (td TaxDistribution) GetTotalDistribution() sdk.Dec {
 	return td.NGODonations.Add(td.Validators).Add(td.CommunityRewards).
-		Add(td.TechInnovation).Add(td.Operations).Add(td.TalentAcquisition).
-		Add(td.StrategicReserve).Add(td.Founder).Add(td.CoFounders).Add(td.AngelInvestors)
+		Add(td.TechInnovation).Add(td.Operations).Add(td.StrategicReserve).
+		Add(td.Founder).Add(td.CoFounders).Add(td.NAMOBurn)
 }
 
 // GetFounderTotalShare returns the total founder share from both tax and platform revenues
-// This includes 0.0875% from transaction tax + 5% from platform revenues
+// This includes 5% from transaction tax + 5% from platform revenues
 func GetFounderTotalShare(taxAmount sdk.Coin, platformRevenue sdk.Coin) sdk.Coin {
 	taxDist := NewDefaultTaxDistribution()
 	platformDist := NewDefaultPlatformDistribution()
 	
-	// Calculate founder royalty from transaction tax
+	// Calculate founder royalty from transaction tax (5%)
 	taxRoyalty := sdk.NewCoin(taxAmount.Denom, 
 		taxDist.Founder.MulInt(taxAmount.Amount).TruncateInt())
 	
-	// Calculate founder royalty from platform revenue
+	// Calculate founder royalty from platform revenue (5%)
 	platformRoyalty := sdk.NewCoin(platformRevenue.Denom, 
 		platformDist.FounderRoyalty.MulInt(platformRevenue.Amount).TruncateInt())
 	
@@ -314,16 +326,16 @@ func GetFounderTotalShare(taxAmount sdk.Coin, platformRevenue sdk.Coin) sdk.Coin
 }
 
 // GetNGOTotalShare returns the total NGO share from both tax and platform revenues
-// This includes 0.75% from transaction tax + 10% from platform revenues
+// This includes 28% from transaction tax + 10% from platform revenues
 func GetNGOTotalShare(taxAmount sdk.Coin, platformRevenue sdk.Coin) sdk.Coin {
 	taxDist := NewDefaultTaxDistribution()
 	platformDist := NewDefaultPlatformDistribution()
 	
-	// Calculate NGO donation from transaction tax
+	// Calculate NGO donation from transaction tax (28%)
 	taxDonation := sdk.NewCoin(taxAmount.Denom, 
 		taxDist.NGODonations.MulInt(taxAmount.Amount).TruncateInt())
 	
-	// Calculate NGO donation from platform revenue
+	// Calculate NGO donation from platform revenue (10%)
 	platformDonation := sdk.NewCoin(platformRevenue.Denom, 
 		platformDist.NGODonation.MulInt(platformRevenue.Amount).TruncateInt())
 	

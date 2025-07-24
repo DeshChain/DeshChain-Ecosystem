@@ -17,6 +17,8 @@ const (
 	EventTypeEmergencyPause    = "emergency_pause"
 	EventTypeTargetPriceUpdate = "target_price_update"
 	EventTypeToleranceUpdate   = "tolerance_update"
+	EventTypeTieredFeeCalculated = "tiered_fee_calculated"
+	EventTypeDINRFeeCollected  = "dinr_fee_collected"
 
 	AttributeKeyMinter             = "minter"
 	AttributeKeyBurner             = "burner"

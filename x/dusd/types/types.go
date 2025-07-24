@@ -51,6 +51,15 @@ var (
 
 // Key prefixes for store
 var (
+	KeySustainableDUSDFeeStructure = []byte("sustainable_dusd_fee_structure")
+	KeyMonthlyVolume               = []byte("monthly_volume/")
+	ParamsKey                      = []byte("params")
+	PositionKey                    = []byte("position/")
+	SupplyStatsKey                 = []byte("supply_stats")
+)
+
+// Key prefixes for store
+var (
 	PositionKey        = []byte{0x01}
 	ParamsKey          = []byte{0x02}
 	PriceDataKey       = []byte{0x03}

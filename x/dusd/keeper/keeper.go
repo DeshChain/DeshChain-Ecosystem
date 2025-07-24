@@ -10,9 +10,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/deshchain/deshchain/x/dusd/types"
-	oracletypes "github.com/deshchain/deshchain/x/oracle/types"
-	treasurytypes "github.com/deshchain/deshchain/x/treasury/types"
+	"github.com/deshchain/namo/x/dusd/types"
+	oracletypes "github.com/deshchain/namo/x/oracle/types"
+	treasurytypes "github.com/deshchain/namo/x/treasury/types"
 )
 
 type Keeper struct {
@@ -26,6 +26,8 @@ type Keeper struct {
 	oracleKeeper   types.OracleKeeper
 	treasuryKeeper types.TreasuryKeeper
 	accountKeeper  types.AccountKeeper
+	taxKeeper      types.TaxKeeper
+	revenueKeeper  types.RevenueKeeper
 }
 
 func NewKeeper(
@@ -37,6 +39,8 @@ func NewKeeper(
 	oracleKeeper types.OracleKeeper,
 	treasuryKeeper types.TreasuryKeeper,
 	accountKeeper types.AccountKeeper,
+	taxKeeper types.TaxKeeper,
+	revenueKeeper types.RevenueKeeper,
 ) *Keeper {
 	return &Keeper{
 		cdc:            cdc,
@@ -47,6 +51,8 @@ func NewKeeper(
 		oracleKeeper:   oracleKeeper,
 		treasuryKeeper: treasuryKeeper,
 		accountKeeper:  accountKeeper,
+		taxKeeper:      taxKeeper,
+		revenueKeeper:  revenueKeeper,
 	}
 }
 
@@ -248,33 +254,14 @@ func (k Keeper) MintDUSD(ctx sdk.Context, creator string, collateralAmount sdk.C
 		return nil, err
 	}
 	
-	// Calculate fee using same logic as DINR
-	fee := types.CalculateFee(dusdAmount)
-	
 	// Transfer collateral from user to module
 	creatorAddr, _ := sdk.AccAddressFromBech32(creator)
-	moduleAddr := k.accountKeeper.GetModuleAddress(types.ModuleName)
 	
-	if err := k.bankKeeper.SendCoins(ctx, creatorAddr, moduleAddr, sdk.NewCoins(collateralAmount)); err != nil {
-		return nil, fmt.Errorf("failed to transfer collateral: %w", err)
-	}
-	
-	// Mint DUSD tokens
-	dusdCoin := sdk.NewCoins(dusdAmount)
-	if err := k.bankKeeper.MintCoins(ctx, types.ModuleName, dusdCoin); err != nil {
-		return nil, fmt.Errorf("failed to mint DUSD: %w", err)
-	}
-	
-	// Transfer DUSD to user (minus fee)
-	dusdToUser := dusdAmount.Sub(fee)
-	if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, creatorAddr, sdk.NewCoins(dusdToUser)); err != nil {
-		return nil, fmt.Errorf("failed to transfer DUSD to user: %w", err)
-	}
-	
-	// Transfer fee to charity pool (same 40% allocation as other fees)
-	if err := k.treasuryKeeper.AddRevenue(ctx, treasurytypes.RevenueSourceDUSDFees, sdk.NewCoins(fee)); err != nil {
-		k.Logger(ctx).Error("failed to add DUSD fee to treasury", "error", err)
-		// Don't fail the transaction for fee accounting issues
+	// Use new NAMO fee system
+	amountDec := sdk.NewDecFromInt(dusdAmount.Amount)
+	err = k.MintDUSDWithNAMOFee(ctx, creatorAddr, amountDec, collateralAmount)
+	if err != nil {
+		return nil, err
 	}
 	
 	// Create position

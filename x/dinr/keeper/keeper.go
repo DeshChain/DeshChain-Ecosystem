@@ -9,7 +9,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
-	"github.com/deshchain/deshchain/x/dinr/types"
+	"github.com/deshchain/namo/x/dinr/types"
 )
 
 // Keeper maintains the link to data storage and exposes getter/setter methods for the various parts of the state machine
@@ -23,6 +23,7 @@ type Keeper struct {
 	bankKeeper    types.BankKeeper
 	oracleKeeper  types.OracleKeeper // For price feeds
 	revenueKeeper types.RevenueKeeper // For fee distribution
+	taxKeeper     types.TaxKeeper     // For NAMO fee collection
 }
 
 // NewKeeper creates new instances of the DINR Keeper
@@ -35,6 +36,7 @@ func NewKeeper(
 	bankKeeper types.BankKeeper,
 	oracleKeeper types.OracleKeeper,
 	revenueKeeper types.RevenueKeeper,
+	taxKeeper types.TaxKeeper,
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -50,6 +52,7 @@ func NewKeeper(
 		bankKeeper:    bankKeeper,
 		oracleKeeper:  oracleKeeper,
 		revenueKeeper: revenueKeeper,
+		taxKeeper:     taxKeeper,
 	}
 }
 
