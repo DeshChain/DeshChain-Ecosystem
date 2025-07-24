@@ -216,12 +216,36 @@ Pre-approved compliance frameworks for RBI, SEBI, IRDAI integration. Ready for g
 
 ### ⚡ **For Validators**
 
-- **Higher rewards in India** - 20% geographic bonus
-- **Stable income** - 0.625% of all transactions
-- **Technical support** - Comprehensive documentation
-- **Community respect** - Serve national interest
-- **Long-term value** - Token appreciation potential
-- **61x ROI** - For genesis validators
+- **Enhanced Genesis Rewards** - First 21 get 1% guaranteed + share
+- **Exclusive NFTs** - "Bharat Guardians" collection for genesis validators
+- **Tiered Distribution**:
+  - ≤ 21 validators: Equal share of all revenue
+  - 22-100 validators: 1% each
+  - > 100 validators: Genesis get premium, all share remaining
+- **NFT Benefits**:
+  - Param Rakshak (#1): 2x governance weight
+  - Tradeable assets with 10,000 NAMO floor
+  - 5% royalty on all trades
+  - Revenue rights transfer with NFT
+- **USD-Pegged Staking System**:
+  - Stakes calculated in USD, paid in NAMO
+  - Tier 1 (Val 1-10): $200K-$380K stake
+  - Tier 2 (Val 11-20): $800K-$980K stake
+  - Tier 3 (Val 21): $1.5M stake
+  - NAMO tokens locked at onboarding price forever
+- **Security Mechanisms**:
+  - Tiered lock periods: 6/9/12 months
+  - Vesting schedule: 18/24/36 months
+  - Performance bond: 20/25/30% of stake
+  - Insurance pool: 2% contribution
+  - Daily sell limits: 2%/1%/0.5%
+  - Circuit breakers: 5%/10%/20% drops
+- **Slashing Protection**:
+  - Technical violations: 0.01-5%
+  - Economic violations: 15-30%
+  - Tiered multipliers by stake level
+- **Projected Returns**: ₹71.77 Cr for genesis vs ₹24.74 Cr regular (5 years)
+- **143x ROI** - For genesis validators with NFT appreciation
 
 ### 🏛️ **For Government**
 
@@ -362,11 +386,20 @@ Pre-approved compliance frameworks for RBI, SEBI, IRDAI integration. Ready for g
 
 #### 2. DINR - Algorithmic INR Stablecoin
 - 1:1 INR peg maintained algorithmically
-- 0.1% fees capped at ₹100
-- 4-6% sustainable yield
+- Tiered fees: 0.5% (< ₹10K) → 0.2% (> ₹10L)
+- ₹830 maximum fee cap (paid in NAMO)
+- Performance-based yield: 0-8% APY
+- Multi-collateral backing
 - No bank dependency
 
-#### 3. Treasury - Multi-Pool Management
+#### 3. DUSD - Global USD Stablecoin
+- $1.00 USD peg for international trade
+- Volume-based fees: 0.3% (retail) → 0.1% (institutional)
+- $0.10 minimum, $1.00 maximum fee (paid in NAMO)
+- Cross-currency operations support
+- 95% cheaper than traditional remittance
+
+#### 4. Treasury - Multi-Pool Management
 - Tiered treasury system
 - Automated fund allocation
 - Risk-balanced portfolios
@@ -457,10 +490,30 @@ Pre-approved compliance frameworks for RBI, SEBI, IRDAI integration. Ready for g
 - Treasury control
 
 #### 17. Validator - India-First Incentives
-- Geographic bonuses
-- Performance rewards
-- Slashing protection
-- Technical support
+- **Bharat Guardians NFT Collection**: Genesis validators 1-21
+- **Tiered Revenue Sharing**:
+  - Genesis: 1% guaranteed + equal share
+  - Regular: Equal share of remaining pool
+- **NFT Features**:
+  - Param Rakshak (#1): Supreme Guardian
+  - Sanskrit names for all 21 positions
+  - Tradeable with 10,000 NAMO floor
+  - 5% perpetual royalties
+  - NFT-stake binding (inseparable)
+- **USD-Pegged Staking**:
+  - $11.8M total staked across 21 validators
+  - Fixed NAMO amounts at onboarding
+  - No benefit from price appreciation
+  - Performance bonds: $40K-$450K
+- **Security Framework**:
+  - Multi-stage lock system
+  - Progressive vesting schedules
+  - Slashing mechanisms
+  - Insurance pool protection
+  - Circuit breakers
+- **Revenue Projections**:
+  - Genesis: ₹71.77 Cr over 5 years
+  - Regular: ₹24.74 Cr over 5 years
 
 ### 💝 **Social Impact** (1 Module)
 
@@ -473,10 +526,12 @@ Pre-approved compliance frameworks for RBI, SEBI, IRDAI integration. Ready for g
 ### 💸 **Payments & Remittance** (2 Modules)
 
 #### 19. MoneyOrder - P2P Exchange
-- 0.3% maker fees
+- All fees in NAMO tokens
+- Competitive maker/taker rates
 - Escrow protection
 - Bulk orders
 - Agent network
+- Auto-swap support
 
 #### 20. Remittance - Global Transfers
 - 95% cost reduction

@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Tax module implements DeshChain's revolutionary 2.5% transaction tax system with sophisticated distribution mechanisms, volume-based discounts, and social impact focus. It ensures sustainable platform revenue while dedicating 40% of all fees to charity, making it one of the most socially responsible blockchain tax systems.
+The Tax module implements DeshChain's revolutionary progressive tax system with FREE transactions under ₹100, micro fees for small amounts, and percentage-based rates with a ₹1,000 cap. All fees are collected in NAMO tokens with automatic swapping. It ensures sustainable platform revenue while dedicating significant portions to charity and validators, making it one of the most socially responsible and user-friendly blockchain tax systems.
 
 ## Module Architecture
 
@@ -41,63 +41,71 @@ graph TB
 
 ## Tax System Overview
 
-### Base Tax Rate: 2.5%
+### Progressive Tax Structure
 
-The system implements a universal 2.5% transaction tax with multiple optimization opportunities and social impact focus.
+The system implements a user-friendly progressive tax structure:
+- **FREE** for transactions < ₹100
+- Fixed micro fees for ₹100-1,000 range
+- Percentage-based fees with ₹1,000 maximum cap
+- All fees collected in NAMO tokens
+- 2% deflationary burn from all revenues
 
 ## Tax Distribution Model
 
-### Transaction Tax Distribution (2.5%)
+### Transaction Tax Distribution
 
 ```mermaid
 pie title "Transaction Tax Distribution"
-    "NGO Donations (30%)" : 30
+    "NGO Donations (28%)" : 28
     "Validators (25%)" : 25
-    "Community Rewards (20%)" : 20
-    "Tech Innovation (6%)" : 6
-    "Operations (5%)" : 5
-    "Talent Acquisition (4%)" : 4
-    "Strategic Reserve (4%)" : 4
-    "Founder (3.5%)" : 3.5
-    "Co-Founders (1.8%)" : 1.8
-    "Angel Investors (0.7%)" : 0.7
+    "Community Rewards (18%)" : 18
+    "Development (14%)" : 14
+    "Operations (8%)" : 8
+    "Founder Royalty (5%)" : 5
+    "NAMO Burn (2%)" : 2
 ```
 
 ### Platform Revenue Distribution
 
 ```mermaid
 pie title "Platform Revenue Distribution"
-    "Development Fund (30%)" : 30
-    "Community Treasury (25%)" : 25
-    "Liquidity Provision (20%)" : 20
+    "Development Fund (25%)" : 25
+    "Community Treasury (24%)" : 24
+    "Liquidity Provision (18%)" : 18
     "NGO Donations (10%)" : 10
-    "Emergency Reserve (10%)" : 10
+    "Validators (8%)" : 8
+    "Emergency Reserve (8%)" : 8
     "Founder Royalty (5%)" : 5
+    "NAMO Burn (2%)" : 2
 ```
 
 ## Progressive Tax System
 
-### Volume-Based Discounts
+### Transaction Amount Brackets
+
+| Transaction Amount | Tax Policy | Example |
+|-------------------|------------|----------------|
+| < ₹100 | **FREE** | Send ₹50 = ₹0 fee |
+| ₹100 - ₹500 | ₹0.01 fixed | Send ₹300 = ₹0.01 fee |
+| ₹500 - ₹1,000 | ₹0.05 fixed | Send ₹750 = ₹0.05 fee |
+| ₹1,000 - ₹10,000 | 0.25% | Send ₹5,000 = ₹12.50 fee |
+| ₹10,000 - ₹1 lakh | 0.50% | Send ₹50,000 = ₹250 fee |
+| ₹1 lakh - ₹10 lakh | 0.30% | Send ₹5 lakh = ₹1,500 fee (capped) |
+| > ₹10 lakh | 0.20% | Send ₹50 lakh = ₹1,000 fee (capped) |
+
+**Maximum Fee Cap: ₹1,000** - No matter how large the transaction!
+
+### NAMO Universal Fee Currency
 
 ```mermaid
 graph LR
-    subgraph "Daily Transaction Volume Discounts"
-        V1[1K+ Txns<br/>2.4%] --> V2[10K+ Txns<br/>2.3%]
-        V2 --> V3[50K+ Txns<br/>2.2%]
-        V3 --> V4[100K+ Txns<br/>2.1%]
-        V4 --> V5[500K+ Txns<br/>2.0%]
-        V5 --> V6[1M+ Txns<br/>1.9%]
-        V6 --> V7[10M+ Txns<br/>1.8%]
+    subgraph "Universal Fee Collection"
+        USER[User] --> SWAP[Auto-Swap Router]
+        SWAP --> NAMO[NAMO Tokens]
+        NAMO --> DIST[Distribution]
+        NAMO --> BURN[2% Burn]
     end
 ```
-
-### Transaction Amount Brackets
-
-| Transaction Amount | Tax Policy | Effective Rate |
-|-------------------|------------|----------------|
-| ₹0 - ₹40,000 | Full 2.5% rate | 2.5% |
-| ₹40,001 - ₹4,00,000 | ₹1,000 cap | 2.5% → 0.25% |
-| Above ₹4,00,000 | Flat ₹1,000 | < 0.25% |
 
 ## Tax Calculation Engine
 
@@ -113,9 +121,9 @@ sequenceDiagram
     participant Distributor
     
     User->>TaxModule: Initiate Transaction
-    TaxModule->>Calculator: Calculate Base Tax (2.5%)
+    TaxModule->>Calculator: Calculate Progressive Tax
     
-    Calculator->>Calculator: Check Volume Discount
+    Calculator->>Calculator: Check Amount Bracket
     Calculator->>Cultural: Get Patriotism Score
     Calculator->>Cultural: Get Cultural Score
     Calculator->>Donation: Check Donation Status
@@ -128,24 +136,19 @@ sequenceDiagram
     Distributor->>Distributor: Split to Recipients
 ```
 
-### Tax Optimization Factors
+### Fee Collection Features
 
 ```mermaid
 graph TB
-    subgraph "Tax Reduction Methods"
-        BASE[Base Rate: 2.5%] --> VOLUME[Volume Discount<br/>Up to -0.7%]
-        BASE --> PATRIOT[Patriotism Score<br/>Up to -0.5%]
-        BASE --> CULTURE[Cultural Score<br/>Up to -0.2%]
-        BASE --> DONATION[Donation Exemption<br/>-100%]
-        BASE --> EARLY[Early Payment<br/>-1%]
-        BASE --> STAKE[Staking Benefits<br/>Variable]
+    subgraph "NAMO Fee System"
+        ANY[Any Token] --> ROUTER[Auto-Swap Router]
+        ROUTER --> NAMO[NAMO Tokens]
+        NAMO --> INCLUSIVE[Inclusive Fee<br/>Deduct from Amount]
+        NAMO --> ONTOP[On-Top Fee<br/>Add to Amount]
         
-        VOLUME --> FINAL[Final Tax Rate]
-        PATRIOT --> FINAL
-        CULTURE --> FINAL
-        DONATION --> FINAL
-        EARLY --> FINAL
-        STAKE --> FINAL
+        INCLUSIVE --> DIST[Distribution]
+        ONTOP --> DIST
+        DIST --> BURN[2% Burn]
     end
 ```
 
@@ -153,32 +156,35 @@ graph TB
 
 ```go
 type Params struct {
-    // Base Tax Configuration
-    BaseTaxRate              sdk.Dec   // 0.025 (2.5%)
-    MaxTaxAmount            sdk.Int   // 1000 (₹1,000 cap)
-    TaxCapThreshold         sdk.Int   // 40000 (₹40,000)
+    // Progressive Tax Configuration
+    FreeTaxThreshold        sdk.Int   // 100 (₹100 - FREE transactions)
+    MicroFee1               sdk.Int   // 10000 (₹0.01 for ₹100-500)
+    MicroFee2               sdk.Int   // 50000 (₹0.05 for ₹500-1000)
+    MaxTaxAmount            sdk.Int   // 1000000000 (₹1,000 cap in micro units)
     
-    // Volume Discount Configuration
-    VolumeDiscountEnabled    bool
-    VolumeThresholds        []VolumeThreshold
+    // Tax Rate Brackets
+    Rate1                   sdk.Dec   // 0.0025 (0.25% for ₹1K-10K)
+    Rate2                   sdk.Dec   // 0.005 (0.50% for ₹10K-1L)
+    Rate3                   sdk.Dec   // 0.003 (0.30% for ₹1L-10L)
+    Rate4                   sdk.Dec   // 0.002 (0.20% for > ₹10L)
     
-    // Discount Configuration
-    PatriotismDiscountRate   sdk.Dec   // 0.005 per 100 score
-    CulturalDiscountRate     sdk.Dec   // 0.002 per 100 score
-    DonationExemptionRate    sdk.Dec   // 1.0 (100% exemption)
-    EarlyPaymentDiscount     sdk.Dec   // 0.01 (1%)
+    // NAMO Integration
+    UniversalFeeNAMO        bool      // true (all fees in NAMO)
+    AutoSwapEnabled         bool      // true (auto-swap to NAMO)
+    BurnRate                sdk.Dec   // 0.02 (2% burn)
     
     // Distribution Percentages
-    NGOShare                sdk.Dec   // 0.30 (30%)
+    NGOShare                sdk.Dec   // 0.28 (28%)
     ValidatorShare          sdk.Dec   // 0.25 (25%)
-    CommunityShare          sdk.Dec   // 0.20 (20%)
-    TechInnovationShare     sdk.Dec   // 0.06 (6%)
-    OperationsShare         sdk.Dec   // 0.05 (5%)
+    CommunityShare          sdk.Dec   // 0.18 (18%)
+    DevelopmentShare        sdk.Dec   // 0.14 (14%)
+    OperationsShare         sdk.Dec   // 0.08 (8%)
+    FounderRoyalty          sdk.Dec   // 0.05 (5%)
+    NAMOBurnShare           sdk.Dec   // 0.02 (2%)
     
     // System Configuration
-    TaxResetPeriod          int64     // 86400 (24 hours)
-    GracePeriod             int64     // 604800 (7 days)
-    MinTaxAmount            sdk.Int   // 1 (₹1 minimum)
+    InclusiveFeeOption      bool      // true (user can choose)
+    DonationExemptionRate   sdk.Dec   // 1.0 (100% exemption)
 }
 ```
 
@@ -194,12 +200,13 @@ graph LR
         COLLECT --> POOL[Tax Pool]
         POOL --> DIST[Distribute]
         
-        DIST --> NGO[NGO Pool<br/>30%]
+        DIST --> NGO[NGO Pool<br/>28%]
         DIST --> VAL[Validator Pool<br/>25%]
-        DIST --> COM[Community Pool<br/>20%]
-        DIST --> TECH[Tech Pool<br/>6%]
-        DIST --> OPS[Operations<br/>5%]
-        DIST --> OTHER[Others<br/>14%]
+        DIST --> COM[Community Pool<br/>18%]
+        DIST --> DEV[Development<br/>14%]
+        DIST --> OPS[Operations<br/>8%]
+        DIST --> FOUND[Founder<br/>5%]
+        DIST --> BURN[NAMO Burn<br/>2%]
     end
 ```
 
@@ -253,17 +260,24 @@ type UserTaxProfile struct {
 }
 ```
 
-### 3. Tax Holidays & Events
+### 3. NAMO Auto-Swap Router
 
 ```go
-type TaxHoliday struct {
-    Name            string
-    StartTime       time.Time
-    EndTime         time.Time
-    DiscountRate    sdk.Dec
-    Categories      []TransactionCategory
-    Reason          string
+type NAMOSwapRouter struct {
+    SupportedTokens    []string   // DINR, DUSD, USDT, etc.
+    SwapPriority       []string   // DEX → Oracle → Fixed rates
+    SlippageProtection sdk.Dec    // Max 0.5%
+    InclusiveOption    bool       // Deduct from amount or add on top
 }
+
+// Automatic conversion of any token to NAMO for fees
+func (nsr *NAMOSwapRouter) SwapForNAMOFee(
+    ctx sdk.Context,
+    userAddr sdk.AccAddress,
+    feeAmount sdk.Coin,
+    userToken sdk.Coin,
+    inclusive bool,
+) (sdk.Coin, error)
 ```
 
 ## Transaction Types
@@ -311,11 +325,16 @@ Returns current tax module parameters.
 ```json
 {
   "params": {
-    "base_tax_rate": "0.025",
-    "max_tax_amount": "1000",
-    "ngo_share": "0.30",
+    "free_tax_threshold": "100",
+    "micro_fee_1": "10000",
+    "micro_fee_2": "50000",
+    "max_tax_amount": "1000000000",
+    "universal_fee_namo": true,
+    "auto_swap_enabled": true,
+    "burn_rate": "0.02",
+    "ngo_share": "0.28",
     "validator_share": "0.25",
-    "community_share": "0.20"
+    "founder_royalty": "0.05"
   }
 }
 ```
@@ -329,16 +348,19 @@ Calculates tax for a hypothetical transaction.
 ```json
 {
   "base_amount": "100000",
-  "base_tax": "2500",
-  "volume_discount": "100",
-  "patriotism_discount": "50",
-  "cultural_discount": "20",
-  "final_tax": "2330",
-  "effective_rate": "0.0233",
+  "bracket": "10K-1L",
+  "tax_rate": "0.005",
+  "calculated_tax": "500000",
+  "tax_in_namo": "60241",
+  "namo_rate": "8.30",
+  "inclusive_option": true,
   "distribution": {
-    "ngo": "699",
-    "validators": "582",
-    "community": "466"
+    "ngo": "140000",
+    "validators": "125000",
+    "community": "90000",
+    "development": "70000",
+    "founder": "25000",
+    "burn": "10000"
   }
 }
 ```
@@ -358,8 +380,10 @@ Returns user's tax profile and history.
     "total_tax_paid": "1234567",
     "discounts_received": "45678",
     "compliance_score": 95,
-    "current_volume_tier": "10K+",
-    "effective_tax_rate": "0.0218"
+    "current_bracket": "10K-1L",
+    "effective_tax_rate": "0.0045",
+    "fees_paid_in_namo": "1234567",
+    "namo_saved_via_swap": "45678"
   }
 }
 ```
@@ -571,17 +595,17 @@ deshchaind tx tax update-params [params-file] --from [key]
 
 ## FAQ
 
-**Q: Why 2.5% tax rate?**
-A: Balances platform sustainability with user affordability while enabling 40% charity allocation.
+**Q: Why progressive tax rates?**
+A: FREE transactions under ₹100 encourage adoption, micro fees for small amounts remain affordable, and percentage-based rates with ₹1,000 cap ensure fairness for all transaction sizes.
 
-**Q: How do I reduce my tax rate?**
-A: Increase transaction volume, build patriotism/cultural scores, make donations, or stake NAMO.
+**Q: Why are all fees in NAMO?**
+A: Universal NAMO fees simplify the ecosystem, enable deflationary burns, and create consistent value accrual to the native token.
 
 **Q: Are there tax-free transactions?**
 A: Yes, verified donations to registered NGOs are 100% tax-exempt.
 
 **Q: How is tax distributed?**
-A: Automatically and transparently according to preset percentages, with real-time tracking.
+A: Automatically and transparently: NGO 28%, Validators 25%, Community 18%, Development 14%, Operations 8%, Founder 5%, NAMO Burn 2%.
 
 **Q: Can tax rates change?**
 A: Only through governance proposals with community approval.

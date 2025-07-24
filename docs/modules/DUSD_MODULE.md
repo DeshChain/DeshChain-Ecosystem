@@ -264,14 +264,15 @@ DUSD uses USD-equivalent fee structure:
 - **Fee Calculation**: 0.25% of transaction amount, capped at $1.00
 - **Comparison**: 95%+ savings vs traditional banking ($15-50 fees)
 
-### Fee Examples
+### Fee Examples (All in NAMO)
 
-| Transaction Amount | DUSD Fee | Traditional Fee | Savings |
-|------------------|----------|----------------|---------|
-| $100 | $0.10 | $15 | 99.3% |
-| $1,000 | $0.25 | $25 | 99.0% |
-| $10,000 | $1.00 | $50 | 98.0% |
-| $100,000 | $1.00 | $500 | 99.8% |
+| Transaction Amount | Volume Tier | DUSD Fee (NAMO) | Traditional Fee | Savings |
+|------------------|-------------|-----------------|----------------|---------|
+| $100 | Retail | $0.10 (₹8.30) | $15 | 99.3% |
+| $1,000 | Retail | $0.30 (₹24.90) | $25 | 98.8% |
+| $10,000 | Professional | $0.20 (₹16.60) | $50 | 99.6% |
+| $100,000 | Institutional | $0.10 (₹8.30) | $500 | 99.98% |
+| $1,000,000 | Market Maker | $0.50 (₹41.50) | $5,000 | 99.99% |
 
 ## Market Opportunity
 

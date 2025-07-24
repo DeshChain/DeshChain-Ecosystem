@@ -2,7 +2,7 @@
 
 ## Overview
 
-The NAMO module is the core token module of DeshChain, managing the native NAMO token that powers the entire ecosystem. It handles token distribution, vesting schedules, burning mechanisms, and serves as the foundation for all economic activities on the chain.
+The NAMO module is the core token module of DeshChain, managing the native NAMO token that powers the entire ecosystem. NAMO serves as the universal fee currency for all platform operations, with automatic token swapping, progressive fee structures, and a 2% deflationary burn mechanism. It handles token distribution, vesting schedules, and serves as the foundation for all economic activities on the chain.
 
 ## Module Architecture
 
@@ -44,29 +44,25 @@ graph TB
 ```mermaid
 pie title "NAMO Token Distribution"
     "Public Sale" : 20
-    "Liquidity" : 18
+    "Liquidity" : 20
     "Community" : 15
     "Development" : 15
-    "Team" : 12
-    "Founder" : 8
+    "Team" : 10
+    "Founder" : 10
     "DAO Treasury" : 5
-    "Co-Founder" : 3.5
-    "Operations" : 2
-    "Angel Investors" : 1.5
+    "Operations" : 5
 ```
 
 | Allocation | Percentage | Amount | Vesting Schedule |
 |------------|------------|--------|------------------|
 | Public Sale | 20% | 285,725,533 | No vesting (immediate) |
-| Liquidity | 18% | 257,152,979 | No vesting (locked in pools) |
+| Liquidity | 20% | 285,725,533 | No vesting (locked in pools) |
 | Community | 15% | 214,294,149 | 60-month distribution |
 | Development | 15% | 214,294,149 | As per milestones |
-| Team | 12% | 171,435,319 | 24-month vesting, 12-month cliff |
-| Founder | 8% | 114,290,213 | 48-month vesting, 12-month cliff |
+| Team | 10% | 142,862,766 | 24-month vesting, 12-month cliff |
+| Founder | 10% | 142,862,766 | 48-month vesting, 12-month cliff + 5% royalty |
 | DAO Treasury | 5% | 71,431,383 | Governance controlled |
-| Co-Founder | 3.5% | 50,001,968 | 24-month vesting, 12-month cliff |
-| Operations | 2% | 28,572,553 | Monthly unlock over 24 months |
-| Angel Investors | 1.5% | 21,428,900 | 24-month vesting, 12-month cliff |
+| Operations | 5% | 71,431,383 | Monthly unlock over 24 months |
 
 ## Module Parameters
 
@@ -76,12 +72,72 @@ type Params struct {
     EnableVesting   bool     // Enable/disable vesting functionality
     EnableBurning   bool     // Enable/disable token burning
     MinBurnAmount   sdk.Int  // Minimum amount for burn transactions (1 NAMO)
+    BurnRate        sdk.Dec  // 2% burn rate from all revenues
+    UniversalFee    bool     // NAMO as universal fee currency (true)
+    AutoSwapEnabled bool     // Enable auto-swap for fee collection (true)
 }
 ```
 
 ## Key Features
 
-### 1. Vesting Mechanism
+### 1. Universal Fee Currency
+
+NAMO serves as the universal fee currency across all DeshChain modules with revolutionary features:
+
+#### Progressive Fee Structure
+| Transaction Amount | Fee Rate | Example |
+|-------------------|----------|---------|
+| < ₹100 | **FREE** | Daily micro-transactions |
+| ₹100-500 | ₹0.01 fixed | Small purchases |
+| ₹500-1000 | ₹0.05 fixed | Regular transfers |
+| ₹1K-10K | 0.25% | Business payments |
+| ₹10K-1L | 0.50% | Large transfers |
+| ₹1L-10L | 0.30% | Bulk transactions |
+| > ₹10L | 0.20% | Institutional (₹1K cap) |
+
+#### Auto-Swap Router
+```go
+type NAMOSwapRouter struct {
+    // Automatically swaps any token to NAMO for fees
+    SupportedTokens []string // DINR, DUSD, USDT, etc.
+    SwapPriority    []string // DEX → Oracle → Fixed rates
+    SlippageProtection sdk.Dec // Max 0.5%
+}
+```
+
+#### Deflationary Mechanism
+- **2% Burn Rate**: Applied to all revenue streams
+- **Automatic Burning**: No manual intervention needed
+- **Transparent Tracking**: On-chain burn counter
+- **Supply Reduction**: Creating long-term value
+
+### 2. Revenue Distribution
+
+All fees collected in NAMO are distributed according to sustainable economics:
+
+```mermaid
+graph TB
+    subgraph "Transaction Tax Distribution"
+        TX[Transaction Fees] --> NGO1[NGO 28%]
+        TX --> VAL1[Validators 25%]
+        TX --> COM1[Community 18%]
+        TX --> DEV1[Development 14%]
+        TX --> FOUND1[Founder 5%]
+        TX --> BURN1[NAMO Burn 2%]
+    end
+    
+    subgraph "Platform Revenue Distribution"
+        PR[Platform Revenue] --> DEV2[Development 25%]
+        PR --> COM2[Community 24%]
+        PR --> LIQ[Liquidity 18%]
+        PR --> NGO2[NGO 10%]
+        PR --> VAL2[Validators 8%]
+        PR --> FOUND2[Founder 5%]
+        PR --> BURN2[NAMO Burn 2%]
+    end
+```
+
+### 3. Vesting Mechanism
 
 ```mermaid
 graph LR

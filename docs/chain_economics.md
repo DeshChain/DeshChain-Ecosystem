@@ -18,10 +18,12 @@
 DeshChain operates a comprehensive blockchain financial ecosystem with 15 integrated revenue streams. This analysis presents conservative 10-year projections showing:
 
 - **Total 10-Year Revenue**: ₹125,847 Crore
-- **Total NGO Contributions**: ₹25,169 Crore (20%)
+- **Total NGO Contributions**: Variable based on graduated model
 - **Net Profit Margin**: 38.5% by Year 10
 - **Break-even**: Month 14
 - **Sustainable Unit Economics**: Positive from Year 2
+- **Universal NAMO Fees**: All platform fees in NAMO with auto-swap
+- **Deflationary Model**: 2% burn from all revenues
 
 ---
 
@@ -29,23 +31,26 @@ DeshChain operates a comprehensive blockchain financial ecosystem with 15 integr
 
 ### 1. Transaction Tax Revenue (Core Blockchain)
 
-**Mechanism**: 2.5% base tax on all blockchain transactions with volume-based reductions
+**Mechanism**: Progressive tax structure with NAMO as universal fee currency
 
 ```yaml
 Fee Structure:
-  Base Rate: 2.5%
-  Volume Discounts:
-    - >₹1 Crore/month: 2.0%
-    - >₹10 Crore/month: 1.5%
-    - >₹100 Crore/month: 1.0%
-    - >₹1000 Crore/month: 0.25%
+  < ₹100: FREE (0%)
+  ₹100-500: ₹0.01 fixed
+  ₹500-1000: ₹0.05 fixed
+  ₹1000-10K: 0.25%
+  ₹10K-1L: 0.50%
+  ₹1L-10L: 0.30%
+  > ₹10L: 0.20%
+  Maximum Cap: ₹1,000
   
-  Cultural Incentive: -0.05% for patriotic quotes
+  All fees collected in NAMO tokens
+  Auto-swap from any token supported
   
 Revenue Calculation:
-  Year 1: ₹3,200 Cr volume × 2.3% avg = ₹73.6 Cr
-  Year 5: ₹130,000 Cr volume × 2.3% avg = ₹2,990 Cr
-  Year 10: ₹650,000 Cr volume × 2.0% avg = ₹13,000 Cr
+  Year 1: ₹3,200 Cr volume × 0.3% avg = ₹9.6 Cr
+  Year 5: ₹130,000 Cr volume × 0.25% avg = ₹325 Cr
+  Year 10: ₹650,000 Cr volume × 0.20% avg = ₹1,300 Cr
 ```
 
 **Benefits**:
@@ -87,12 +92,14 @@ Revenue Model:
 
 ### 3. DINR Stablecoin Operations
 
-**Mechanism**: Algorithmic INR stablecoin with sustainable yields
+**Mechanism**: Algorithmic INR stablecoin with NAMO fee integration
 
 ```yaml
 Revenue Sources:
   Minting/Burning Fees:
-    - 0.1% capped at ₹100
+    - Tiered: 0.5% (< ₹10K) → 0.2% (> ₹10L)
+    - ₹830 maximum cap
+    - All fees paid in NAMO
     - Both directions
     
   Stability Operations:

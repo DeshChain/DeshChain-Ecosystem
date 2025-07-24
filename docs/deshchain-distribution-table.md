@@ -4,24 +4,32 @@
 
 ### From Transaction Tax (2.5% of volume)
 
-| Stakeholder | Percentage | Amount per ₹100 | 5-Year Total |
-|------------|------------|----------------|--------------|
-| **NGO Donations** | 30% | ₹0.75 | ₹2,100 Cr |
-| **Validators** | 25% | ₹0.625 | ₹1,750 Cr |
-| **Community Rewards** | 20% | ₹0.50 | ₹1,400 Cr |
-| **Tech Innovation** | 6% | ₹0.15 | ₹420 Cr |
-| **Operations** | 5% | ₹0.125 | ₹350 Cr |
-| **Talent Acquisition** | 4% | ₹0.10 | ₹280 Cr |
-| **Strategic Reserve** | 4% | ₹0.10 | ₹280 Cr |
-| **Founder** | 3.5% | ₹0.0875 | ₹245 Cr |
-| **Co-Founders** | 1.8% | ₹0.045 | ₹126 Cr |
-| **Angel Investors** | 0.7% | ₹0.0175 | ₹49 Cr |
-| **TOTAL** | 100% | ₹2.50 | ₹7,000 Cr |
+| Stakeholder | Percentage | 5-Year Total |
+|------------|------------|--------------| 
+| **NGO Donations** | 28% | ₹1,960 Cr |
+| **Validators** | 25% | ₹1,750 Cr |
+| **Community Rewards** | 18% | ₹1,260 Cr |
+| **Development** | 14% | ₹980 Cr |
+| **Operations** | 8% | ₹560 Cr |
+| **Founder Royalty** | 5% | ₹350 Cr |
+| **NAMO Burn** | 2% | ₹140 Cr |
+| **TOTAL** | 100% | ₹7,000 Cr |
+
+### Progressive Fee Structure (All in NAMO)
+| Transaction Amount | Fee | Example |
+|-------------------|-----|----------|
+| < ₹100 | **FREE** | Daily micro-transactions |
+| ₹100-500 | ₹0.01 | Small transfers |
+| ₹500-1,000 | ₹0.05 | Regular payments |
+| ₹1K-10K | 0.25% | Business transactions |
+| ₹10K-1L | 0.50% | Large transfers |
+| ₹1L-10L | 0.30% | Bulk payments |
+| > ₹10L | 0.20% | Institutional (max ₹1,000) |
 
 ### From Platform Revenue (All other sources)
 
 | Stakeholder | Percentage | 5-Year Total |
-|------------|------------|--------------|
+|------------|------------|--------------| 
 | **Development Fund** | 30% | ₹1,950 Cr |
 | **Community Treasury** | 25% | ₹1,625 Cr |
 | **Liquidity Provision** | 20% | ₹1,300 Cr |
@@ -44,7 +52,7 @@
 ## 🎯 Total 5-Year Stakeholder Benefits
 
 | Stakeholder | From Tax | From Platform | Total | % of Revenue |
-|------------|----------|--------------|-------|--------------|
+|------------|----------|--------------|-------|--------------| 
 | **NGO Donations** | ₹1,974 Cr | ₹1,049 Cr | **₹3,023 Cr** | 17.7% |
 | **Community (All)** | ₹1,316 Cr | ₹3,384 Cr | **₹4,700 Cr** | 27.5% |
 | **Validators** | ₹1,645 Cr | - | **₹1,645 Cr** | 9.6% |

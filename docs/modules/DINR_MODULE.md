@@ -2,7 +2,7 @@
 
 ## Overview
 
-The DINR (Desh INR) module implements an algorithmic stablecoin pegged to the Indian Rupee (INR). It provides a decentralized, collateral-backed stable currency for the DeshChain ecosystem, enabling stable value transactions, remittances, and DeFi applications while maintaining the purchasing power of the Indian Rupee.
+The DINR (Desh INR) module implements an algorithmic stablecoin pegged to the Indian Rupee (INR). It provides a decentralized, collateral-backed stable currency for the DeshChain ecosystem, enabling stable value transactions, remittances, and DeFi applications while maintaining the purchasing power of the Indian Rupee. All fees are paid in NAMO tokens with automatic swapping, featuring a tiered fee structure from 0.5% (< ₹10K) to 0.2% (> ₹10L) with a ₹830 maximum cap.
 
 ## Module Architecture
 
@@ -113,7 +113,7 @@ sequenceDiagram
     
     alt Ratio >= 150%
         DINR Module->>Bank: Lock Collateral
-        DINR Module->>Tax: Calculate Fees
+        DINR Module->>Tax: Calculate Tiered Fees in NAMO
         DINR Module->>Bank: Mint DINR
         DINR Module->>User: Transfer DINR
     else Ratio < 150%
@@ -126,7 +126,7 @@ sequenceDiagram
 2. Oracle provides real-time price feeds
 3. System calculates collateral value in INR
 4. Minimum 150% collateralization enforced
-5. 0.1% minting fee applied (capped at ₹100)
+5. Tiered fee applied: 0.5% (< ₹10K) → 0.3% (₹10K-1L) → 0.2% (> ₹1L), capped at ₹830 in NAMO
 6. DINR minted and transferred to user
 
 ### 2. Burning DINR
@@ -150,7 +150,7 @@ sequenceDiagram
 **Process Steps:**
 1. User submits DINR for burning
 2. System calculates proportional collateral return
-3. 0.1% burning fee applied (capped at ₹100)
+3. Tiered fee applied: 0.5% (< ₹10K) → 0.3% (₹10K-1L) → 0.2% (> ₹1L), capped at ₹830 in NAMO
 4. DINR burned from circulation
 5. Collateral released to user
 
@@ -175,11 +175,12 @@ graph TB
 
 ```go
 type Params struct {
-    // Fee Parameters
-    MintFee              uint64  // 0.1% (10 basis points)
-    MintFeeCap           string  // "100" (₹100 cap)
-    BurnFee              uint64  // 0.1% (10 basis points)
-    BurnFeeCap           string  // "100" (₹100 cap)
+    // Fee Parameters (all fees paid in NAMO)
+    TieredFeeStructure   bool    // true - enables tiered fees
+    Tier1Fee             uint64  // 50 (0.5% for < ₹10K)
+    Tier2Fee             uint64  // 30 (0.3% for ₹10K-1L)
+    Tier3Fee             uint64  // 20 (0.2% for > ₹1L)
+    MaxFeeNAMO           string  // "830000000" (₹830 in micro units)
     
     // Collateral Parameters
     MinCollateralRatio   uint64  // 15000 (150%)
@@ -319,9 +320,11 @@ Returns current module parameters.
 ```json
 {
   "params": {
-    "mint_fee": "10",
-    "mint_fee_cap": "100",
-    "burn_fee": "10",
+    "tiered_fee_structure": true,
+    "tier1_fee": "50",
+    "tier2_fee": "30",
+    "tier3_fee": "20",
+    "max_fee_namo": "830000000",
     "min_collateral_ratio": "15000",
     "liquidation_threshold": "13000"
   }
@@ -444,7 +447,9 @@ Returns supported collateral assets.
 
 ### 3. NAMO Module Integration
 - NAMO can be used as Tier 3 collateral
-- Platform fees paid in NAMO tokens
+- All platform fees exclusively paid in NAMO tokens
+- Automatic token swapping for fee collection
+- 2% of all fees burned for deflationary pressure
 
 ### 4. Money Order Module Integration
 - DINR used as primary currency for money orders
@@ -519,20 +524,25 @@ graph TB
 
 ## Revenue Model
 
-### Fee Structure
-- **Minting Fee**: 0.1% (capped at ₹100)
-- **Burning Fee**: 0.1% (capped at ₹100)
+### Fee Structure (All Fees in NAMO)
+- **Minting/Burning Fees**:
+  - < ₹10K: 0.5%
+  - ₹10K - ₹1L: 0.3%
+  - > ₹1L: 0.2%
+  - Maximum cap: ₹830 in NAMO tokens
 - **Liquidation Penalty**: 10% of liquidated amount
-- **Yield Generation**: 3-10% APY on deployed collateral
+- **Yield Generation**: Performance-based 0-8% APY on deployed collateral
 
 ### Revenue Distribution
 ```mermaid
 pie title "DINR Revenue Distribution"
-    "NGO Charity (40%)" : 40
-    "Insurance Fund (20%)" : 20
-    "Platform Operations (20%)" : 20
-    "Development Fund (10%)" : 10
-    "Validator Rewards (10%)" : 10
+    "NGO Charity (28%)" : 28
+    "Validators (25%)" : 25
+    "Community Rewards (18%)" : 18
+    "Development (14%)" : 14
+    "Operations (8%)" : 8
+    "Founder Royalty (5%)" : 5
+    "NAMO Burn (2%)" : 2
 ```
 
 ### Projected Revenue
@@ -579,19 +589,19 @@ deshchaind tx dinr liquidate [target-address] [max-dinr] --from [key]
 ## FAQ
 
 **Q: How is DINR different from other stablecoins?**
-A: DINR is specifically pegged to INR, uses multi-tier collateral system, generates yield on idle collateral, and dedicates 40% of revenue to charity.
+A: DINR is specifically pegged to INR, uses multi-tier collateral system with tiered fees (0.5% → 0.2%), all fees paid in NAMO with ₹830 cap, generates yield on idle collateral, and dedicates 28% of revenue to charity with 2% burned.
 
 **Q: What happens if DINR loses its peg?**
 A: The stability mechanism automatically adjusts fees and incentives. If deviation persists, the insurance fund can be deployed to defend the peg.
 
 **Q: Can I use NAMO tokens as collateral?**
-A: Yes, NAMO is accepted as Tier 3 collateral with a 170% minimum collateralization ratio.
+A: Yes, NAMO is accepted as Tier 3 collateral with a 170% minimum collateralization ratio. Additionally, all fees are paid exclusively in NAMO tokens with automatic swapping from your preferred token.
 
 **Q: How are liquidations handled?**
 A: Positions below 130% ratio can be liquidated through a Dutch auction mechanism, with a 10% penalty split between insurance fund and platform.
 
 **Q: Is there a minimum amount to mint DINR?**
-A: Yes, the minimum minting amount is ₹100 worth of DINR to ensure economic viability.
+A: Yes, the minimum minting amount is ₹100 worth of DINR to ensure economic viability. Note that transactions under ₹100 in the broader ecosystem enjoy FREE fees under the progressive tax structure.
 
 ---
 
