@@ -6,7 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
-	"github.com/deshchain/deshchain/x/krishimitra/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/krishimitra/types"
 )
 
 // GetIdentityQueryCmd returns the identity query commands for KrishiMitra

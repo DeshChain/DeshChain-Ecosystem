@@ -10,7 +10,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/deshchain/deshchain/x/charitabletrust/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/charitabletrust/types"
 )
 
 var _ types.QueryServer = Keeper{}

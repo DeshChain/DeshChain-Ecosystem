@@ -212,7 +212,7 @@ export class DeshChainIdentitySDK {
     const credential: Partial<VerifiableCredential> = {
       context: [
         'https://www.w3.org/2018/credentials/v1',
-        'https://deshchain.bharat/contexts/v1'
+        'https://deshchain.com/contexts/v1'
       ],
       type: ['VerifiableCredential', ...credentialType],
       issuer: `did:desh:${issuerAddress}`,

@@ -8,7 +8,7 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/tradefinance/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/tradefinance/types"
 )
 
 // SWIFTMTProcessor handles SWIFT MT message processing for trade finance

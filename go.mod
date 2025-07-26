@@ -1,6 +1,6 @@
-module github.com/deshchain/deshchain
+module github.com/DeshChain/DeshChain-Ecosystem
 
-go 1.21
+go 1.23
 
 require (
 	cosmossdk.io/api v0.7.5
@@ -25,4 +25,7 @@ require (
 	gopkg.in/yaml.v2 v2.4.0
 	github.com/cometbft/cometbft v0.38.7
 	github.com/cometbft/cometbft-db v0.9.1
+	github.com/cosmos/ibc-go/v7 v7.10.0
 )
+
+replace github.com/DeshChain/DeshChain-Ecosystem => ./

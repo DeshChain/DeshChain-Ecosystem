@@ -6,7 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
-	"github.com/deshchain/deshchain/x/gramsuraksha/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/gramsuraksha/types"
 	"github.com/spf13/cobra"
 )
 

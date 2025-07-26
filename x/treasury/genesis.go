@@ -18,8 +18,8 @@ package treasury
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/treasury/keeper"
-	"github.com/deshchain/deshchain/x/treasury/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/treasury/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/treasury/types"
 )
 
 // InitGenesis initializes the treasury module's state from a provided genesis state.

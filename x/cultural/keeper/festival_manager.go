@@ -21,7 +21,7 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/cultural/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/cultural/types"
 )
 
 // FestivalInfo represents comprehensive festival information

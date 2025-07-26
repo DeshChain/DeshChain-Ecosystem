@@ -3,7 +3,7 @@ package keeper
 import (
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/liquiditymanager/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/liquiditymanager/types"
 )
 
 // LiquidityStatus represents the current state of lending liquidity

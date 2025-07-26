@@ -35,9 +35,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	
-	"github.com/deshchain/deshchain/x/gamification/client/cli"
-	"github.com/deshchain/deshchain/x/gamification/keeper"
-	"github.com/deshchain/deshchain/x/gamification/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/gamification/client/cli"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/gamification/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/gamification/types"
 )
 
 var (

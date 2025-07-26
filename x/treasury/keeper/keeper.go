@@ -25,7 +25,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	
-	"github.com/deshchain/deshchain/x/treasury/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/treasury/types"
 )
 
 // Keeper defines the treasury keeper

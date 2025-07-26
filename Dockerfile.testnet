@@ -1,0 +1,47 @@
+# DeshChain Testnet Dockerfile
+FROM golang:1.21-alpine AS builder
+
+# Install build dependencies
+RUN apk add --no-cache make git libc-dev bash gcc linux-headers eudev-dev curl
+
+WORKDIR /deshchain
+
+# Copy go mod files first
+COPY go.mod go.sum ./
+
+# Download dependencies
+RUN go mod download
+
+# Copy source code
+COPY . .
+
+# Remove problematic files
+RUN rm -rf scripts/load-testing/load-test.go
+
+# Build with minimal validation
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -mod=readonly -o build/deshchaind ./cmd/deshchaind
+
+# Final stage
+FROM alpine:latest
+
+RUN apk add --no-cache ca-certificates jq bash curl
+
+WORKDIR /deshchain
+
+# Copy binary
+COPY --from=builder /deshchain/build/deshchaind /usr/local/bin/deshchaind
+
+# Copy genesis files
+COPY --from=builder /deshchain/genesis /deshchain/genesis
+
+# Create user
+RUN adduser -S -h /deshchain -D deshchain
+
+# Set permissions
+RUN chown -R deshchain:deshchain /deshchain
+
+USER deshchain
+
+EXPOSE 26656 26657 26658 1317 9090 9091
+
+ENTRYPOINT ["deshchaind"]

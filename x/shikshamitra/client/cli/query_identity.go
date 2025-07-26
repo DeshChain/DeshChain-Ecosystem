@@ -6,7 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
-	"github.com/deshchain/deshchain/x/shikshamitra/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/shikshamitra/types"
 )
 
 // GetIdentityQueryCmd returns the identity query commands for ShikshaMitra

@@ -26,10 +26,10 @@ import (
 	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	"github.com/deshchain/namo/x/revenue"
-	"github.com/deshchain/namo/x/revenue/keeper"
-	"github.com/deshchain/namo/x/revenue/types"
-	taxtypes "github.com/deshchain/namo/x/tax/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/revenue"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/revenue/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/revenue/types"
+	taxtypes "github.com/DeshChain/DeshChain-Ecosystem/x/tax/types"
 )
 
 type KeeperTestSuite struct {

@@ -8,7 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/remittance/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/remittance/types"
 )
 
 // GetQueryIdentityCmd returns the identity query commands for Remittance module

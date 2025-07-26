@@ -5,8 +5,8 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/tradefinance/types"
-	oracletypes "github.com/deshchain/deshchain/x/oracle/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/tradefinance/types"
+	oracletypes "github.com/DeshChain/DeshChain-Ecosystem/x/oracle/types"
 )
 
 // MultiCurrencyTradeManager handles multi-currency trade finance operations

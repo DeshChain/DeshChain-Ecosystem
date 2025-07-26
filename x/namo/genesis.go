@@ -18,8 +18,8 @@ package namo
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/namo/keeper"
-	"github.com/deshchain/deshchain/x/namo/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/namo/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/namo/types"
 )
 
 // InitGenesis initializes the NAMO module's state from a provided genesis state

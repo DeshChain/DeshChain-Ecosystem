@@ -7,8 +7,8 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/namo/x/identity/keeper"
-	"github.com/namo/x/identity/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/identity/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/identity/types"
 )
 
 type AuditKeeperTestSuite struct {

@@ -15,9 +15,9 @@ import (
 	"github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/deshchain/deshchain/x/revenue/client/cli"
-	"github.com/deshchain/deshchain/x/revenue/keeper"
-	"github.com/deshchain/deshchain/x/revenue/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/revenue/client/cli"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/revenue/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/revenue/types"
 )
 
 var (

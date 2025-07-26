@@ -9,7 +9,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/namo/x/validator/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/validator/types"
 )
 
 // GetQueryIdentityCmd returns the identity query commands for Validator module

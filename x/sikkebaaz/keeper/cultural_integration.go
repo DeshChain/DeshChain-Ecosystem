@@ -22,7 +22,7 @@ import (
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/namo/x/sikkebaaz/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/sikkebaaz/types"
 )
 
 // ValidateCulturalRequirements validates cultural aspects of a token launch

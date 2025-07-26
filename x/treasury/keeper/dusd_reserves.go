@@ -5,7 +5,7 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/treasury/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/treasury/types"
 )
 
 // DUSDReserveManager manages DUSD reserves and USD collateral within the treasury system

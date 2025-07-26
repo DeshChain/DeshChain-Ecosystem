@@ -6,7 +6,7 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/namo/x/treasury/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/treasury/types"
 )
 
 // PerformanceAnalytics handles treasury performance reporting and analytics

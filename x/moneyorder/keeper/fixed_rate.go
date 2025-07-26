@@ -20,7 +20,7 @@ import (
 	"fmt"
 	
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/moneyorder/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/moneyorder/types"
 )
 
 // CreateFixedRatePool creates a new fixed rate pool

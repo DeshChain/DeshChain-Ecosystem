@@ -5,7 +5,7 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/namo/x/identity/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/identity/types"
 )
 
 // TradeFinanceIntegration provides backward-compatible KYC integration for tradefinance module
@@ -151,7 +151,7 @@ func (tfi *TradeFinanceIntegration) createKYCCredential(
 	credential := types.VerifiableCredential{
 		Context: []string{
 			"https://www.w3.org/2018/credentials/v1",
-			"https://deshchain.bharat/contexts/kyc/v1",
+			"https://deshchain.com/contexts/kyc/v1",
 		},
 		ID:   credID,
 		Type: []string{"VerifiableCredential", "TradeFinanceKYC"},

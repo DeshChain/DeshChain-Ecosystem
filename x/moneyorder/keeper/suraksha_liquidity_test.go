@@ -24,8 +24,8 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/deshchain/deshchain/x/moneyorder/keeper"
-	"github.com/deshchain/deshchain/x/moneyorder/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/moneyorder/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/moneyorder/types"
 )
 
 type PensionLiquidityTestSuite struct {

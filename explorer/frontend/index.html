@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeshChain Explorer - The Blockchain of India</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: between;
+            padding: 16px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: #ff6b00;
+            font-weight: 700;
+            font-size: 24px;
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            margin-left: auto;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #64748b;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #ff6b00;
+        }
+
+        /* Search Bar */
+        .search-section {
+            background: linear-gradient(135deg, #ff6b00 0%, #ff8533 100%);
+            padding: 60px 0;
+            text-align: center;
+            color: white;
+        }
+
+        .search-title {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .search-subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 40px;
+        }
+
+        .search-box {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 12px;
+            outline: none;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 8px;
+            top: 8px;
+            background: #ff6b00;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        /* Stats Cards */
+        .stats-section {
+            padding: 40px 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-change {
+            font-size: 12px;
+            margin-top: 8px;
+        }
+
+        .stat-change.positive {
+            color: #22c55e;
+        }
+
+        .stat-change.negative {
+            color: #ef4444;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            padding: 40px 0;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 24px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .view-all {
+            color: #ff6b00;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        /* Transaction/Block Lists */
+        .item-list {
+            padding: 0;
+        }
+
+        .list-item {
+            padding: 20px 24px;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .list-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .item-hash {
+            font-family: 'Monaco', monospace;
+            font-size: 14px;
+            color: #ff6b00;
+            text-decoration: none;
+        }
+
+        .item-meta {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .item-value {
+            text-align: right;
+        }
+
+        .item-amount {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        /* Validators Section */
+        .validators-section {
+            padding: 40px 0;
+        }
+
+        .validators-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .validator-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .validator-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .validator-status {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #22c55e;
+        }
+
+        .validator-status.inactive {
+            background: #ef4444;
+        }
+
+        .validator-name {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .validator-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .validator-detail {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Footer */
+        .footer {
+            background: #1e293b;
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .search-title {
+                font-size: 28px;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #ff6b00;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Status Badges */
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .status-success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-failed {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <a href="/" class="logo">
+                    <img src="/logo/deshchain-logo.png" alt="DeshChain">
+                    <span>DeshChain Explorer</span>
+                </a>
+                <div class="nav-links">
+                    <a href="/">Home</a>
+                    <a href="/blocks">Blocks</a>
+                    <a href="/transactions">Transactions</a>
+                    <a href="/validators">Validators</a>
+                    <a href="https://faucet.deshchain.com">Faucet</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Search Section -->
+    <section class="search-section">
+        <div class="container">
+            <h1 class="search-title">DeshChain Explorer</h1>
+            <p class="search-subtitle">The Blockchain Explorer for India's Cultural Heritage</p>
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="Search by Transaction Hash, Block Number, or Address..." id="searchInput">
+                <button class="search-btn" onclick="performSearch()">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon" style="background: #ff6b00;">
+                            <i class="fas fa-cube"></i>
+                        </div>
+                        <div>
+                            <div class="stat-value" id="latestBlock">Loading...</div>
+                            <div class="stat-label">Latest Block</div>
+                            <div class="stat-change positive" id="blockChange">+1.2% from yesterday</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon" style="background: #22c55e;">
+                            <i class="fas fa-exchange-alt"></i>
+                        </div>
+                        <div>
+                            <div class="stat-value" id="totalTransactions">Loading...</div>
+                            <div class="stat-label">Total Transactions</div>
+                            <div class="stat-change positive" id="txChange">+5.7% from yesterday</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon" style="background: #3b82f6;">
+                            <i class="fas fa-server"></i>
+                        </div>
+                        <div>
+                            <div class="stat-value" id="activeValidators">21</div>
+                            <div class="stat-label">Active Validators</div>
+                            <div class="stat-change positive">100% Uptime</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon" style="background: #8b5cf6;">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <div>
+                            <div class="stat-value" id="namoPrice">₹2.50</div>
+                            <div class="stat-label">NAMO Price</div>
+                            <div class="stat-change positive" id="priceChange">+2.3% (24h)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="main-content">
+        <div class="container" style="max-width: none; display: contents;">
+            <!-- Latest Blocks -->
+            <div class="section-card">
+                <div class="section-header">
+                    <h2 class="section-title">Latest Blocks</h2>
+                    <a href="/blocks" class="view-all">View All Blocks</a>
+                </div>
+                <div class="item-list" id="latestBlocks">
+                    <!-- Dynamic content will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Latest Transactions -->
+            <div class="section-card">
+                <div class="section-header">
+                    <h2 class="section-title">Latest Transactions</h2>
+                    <a href="/transactions" class="view-all">View All Transactions</a>
+                </div>
+                <div class="item-list" id="latestTransactions">
+                    <!-- Dynamic content will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Validators Section -->
+    <section class="validators-section">
+        <div class="container">
+            <h2 class="section-title" style="margin-bottom: 24px;">Active Validators</h2>
+            <div class="validators-grid" id="validatorsGrid">
+                <!-- Dynamic content will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 DeshChain - Building India's Digital Future with Blockchain Technology</p>
+        </div>
+    </footer>
+
+    <script>
+        // API Base URL
+        const API_BASE = '/api';
+
+        // Initialize the explorer
+        document.addEventListener('DOMContentLoaded', function() {
+            loadChainStats();
+            loadLatestBlocks();
+            loadLatestTransactions();
+            loadValidators();
+            
+            // Auto-refresh every 10 seconds
+            setInterval(() => {
+                loadChainStats();
+                loadLatestBlocks();
+                loadLatestTransactions();
+            }, 10000);
+        });
+
+        // Load chain statistics
+        async function loadChainStats() {
+            try {
+                const response = await fetch(`${API_BASE}/stats`);
+                const data = await response.json();
+                
+                document.getElementById('latestBlock').textContent = data.latestBlock?.toLocaleString() || 'Loading...';
+                document.getElementById('totalTransactions').textContent = data.totalTransactions?.toLocaleString() || 'Loading...';
+                document.getElementById('activeValidators').textContent = data.activeValidators || '21';
+                document.getElementById('namoPrice').textContent = `₹${data.namoPrice || '2.50'}`;
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        // Load latest blocks
+        async function loadLatestBlocks() {
+            try {
+                const response = await fetch(`${API_BASE}/blocks?limit=10`);
+                const blocks = await response.json();
+                
+                const container = document.getElementById('latestBlocks');
+                container.innerHTML = blocks.map(block => `
+                    <div class="list-item">
+                        <div class="item-info">
+                            <a href="/block/${block.height}" class="item-hash">${block.height}</a>
+                            <div class="item-meta">
+                                <i class="fas fa-clock"></i> ${formatTime(block.time)} • 
+                                <i class="fas fa-exchange-alt"></i> ${block.txs} txs
+                            </div>
+                        </div>
+                        <div class="item-value">
+                            <div class="item-amount">${block.hash.substring(0, 10)}...</div>
+                            <div class="item-meta">Block Hash</div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading blocks:', error);
+                document.getElementById('latestBlocks').innerHTML = '<div class="list-item">Error loading blocks</div>';
+            }
+        }
+
+        // Load latest transactions
+        async function loadLatestTransactions() {
+            try {
+                const response = await fetch(`${API_BASE}/transactions?limit=10`);
+                const transactions = await response.json();
+                
+                const container = document.getElementById('latestTransactions');
+                container.innerHTML = transactions.map(tx => `
+                    <div class="list-item">
+                        <div class="item-info">
+                            <a href="/tx/${tx.hash}" class="item-hash">${tx.hash.substring(0, 16)}...</a>
+                            <div class="item-meta">
+                                <i class="fas fa-clock"></i> ${formatTime(tx.time)} • 
+                                <span class="status-badge status-${tx.status}">${tx.status}</span>
+                            </div>
+                        </div>
+                        <div class="item-value">
+                            <div class="item-amount">${tx.amount} NAMO</div>
+                            <div class="item-meta">From: ${tx.from.substring(0, 8)}...</div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading transactions:', error);
+                document.getElementById('latestTransactions').innerHTML = '<div class="list-item">Error loading transactions</div>';
+            }
+        }
+
+        // Load validators
+        async function loadValidators() {
+            try {
+                const response = await fetch(`${API_BASE}/validators`);
+                const validators = await response.json();
+                
+                const container = document.getElementById('validatorsGrid');
+                container.innerHTML = validators.map(validator => `
+                    <div class="validator-card">
+                        <div class="validator-header">
+                            <div class="validator-status ${validator.active ? '' : 'inactive'}"></div>
+                            <div class="validator-name">${validator.name}</div>
+                        </div>
+                        <div class="validator-details">
+                            <div class="validator-detail">
+                                <span>Voting Power:</span>
+                                <span>${validator.votingPower}%</span>
+                            </div>
+                            <div class="validator-detail">
+                                <span>Uptime:</span>
+                                <span>${validator.uptime}%</span>
+                            </div>
+                            <div class="validator-detail">
+                                <span>Commission:</span>
+                                <span>${validator.commission}%</span>
+                            </div>
+                            <div class="validator-detail">
+                                <span>Delegators:</span>
+                                <span>${validator.delegators}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading validators:', error);
+            }
+        }
+
+        // Search functionality
+        function performSearch() {
+            const query = document.getElementById('searchInput').value.trim();
+            if (!query) return;
+            
+            // Determine search type and redirect
+            if (query.match(/^[0-9]+$/)) {
+                window.location.href = `/block/${query}`;
+            } else if (query.match(/^0x[a-fA-F0-9]{64}$/)) {
+                window.location.href = `/tx/${query}`;
+            } else if (query.match(/^desh[a-zA-Z0-9]{39}$/)) {
+                window.location.href = `/address/${query}`;
+            } else {
+                alert('Invalid search query. Please enter a block number, transaction hash, or address.');
+            }
+        }
+
+        // Handle Enter key in search
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        // Format time helper
+        function formatTime(timestamp) {
+            const now = new Date();
+            const time = new Date(timestamp);
+            const diff = Math.floor((now - time) / 1000);
+            
+            if (diff < 60) return `${diff}s ago`;
+            if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+            if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+            return `${Math.floor(diff / 86400)}d ago`;
+        }
+    </script>
+</body>
+</html>

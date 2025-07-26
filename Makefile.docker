@@ -1,0 +1,120 @@
+#!/usr/bin/make -f
+
+PACKAGES_SIMTEST=$(shell go list ./... | grep '/simulation')
+VERSION := $(shell echo $(shell git describe --tags) | sed 's/^v//')
+COMMIT := $(shell git log -1 --format='%H')
+LEDGER_ENABLED ?= true
+SDK_PACK := $(shell go list -m github.com/cosmos/cosmos-sdk | sed  's/ /\@/g')
+BINDIR ?= $(GOPATH)/bin
+SIMAPP = ./app
+
+# for dockerized protobuf tools
+DOCKER := $(shell which docker)
+BUILDDIR ?= $(CURDIR)/build
+
+export GO111MODULE = on
+
+# process build tags
+build_tags = netgo
+ifeq ($(LEDGER_ENABLED),true)
+  ifeq ($(OS),Windows_NT)
+    GCCEXE = $(shell where gcc.exe 2> NUL)
+    ifeq ($(GCCEXE),)
+      $(error gcc.exe not installed for ledger support, please install or set LEDGER_ENABLED=false)
+    else
+      build_tags += ledger
+    endif
+  else
+    UNAME_S = $(shell uname -s)
+    ifeq ($(UNAME_S),OpenBSD)
+      $(warning OpenBSD detected, disabling ledger support (https://github.com/cosmos/cosmos-sdk/issues/1988))
+    else
+      GCC = $(shell command -v gcc 2> /dev/null)
+      ifeq ($(GCC),)
+        $(error gcc not installed for ledger support, please install or set LEDGER_ENABLED=false)
+      else
+        build_tags += ledger
+      endif
+    endif
+  endif
+endif
+
+build_tags += $(BUILD_TAGS)
+build_tags := $(strip $(build_tags))
+
+whitespace :=
+whitespace += $(whitespace)
+comma := ,
+build_tags_comma_sep := $(subst $(whitespace),$(comma),$(build_tags))
+
+# process linker flags
+
+ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=deshchain \
+		  -X github.com/cosmos/cosmos-sdk/version.AppName=deshchaind \
+		  -X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
+		  -X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \
+		  -X github.com/cosmos/cosmos-sdk/version.BuildTags=$(build_tags_comma_sep) \
+			-X github.com/tendermint/tendermint/version.TMCoreSemVer=$(TMVERSION)
+
+ifeq ($(LINK_STATICALLY),true)
+	ldflags += -linkmode=external -extldflags "-Wl,-z,muldefs -static"
+endif
+ldflags += $(LDFLAGS)
+ldflags := $(strip $(ldflags))
+
+BUILD_FLAGS := -tags "$(build_tags)" -ldflags '$(ldflags)'
+
+all: install
+
+install: go.sum
+	go install -mod=readonly $(BUILD_FLAGS) ./cmd/deshchaind
+
+build:
+	go build $(BUILD_FLAGS) -o build/deshchaind ./cmd/deshchaind
+
+go.sum: go.mod
+	@echo "--> Ensure dependencies have not been modified"
+	GO111MODULE=on go mod verify
+
+###############################################################################
+###                                Docker                                   ###
+###############################################################################
+
+docker-build:
+	@echo "Building DeshChain Docker image..."
+	docker build -f Dockerfile.node -t deshchain:latest .
+
+docker-build-fast:
+	@echo "Building DeshChain Docker image (fast)..."
+	docker build -f Dockerfile.node -t deshchain:latest --no-cache=false .
+
+###############################################################################
+###                                Testnet                                  ###
+###############################################################################
+
+testnet-init:
+	@echo "Initializing testnet..."
+	./scripts/docker-testnet-init.sh
+
+testnet-start:
+	@echo "Starting testnet..."
+	docker-compose -f docker-compose.testnet.yml up -d
+
+testnet-stop:
+	@echo "Stopping testnet..."
+	docker-compose -f docker-compose.testnet.yml down
+
+testnet-reset:
+	@echo "Resetting testnet..."
+	docker-compose -f docker-compose.testnet.yml down -v
+	rm -rf testnet/
+
+testnet-logs:
+	@echo "Showing testnet logs..."
+	docker-compose -f docker-compose.testnet.yml logs -f
+
+testnet-status:
+	@echo "Checking testnet status..."
+	docker-compose -f docker-compose.testnet.yml ps
+
+.PHONY: all install build docker-build docker-build-fast testnet-init testnet-start testnet-stop testnet-reset testnet-logs testnet-status

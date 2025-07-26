@@ -4,8 +4,8 @@ import (
 	"fmt"
 	
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/namo/x/dinr/types"
-	taxkeeper "github.com/deshchain/namo/x/tax/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/dinr/types"
+	taxkeeper "github.com/DeshChain/DeshChain-Ecosystem/x/tax/keeper"
 )
 
 // CalculateFeeInNAMO calculates the DINR operation fee and converts to NAMO

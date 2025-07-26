@@ -50,7 +50,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	sdkante "github.com/cosmos/cosmos-sdk/x/auth/ante"
-	"github.com/deshchain/namo/app/ante"
+	"github.com/DeshChain/DeshChain-Ecosystem/app/ante"
 	authcodec "github.com/cosmos/cosmos-sdk/x/auth/codec"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
@@ -102,92 +102,92 @@ import (
 	"github.com/spf13/cast"
 
 	// Money Order imports
-	moneyorder "github.com/deshchain/deshchain/x/moneyorder"
-	moneyorderkeeper "github.com/deshchain/deshchain/x/moneyorder/keeper"
-	moneyordertypes "github.com/deshchain/deshchain/x/moneyorder/types"
+	moneyorder "github.com/DeshChain/DeshChain-Ecosystem/x/moneyorder"
+	moneyorderkeeper "github.com/DeshChain/DeshChain-Ecosystem/x/moneyorder/keeper"
+	moneyordertypes "github.com/DeshChain/DeshChain-Ecosystem/x/moneyorder/types"
 
 	// Cultural imports
-	cultural "github.com/deshchain/deshchain/x/cultural"
-	culturalkeeper "github.com/deshchain/deshchain/x/cultural/keeper"
-	culturaltypes "github.com/deshchain/deshchain/x/cultural/types"
+	cultural "github.com/DeshChain/DeshChain-Ecosystem/x/cultural"
+	culturalkeeper "github.com/DeshChain/DeshChain-Ecosystem/x/cultural/keeper"
+	culturaltypes "github.com/DeshChain/DeshChain-Ecosystem/x/cultural/types"
 
 	// NAMO imports
-	namo "github.com/deshchain/deshchain/x/namo"
-	namokeeper "github.com/deshchain/deshchain/x/namo/keeper"
-	namotypes "github.com/deshchain/deshchain/x/namo/types"
+	namo "github.com/DeshChain/DeshChain-Ecosystem/x/namo"
+	namokeeper "github.com/DeshChain/DeshChain-Ecosystem/x/namo/keeper"
+	namotypes "github.com/DeshChain/DeshChain-Ecosystem/x/namo/types"
 
 	// DhanSetu imports
-	dhansetu "github.com/deshchain/deshchain/x/dhansetu"
-	dhansetukeeper "github.com/deshchain/deshchain/x/dhansetu/keeper"
-	dhansettypes "github.com/deshchain/deshchain/x/dhansetu/types"
+	dhansetu "github.com/DeshChain/DeshChain-Ecosystem/x/dhansetu"
+	dhansetukeeper "github.com/DeshChain/DeshChain-Ecosystem/x/dhansetu/keeper"
+	dhansettypes "github.com/DeshChain/DeshChain-Ecosystem/x/dhansetu/types"
 
 	// DINR imports
-	dinr "github.com/deshchain/deshchain/x/dinr"
-	dinrkeeper "github.com/deshchain/deshchain/x/dinr/keeper"
-	dinrtypes "github.com/deshchain/deshchain/x/dinr/types"
+	dinr "github.com/DeshChain/DeshChain-Ecosystem/x/dinr"
+	dinrkeeper "github.com/DeshChain/DeshChain-Ecosystem/x/dinr/keeper"
+	dinrtypes "github.com/DeshChain/DeshChain-Ecosystem/x/dinr/types"
 
 	// Trade Finance imports
-	tradefinance "github.com/deshchain/deshchain/x/tradefinance"
-	tradefinancekeeper "github.com/deshchain/deshchain/x/tradefinance/keeper"
-	tradefinancetypes "github.com/deshchain/deshchain/x/tradefinance/types"
+	tradefinance "github.com/DeshChain/DeshChain-Ecosystem/x/tradefinance"
+	tradefinancekeeper "github.com/DeshChain/DeshChain-Ecosystem/x/tradefinance/keeper"
+	tradefinancetypes "github.com/DeshChain/DeshChain-Ecosystem/x/tradefinance/types"
 
 	// Oracle imports
-	oracle "github.com/deshchain/deshchain/x/oracle"
-	oraclekeeper "github.com/deshchain/deshchain/x/oracle/keeper"
-	oracletypes "github.com/deshchain/deshchain/x/oracle/types"
+	oracle "github.com/DeshChain/DeshChain-Ecosystem/x/oracle"
+	oraclekeeper "github.com/DeshChain/DeshChain-Ecosystem/x/oracle/keeper"
+	oracletypes "github.com/DeshChain/DeshChain-Ecosystem/x/oracle/types"
 
 	// Sikkebaaz imports
-	sikkebaaz "github.com/deshchain/namo/x/sikkebaaz"
-	sikkebaazkeeper "github.com/deshchain/namo/x/sikkebaaz/keeper"
-	sikkebaaztypes "github.com/deshchain/namo/x/sikkebaaz/types"
+	sikkebaaz "github.com/DeshChain/DeshChain-Ecosystem/x/sikkebaaz"
+	sikkebaazkeeper "github.com/DeshChain/DeshChain-Ecosystem/x/sikkebaaz/keeper"
+	sikkebaaztypes "github.com/DeshChain/DeshChain-Ecosystem/x/sikkebaaz/types"
 
 	// Lending Suite imports
-	krishimitra "github.com/deshchain/namo/x/krishimitra"
-	krishimitrakeeper "github.com/deshchain/namo/x/krishimitra/keeper"
-	krishimitratypes "github.com/deshchain/namo/x/krishimitra/types"
+	krishimitra "github.com/DeshChain/DeshChain-Ecosystem/x/krishimitra"
+	krishimitrakeeper "github.com/DeshChain/DeshChain-Ecosystem/x/krishimitra/keeper"
+	krishimitratypes "github.com/DeshChain/DeshChain-Ecosystem/x/krishimitra/types"
 
-	vyavasayamitra "github.com/deshchain/namo/x/vyavasayamitra"
-	vyavasayamitrakeeper "github.com/deshchain/namo/x/vyavasayamitra/keeper"
-	vyavasayamitratypes "github.com/deshchain/namo/x/vyavasayamitra/types"
+	vyavasayamitra "github.com/DeshChain/DeshChain-Ecosystem/x/vyavasayamitra"
+	vyavasayamitrakeeper "github.com/DeshChain/DeshChain-Ecosystem/x/vyavasayamitra/keeper"
+	vyavasayamitratypes "github.com/DeshChain/DeshChain-Ecosystem/x/vyavasayamitra/types"
 
-	shikshamitra "github.com/deshchain/namo/x/shikshamitra"
-	shikshamitrakeeper "github.com/deshchain/namo/x/shikshamitra/keeper"
-	shikshamitratypes "github.com/deshchain/namo/x/shikshamitra/types"
+	shikshamitra "github.com/DeshChain/DeshChain-Ecosystem/x/shikshamitra"
+	shikshamitrakeeper "github.com/DeshChain/DeshChain-Ecosystem/x/shikshamitra/keeper"
+	shikshamitratypes "github.com/DeshChain/DeshChain-Ecosystem/x/shikshamitra/types"
 
 	// Tax Module imports
-	tax "github.com/deshchain/namo/x/tax"
-	taxkeeper "github.com/deshchain/namo/x/tax/keeper"
-	taxtypes "github.com/deshchain/namo/x/tax/types"
+	tax "github.com/DeshChain/DeshChain-Ecosystem/x/tax"
+	taxkeeper "github.com/DeshChain/DeshChain-Ecosystem/x/tax/keeper"
+	taxtypes "github.com/DeshChain/DeshChain-Ecosystem/x/tax/types"
 
 	// Revenue Module imports
-	revenue "github.com/deshchain/namo/x/revenue"
-	revenuekeeper "github.com/deshchain/namo/x/revenue/keeper"
-	revenuetypes "github.com/deshchain/namo/x/revenue/types"
+	revenue "github.com/DeshChain/DeshChain-Ecosystem/x/revenue"
+	revenuekeeper "github.com/DeshChain/DeshChain-Ecosystem/x/revenue/keeper"
+	revenuetypes "github.com/DeshChain/DeshChain-Ecosystem/x/revenue/types"
 
 	// Donation Module imports
-	donation "github.com/deshchain/namo/x/donation"
-	donationkeeper "github.com/deshchain/namo/x/donation/keeper"
-	donationtypes "github.com/deshchain/namo/x/donation/types"
+	donation "github.com/DeshChain/DeshChain-Ecosystem/x/donation"
+	donationkeeper "github.com/DeshChain/DeshChain-Ecosystem/x/donation/keeper"
+	donationtypes "github.com/DeshChain/DeshChain-Ecosystem/x/donation/types"
 
 	// GramSuraksha Module imports
-	grampension "github.com/deshchain/namo/x/gramsuraksha"
-	gramsurakshakeep "github.com/deshchain/namo/x/gramsuraksha/keeper"
-	gramsurakshatypes "github.com/deshchain/namo/x/gramsuraksha/types"
+	grampension "github.com/DeshChain/DeshChain-Ecosystem/x/gramsuraksha"
+	gramsurakshakeep "github.com/DeshChain/DeshChain-Ecosystem/x/gramsuraksha/keeper"
+	gramsurakshatypes "github.com/DeshChain/DeshChain-Ecosystem/x/gramsuraksha/types"
 
 	// Governance Module imports
-	governance "github.com/deshchain/namo/x/governance"
-	governancekeeper "github.com/deshchain/namo/x/governance/keeper"
-	governancetypes "github.com/deshchain/namo/x/governance/types"
+	governance "github.com/DeshChain/DeshChain-Ecosystem/x/governance"
+	governancekeeper "github.com/DeshChain/DeshChain-Ecosystem/x/governance/keeper"
+	governancetypes "github.com/DeshChain/DeshChain-Ecosystem/x/governance/types"
 
 	// DSWF Module imports
-	dswf "github.com/deshchain/deshchain/x/dswf"
-	dswfkeeper "github.com/deshchain/deshchain/x/dswf/keeper"
-	dswftypes "github.com/deshchain/deshchain/x/dswf/types"
+	dswf "github.com/DeshChain/DeshChain-Ecosystem/x/dswf"
+	dswfkeeper "github.com/DeshChain/DeshChain-Ecosystem/x/dswf/keeper"
+	dswftypes "github.com/DeshChain/DeshChain-Ecosystem/x/dswf/types"
 
 	// CharitableTrust Module imports
-	charitabletrust "github.com/deshchain/deshchain/x/charitabletrust"
-	charitabletrustkeeper "github.com/deshchain/deshchain/x/charitabletrust/keeper"
-	charitabletrusttypes "github.com/deshchain/deshchain/x/charitabletrust/types"
+	charitabletrust "github.com/DeshChain/DeshChain-Ecosystem/x/charitabletrust"
+	charitabletrustkeeper "github.com/DeshChain/DeshChain-Ecosystem/x/charitabletrust/keeper"
+	charitabletrusttypes "github.com/DeshChain/DeshChain-Ecosystem/x/charitabletrust/types"
 )
 
 const (

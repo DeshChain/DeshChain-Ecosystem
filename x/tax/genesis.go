@@ -2,8 +2,8 @@ package tax
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/tax/keeper"
-	"github.com/deshchain/deshchain/x/tax/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/tax/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/tax/types"
 )
 
 // InitGenesis initializes the tax module's state from a provided genesis state.

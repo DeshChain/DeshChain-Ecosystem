@@ -9,7 +9,7 @@ import (
     "encoding/hex"
     
     sdk "github.com/cosmos/cosmos-sdk/types"
-    "github.com/deshchain/namo/x/validator/types"
+    "github.com/DeshChain/DeshChain-Ecosystem/x/validator/types"
 )
 
 // ReferralValidator handles all referral validation and anti-gaming measures

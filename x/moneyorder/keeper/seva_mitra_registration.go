@@ -27,7 +27,7 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/moneyorder/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/moneyorder/types"
 )
 
 // RegisterSevaMitra registers a new cash-in/out sevaMitra

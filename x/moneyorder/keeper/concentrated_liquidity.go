@@ -21,7 +21,7 @@ import (
 	"math/big"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/moneyorder/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/moneyorder/types"
 )
 
 // ConcentratedLiquidityPool represents a concentrated liquidity pool for efficient trading

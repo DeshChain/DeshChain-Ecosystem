@@ -4,7 +4,7 @@ import (
 	"context"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/revenue/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/revenue/types"
 )
 
 type msgServer struct {

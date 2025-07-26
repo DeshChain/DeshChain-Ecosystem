@@ -23,7 +23,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/deshchain/deshchain/x/moneyorder/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/moneyorder/types"
 )
 
 func TestFixedRatePool_Validate(t *testing.T) {

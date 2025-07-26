@@ -5,8 +5,8 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/oracle/keeper"
-	"github.com/deshchain/deshchain/x/oracle/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/oracle/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/oracle/types"
 )
 
 // BeginBlocker processes oracle aggregation windows and updates prices

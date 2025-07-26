@@ -32,8 +32,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 
-	"github.com/deshchain/deshchain/x/namo/keeper"
-	"github.com/deshchain/deshchain/x/namo/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/namo/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/namo/types"
 )
 
 var (

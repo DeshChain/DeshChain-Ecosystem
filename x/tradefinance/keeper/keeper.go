@@ -9,7 +9,7 @@ import (
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/tendermint/tendermint/libs/log"
 
-	"github.com/deshchain/deshchain/x/tradefinance/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/tradefinance/types"
 )
 
 type Keeper struct {

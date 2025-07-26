@@ -5,7 +5,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/tradefinance/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/tradefinance/types"
 )
 
 // RegisterParty registers a new trade party

@@ -23,7 +23,7 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/namo/x/sikkebaaz/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/sikkebaaz/types"
 )
 
 type msgServer struct {

@@ -18,8 +18,8 @@ package dhansetu
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/dhansetu/keeper"
-	"github.com/deshchain/deshchain/x/dhansetu/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/dhansetu/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/dhansetu/types"
 )
 
 // InitGenesis initializes the module's state from a provided genesis state.

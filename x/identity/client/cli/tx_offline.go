@@ -11,7 +11,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/spf13/cobra"
 
-	"github.com/deshchain/deshchain/x/identity/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/identity/types"
 )
 
 // GetTxOfflineCmd returns the transaction commands for offline verification

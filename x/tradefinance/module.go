@@ -17,9 +17,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 
-	"github.com/deshchain/deshchain/x/tradefinance/client/cli"
-	"github.com/deshchain/deshchain/x/tradefinance/keeper"
-	"github.com/deshchain/deshchain/x/tradefinance/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/tradefinance/client/cli"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/tradefinance/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/tradefinance/types"
 )
 
 var (

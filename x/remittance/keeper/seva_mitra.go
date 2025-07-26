@@ -9,7 +9,7 @@ import (
 	"cosmossdk.io/core/store"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/deshchain/deshchain/x/remittance/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/remittance/types"
 )
 
 // ========================= Sewa Mitra Agent Management =========================

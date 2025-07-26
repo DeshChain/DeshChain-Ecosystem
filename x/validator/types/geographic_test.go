@@ -20,7 +20,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/deshchain/deshchain/x/validator/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/validator/types"
 	"github.com/stretchr/testify/require"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"cosmossdk.io/math"

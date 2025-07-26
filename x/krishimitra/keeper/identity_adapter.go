@@ -5,9 +5,9 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	identitykeeper "github.com/namo/x/identity/keeper"
-	identitytypes "github.com/namo/x/identity/types"
-	"github.com/deshchain/deshchain/x/krishimitra/types"
+	identitykeeper "github.com/DeshChain/DeshChain-Ecosystem/x/identity/keeper"
+	identitytypes "github.com/DeshChain/DeshChain-Ecosystem/x/identity/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/krishimitra/types"
 )
 
 // IdentityAdapter provides identity-based verification for KrishiMitra
@@ -175,7 +175,7 @@ func (ia *IdentityAdapter) CreateFarmerCredential(
 	credential := identitytypes.VerifiableCredential{
 		Context: []string{
 			"https://www.w3.org/2018/credentials/v1",
-			"https://deshchain.bharat/contexts/farmer/v1",
+			"https://deshchain.com/contexts/farmer/v1",
 		},
 		ID:   credID,
 		Type: []string{"VerifiableCredential", "FarmerProfileCredential"},
@@ -237,7 +237,7 @@ func (ia *IdentityAdapter) CreateLandRecordCredential(
 	credential := identitytypes.VerifiableCredential{
 		Context: []string{
 			"https://www.w3.org/2018/credentials/v1",
-			"https://deshchain.bharat/contexts/landrecord/v1",
+			"https://deshchain.com/contexts/landrecord/v1",
 		},
 		ID:   credID,
 		Type: []string{"VerifiableCredential", "LandRecordCredential"},
@@ -293,7 +293,7 @@ func (ia *IdentityAdapter) CreateAgriculturalLoanCredential(
 	credential := identitytypes.VerifiableCredential{
 		Context: []string{
 			"https://www.w3.org/2018/credentials/v1",
-			"https://deshchain.bharat/contexts/agriculturalloan/v1",
+			"https://deshchain.com/contexts/agriculturalloan/v1",
 		},
 		ID:   credID,
 		Type: []string{"VerifiableCredential", "AgriculturalLoanCredential"},

@@ -25,7 +25,7 @@ import (
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
-	"github.com/deshchain/deshchain/x/urbansuraksha/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/urbansuraksha/types"
 )
 
 // Keeper handles Urban Pension Scheme operations

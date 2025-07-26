@@ -1,0 +1,26 @@
+{
+  "name": "deshchain-faucet",
+  "version": "1.0.0",
+  "description": "DeshChain Testnet Faucet Service",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "@cosmjs/stargate": "^0.31.0",
+    "@cosmjs/proto-signing": "^0.31.0",
+    "@cosmjs/encoding": "^0.31.0",
+    "@cosmjs/crypto": "^0.31.0",
+    "express": "^4.18.2",
+    "express-rate-limit": "^6.10.0",
+    "cors": "^2.8.5",
+    "helmet": "^7.0.0",
+    "winston": "^3.10.0",
+    "dotenv": "^16.3.1",
+    "node-cache": "^5.1.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

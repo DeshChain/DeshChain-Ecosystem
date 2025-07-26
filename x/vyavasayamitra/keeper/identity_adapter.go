@@ -5,9 +5,9 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	identitykeeper "github.com/namo/x/identity/keeper"
-	identitytypes "github.com/namo/x/identity/types"
-	"github.com/deshchain/x/vyavasayamitra/types"
+	identitykeeper "github.com/DeshChain/DeshChain-Ecosystem/x/identity/keeper"
+	identitytypes "github.com/DeshChain/DeshChain-Ecosystem/x/identity/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/vyavasayamitra/types"
 )
 
 // IdentityAdapter provides identity-based verification for VyavasayaMitra
@@ -180,7 +180,7 @@ func (ia *IdentityAdapter) CreateBusinessCredential(
 	credential := identitytypes.VerifiableCredential{
 		Context: []string{
 			"https://www.w3.org/2018/credentials/v1",
-			"https://deshchain.bharat/contexts/business/v1",
+			"https://deshchain.com/contexts/business/v1",
 		},
 		ID:   credID,
 		Type: []string{"VerifiableCredential", "BusinessProfileCredential"},
@@ -240,7 +240,7 @@ func (ia *IdentityAdapter) CreateBusinessLoanCredential(
 	credential := identitytypes.VerifiableCredential{
 		Context: []string{
 			"https://www.w3.org/2018/credentials/v1",
-			"https://deshchain.bharat/contexts/businessloan/v1",
+			"https://deshchain.com/contexts/businessloan/v1",
 		},
 		ID:   credID,
 		Type: []string{"VerifiableCredential", "BusinessLoanCredential"},

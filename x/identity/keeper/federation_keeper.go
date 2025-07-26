@@ -13,7 +13,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/namo/x/identity/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/identity/types"
 )
 
 // Federation Key Prefixes

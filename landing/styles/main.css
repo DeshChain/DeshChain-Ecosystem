@@ -173,6 +173,19 @@ a:hover {
   transform: translateY(-2px);
 }
 
+.btn-tertiary {
+  background: linear-gradient(135deg, var(--peacock-blue), var(--secondary));
+  color: white;
+  border: 2px solid transparent;
+}
+
+.btn-tertiary:hover {
+  background: var(--secondary);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 78, 100, 0.3);
+  color: white;
+}
+
 /* Navigation */
 .navbar {
   position: fixed;
@@ -374,6 +387,31 @@ a:hover {
   display: flex;
   gap: var(--space-md);
   flex-wrap: wrap;
+  margin-bottom: var(--space-lg);
+}
+
+.hero-links {
+  display: flex;
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: var(--space-md);
+}
+
+.link-item {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+}
+
+.link-item:hover {
+  color: var(--primary);
+  background: rgba(255, 107, 53, 0.1);
+  transform: translateY(-1px);
 }
 
 .hero-visual {

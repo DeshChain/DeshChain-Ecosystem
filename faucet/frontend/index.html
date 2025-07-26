@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeshChain Testnet Faucet - Free NAMO Tokens</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #ff6b00 0%, #ff8533 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1e293b;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(-20px, -20px) rotate(1deg); }
+            50% { transform: translate(20px, -10px) rotate(-1deg); }
+            75% { transform: translate(-10px, 20px) rotate(0.5deg); }
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            margin: 0 20px;
+        }
+
+        /* Main Faucet Card */
+        .faucet-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: slideUp 0.8s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo-section {
+            margin-bottom: 32px;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            background: linear-gradient(135deg, #ff6b00, #ff8533);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 32px rgba(255, 107, 0, 0.3);
+        }
+
+        .logo img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        /* Stats Section */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 32px 0;
+        }
+
+        .stat-item {
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ff6b00;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Form Section */
+        .form-section {
+            margin: 32px 0;
+        }
+
+        .input-group {
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
+        .input-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #374151;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 16px 20px;
+            font-size: 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            outline: none;
+            transition: all 0.3s ease;
+            background: #fafbfc;
+        }
+
+        .input-field:focus {
+            border-color: #ff6b00;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.1);
+        }
+
+        .input-field.error {
+            border-color: #ef4444;
+            background: #fef2f2;
+        }
+
+        .input-field.success {
+            border-color: #22c55e;
+            background: #f0fdf4;
+        }
+
+        .input-helper {
+            font-size: 14px;
+            margin-top: 8px;
+            color: #64748b;
+        }
+
+        .input-error {
+            font-size: 14px;
+            margin-top: 8px;
+            color: #ef4444;
+        }
+
+        /* Request Button */
+        .request-btn {
+            width: 100%;
+            padding: 16px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            background: linear-gradient(135deg, #ff6b00, #ff8533);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .request-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(255, 107, 0, 0.4);
+        }
+
+        .request-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .request-btn .btn-text {
+            transition: opacity 0.3s ease;
+        }
+
+        .request-btn .btn-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .request-btn.loading .btn-text {
+            opacity: 0;
+        }
+
+        .request-btn.loading .btn-loading {
+            opacity: 1;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Alert Messages */
+        .alert {
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin: 16px 0;
+            font-weight: 500;
+            display: none;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert.success {
+            background: #dcfce7;
+            border: 1px solid #22c55e;
+            color: #166534;
+        }
+
+        .alert.error {
+            background: #fee2e2;
+            border: 1px solid #ef4444;
+            color: #991b1b;
+        }
+
+        .alert.warning {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            color: #92400e;
+        }
+
+        /* Footer Links */
+        .footer-links {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: #64748b;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .footer-link:hover {
+            color: #ff6b00;
+        }
+
+        /* Rate Limit Info */
+        .rate-limit-info {
+            background: #f0f9ff;
+            border: 1px solid #0ea5e9;
+            color: #0c4a6e;
+            padding: 16px;
+            border-radius: 12px;
+            margin: 24px 0;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .rate-limit-info .icon {
+            color: #0ea5e9;
+            margin-right: 8px;
+        }
+
+        /* Recent Transactions */
+        .recent-txs {
+            margin-top: 32px;
+            text-align: left;
+        }
+
+        .recent-txs h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #1e293b;
+        }
+
+        .tx-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .tx-item:last-child {
+            border-bottom: none;
+        }
+
+        .tx-hash {
+            font-family: 'Monaco', monospace;
+            font-size: 12px;
+            color: #ff6b00;
+            text-decoration: none;
+        }
+
+        .tx-amount {
+            font-weight: 600;
+            color: #22c55e;
+        }
+
+        .tx-time {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .faucet-card {
+                padding: 24px;
+                margin: 10px;
+            }
+
+            .title {
+                font-size: 24px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-links {
+                flex-direction: column;
+                gap: 16px;
+            }
+        }
+
+        /* Copy Animation */
+        .copy-feedback {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #1e293b;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 1000;
+            opacity: 0;
+            animation: copyPulse 2s ease-out;
+        }
+
+        @keyframes copyPulse {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            20% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+    
+    <div class="container">
+        <div class="faucet-card">
+            <!-- Logo Section -->
+            <div class="logo-section">
+                <div class="logo">
+                    <img src="/logo/namo-logo.png" alt="NAMO Token" onerror="this.style.display='none'; this.parentNode.innerHTML='<i class=\'fas fa-coins\' style=\'color: white; font-size: 32px;\'></i>'">
+                </div>
+                <h1 class="title">DeshChain Testnet Faucet</h1>
+                <p class="subtitle">Get free NAMO tokens for testing on DeshChain testnet. No registration required!</p>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="tokensPerRequest">1,000</div>
+                    <div class="stat-label">NAMO per request</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="dailyRequests">24h</div>
+                    <div class="stat-label">Rate limit</div>
+                </div>
+            </div>
+
+            <!-- Rate Limit Info -->
+            <div class="rate-limit-info">
+                <i class="fas fa-info-circle icon"></i>
+                You can request tokens once every 24 hours per address. The faucet provides 1,000 NAMO tokens for testing purposes.
+            </div>
+
+            <!-- Alert Messages -->
+            <div id="alertContainer"></div>
+
+            <!-- Form Section -->
+            <div class="form-section">
+                <div class="input-group">
+                    <label class="input-label" for="walletAddress">
+                        <i class="fas fa-wallet"></i> Wallet Address
+                    </label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="text" 
+                            id="walletAddress" 
+                            class="input-field" 
+                            placeholder="desh1..." 
+                            maxlength="64"
+                        >
+                    </div>
+                    <div class="input-helper">Enter your DeshChain wallet address to receive testnet NAMO tokens</div>
+                    <div id="addressError" class="input-error" style="display: none;"></div>
+                </div>
+
+                <button type="button" class="request-btn" id="requestBtn" onclick="requestTokens()">
+                    <span class="btn-text">
+                        <i class="fas fa-paper-plane"></i> Request Test Tokens
+                    </span>
+                    <span class="btn-loading">
+                        <div class="spinner"></div>
+                    </span>
+                </button>
+            </div>
+
+            <!-- Recent Transactions -->
+            <div class="recent-txs" id="recentTxs" style="display: none;">
+                <h3><i class="fas fa-history"></i> Recent Faucet Transactions</h3>
+                <div id="recentTxsList">
+                    <!-- Transactions will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Footer Links -->
+            <div class="footer-links">
+                <a href="https://explorer.deshchain.com" class="footer-link">
+                    <i class="fas fa-search"></i> Explorer
+                </a>
+                <a href="https://testnet.deshchain.com" class="footer-link">
+                    <i class="fas fa-cube"></i> Testnet RPC
+                </a>
+                <a href="https://deshchain.com" class="footer-link">
+                    <i class="fas fa-home"></i> Main Site
+                </a>
+                <a href="#" class="footer-link" onclick="showHelp()">
+                    <i class="fas fa-question-circle"></i> Help
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API Configuration
+        const API_BASE = '/api';
+        const EXPLORER_BASE = 'https://explorer.deshchain.com';
+
+        // Rate limiting
+        let lastRequestTime = 0;
+        const RATE_LIMIT_MS = 24 * 60 * 60 * 1000; // 24 hours
+
+        // Initialize the faucet
+        document.addEventListener('DOMContentLoaded', function() {
+            loadFaucetStats();
+            loadRecentTransactions();
+            checkRateLimit();
+            
+            // Auto-validate address input
+            const addressInput = document.getElementById('walletAddress');
+            addressInput.addEventListener('input', validateAddress);
+            addressInput.addEventListener('blur', validateAddress);
+            
+            // Handle Enter key
+            addressInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    requestTokens();
+                }
+            });
+        });
+
+        // Load faucet statistics
+        async function loadFaucetStats() {
+            try {
+                const response = await fetch(`${API_BASE}/stats`);
+                const data = await response.json();
+                
+                document.getElementById('tokensPerRequest').textContent = (data.tokensPerRequest || 1000).toLocaleString();
+                document.getElementById('dailyRequests').textContent = data.rateLimitHours ? `${data.rateLimitHours}h` : '24h';
+            } catch (error) {
+                console.error('Error loading faucet stats:', error);
+            }
+        }
+
+        // Load recent transactions
+        async function loadRecentTransactions() {
+            try {
+                const response = await fetch(`${API_BASE}/recent`);
+                const transactions = await response.json();
+                
+                if (transactions && transactions.length > 0) {
+                    const container = document.getElementById('recentTxsList');
+                    container.innerHTML = transactions.slice(0, 5).map(tx => `
+                        <div class="tx-item">
+                            <div>
+                                <a href="${EXPLORER_BASE}/tx/${tx.hash}" class="tx-hash" target="_blank">
+                                    ${tx.hash.substring(0, 16)}...
+                                </a>
+                                <div class="tx-time">${formatTime(tx.timestamp)}</div>
+                            </div>
+                            <div class="tx-amount">+${tx.amount.toLocaleString()} NAMO</div>
+                        </div>
+                    `).join('');
+                    
+                    document.getElementById('recentTxs').style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error loading recent transactions:', error);
+            }
+        }
+
+        // Validate wallet address
+        function validateAddress() {
+            const input = document.getElementById('walletAddress');
+            const errorDiv = document.getElementById('addressError');
+            const address = input.value.trim();
+            
+            if (!address) {
+                input.classList.remove('error', 'success');
+                errorDiv.style.display = 'none';
+                return false;
+            }
+            
+            // DeshChain address validation (starts with 'desh' and is 43 characters total)
+            const isValid = /^desh[a-zA-Z0-9]{39}$/.test(address);
+            
+            if (isValid) {
+                input.classList.remove('error');
+                input.classList.add('success');
+                errorDiv.style.display = 'none';
+                return true;
+            } else {
+                input.classList.remove('success');
+                input.classList.add('error');
+                errorDiv.textContent = 'Invalid DeshChain address format. Address should start with "desh" and be 43 characters long.';
+                errorDiv.style.display = 'block';
+                return false;
+            }
+        }
+
+        // Check rate limiting
+        function checkRateLimit() {
+            const lastRequest = localStorage.getItem('lastFaucetRequest');
+            if (lastRequest) {
+                lastRequestTime = parseInt(lastRequest);
+                const timeRemaining = (lastRequestTime + RATE_LIMIT_MS) - Date.now();
+                
+                if (timeRemaining > 0) {
+                    const hours = Math.floor(timeRemaining / (60 * 60 * 1000));
+                    const minutes = Math.floor((timeRemaining % (60 * 60 * 1000)) / (60 * 1000));
+                    
+                    showAlert('warning', `Rate limit active. You can request tokens again in ${hours}h ${minutes}m.`);
+                    document.getElementById('requestBtn').disabled = true;
+                    
+                    // Update countdown
+                    const countdownInterval = setInterval(() => {
+                        const remaining = (lastRequestTime + RATE_LIMIT_MS) - Date.now();
+                        if (remaining <= 0) {
+                            clearInterval(countdownInterval);
+                            document.getElementById('requestBtn').disabled = false;
+                            hideAlert();
+                        }
+                    }, 60000); // Update every minute
+                }
+            }
+        }
+
+        // Request tokens from faucet
+        async function requestTokens() {
+            if (!validateAddress()) {
+                showAlert('error', 'Please enter a valid DeshChain wallet address.');
+                return;
+            }
+
+            const button = document.getElementById('requestBtn');
+            const address = document.getElementById('walletAddress').value.trim();
+            
+            // Check rate limit
+            const timeRemaining = (lastRequestTime + RATE_LIMIT_MS) - Date.now();
+            if (timeRemaining > 0) {
+                const hours = Math.floor(timeRemaining / (60 * 60 * 1000));
+                const minutes = Math.floor((timeRemaining % (60 * 60 * 1000)) / (60 * 1000));
+                showAlert('warning', `Rate limit active. Please wait ${hours}h ${minutes}m before requesting again.`);
+                return;
+            }
+
+            // Show loading state
+            button.disabled = true;
+            button.classList.add('loading');
+            hideAlert();
+
+            try {
+                const response = await fetch(`${API_BASE}/request`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ address })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    // Success
+                    showAlert('success', `
+                        🎉 Success! Sent ${data.amount} NAMO to your address.
+                        <br><a href="${EXPLORER_BASE}/tx/${data.txHash}" target="_blank" style="color: inherit; text-decoration: underline;">View transaction</a>
+                    `);
+                    
+                    // Update rate limit
+                    lastRequestTime = Date.now();
+                    localStorage.setItem('lastFaucetRequest', lastRequestTime.toString());
+                    
+                    // Reload recent transactions
+                    setTimeout(() => {
+                        loadRecentTransactions();
+                    }, 2000);
+                    
+                    // Show confetti effect
+                    showConfetti();
+                    
+                } else {
+                    // Error from server
+                    showAlert('error', data.message || 'Failed to process faucet request. Please try again.');
+                }
+            } catch (error) {
+                console.error('Faucet request error:', error);
+                showAlert('error', 'Network error. Please check your connection and try again.');
+            } finally {
+                // Reset button state
+                setTimeout(() => {
+                    button.disabled = false;
+                    button.classList.remove('loading');
+                }, 2000);
+            }
+        }
+
+        // Show alert message
+        function showAlert(type, message) {
+            const container = document.getElementById('alertContainer');
+            container.innerHTML = `<div class="alert ${type}" style="display: block;">${message}</div>`;
+            
+            // Auto-hide after 10 seconds for non-warning alerts
+            if (type !== 'warning') {
+                setTimeout(hideAlert, 10000);
+            }
+        }
+
+        // Hide alert message
+        function hideAlert() {
+            const container = document.getElementById('alertContainer');
+            container.innerHTML = '';
+        }
+
+        // Show help modal
+        function showHelp() {
+            const helpContent = `
+                <div style="text-align: left; line-height: 1.6;">
+                    <h3 style="margin-bottom: 16px; color: #ff6b00;">How to use the DeshChain Faucet</h3>
+                    <ol style="margin-left: 20px;">
+                        <li><strong>Get a DeshChain Wallet:</strong> Use any Cosmos-compatible wallet or the official DeshChain wallet.</li>
+                        <li><strong>Copy Your Address:</strong> Your DeshChain address starts with "desh" followed by 39 characters.</li>
+                        <li><strong>Request Tokens:</strong> Enter your address and click "Request Test Tokens".</li>
+                        <li><strong>Wait for Confirmation:</strong> Tokens will be sent within 30 seconds.</li>
+                        <li><strong>Rate Limit:</strong> You can request tokens once every 24 hours per address.</li>
+                    </ol>
+                    <p style="margin-top: 16px;"><strong>Need help?</strong> Visit our <a href="https://deshchain.com" style="color: #ff6b00;">documentation</a> or join our community.</p>
+                </div>
+            `;
+            
+            showAlert('info', helpContent);
+        }
+
+        // Copy to clipboard function
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showCopyFeedback();
+            });
+        }
+
+        // Show copy feedback
+        function showCopyFeedback() {
+            const feedback = document.createElement('div');
+            feedback.className = 'copy-feedback';
+            feedback.textContent = 'Copied to clipboard!';
+            document.body.appendChild(feedback);
+            
+            setTimeout(() => {
+                document.body.removeChild(feedback);
+            }, 2000);
+        }
+
+        // Format time helper
+        function formatTime(timestamp) {
+            const now = new Date();
+            const time = new Date(timestamp);
+            const diff = Math.floor((now - time) / 1000);
+            
+            if (diff < 60) return `${diff}s ago`;
+            if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+            if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+            return `${Math.floor(diff / 86400)}d ago`;
+        }
+
+        // Confetti effect
+        function showConfetti() {
+            // Simple confetti effect
+            for (let i = 0; i < 50; i++) {
+                createConfettiPiece();
+            }
+        }
+
+        function createConfettiPiece() {
+            const confetti = document.createElement('div');
+            confetti.style.cssText = `
+                position: fixed;
+                width: 10px;
+                height: 10px;
+                background: ${['#ff6b00', '#ff8533', '#22c55e', '#3b82f6', '#8b5cf6'][Math.floor(Math.random() * 5)]};
+                top: -10px;
+                left: ${Math.random() * 100}vw;
+                z-index: 1000;
+                pointer-events: none;
+                border-radius: 50%;
+            `;
+            
+            document.body.appendChild(confetti);
+            
+            const animation = confetti.animate([
+                { transform: 'translateY(0) rotateZ(0deg)', opacity: 1 },
+                { transform: `translateY(100vh) rotateZ(${Math.random() * 360}deg)`, opacity: 0 }
+            ], {
+                duration: Math.random() * 3000 + 2000,
+                easing: 'cubic-bezier(0.5, 0, 0.5, 1)'
+            });
+            
+            animation.onfinish = () => confetti.remove();
+        }
+
+        // Add some interactive effects
+        document.addEventListener('mousemove', (e) => {
+            const card = document.querySelector('.faucet-card');
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            if (x >= 0 && x <= rect.width && y >= 0 && y <= rect.height) {
+                const xPercent = (x / rect.width - 0.5) * 2;
+                const yPercent = (y / rect.height - 0.5) * 2;
+                
+                card.style.transform = `perspective(1000px) rotateY(${xPercent * 2}deg) rotateX(${-yPercent * 2}deg)`;
+            } else {
+                card.style.transform = 'perspective(1000px) rotateY(0deg) rotateX(0deg)';
+            }
+        });
+    </script>
+</body>
+</html>

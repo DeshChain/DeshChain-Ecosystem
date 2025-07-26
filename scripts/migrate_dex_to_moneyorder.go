@@ -29,9 +29,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 
-	"github.com/deshchain/deshchain/app"
-	dextypes "github.com/deshchain/deshchain/x/dex/types"
-	moneyordertypes "github.com/deshchain/deshchain/x/moneyorder/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/app"
+	dextypes "github.com/DeshChain/DeshChain-Ecosystem/x/dex/types"
+	moneyordertypes "github.com/DeshChain/DeshChain-Ecosystem/x/moneyorder/types"
 )
 
 // MigrationConfig holds configuration for the migration

@@ -7,9 +7,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/namo/x/identity/keeper"
-	"github.com/namo/x/identity/types"
-	"github.com/namo/testutil"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/identity/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/identity/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/testutil"
 )
 
 type RecoveryTestSuite struct {

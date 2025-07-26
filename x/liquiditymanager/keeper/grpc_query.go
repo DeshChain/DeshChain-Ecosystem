@@ -3,7 +3,7 @@ package keeper
 import (
 	"context"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/liquiditymanager/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/liquiditymanager/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

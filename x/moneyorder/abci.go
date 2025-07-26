@@ -19,7 +19,7 @@ package moneyorder
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	abci "github.com/tendermint/tendermint/abci/types"
-	"github.com/deshchain/deshchain/x/moneyorder/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/moneyorder/keeper"
 )
 
 // BeginBlocker processes scheduled orders and other periodic tasks

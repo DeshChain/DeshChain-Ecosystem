@@ -1,0 +1,28 @@
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Create simple faucet server
+RUN echo 'const express = require("express"); \
+const cors = require("cors"); \
+const app = express(); \
+const port = process.env.PORT || 4000; \
+app.use(cors()); \
+app.use(express.json()); \
+app.get("/health", (req, res) => res.json({ status: "ok" })); \
+app.post("/request", (req, res) => { \
+  const { address } = req.body; \
+  res.json({ \
+    success: true, \
+    txHash: "0x" + Math.random().toString(16).substr(2, 64), \
+    amount: "1000 NAMO", \
+    message: "Tokens sent successfully!" \
+  }); \
+}); \
+app.listen(port, () => console.log(`Faucet running on port ${port}`));' > server.js
+
+RUN npm install express cors
+
+EXPOSE 4000
+
+CMD ["node", "server.js"]

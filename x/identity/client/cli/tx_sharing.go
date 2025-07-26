@@ -9,7 +9,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
-	"github.com/deshchain/deshchain/x/identity/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/identity/types"
 )
 
 // GetTxSharingCmd returns the transaction commands for identity sharing

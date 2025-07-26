@@ -31,11 +31,11 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
-	"github.com/deshchain/namo/app"
-	taxtypes "github.com/deshchain/namo/x/tax/types"
-	revenuetypes "github.com/deshchain/namo/x/revenue/types"
-	donationtypes "github.com/deshchain/namo/x/donation/types"
-	sikkebaaztypes "github.com/deshchain/namo/x/sikkebaaz/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/app"
+	taxtypes "github.com/DeshChain/DeshChain-Ecosystem/x/tax/types"
+	revenuetypes "github.com/DeshChain/DeshChain-Ecosystem/x/revenue/types"
+	donationtypes "github.com/DeshChain/DeshChain-Ecosystem/x/donation/types"
+	sikkebaaztypes "github.com/DeshChain/DeshChain-Ecosystem/x/sikkebaaz/types"
 )
 
 type IntegrationTestSuite struct {

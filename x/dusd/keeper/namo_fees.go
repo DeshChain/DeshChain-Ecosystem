@@ -4,7 +4,7 @@ import (
 	"fmt"
 	
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/namo/x/dusd/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/dusd/types"
 )
 
 // CollectDUSDFeeInNAMO collects DUSD operation fee in NAMO tokens

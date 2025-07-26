@@ -153,41 +153,75 @@ class DeshChainApp {
     }
     
     setupCountingAnimation() {
-        const animateCount = (element, start, end, duration) => {
-            const startTime = performance.now();
-            const range = end - start;
+        this.fetchLiveData();
+        
+        // Refresh live data every 30 seconds
+        setInterval(() => {
+            this.fetchLiveData();
+        }, 30000);
+    }
+    
+    async fetchLiveData() {
+        try {
+            // Fetch data from explorer API
+            const response = await fetch('https://explorer.deshchain.com/api/stats');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
             
-            const animate = (currentTime) => {
-                const elapsed = currentTime - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                
-                // Easing function
-                const easeOutCubic = 1 - Math.pow(1 - progress, 3);
-                const current = Math.floor(start + (range * easeOutCubic));
-                
-                element.textContent = current.toLocaleString();
-                
-                if (progress < 1) {
-                    requestAnimationFrame(animate);
-                }
-            };
+            // Update stats with real data
+            this.updateStat('latestBlock', data.latestBlock || 0);
+            this.updateStat('totalTransactions', data.totalTransactions || 0);
+            this.updateStat('activeValidators', data.activeValidators || 21);
             
-            requestAnimationFrame(animate);
+            // Update NAMO price
+            const namoPrice = data.namoPrice || 2.50;
+            const namoPriceElement = document.getElementById('namoPrice');
+            if (namoPriceElement) {
+                namoPriceElement.textContent = `₹${namoPrice.toFixed(2)}`;
+            }
+            
+        } catch (error) {
+            console.warn('Failed to fetch live data, using fallback values:', error);
+            // Fallback to default values if API fails
+            this.updateStat('latestBlock', 12847);
+            this.updateStat('totalTransactions', 45632);
+            this.updateStat('activeValidators', 21);
+        }
+    }
+    
+    updateStat(elementId, value) {
+        const element = document.getElementById(elementId);
+        if (element) {
+            const numericValue = parseInt(value) || 0;
+            
+            // Animate the number change
+            const currentValue = parseInt(element.textContent.replace(/[^0-9]/g, '')) || 0;
+            this.animateValue(element, currentValue, numericValue, 1000);
+        }
+    }
+    
+    animateValue(element, start, end, duration) {
+        const startTime = performance.now();
+        const range = end - start;
+        
+        const animate = (currentTime) => {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            
+            // Easing function
+            const easeOutCubic = 1 - Math.pow(1 - progress, 3);
+            const current = Math.floor(start + (range * easeOutCubic));
+            
+            element.textContent = current.toLocaleString();
+            
+            if (progress < 1) {
+                requestAnimationFrame(animate);
+            }
         };
         
-        // Trigger counting animation when stats come into view
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const element = entry.target;
-                    const endValue = parseInt(element.dataset.count);
-                    animateCount(element, 0, endValue, 2000);
-                    observer.unobserve(element);
-                }
-            });
-        }, { threshold: 0.5 });
-        
-        this.statNumbers.forEach(stat => observer.observe(stat));
+        requestAnimationFrame(animate);
     }
     
     setupSmoothScrolling() {

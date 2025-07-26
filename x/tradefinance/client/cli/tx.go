@@ -13,7 +13,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/spf13/cobra"
 
-	"github.com/deshchain/deshchain/x/tradefinance/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/tradefinance/types"
 )
 
 // GetTxCmd returns the transaction commands for this module

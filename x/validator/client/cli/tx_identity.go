@@ -10,7 +10,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/namo/x/validator/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/validator/types"
 )
 
 // GetTxIdentityCmd returns the identity transaction commands for Validator module

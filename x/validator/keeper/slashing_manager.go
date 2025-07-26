@@ -5,7 +5,7 @@ import (
     "time"
     
     sdk "github.com/cosmos/cosmos-sdk/types"
-    "github.com/deshchain/namo/x/validator/types"
+    "github.com/DeshChain/DeshChain-Ecosystem/x/validator/types"
 )
 
 // SlashingReason defines the reason for slashing

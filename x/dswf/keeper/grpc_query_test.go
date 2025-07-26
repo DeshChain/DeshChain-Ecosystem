@@ -5,7 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	"github.com/deshchain/deshchain/x/dswf/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/dswf/types"
 )
 
 // Test FundStatus Query

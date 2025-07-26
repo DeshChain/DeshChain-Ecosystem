@@ -12,7 +12,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/spf13/cobra"
 
-	"github.com/namo/x/identity/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/identity/types"
 )
 
 // Transaction commands for identity backup and recovery system

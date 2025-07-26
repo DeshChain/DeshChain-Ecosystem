@@ -19,7 +19,7 @@ package types_test
 import (
 	"testing"
 
-	"github.com/deshchain/deshchain/x/namo/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/namo/types"
 	"github.com/stretchr/testify/require"
 	"cosmossdk.io/math"
 )

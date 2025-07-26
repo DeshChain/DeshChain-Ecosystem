@@ -23,7 +23,7 @@ import (
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	govv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 
-	"github.com/deshchain/namo/x/governance/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/governance/types"
 )
 
 // Hooks is the governance hooks wrapper

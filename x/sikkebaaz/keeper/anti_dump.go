@@ -21,7 +21,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/namo/x/sikkebaaz/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/sikkebaaz/types"
 )
 
 // ValidateAntiDumpTrade validates a sell trade against anti-dump protection rules

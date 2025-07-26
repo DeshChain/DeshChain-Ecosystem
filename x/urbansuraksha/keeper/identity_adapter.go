@@ -5,9 +5,9 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	identitykeeper "github.com/namo/x/identity/keeper"
-	identitytypes "github.com/namo/x/identity/types"
-	"github.com/deshchain/deshchain/x/urbansuraksha/types"
+	identitykeeper "github.com/DeshChain/DeshChain-Ecosystem/x/identity/keeper"
+	identitytypes "github.com/DeshChain/DeshChain-Ecosystem/x/identity/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/urbansuraksha/types"
 )
 
 // IdentityAdapter provides identity-based verification for UrbanSuraksha
@@ -144,7 +144,7 @@ func (ia *IdentityAdapter) CreateContributorCredential(
 	credential := identitytypes.VerifiableCredential{
 		Context: []string{
 			"https://www.w3.org/2018/credentials/v1",
-			"https://deshchain.bharat/contexts/urbansuraksha/v1",
+			"https://deshchain.com/contexts/urbansuraksha/v1",
 		},
 		ID:   credID,
 		Type: []string{"VerifiableCredential", "UrbanSurakshaContributor"},
@@ -317,7 +317,7 @@ func (ia *IdentityAdapter) CreateEmploymentCredential(
 	credential := identitytypes.VerifiableCredential{
 		Context: []string{
 			"https://www.w3.org/2018/credentials/v1",
-			"https://deshchain.bharat/contexts/employment/v1",
+			"https://deshchain.com/contexts/employment/v1",
 		},
 		ID:   credID,
 		Type: []string{"VerifiableCredential", "EmploymentCredential"},

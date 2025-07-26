@@ -6,7 +6,7 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/namo/x/oracle/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/oracle/types"
 )
 
 // FallbackManager handles oracle failure detection and fallback mechanisms

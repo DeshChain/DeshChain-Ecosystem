@@ -23,7 +23,7 @@ import (
 	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	
-	"github.com/deshchain/deshchain/x/governance/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/governance/types"
 )
 
 // EnforceFounderProtection ensures all founder protections are enforced

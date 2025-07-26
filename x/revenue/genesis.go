@@ -2,8 +2,8 @@ package revenue
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/revenue/keeper"
-	"github.com/deshchain/deshchain/x/revenue/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/revenue/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/revenue/types"
 )
 
 // InitGenesis initializes the revenue module's state from a provided genesis state.

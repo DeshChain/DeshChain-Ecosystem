@@ -5,9 +5,9 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	identitykeeper "github.com/namo/x/identity/keeper"
-	identitytypes "github.com/namo/x/identity/types"
-	"github.com/deshchain/deshchain/x/shikshamitra/types"
+	identitykeeper "github.com/DeshChain/DeshChain-Ecosystem/x/identity/keeper"
+	identitytypes "github.com/DeshChain/DeshChain-Ecosystem/x/identity/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/shikshamitra/types"
 )
 
 // IdentityAdapter provides identity-based verification for ShikshaMitra
@@ -240,7 +240,7 @@ func (ia *IdentityAdapter) CreateStudentCredential(
 	credential := identitytypes.VerifiableCredential{
 		Context: []string{
 			"https://www.w3.org/2018/credentials/v1",
-			"https://deshchain.bharat/contexts/education/v1",
+			"https://deshchain.com/contexts/education/v1",
 		},
 		ID:   credID,
 		Type: []string{"VerifiableCredential", "EducationProfileCredential"},
@@ -296,7 +296,7 @@ func (ia *IdentityAdapter) CreateEducationLoanCredential(
 	credential := identitytypes.VerifiableCredential{
 		Context: []string{
 			"https://www.w3.org/2018/credentials/v1",
-			"https://deshchain.bharat/contexts/educationloan/v1",
+			"https://deshchain.com/contexts/educationloan/v1",
 		},
 		ID:   credID,
 		Type: []string{"VerifiableCredential", "EducationLoanCredential"},

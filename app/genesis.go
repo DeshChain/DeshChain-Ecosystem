@@ -24,10 +24,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	
-	namotypes "github.com/deshchain/deshchain/x/namo/types"
-	taxtypes "github.com/deshchain/deshchain/x/tax/types"
-	dextypes "github.com/deshchain/deshchain/x/dex/types"
-	launchpadtypes "github.com/deshchain/deshchain/x/launchpad/types"
+	namotypes "github.com/DeshChain/DeshChain-Ecosystem/x/namo/types"
+	taxtypes "github.com/DeshChain/DeshChain-Ecosystem/x/tax/types"
+	dextypes "github.com/DeshChain/DeshChain-Ecosystem/x/dex/types"
+	launchpadtypes "github.com/DeshChain/DeshChain-Ecosystem/x/launchpad/types"
 )
 
 // The genesis state of the blockchain is represented here as a map of raw json

@@ -28,9 +28,9 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 
-	"github.com/deshchain/namo/x/tax"
-	"github.com/deshchain/namo/x/tax/keeper"
-	"github.com/deshchain/namo/x/tax/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/tax"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/tax/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/tax/types"
 )
 
 type KeeperTestSuite struct {

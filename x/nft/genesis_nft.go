@@ -20,8 +20,8 @@ import (
 	"fmt"
 	
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/nft/keeper"
-	"github.com/deshchain/deshchain/x/nft/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/nft/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/nft/types"
 )
 
 // MintPradhanSevakNFT mints the special tribute NFT in the genesis block
@@ -62,7 +62,7 @@ func MintPradhanSevakNFT(ctx sdk.Context, k keeper.Keeper) error {
 				MintRestricted:   true,
 				UpdateRestricted: true,
 				Description:      "Special collection for tribute NFTs honoring leaders who have transformed India",
-				Uri:              "https://deshchain.bharat/collections/tribute",
+				Uri:              "https://deshchain.com/collections/tribute",
 				UriHash:          "",
 				Data:             "",
 			},

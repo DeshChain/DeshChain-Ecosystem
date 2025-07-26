@@ -69,7 +69,10 @@ install: go.sum
 	go install -mod=readonly $(BUILD_FLAGS) ./cmd/deshchaind
 
 build:
-	go build $(BUILD_FLAGS) -o bin/deshchaind ./cmd/deshchaind
+	go build $(BUILD_FLAGS) -o build/deshchaind ./cmd/deshchaind
+
+build-linux:
+	GOOS=linux GOARCH=amd64 go build $(BUILD_FLAGS) -o build/deshchaind ./cmd/deshchaind
 
 ###############################################################################
 ###                                Protobuf                                 ###

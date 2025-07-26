@@ -20,7 +20,7 @@ import (
 	"fmt"
 	
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/nft"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/nft"
 )
 
 // InitializeGenesisNFTs mints special NFTs during genesis

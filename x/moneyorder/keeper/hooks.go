@@ -21,7 +21,7 @@ import (
 	
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/deshchain/deshchain/x/moneyorder/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/moneyorder/types"
 )
 
 // Hooks wrapper struct for Money Order keeper

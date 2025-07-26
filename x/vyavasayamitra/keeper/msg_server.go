@@ -7,7 +7,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/deshchain/x/vyavasayamitra/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/vyavasayamitra/types"
 )
 
 type msgServer struct {

@@ -34,9 +34,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 
-	"github.com/deshchain/deshchain/x/urbansuraksha/client/cli"
-	"github.com/deshchain/deshchain/x/urbansuraksha/keeper"
-	"github.com/deshchain/deshchain/x/urbansuraksha/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/urbansuraksha/client/cli"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/urbansuraksha/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/urbansuraksha/types"
 )
 
 var (

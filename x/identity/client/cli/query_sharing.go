@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/deshchain/deshchain/x/identity/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/identity/types"
 )
 
 // GetQuerySharingCmd returns the query commands for identity sharing

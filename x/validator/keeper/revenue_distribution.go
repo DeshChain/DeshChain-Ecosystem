@@ -4,7 +4,7 @@ import (
     "fmt"
     
     sdk "github.com/cosmos/cosmos-sdk/types"
-    "github.com/deshchain/namo/x/validator/types"
+    "github.com/DeshChain/DeshChain-Ecosystem/x/validator/types"
 )
 
 // DistributeValidatorRevenue distributes revenue according to the tiered model

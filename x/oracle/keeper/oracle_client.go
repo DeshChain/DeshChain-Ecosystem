@@ -7,7 +7,7 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/namo/x/oracle/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/oracle/types"
 )
 
 // OracleClient interface for external price data sources

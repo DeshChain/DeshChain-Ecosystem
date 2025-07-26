@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	identitykeeper "github.com/namo/x/identity/keeper"
-	identitytypes "github.com/namo/x/identity/types"
-	"github.com/deshchain/deshchain/x/gramsuraksha/types"
+	identitykeeper "github.com/DeshChain/DeshChain-Ecosystem/x/identity/keeper"
+	identitytypes "github.com/DeshChain/DeshChain-Ecosystem/x/identity/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/gramsuraksha/types"
 )
 
 // IdentityAdapter provides identity-based verification for GramSuraksha
@@ -116,7 +116,7 @@ func (ia *IdentityAdapter) CreateParticipantCredential(
 	credential := identitytypes.VerifiableCredential{
 		Context: []string{
 			"https://www.w3.org/2018/credentials/v1",
-			"https://deshchain.bharat/contexts/gramsuraksha/v1",
+			"https://deshchain.com/contexts/gramsuraksha/v1",
 		},
 		ID:   credID,
 		Type: []string{"VerifiableCredential", "GramSurakshaParticipant"},

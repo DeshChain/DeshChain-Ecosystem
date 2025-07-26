@@ -25,7 +25,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/tendermint/tendermint/libs/log"
 
-	"github.com/deshchain/namo/x/governance/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/governance/types"
 )
 
 // Keeper of the governance store

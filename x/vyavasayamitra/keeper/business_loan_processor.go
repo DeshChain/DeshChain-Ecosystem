@@ -5,7 +5,7 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/namo/x/vyavasayamitra/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/vyavasayamitra/types"
 )
 
 // BusinessLoanProcessor handles comprehensive business loan processing

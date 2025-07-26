@@ -16,9 +16,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
-	"github.com/deshchain/deshchain/x/dinr/client/cli"
-	"github.com/deshchain/deshchain/x/dinr/keeper"
-	"github.com/deshchain/deshchain/x/dinr/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/dinr/client/cli"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/dinr/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/dinr/types"
 )
 
 var (

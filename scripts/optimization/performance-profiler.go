@@ -14,7 +14,7 @@ import (
 	"time"
 
 	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/simapp"
+	"github.com/cosmos/cosmos-sdk/types/module/testutil"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"google.golang.org/grpc"
 )
@@ -93,8 +93,8 @@ type Bottleneck struct {
 
 // NewPerformanceProfiler creates a new performance profiler
 func NewPerformanceProfiler(config *ProfileConfig) (*PerformanceProfiler, error) {
-	// Setup client context
-	encodingConfig := simapp.MakeTestEncodingConfig()
+	// Setup client context using the new moduletestutil
+	encodingConfig := testutil.MakeTestEncodingConfig()
 	
 	clientCtx := client.Context{}.
 		WithCodec(encodingConfig.Marshaler).

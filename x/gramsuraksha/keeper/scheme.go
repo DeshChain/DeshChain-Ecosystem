@@ -21,7 +21,7 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/gramsuraksha/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/gramsuraksha/types"
 )
 
 // CreateScheme creates a new pension scheme

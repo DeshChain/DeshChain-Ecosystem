@@ -10,7 +10,7 @@ import (
 	"cosmossdk.io/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	"github.com/deshchain/deshchain/x/shikshamitra/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/shikshamitra/types"
 )
 
 var _ types.QueryServer = Keeper{}

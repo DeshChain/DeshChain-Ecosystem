@@ -2,7 +2,7 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/revenue/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/revenue/types"
 )
 
 // GetParams returns the total set of revenue parameters.

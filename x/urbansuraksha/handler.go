@@ -21,8 +21,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/deshchain/deshchain/x/urbansuraksha/keeper"
-	"github.com/deshchain/deshchain/x/urbansuraksha/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/urbansuraksha/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/urbansuraksha/types"
 )
 
 // NewHandler creates a new urban pension handler

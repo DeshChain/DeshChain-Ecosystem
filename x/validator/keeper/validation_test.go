@@ -8,9 +8,9 @@ import (
     "github.com/stretchr/testify/suite"
     
     sdk "github.com/cosmos/cosmos-sdk/types"
-    "github.com/deshchain/namo/x/validator/keeper"
-    "github.com/deshchain/namo/x/validator/types"
-    "github.com/deshchain/namo/testutil"
+    "github.com/DeshChain/DeshChain-Ecosystem/x/validator/keeper"
+    "github.com/DeshChain/DeshChain-Ecosystem/x/validator/types"
+    "github.com/DeshChain/DeshChain-Ecosystem/testutil"
 )
 
 type ValidationTestSuite struct {

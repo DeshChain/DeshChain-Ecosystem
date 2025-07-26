@@ -9,7 +9,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/tendermint/tendermint/libs/log"
 
-	"github.com/deshchain/namo/x/revenue/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/revenue/types"
 )
 
 // Keeper of the revenue store

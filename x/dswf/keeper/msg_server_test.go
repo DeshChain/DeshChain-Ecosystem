@@ -4,8 +4,8 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/dswf/keeper"
-	"github.com/deshchain/deshchain/x/dswf/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/dswf/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/dswf/types"
 )
 
 // Test ProposeAllocation

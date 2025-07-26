@@ -10,9 +10,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/deshchain/namo/x/dusd/types"
-	oracletypes "github.com/deshchain/namo/x/oracle/types"
-	treasurytypes "github.com/deshchain/namo/x/treasury/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/dusd/types"
+	oracletypes "github.com/DeshChain/DeshChain-Ecosystem/x/oracle/types"
+	treasurytypes "github.com/DeshChain/DeshChain-Ecosystem/x/treasury/types"
 )
 
 type Keeper struct {

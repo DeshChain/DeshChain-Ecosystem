@@ -24,7 +24,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	"github.com/deshchain/deshchain/x/namo/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/namo/types"
 )
 
 var _ types.QueryServer = Keeper{}

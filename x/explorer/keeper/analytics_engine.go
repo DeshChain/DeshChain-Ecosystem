@@ -6,7 +6,7 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/namo/x/explorer/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/explorer/types"
 )
 
 // AnalyticsEngine handles advanced blockchain analytics and reporting

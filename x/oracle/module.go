@@ -14,9 +14,9 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 
-	"github.com/deshchain/deshchain/x/oracle/client/cli"
-	"github.com/deshchain/deshchain/x/oracle/keeper"
-	"github.com/deshchain/deshchain/x/oracle/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/oracle/client/cli"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/oracle/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/oracle/types"
 )
 
 var (

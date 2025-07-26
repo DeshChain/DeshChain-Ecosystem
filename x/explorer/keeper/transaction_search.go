@@ -8,7 +8,7 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/namo/x/explorer/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/explorer/types"
 )
 
 // TransactionSearchEngine handles comprehensive transaction search and filtering

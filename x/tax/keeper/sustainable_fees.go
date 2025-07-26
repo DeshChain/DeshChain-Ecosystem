@@ -5,7 +5,7 @@ import (
 	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/namo/x/tax/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/tax/types"
 )
 
 // SustainableFeeStructure defines the graduated fee structure for sustainability

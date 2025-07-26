@@ -26,8 +26,8 @@ import (
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/tendermint/tendermint/libs/log"
 
-	"github.com/deshchain/deshchain/x/dhansetu/types"
-	moneyordertypes "github.com/deshchain/deshchain/x/moneyorder/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/dhansetu/types"
+	moneyordertypes "github.com/DeshChain/DeshChain-Ecosystem/x/moneyorder/types"
 )
 
 // Keeper maintains the link to data storage and exposes getter/setter methods for DhanSetu

@@ -375,7 +375,7 @@ Between profit and purpose."
 - Enterprises: API integration
 
 ### For Community:
-- Join: deshchain.bharat
+- Join: deshchain.com
 - Contribute: Open source development
 - Participate: Governance tokens
 - Benefit: Lifetime rewards
@@ -398,6 +398,6 @@ Because when you solve real problems with sustainable economics while giving bac
 
 ---
 
-Contact: namaste@deshchain.bharat | Whitepaper: deshchain.bharat/vision | Telegram: t.me/deshchain
+Contact: namaste@deshchain.com | Whitepaper: deshchain.com/vision | Telegram: t.me/deshchain
 
 *Note: All projections are conservative. All distributions are immutable and enforced by smart contracts. Backward compatibility is guaranteed. This is the way.*

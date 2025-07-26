@@ -5,7 +5,7 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/dusd/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/dusd/types"
 )
 
 // StabilityEngine manages DUSD price stability using same algorithms as DINR

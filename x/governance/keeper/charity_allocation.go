@@ -5,7 +5,7 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/namo/x/governance/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/governance/types"
 )
 
 // CharityAllocationParams defines the graduated charity allocation structure

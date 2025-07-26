@@ -31,9 +31,9 @@ import (
 	"github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/deshchain/deshchain/x/moneyorder/client/cli"
-	"github.com/deshchain/deshchain/x/moneyorder/keeper"
-	"github.com/deshchain/deshchain/x/moneyorder/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/moneyorder/client/cli"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/moneyorder/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/moneyorder/types"
 )
 
 var (

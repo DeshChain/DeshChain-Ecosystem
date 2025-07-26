@@ -21,8 +21,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/deshchain/deshchain/x/treasury/keeper"
-	"github.com/deshchain/deshchain/x/treasury/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/treasury/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/treasury/types"
 )
 
 // NewHandler creates an sdk.Handler for all the treasury module messages

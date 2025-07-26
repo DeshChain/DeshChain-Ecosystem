@@ -7,7 +7,7 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/namo/x/identity/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/identity/types"
 )
 
 // BiometricIntegration provides backward-compatible biometric integration for moneyorder module
@@ -60,7 +60,7 @@ func (bi *BiometricIntegration) RegisterBiometricCredential(
 	credential := types.VerifiableCredential{
 		Context: []string{
 			"https://www.w3.org/2018/credentials/v1",
-			"https://deshchain.bharat/contexts/biometric/v1",
+			"https://deshchain.com/contexts/biometric/v1",
 		},
 		ID:   credID,
 		Type: []string{"VerifiableCredential", "BiometricCredential"},

@@ -1,0 +1,783 @@
+version: '3.8'
+
+networks:
+  deshchain-network:
+    name: deshchain-testnet
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  # First 11 validators
+  node0-data:
+  node1-data:
+  node2-data:
+  node3-data:
+  node4-data:
+  node5-data:
+  node6-data:
+  node7-data:
+  node8-data:
+  node9-data:
+  node10-data:
+  # Additional 10 validators
+  node11-data:
+  node12-data:
+  node13-data:
+  node14-data:
+  node15-data:
+  node16-data:
+  node17-data:
+  node18-data:
+  node19-data:
+  node20-data:
+  # Supporting services
+  postgres-data:
+  redis-data:
+  ipfs-data:
+
+services:
+  # PostgreSQL for Explorer and Analytics
+  postgres:
+    image: postgres:15-alpine
+    container_name: deshchain-postgres
+    environment:
+      POSTGRES_USER: deshchain
+      POSTGRES_PASSWORD: deshchain123
+      POSTGRES_DB: deshchain_explorer
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - deshchain-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U deshchain"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis for caching
+  redis:
+    image: redis:7-alpine
+    container_name: deshchain-redis
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
+    networks:
+      - deshchain-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # IPFS for cultural content
+  ipfs:
+    image: ipfs/go-ipfs:latest
+    container_name: deshchain-ipfs
+    ports:
+      - "5001:5001"
+      - "8080:8080"
+    volumes:
+      - ipfs-data:/data/ipfs
+    networks:
+      - deshchain-network
+
+  # Validator Node 0 - Bharatmata
+  node0:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    image: deshchain:latest
+    container_name: deshchain-node0
+    hostname: node0
+    ports:
+      - "26656:26656"  # P2P
+      - "26657:26657"  # RPC
+      - "1317:1317"    # REST API
+      - "9090:9090"    # gRPC
+    volumes:
+      - node0-data:/deshchain/data
+      - ./testnet/node0:/root/.deshchain
+    environment:
+      - NODE_ENV=testnet
+      - CHAIN_ID=deshchain-testnet-1
+      - MONIKER=Bharatmata
+    command: start --pruning=nothing --log_level=info
+    networks:
+      deshchain-network:
+        ipv4_address: 172.20.0.10
+    restart: unless-stopped
+
+  # Validator Node 1 - Gandhiji
+  node1:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    image: deshchain:latest
+    container_name: deshchain-node1
+    hostname: node1
+    ports:
+      - "26666:26656"
+      - "26667:26657"
+      - "1327:1317"
+      - "9100:9090"
+    volumes:
+      - node1-data:/deshchain/data
+      - ./testnet/node1:/root/.deshchain
+    environment:
+      - NODE_ENV=testnet
+      - CHAIN_ID=deshchain-testnet-1
+      - MONIKER=Gandhiji
+    command: start --pruning=nothing --log_level=info
+    networks:
+      deshchain-network:
+        ipv4_address: 172.20.0.11
+    restart: unless-stopped
+
+  # Validator Node 2 - Netaji
+  node2:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    image: deshchain:latest
+    container_name: deshchain-node2
+    hostname: node2
+    ports:
+      - "26676:26656"
+      - "26677:26657"
+      - "1337:1317"
+      - "9110:9090"
+    volumes:
+      - node2-data:/deshchain/data
+      - ./testnet/node2:/root/.deshchain
+    environment:
+      - NODE_ENV=testnet
+      - CHAIN_ID=deshchain-testnet-1
+      - MONIKER=Netaji
+    command: start --pruning=nothing --log_level=info
+    networks:
+      deshchain-network:
+        ipv4_address: 172.20.0.12
+    restart: unless-stopped
+
+  # Validator Node 3 - Sardar
+  node3:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    image: deshchain:latest
+    container_name: deshchain-node3
+    hostname: node3
+    ports:
+      - "26686:26656"
+      - "26687:26657"
+      - "1347:1317"
+      - "9120:9090"
+    volumes:
+      - node3-data:/deshchain/data
+      - ./testnet/node3:/root/.deshchain
+    environment:
+      - NODE_ENV=testnet
+      - CHAIN_ID=deshchain-testnet-1
+      - MONIKER=Sardar
+    command: start --pruning=nothing --log_level=info
+    networks:
+      deshchain-network:
+        ipv4_address: 172.20.0.13
+    restart: unless-stopped
+
+  # Validator Node 4 - Bhagat
+  node4:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    image: deshchain:latest
+    container_name: deshchain-node4
+    hostname: node4
+    ports:
+      - "26696:26656"
+      - "26697:26657"
+      - "1357:1317"
+      - "9130:9090"
+    volumes:
+      - node4-data:/deshchain/data
+      - ./testnet/node4:/root/.deshchain
+    environment:
+      - NODE_ENV=testnet
+      - CHAIN_ID=deshchain-testnet-1
+      - MONIKER=Bhagat
+    command: start --pruning=nothing --log_level=info
+    networks:
+      deshchain-network:
+        ipv4_address: 172.20.0.14
+    restart: unless-stopped
+
+  # Validator Node 5 - Azad
+  node5:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    image: deshchain:latest
+    container_name: deshchain-node5
+    hostname: node5
+    ports:
+      - "26706:26656"
+      - "26707:26657"
+      - "1367:1317"
+      - "9140:9090"
+    volumes:
+      - node5-data:/deshchain/data
+      - ./testnet/node5:/root/.deshchain
+    environment:
+      - NODE_ENV=testnet
+      - CHAIN_ID=deshchain-testnet-1
+      - MONIKER=Azad
+    command: start --pruning=nothing --log_level=info
+    networks:
+      deshchain-network:
+        ipv4_address: 172.20.0.15
+    restart: unless-stopped
+
+  # Validator Node 6 - Tilak
+  node6:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    image: deshchain:latest
+    container_name: deshchain-node6
+    hostname: node6
+    ports:
+      - "26716:26656"
+      - "26717:26657"
+      - "1377:1317"
+      - "9150:9090"
+    volumes:
+      - node6-data:/deshchain/data
+      - ./testnet/node6:/root/.deshchain
+    environment:
+      - NODE_ENV=testnet
+      - CHAIN_ID=deshchain-testnet-1
+      - MONIKER=Tilak
+    command: start --pruning=nothing --log_level=info
+    networks:
+      deshchain-network:
+        ipv4_address: 172.20.0.16
+    restart: unless-stopped
+
+  # Validator Node 7 - Tagore
+  node7:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    image: deshchain:latest
+    container_name: deshchain-node7
+    hostname: node7
+    ports:
+      - "26726:26656"
+      - "26727:26657"
+      - "1387:1317"
+      - "9160:9090"
+    volumes:
+      - node7-data:/deshchain/data
+      - ./testnet/node7:/root/.deshchain
+    environment:
+      - NODE_ENV=testnet
+      - CHAIN_ID=deshchain-testnet-1
+      - MONIKER=Tagore
+    command: start --pruning=nothing --log_level=info
+    networks:
+      deshchain-network:
+        ipv4_address: 172.20.0.17
+    restart: unless-stopped
+
+  # Validator Node 8 - Vivekananda
+  node8:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    image: deshchain:latest
+    container_name: deshchain-node8
+    hostname: node8
+    ports:
+      - "26736:26656"
+      - "26737:26657"
+      - "1397:1317"
+      - "9170:9090"
+    volumes:
+      - node8-data:/deshchain/data
+      - ./testnet/node8:/root/.deshchain
+    environment:
+      - NODE_ENV=testnet
+      - CHAIN_ID=deshchain-testnet-1
+      - MONIKER=Vivekananda
+    command: start --pruning=nothing --log_level=info
+    networks:
+      deshchain-network:
+        ipv4_address: 172.20.0.18
+    restart: unless-stopped
+
+  # Validator Node 9 - APJ
+  node9:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    image: deshchain:latest
+    container_name: deshchain-node9
+    hostname: node9
+    ports:
+      - "26746:26656"
+      - "26747:26657"
+      - "1407:1317"
+      - "9180:9090"
+    volumes:
+      - node9-data:/deshchain/data
+      - ./testnet/node9:/root/.deshchain
+    environment:
+      - NODE_ENV=testnet
+      - CHAIN_ID=deshchain-testnet-1
+      - MONIKER=APJ
+    command: start --pruning=nothing --log_level=info
+    networks:
+      deshchain-network:
+        ipv4_address: 172.20.0.19
+    restart: unless-stopped
+
+  # Validator Node 10 - Raman
+  node10:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    image: deshchain:latest
+    container_name: deshchain-node10
+    hostname: node10
+    ports:
+      - "26756:26656"
+      - "26757:26657"
+      - "1417:1317"
+      - "9190:9090"
+    volumes:
+      - node10-data:/deshchain/data
+      - ./testnet/node10:/root/.deshchain
+    environment:
+      - NODE_ENV=testnet
+      - CHAIN_ID=deshchain-testnet-1
+      - MONIKER=Raman
+    command: start --pruning=nothing --log_level=info
+    networks:
+      deshchain-network:
+        ipv4_address: 172.20.0.20
+    restart: unless-stopped
+
+  # Validator Node 11 - Ambedkar
+  node11:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    image: deshchain:latest
+    container_name: deshchain-node11
+    hostname: node11
+    ports:
+      - "26766:26656"
+      - "26767:26657"
+      - "1427:1317"
+      - "9200:9090"
+    volumes:
+      - node11-data:/deshchain/data
+      - ./testnet/node11:/root/.deshchain
+    environment:
+      - NODE_ENV=testnet
+      - CHAIN_ID=deshchain-testnet-1
+      - MONIKER=Ambedkar
+    command: start --pruning=nothing --log_level=info
+    networks:
+      deshchain-network:
+        ipv4_address: 172.20.0.21
+    restart: unless-stopped
+
+  # Validator Node 12 - Savarkar
+  node12:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    image: deshchain:latest
+    container_name: deshchain-node12
+    hostname: node12
+    ports:
+      - "26776:26656"
+      - "26777:26657"
+      - "1437:1317"
+      - "9210:9090"
+    volumes:
+      - node12-data:/deshchain/data
+      - ./testnet/node12:/root/.deshchain
+    environment:
+      - NODE_ENV=testnet
+      - CHAIN_ID=deshchain-testnet-1
+      - MONIKER=Savarkar
+    command: start --pruning=nothing --log_level=info
+    networks:
+      deshchain-network:
+        ipv4_address: 172.20.0.22
+    restart: unless-stopped
+
+  # Validator Node 13 - Shivaji
+  node13:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    image: deshchain:latest
+    container_name: deshchain-node13
+    hostname: node13
+    ports:
+      - "26786:26656"
+      - "26787:26657"
+      - "1447:1317"
+      - "9220:9090"
+    volumes:
+      - node13-data:/deshchain/data
+      - ./testnet/node13:/root/.deshchain
+    environment:
+      - NODE_ENV=testnet
+      - CHAIN_ID=deshchain-testnet-1
+      - MONIKER=Shivaji
+    command: start --pruning=nothing --log_level=info
+    networks:
+      deshchain-network:
+        ipv4_address: 172.20.0.23
+    restart: unless-stopped
+
+  # Validator Node 14 - Ashoka
+  node14:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    image: deshchain:latest
+    container_name: deshchain-node14
+    hostname: node14
+    ports:
+      - "26796:26656"
+      - "26797:26657"
+      - "1457:1317"
+      - "9230:9090"
+    volumes:
+      - node14-data:/deshchain/data
+      - ./testnet/node14:/root/.deshchain
+    environment:
+      - NODE_ENV=testnet
+      - CHAIN_ID=deshchain-testnet-1
+      - MONIKER=Ashoka
+    command: start --pruning=nothing --log_level=info
+    networks:
+      deshchain-network:
+        ipv4_address: 172.20.0.24
+    restart: unless-stopped
+
+  # Validator Node 15 - Chandragupta
+  node15:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    image: deshchain:latest
+    container_name: deshchain-node15
+    hostname: node15
+    ports:
+      - "26806:26656"
+      - "26807:26657"
+      - "1467:1317"
+      - "9240:9090"
+    volumes:
+      - node15-data:/deshchain/data
+      - ./testnet/node15:/root/.deshchain
+    environment:
+      - NODE_ENV=testnet
+      - CHAIN_ID=deshchain-testnet-1
+      - MONIKER=Chandragupta
+    command: start --pruning=nothing --log_level=info
+    networks:
+      deshchain-network:
+        ipv4_address: 172.20.0.25
+    restart: unless-stopped
+
+  # Validator Node 16 - Akbar
+  node16:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    image: deshchain:latest
+    container_name: deshchain-node16
+    hostname: node16
+    ports:
+      - "26816:26656"
+      - "26817:26657"
+      - "1477:1317"
+      - "9250:9090"
+    volumes:
+      - node16-data:/deshchain/data
+      - ./testnet/node16:/root/.deshchain
+    environment:
+      - NODE_ENV=testnet
+      - CHAIN_ID=deshchain-testnet-1
+      - MONIKER=Akbar
+    command: start --pruning=nothing --log_level=info
+    networks:
+      deshchain-network:
+        ipv4_address: 172.20.0.26
+    restart: unless-stopped
+
+  # Validator Node 17 - Rani Laxmibai
+  node17:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    image: deshchain:latest
+    container_name: deshchain-node17
+    hostname: node17
+    ports:
+      - "26826:26656"
+      - "26827:26657"
+      - "1487:1317"
+      - "9260:9090"
+    volumes:
+      - node17-data:/deshchain/data
+      - ./testnet/node17:/root/.deshchain
+    environment:
+      - NODE_ENV=testnet
+      - CHAIN_ID=deshchain-testnet-1
+      - MONIKER=RaniLaxmibai
+    command: start --pruning=nothing --log_level=info
+    networks:
+      deshchain-network:
+        ipv4_address: 172.20.0.27
+    restart: unless-stopped
+
+  # Validator Node 18 - Kabir
+  node18:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    image: deshchain:latest
+    container_name: deshchain-node18
+    hostname: node18
+    ports:
+      - "26836:26656"
+      - "26837:26657"
+      - "1497:1317"
+      - "9270:9090"
+    volumes:
+      - node18-data:/deshchain/data
+      - ./testnet/node18:/root/.deshchain
+    environment:
+      - NODE_ENV=testnet
+      - CHAIN_ID=deshchain-testnet-1
+      - MONIKER=Kabir
+    command: start --pruning=nothing --log_level=info
+    networks:
+      deshchain-network:
+        ipv4_address: 172.20.0.28
+    restart: unless-stopped
+
+  # Validator Node 19 - Tulsidas
+  node19:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    image: deshchain:latest
+    container_name: deshchain-node19
+    hostname: node19
+    ports:
+      - "26846:26656"
+      - "26847:26657"
+      - "1507:1317"
+      - "9280:9090"
+    volumes:
+      - node19-data:/deshchain/data
+      - ./testnet/node19:/root/.deshchain
+    environment:
+      - NODE_ENV=testnet
+      - CHAIN_ID=deshchain-testnet-1
+      - MONIKER=Tulsidas
+    command: start --pruning=nothing --log_level=info
+    networks:
+      deshchain-network:
+        ipv4_address: 172.20.0.29
+    restart: unless-stopped
+
+  # Validator Node 20 - Mirabai
+  node20:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    image: deshchain:latest
+    container_name: deshchain-node20
+    hostname: node20
+    ports:
+      - "26856:26656"
+      - "26857:26657"
+      - "1517:1317"
+      - "9290:9090"
+    volumes:
+      - node20-data:/deshchain/data
+      - ./testnet/node20:/root/.deshchain
+    environment:
+      - NODE_ENV=testnet
+      - CHAIN_ID=deshchain-testnet-1
+      - MONIKER=Mirabai
+    command: start --pruning=nothing --log_level=info
+    networks:
+      deshchain-network:
+        ipv4_address: 172.20.0.30
+    restart: unless-stopped
+
+  # Nginx Load Balancer
+  nginx:
+    image: nginx:alpine
+    container_name: deshchain-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./landing:/usr/share/nginx/html/landing:ro
+      - ./faucet/frontend:/usr/share/nginx/html/faucet:ro
+      - ./explorer/frontend:/usr/share/nginx/html/explorer:ro
+    depends_on:
+      - node0
+      - node1
+      - node2
+      - node3
+      - node4
+      - node5
+      - node6
+      - node7
+      - node8
+      - node9
+      - node10
+      - node11
+      - node12
+      - node13
+      - node14
+      - node15
+      - node16
+      - node17
+      - node18
+      - node19
+      - node20
+    networks:
+      - deshchain-network
+    restart: unless-stopped
+
+  # Explorer Backend
+  explorer-backend:
+    build:
+      context: ./explorer
+      dockerfile: Dockerfile.advanced
+    container_name: deshchain-explorer-backend
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://deshchain:deshchain123@postgres:5432/deshchain_explorer
+      - REDIS_URL=redis://redis:6379
+      - RPC_URL=http://nginx/rpc
+      - API_URL=http://nginx/api
+      - CHAIN_ID=deshchain-testnet-1
+      - PORT=3001
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      nginx:
+        condition: service_started
+    networks:
+      - deshchain-network
+    restart: unless-stopped
+
+  # Explorer Frontend  
+  explorer-frontend:
+    image: nginx:alpine
+    container_name: deshchain-explorer-frontend
+    volumes:
+      - ./explorer/frontend:/usr/share/nginx/html:ro
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:3001
+      - REACT_APP_RPC_URL=http://localhost/rpc
+      - REACT_APP_CHAIN_ID=deshchain-testnet-1
+    depends_on:
+      - explorer-backend
+    networks:
+      - deshchain-network
+    restart: unless-stopped
+
+  # Faucet Service
+  faucet:
+    build:
+      context: ./faucet
+      dockerfile: Dockerfile.advanced
+    container_name: deshchain-faucet
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=production
+      - RPC_URL=http://node0:26657
+      - CHAIN_ID=deshchain-testnet-1
+      - FAUCET_MNEMONIC=witness effort dose make crucial vote nature glove observe dilemma alpha invite lady wage fall shaft stock melody birth check refuse emotion fiscal cruise
+      - DRIP_AMOUNT=1000000000unamo
+      - COOLDOWN_TIME=3600
+    volumes:
+      - ./faucet/data:/app/data
+    depends_on:
+      - node0
+    networks:
+      - deshchain-network
+    restart: unless-stopped
+
+  # Landing Page
+  landing-page:
+    image: nginx:alpine
+    container_name: deshchain-landing
+    volumes:
+      - ./landing:/usr/share/nginx/html:ro
+      - ./landing/nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - deshchain-network
+    restart: unless-stopped
+
+  # Monitoring - Prometheus
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: deshchain-prometheus
+    ports:
+      - "9091:9090"
+    volumes:
+      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    networks:
+      - deshchain-network
+    restart: unless-stopped
+
+  # Monitoring - Grafana
+  grafana:
+    image: grafana/grafana:latest
+    container_name: deshchain-grafana
+    ports:
+      - "3005:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=deshchain123
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - ./docker/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./docker/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    depends_on:
+      - prometheus
+    networks:
+      - deshchain-network
+    restart: unless-stopped

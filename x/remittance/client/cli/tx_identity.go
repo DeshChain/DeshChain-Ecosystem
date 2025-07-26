@@ -9,7 +9,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/remittance/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/remittance/types"
 )
 
 // GetTxIdentityCmd returns the identity transaction commands for Remittance module

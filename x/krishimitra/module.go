@@ -16,10 +16,10 @@ import (
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/deshchain/x/krishimitra/client/cli"
-	"github.com/deshchain/x/krishimitra/client/rest"
-	"github.com/deshchain/x/krishimitra/keeper"
-	"github.com/deshchain/x/krishimitra/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/krishimitra/client/cli"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/krishimitra/client/rest"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/krishimitra/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/krishimitra/types"
 )
 
 var (

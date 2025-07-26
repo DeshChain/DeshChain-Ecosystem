@@ -4,7 +4,7 @@ import (
 	"context"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/oracle/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/oracle/types"
 )
 
 type msgServer struct {

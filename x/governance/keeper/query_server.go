@@ -23,7 +23,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/deshchain/namo/x/governance/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/governance/types"
 )
 
 var _ types.QueryServer = Keeper{}

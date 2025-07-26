@@ -21,8 +21,8 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/treasury/keeper"
-	"github.com/deshchain/deshchain/x/treasury/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/treasury/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/treasury/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 )
 

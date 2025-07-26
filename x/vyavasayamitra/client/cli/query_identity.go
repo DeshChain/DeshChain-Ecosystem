@@ -6,7 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
-	"github.com/deshchain/x/vyavasayamitra/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/vyavasayamitra/types"
 )
 
 // GetIdentityQueryCmd returns the identity query commands for VyavasayaMitra

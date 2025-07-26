@@ -7,8 +7,8 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
-	"github.com/deshchain/deshchain/x/dinr/keeper"
-	"github.com/deshchain/deshchain/x/dinr/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/dinr/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/dinr/types"
 )
 
 // NewHandler creates an sdk.Handler for all the dinr type messages

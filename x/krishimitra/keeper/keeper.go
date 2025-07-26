@@ -8,7 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	"cosmossdk.io/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/krishimitra/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/krishimitra/types"
 )
 
 // Keeper of the krishimitra store

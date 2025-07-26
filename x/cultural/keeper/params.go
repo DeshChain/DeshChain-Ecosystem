@@ -18,7 +18,7 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/cultural/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/cultural/types"
 )
 
 // GetParams get all parameters as types.Params

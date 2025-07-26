@@ -21,7 +21,7 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/gramsuraksha/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/gramsuraksha/types"
 )
 
 // EnrollParticipant enrolls a new participant in a pension scheme

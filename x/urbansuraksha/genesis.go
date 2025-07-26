@@ -18,8 +18,8 @@ package urbanpension
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/urbansuraksha/keeper"
-	"github.com/deshchain/deshchain/x/urbansuraksha/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/urbansuraksha/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/urbansuraksha/types"
 )
 
 // InitGenesis initializes the module's state from a provided genesis state.

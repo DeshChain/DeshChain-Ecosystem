@@ -6,8 +6,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	
-	"github.com/deshchain/x/identity/keeper"
-	"github.com/deshchain/x/identity/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/identity/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/identity/types"
 )
 
 // NewHandler creates an sdk.Handler for all the identity module messages

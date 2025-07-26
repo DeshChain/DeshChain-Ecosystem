@@ -1260,7 +1260,7 @@ DeshChain uses a dual licensing model:
 
 ## 🌐 Ecosystem Links
 
-- **Website**: [https://deshchain.bharat](https://deshchain.bharat)
+- **Website**: [https://deshchain.com](https://deshchain.com)
 - **Documentation**: [https://docs.deshchain.com](https://docs.deshchain.com)
 - **Block Explorer**: [https://explorer.deshchain.com](https://explorer.deshchain.com)
 - **GitHub**: [https://github.com/deshchain](https://github.com/deshchain)

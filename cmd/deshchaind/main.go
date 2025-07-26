@@ -22,8 +22,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/server"
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 
-	"github.com/deshchain/deshchain/app"
-	"github.com/deshchain/deshchain/cmd/deshchaind/cmd"
+	"github.com/DeshChain/DeshChain-Ecosystem/app"
+	"github.com/DeshChain/DeshChain-Ecosystem/cmd/deshchaind/cmd"
 )
 
 func main() {

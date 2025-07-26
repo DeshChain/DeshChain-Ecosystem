@@ -10,7 +10,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	
-	"github.com/deshchain/deshchain/x/dswf/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/dswf/types"
 )
 
 // Keeper of the x/dswf store

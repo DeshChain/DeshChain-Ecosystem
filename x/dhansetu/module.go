@@ -32,8 +32,8 @@ import (
 	"github.com/spf13/cobra"
 	abci "github.com/cometbft/cometbft/abci/types"
 
-	"github.com/deshchain/deshchain/x/dhansetu/keeper"
-	"github.com/deshchain/deshchain/x/dhansetu/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/dhansetu/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/dhansetu/types"
 )
 
 var (

@@ -21,7 +21,7 @@ import (
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/dhansetu/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/dhansetu/types"
 )
 
 // MoneyOrderIntegrationHooks implements hooks for Money Order DEX integration

@@ -8,7 +8,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/deshchain/deshchain/x/charitabletrust/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/charitabletrust/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module

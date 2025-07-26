@@ -1,0 +1,22 @@
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Create simple API server
+RUN echo 'const express = require("express"); \
+const cors = require("cors"); \
+const app = express(); \
+const port = process.env.PORT || 3001; \
+app.use(cors()); \
+app.use(express.json()); \
+app.get("/health", (req, res) => res.json({ status: "ok" })); \
+app.get("/api/blocks/latest", (req, res) => res.json({ height: 1000, hash: "0x123", time: new Date() })); \
+app.get("/api/validators", (req, res) => res.json([{ moniker: "Validator-1", voting_power: 1000000 }])); \
+app.get("/api/transactions/recent", (req, res) => res.json([{ hash: "0x456", type: "transfer", amount: "100 NAMO" }])); \
+app.listen(port, () => console.log(`Explorer backend on port ${port}`));' > server.js
+
+RUN npm install express cors
+
+EXPOSE 3001
+
+CMD ["node", "server.js"]

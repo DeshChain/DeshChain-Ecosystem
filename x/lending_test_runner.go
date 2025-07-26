@@ -7,14 +7,14 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
-	krishimitrakeeper "github.com/deshchain/deshchain/x/krishimitra/keeper"
-	krishimitratypes "github.com/deshchain/deshchain/x/krishimitra/types"
+	krishimitrakeeper "github.com/DeshChain/DeshChain-Ecosystem/x/krishimitra/keeper"
+	krishimitratypes "github.com/DeshChain/DeshChain-Ecosystem/x/krishimitra/types"
 	
-	vyavasayamitratkeeper "github.com/deshchain/deshchain/x/vyavasayamitra/keeper"
-	vyavasayamitratypes "github.com/deshchain/deshchain/x/vyavasayamitra/types"
+	vyavasayamitratkeeper "github.com/DeshChain/DeshChain-Ecosystem/x/vyavasayamitra/keeper"
+	vyavasayamitratypes "github.com/DeshChain/DeshChain-Ecosystem/x/vyavasayamitra/types"
 	
-	shikshamitrakeeper "github.com/deshchain/deshchain/x/shikshamitra/keeper"
-	shikshamitratypes "github.com/deshchain/deshchain/x/shikshamitra/types"
+	shikshamitrakeeper "github.com/DeshChain/DeshChain-Ecosystem/x/shikshamitra/keeper"
+	shikshamitratypes "github.com/DeshChain/DeshChain-Ecosystem/x/shikshamitra/types"
 )
 
 // TestLendingSuiteIntegration tests the integration between all three lending modules

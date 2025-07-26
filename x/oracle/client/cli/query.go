@@ -11,7 +11,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/types/query"
 
-	"github.com/deshchain/deshchain/x/oracle/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/oracle/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module

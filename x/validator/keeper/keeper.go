@@ -26,7 +26,7 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/cosmos/gogoproto/proto"
 	
-	"github.com/deshchain/namo/x/validator/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/validator/types"
 )
 
 // Keeper maintains the link to data storage and exposes getter/setter methods for the various parts of the state machine

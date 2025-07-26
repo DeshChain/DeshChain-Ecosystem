@@ -26,9 +26,9 @@ import (
 	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	"github.com/deshchain/namo/x/donation"
-	"github.com/deshchain/namo/x/donation/keeper"
-	"github.com/deshchain/namo/x/donation/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/donation"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/donation/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/donation/types"
 )
 
 type KeeperTestSuite struct {

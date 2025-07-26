@@ -596,7 +596,7 @@ Global reach with Indian soul"
 
 1. **Investors**: ₹50 Cr seed round opening
 2. **Partners**: Banks, NGOs, Government invited
-3. **Community**: Join at deshchain.bharat
+3. **Community**: Join at deshchain.com
 4. **Developers**: Open source contributions welcome
 
 **Together, let's build a financial future that our ancestors would be proud of and our children will thank us for.**
@@ -605,8 +605,8 @@ Global reach with Indian soul"
 
 *Jai Hind! Jai DeshChain!*
 
-*Contact: namaste@deshchain.bharat*
-*Whitepaper: deshchain.bharat/vision*
+*Contact: namaste@deshchain.com*
+*Whitepaper: deshchain.com/vision*
 *Community: t.me/deshchain*
 
 ---

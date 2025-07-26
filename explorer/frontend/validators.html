@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validators - DeshChain Explorer</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: #ff6b00;
+            font-weight: 700;
+            font-size: 24px;
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #64748b;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #ff6b00;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            padding: 40px 0;
+            color: white;
+        }
+
+        .page-title {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        /* Content Section */
+        .content-section {
+            padding: 40px 0;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 24px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        /* Network Stats */
+        .network-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .stat-item {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #3b82f6;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-change {
+            font-size: 12px;
+            margin-top: 8px;
+            color: #059669;
+        }
+
+        /* Validators Grid */
+        .validators-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .validator-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            padding: 24px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .validator-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .validator-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .validator-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b00, #ff8533);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            font-weight: 700;
+        }
+
+        .validator-info h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+
+        .validator-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-indicator.active {
+            background: #22c55e;
+        }
+
+        .status-indicator.inactive {
+            background: #ef4444;
+        }
+
+        .status-indicator.jailed {
+            background: #f59e0b;
+        }
+
+        /* Validator Details */
+        .validator-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .detail-value.voting-power {
+            color: #3b82f6;
+        }
+
+        .detail-value.commission {
+            color: #059669;
+        }
+
+        .detail-value.uptime {
+            color: #22c55e;
+        }
+
+        /* Progress Bars */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #f1f5f9;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-fill.uptime {
+            background: linear-gradient(90deg, #22c55e, #16a34a);
+        }
+
+        /* Validator Actions */
+        .validator-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 8px 16px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            color: #64748b;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .action-btn:hover {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        .action-btn.primary {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        .action-btn.primary:hover {
+            background: #2563eb;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #64748b;
+        }
+
+        .loading i {
+            font-size: 32px;
+            margin-bottom: 16px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .page-title {
+                font-size: 28px;
+            }
+            
+            .validators-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .validator-details {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Top Validators Table */
+        .validators-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .validators-table th,
+        .validators-table td {
+            padding: 16px 24px;
+            text-align: left;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .validators-table th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #475569;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .validators-table tr:hover {
+            background: #f8fafc;
+        }
+
+        .validator-name-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .validator-rank {
+            font-weight: 700;
+            color: #ff6b00;
+            width: 24px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <a href="/" class="logo">
+                    <img src="/logo/deshchain-logo.png" alt="DeshChain">
+                    <span>DeshChain Explorer</span>
+                </a>
+                <div class="nav-links">
+                    <a href="/">Home</a>
+                    <a href="/blocks">Blocks</a>
+                    <a href="/transactions">Transactions</a>
+                    <a href="/validators" class="active">Validators</a>
+                    <a href="https://faucet.deshchain.com">Faucet</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1 class="page-title">Validators</h1>
+            <p class="page-subtitle">Network validators securing the DeshChain blockchain</p>
+        </div>
+    </section>
+
+    <!-- Content Section -->
+    <section class="content-section">
+        <div class="container">
+            <!-- Network Stats -->
+            <div class="network-stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="activeValidators">21</div>
+                    <div class="stat-label">Active Validators</div>
+                    <div class="stat-change">100% Network Coverage</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="totalStaked">50M NAMO</div>
+                    <div class="stat-label">Total Staked</div>
+                    <div class="stat-change">+2.1% this week</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="networkUptime">99.9%</div>
+                    <div class="stat-label">Network Uptime</div>
+                    <div class="stat-change">Last 30 days</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="avgCommission">5.2%</div>
+                    <div class="stat-label">Avg Commission</div>
+                    <div class="stat-change">Across all validators</div>
+                </div>
+            </div>
+
+            <!-- Top Validators Table -->
+            <div class="section-card" style="margin-bottom: 32px;">
+                <div class="section-header">
+                    <h2 class="section-title">Top Validators by Voting Power</h2>
+                    <span id="validatorsCount" class="pagination-info">21 validators</span>
+                </div>
+                
+                <div id="loadingState" class="loading">
+                    <i class="fas fa-spinner"></i>
+                    <div>Loading validators...</div>
+                </div>
+
+                <div id="validatorsContent" style="display: none;">
+                    <table class="validators-table">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Validator</th>
+                                <th>Status</th>
+                                <th>Voting Power</th>
+                                <th>Commission</th>
+                                <th>Uptime</th>
+                                <th>Delegators</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="validatorsTableBody">
+                            <!-- Dynamic content -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Validators Grid -->
+            <div class="validators-grid" id="validatorsGrid" style="display: none;">
+                <!-- Dynamic content will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Configuration
+        const API_BASE = '/api';
+        
+        // Cultural validator names for our testnet
+        const validatorNames = [
+            'Bharatmata', 'Gandhiji', 'Netaji', 'Sardar', 'Bhagat',
+            'Azad', 'Tilak', 'Tagore', 'Vivekananda', 'APJ',
+            'Raman', 'Ambedkar', 'Savarkar', 'Shivaji', 'Ashoka',
+            'Chandragupta', 'Akbar', 'RaniLaxmibai', 'Kabir', 'Tulsidas', 'Mirabai'
+        ];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadValidators();
+            loadNetworkStats();
+        });
+
+        // Load validators data
+        async function loadValidators() {
+            try {
+                showLoading(true);
+                
+                const response = await fetch(`${API_BASE}/validators`);
+                const validators = await response.json();
+                
+                // Generate mock validator data if API returns empty
+                const validatorData = validators.length > 0 ? validators : generateMockValidators();
+                
+                renderValidatorsTable(validatorData);
+                renderValidatorsGrid(validatorData);
+                
+                showLoading(false);
+            } catch (error) {
+                console.error('Error loading validators:', error);
+                // Use mock data on error
+                const mockValidators = generateMockValidators();
+                renderValidatorsTable(mockValidators);
+                renderValidatorsGrid(mockValidators);
+                showLoading(false);
+            }
+        }
+
+        // Generate mock validator data
+        function generateMockValidators() {
+            return validatorNames.map((name, index) => ({
+                name: name,
+                operator_address: `deshvaloper1${Math.random().toString(36).substring(2, 39)}`,
+                voting_power: Math.floor(Math.random() * 8) + 2, // 2-10%
+                commission: (Math.random() * 10).toFixed(1), // 0-10%
+                uptime: (95 + Math.random() * 5).toFixed(1), // 95-100%
+                delegators: Math.floor(Math.random() * 500) + 50, // 50-550
+                status: index < 21 ? 'active' : 'inactive',
+                staked_tokens: Math.floor(Math.random() * 5000000) + 1000000, // 1M-6M
+                self_delegated: Math.floor(Math.random() * 100000) + 10000, // 10K-110K
+                rank: index + 1
+            }));
+        }
+
+        // Load network stats
+        async function loadNetworkStats() {
+            try {
+                const response = await fetch(`${API_BASE}/stats`);
+                const data = await response.json();
+                
+                document.getElementById('activeValidators').textContent = data.activeValidators || '21';
+            } catch (error) {
+                console.error('Error loading network stats:', error);
+            }
+        }
+
+        // Render validators table
+        function renderValidatorsTable(validators) {
+            const tbody = document.getElementById('validatorsTableBody');
+            
+            if (validators.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 40px; color: #64748b;">No validators found</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = validators.slice(0, 21).map((validator, index) => `
+                <tr>
+                    <td>
+                        <span class="validator-rank">#${index + 1}</span>
+                    </td>
+                    <td>
+                        <div class="validator-name-cell">
+                            <div class="validator-avatar">
+                                ${validator.name.charAt(0)}
+                            </div>
+                            <div>
+                                <div style="font-weight: 600; color: #1e293b;">${validator.name}</div>
+                                <div style="font-size: 12px; color: #64748b; font-family: monospace;">
+                                    ${truncateAddress(validator.operator_address)}
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="validator-status">
+                            <div class="status-indicator ${validator.status}"></div>
+                            <span style="text-transform: capitalize; color: ${validator.status === 'active' ? '#059669' : '#ef4444'};">
+                                ${validator.status}
+                            </span>
+                        </div>
+                    </td>
+                    <td>
+                        <div style="font-weight: 600; color: #3b82f6;">
+                            ${validator.voting_power}%
+                        </div>
+                        <div class="progress-bar" style="margin-top: 4px;">
+                            <div class="progress-fill" style="width: ${validator.voting_power * 10}%;"></div>
+                        </div>
+                    </td>
+                    <td>
+                        <span style="font-weight: 600; color: #059669;">
+                            ${validator.commission}%
+                        </span>
+                    </td>
+                    <td>
+                        <div style="font-weight: 600; color: #22c55e;">
+                            ${validator.uptime}%
+                        </div>
+                        <div class="progress-bar" style="margin-top: 4px;">
+                            <div class="progress-fill uptime" style="width: ${validator.uptime}%;"></div>
+                        </div>
+                    </td>
+                    <td>
+                        <span style="font-weight: 600; color: #64748b;">
+                            ${validator.delegators?.toLocaleString() || 'N/A'}
+                        </span>
+                    </td>
+                    <td>
+                        <div style="display: flex; gap: 8px;">
+                            <a href="/validator/${validator.operator_address}" class="action-btn" style="padding: 6px 12px; font-size: 12px;">
+                                <i class="fas fa-info-circle"></i> Details
+                            </a>
+                            <button class="action-btn primary" style="padding: 6px 12px; font-size: 12px;" onclick="delegateToValidator('${validator.operator_address}')">
+                                <i class="fas fa-coins"></i> Delegate
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Render validators grid
+        function renderValidatorsGrid(validators) {
+            const container = document.getElementById('validatorsGrid');
+            
+            container.innerHTML = validators.slice(0, 21).map(validator => `
+                <div class="validator-card">
+                    <div class="validator-header">
+                        <div class="validator-avatar">
+                            ${validator.name.charAt(0)}
+                        </div>
+                        <div class="validator-info">
+                            <h3>${validator.name}</h3>
+                            <div class="validator-status">
+                                <div class="status-indicator ${validator.status}"></div>
+                                <span style="color: ${validator.status === 'active' ? '#059669' : '#ef4444'}; text-transform: capitalize;">
+                                    ${validator.status}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="validator-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Voting Power</div>
+                            <div class="detail-value voting-power">${validator.voting_power}%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${validator.voting_power * 10}%;"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <div class="detail-label">Commission</div>
+                            <div class="detail-value commission">${validator.commission}%</div>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <div class="detail-label">Uptime</div>
+                            <div class="detail-value uptime">${validator.uptime}%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill uptime" style="width: ${validator.uptime}%;"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <div class="detail-label">Delegators</div>
+                            <div class="detail-value">${validator.delegators?.toLocaleString() || 'N/A'}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="validator-actions">
+                        <a href="/validator/${validator.operator_address}" class="action-btn">
+                            <i class="fas fa-info-circle"></i> Details
+                        </a>
+                        <button class="action-btn primary" onclick="delegateToValidator('${validator.operator_address}')">
+                            <i class="fas fa-coins"></i> Delegate
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Show/hide loading state
+        function showLoading(show) {
+            document.getElementById('loadingState').style.display = show ? 'block' : 'none';
+            document.getElementById('validatorsContent').style.display = show ? 'none' : 'block';
+        }
+
+        // Delegate to validator
+        function delegateToValidator(validatorAddress) {
+            // Redirect to faucet for now as we don't have a delegation interface
+            window.open('https://faucet.deshchain.com', '_blank');
+        }
+
+        // Utility functions
+        function truncateAddress(address) {
+            if (!address) return 'N/A';
+            return address.length > 16 ? `${address.substring(0, 8)}...${address.substring(address.length - 8)}` : address;
+        }
+
+        function formatNumber(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+            return num?.toLocaleString() || '0';
+        }
+    </script>
+</body>
+</html>

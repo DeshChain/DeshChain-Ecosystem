@@ -27,9 +27,9 @@ import (
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/tendermint/tendermint/libs/log"
 
-	"github.com/deshchain/namo/x/sikkebaaz/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/sikkebaaz/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	moneyordertypes "github.com/deshchain/deshchain/x/moneyorder/types"
+	moneyordertypes "github.com/DeshChain/DeshChain-Ecosystem/x/moneyorder/types"
 )
 
 type Keeper struct {

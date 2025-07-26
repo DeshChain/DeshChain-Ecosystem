@@ -5,8 +5,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/deshchain/deshchain/x/tax/keeper"
-	"github.com/deshchain/deshchain/x/tax/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/tax/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/tax/types"
 )
 
 // NewHandler creates an sdk.Handler for all the tax module's messages

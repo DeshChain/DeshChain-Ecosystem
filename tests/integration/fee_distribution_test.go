@@ -31,12 +31,12 @@ import (
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	"github.com/deshchain/deshchain/testutil"
-	"github.com/deshchain/deshchain/x/namo/types"
-	taxtypes "github.com/deshchain/deshchain/x/tax/types"
-	dextypes "github.com/deshchain/deshchain/x/dex/types"
-	launchpadtypes "github.com/deshchain/deshchain/x/launchpad/types"
-	validatortypes "github.com/deshchain/deshchain/x/validator/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/testutil"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/namo/types"
+	taxtypes "github.com/DeshChain/DeshChain-Ecosystem/x/tax/types"
+	dextypes "github.com/DeshChain/DeshChain-Ecosystem/x/dex/types"
+	launchpadtypes "github.com/DeshChain/DeshChain-Ecosystem/x/launchpad/types"
+	validatortypes "github.com/DeshChain/DeshChain-Ecosystem/x/validator/types"
 )
 
 type FeeDistributionTestSuite struct {

@@ -6,8 +6,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/deshchain/deshchain/x/dinr/keeper"
-	"github.com/deshchain/deshchain/x/dinr/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/dinr/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/dinr/types"
 )
 
 // BeginBlocker updates stability metrics and processes yield strategies

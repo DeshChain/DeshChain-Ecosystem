@@ -3,7 +3,7 @@ package tradefinance
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	abci "github.com/tendermint/tendermint/abci/types"
-	"github.com/deshchain/deshchain/x/tradefinance/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/tradefinance/keeper"
 )
 
 // BeginBlocker processes automatic LC expiry and status updates

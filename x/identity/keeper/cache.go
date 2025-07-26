@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/namo/x/identity/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/identity/types"
 )
 
 // IdentityCache implements a high-performance in-memory cache for identity data

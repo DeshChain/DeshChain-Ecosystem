@@ -18,8 +18,8 @@ package cultural
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/cultural/keeper"
-	"github.com/deshchain/deshchain/x/cultural/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/cultural/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/cultural/types"
 )
 
 // InitGenesis initializes the cultural module's state from a provided genesis state

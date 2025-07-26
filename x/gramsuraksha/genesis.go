@@ -18,8 +18,8 @@ package grampension
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/gramsuraksha/keeper"
-	"github.com/deshchain/deshchain/x/gramsuraksha/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/gramsuraksha/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/gramsuraksha/types"
 )
 
 // GenesisState defines the gram pension module's genesis state.

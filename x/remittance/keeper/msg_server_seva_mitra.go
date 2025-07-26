@@ -8,7 +8,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/deshchain/deshchain/x/remittance/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/remittance/types"
 )
 
 // MsgServer implements the remittance MsgServer interface for Sewa Mitra operations

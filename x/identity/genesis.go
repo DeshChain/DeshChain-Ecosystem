@@ -3,8 +3,8 @@ package identity
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	
-	"github.com/deshchain/x/identity/keeper"
-	"github.com/deshchain/x/identity/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/identity/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/identity/types"
 )
 
 // InitGenesis initializes the identity module's state from a provided genesis state

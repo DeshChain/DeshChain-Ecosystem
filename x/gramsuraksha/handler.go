@@ -22,8 +22,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/deshchain/deshchain/x/gramsuraksha/keeper"
-	"github.com/deshchain/deshchain/x/gramsuraksha/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/gramsuraksha/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/gramsuraksha/types"
 )
 
 // NewHandler creates an sdk.Handler for all the gram pension type messages

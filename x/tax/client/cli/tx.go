@@ -6,7 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/spf13/cobra"
 
-	"github.com/deshchain/deshchain/x/tax/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/tax/types"
 )
 
 // GetTxCmd returns the transaction commands for this module

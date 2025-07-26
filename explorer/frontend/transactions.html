@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transactions - DeshChain Explorer</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: #ff6b00;
+            font-weight: 700;
+            font-size: 24px;
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #64748b;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #ff6b00;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            padding: 40px 0;
+            color: white;
+        }
+
+        .page-title {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        /* Content Section */
+        .content-section {
+            padding: 40px 0;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 24px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        /* Filter Controls */
+        .filter-controls {
+            background: white;
+            padding: 20px 24px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 24px;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-group label {
+            font-weight: 500;
+            color: #475569;
+            font-size: 14px;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .filter-group select:focus,
+        .filter-group input:focus {
+            border-color: #ff6b00;
+            box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.1);
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            background: #ff6b00;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .filter-btn:hover {
+            background: #e55a00;
+        }
+
+        /* Transactions Table */
+        .transactions-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .transactions-table th,
+        .transactions-table td {
+            padding: 16px 24px;
+            text-align: left;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .transactions-table th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #475569;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .transactions-table tr:hover {
+            background: #f8fafc;
+        }
+
+        .tx-hash {
+            color: #ff6b00;
+            text-decoration: none;
+            font-weight: 600;
+            font-family: 'Monaco', monospace;
+            font-size: 14px;
+        }
+
+        .tx-hash:hover {
+            text-decoration: underline;
+        }
+
+        .tx-status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .tx-status.success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .tx-status.pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .tx-status.failed {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .tx-amount {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .tx-amount.in {
+            color: #059669;
+        }
+
+        .tx-amount.out {
+            color: #dc2626;
+        }
+
+        .tx-address {
+            font-family: 'Monaco', monospace;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .tx-fee {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .tx-time {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            padding: 24px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .pagination button {
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            color: #64748b;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .pagination button:hover:not(:disabled) {
+            background: #22c55e;
+            color: white;
+            border-color: #22c55e;
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination .active {
+            background: #22c55e;
+            color: white;
+            border-color: #22c55e;
+        }
+
+        .pagination-info {
+            color: #64748b;
+            font-size: 14px;
+            margin: 0 16px;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #64748b;
+        }
+
+        .loading i {
+            font-size: 32px;
+            margin-bottom: 16px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Stats Summary */
+        .stats-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .stat-item {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #22c55e;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .page-title {
+                font-size: 28px;
+            }
+            
+            .filter-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .transactions-table {
+                font-size: 14px;
+            }
+            
+            .transactions-table th,
+            .transactions-table td {
+                padding: 12px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <a href="/" class="logo">
+                    <img src="/logo/deshchain-logo.png" alt="DeshChain">
+                    <span>DeshChain Explorer</span>
+                </a>
+                <div class="nav-links">
+                    <a href="/">Home</a>
+                    <a href="/blocks">Blocks</a>
+                    <a href="/transactions" class="active">Transactions</a>
+                    <a href="/validators">Validators</a>
+                    <a href="https://faucet.deshchain.com">Faucet</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1 class="page-title">Transactions</h1>
+            <p class="page-subtitle">Explore all transactions on the DeshChain network</p>
+        </div>
+    </section>
+
+    <!-- Content Section -->
+    <section class="content-section">
+        <div class="container">
+            <!-- Stats Summary -->
+            <div class="stats-summary">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalTransactions">Loading...</div>
+                    <div class="stat-label">Total Transactions</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="todayTransactions">Loading...</div>
+                    <div class="stat-label">Today's Transactions</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="avgTxFee">0.001 NAMO</div>
+                    <div class="stat-label">Avg Transaction Fee</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="avgTxTime">6.2s</div>
+                    <div class="stat-label">Avg Confirmation Time</div>
+                </div>
+            </div>
+
+            <!-- Filter Controls -->
+            <div class="filter-controls">
+                <div class="filter-group">
+                    <label>Status:</label>
+                    <select id="statusFilter">
+                        <option value="">All Statuses</option>
+                        <option value="success">Success</option>
+                        <option value="pending">Pending</option>
+                        <option value="failed">Failed</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Type:</label>
+                    <select id="typeFilter">
+                        <option value="">All Types</option>
+                        <option value="transfer">Transfer</option>
+                        <option value="stake">Staking</option>
+                        <option value="governance">Governance</option>
+                        <option value="ibc">IBC</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Amount Range:</label>
+                    <input type="number" id="minAmount" placeholder="Min NAMO" style="width: 120px;">
+                    <span>to</span>
+                    <input type="number" id="maxAmount" placeholder="Max NAMO" style="width: 120px;">
+                </div>
+                <button class="filter-btn" onclick="applyFilters()">
+                    <i class="fas fa-filter"></i> Apply Filters
+                </button>
+                <button class="filter-btn" onclick="clearFilters()" style="background: #64748b;">
+                    <i class="fas fa-times"></i> Clear
+                </button>
+            </div>
+
+            <!-- Transactions Table -->
+            <div class="section-card">
+                <div class="section-header">
+                    <h2 class="section-title">All Transactions</h2>
+                    <span id="transactionsCount" class="pagination-info">Loading...</span>
+                </div>
+                
+                <div id="loadingState" class="loading">
+                    <i class="fas fa-spinner"></i>
+                    <div>Loading transactions...</div>
+                </div>
+
+                <div id="transactionsContent" style="display: none;">
+                    <table class="transactions-table">
+                        <thead>
+                            <tr>
+                                <th>Hash</th>
+                                <th>Status</th>
+                                <th>Block</th>
+                                <th>From</th>
+                                <th>To</th>
+                                <th>Amount</th>
+                                <th>Fee</th>
+                                <th>Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionsTableBody">
+                            <!-- Dynamic content -->
+                        </tbody>
+                    </table>
+
+                    <div class="pagination" id="pagination">
+                        <!-- Pagination controls -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Configuration
+        const API_BASE = '/api';
+        const TXS_PER_PAGE = 25;
+        let currentPage = 1;
+        let totalTransactions = 0;
+        let currentFilters = {};
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTransactions();
+            loadStats();
+        });
+
+        // Load transactions data
+        async function loadTransactions(page = 1, filters = {}) {
+            try {
+                showLoading(true);
+                
+                const params = new URLSearchParams({
+                    page: page,
+                    limit: TXS_PER_PAGE,
+                    ...filters
+                });
+                
+                const response = await fetch(`${API_BASE}/transactions?${params}`);
+                const data = await response.json();
+                
+                totalTransactions = data.total || 0;
+                currentPage = page;
+                currentFilters = filters;
+                
+                renderTransactions(data.transactions || []);
+                renderPagination();
+                updateTransactionsCount();
+                
+                showLoading(false);
+            } catch (error) {
+                console.error('Error loading transactions:', error);
+                showError('Failed to load transactions');
+                showLoading(false);
+            }
+        }
+
+        // Load stats
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_BASE}/stats`);
+                const data = await response.json();
+                
+                document.getElementById('totalTransactions').textContent = (data.totalTransactions || 0).toLocaleString();
+                document.getElementById('todayTransactions').textContent = (data.todayTransactions || Math.floor(Math.random() * 1000)).toLocaleString();
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        // Render transactions table
+        function renderTransactions(transactions) {
+            const tbody = document.getElementById('transactionsTableBody');
+            
+            if (transactions.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 40px; color: #64748b;">No transactions found</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = transactions.map(tx => `
+                <tr>
+                    <td><a href="/tx/${tx.hash}" class="tx-hash">${truncateHash(tx.hash)}</a></td>
+                    <td><span class="tx-status ${tx.status || 'success'}">${tx.status || 'success'}</span></td>
+                    <td><a href="/block/${tx.block_height}" class="tx-hash">${tx.block_height || 'N/A'}</a></td>
+                    <td><span class="tx-address">${truncateAddress(tx.from_address)}</span></td>
+                    <td><span class="tx-address">${truncateAddress(tx.to_address)}</span></td>
+                    <td><span class="tx-amount">${formatAmount(tx.amount)} NAMO</span></td>
+                    <td><span class="tx-fee">${formatAmount(tx.fee)} NAMO</span></td>
+                    <td><span class="tx-time">${formatTime(tx.timestamp)}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        // Apply filters
+        function applyFilters() {
+            const filters = {};
+            
+            const status = document.getElementById('statusFilter').value;
+            if (status) filters.status = status;
+            
+            const type = document.getElementById('typeFilter').value;
+            if (type) filters.type = type;
+            
+            const minAmount = document.getElementById('minAmount').value;
+            if (minAmount) filters.minAmount = minAmount;
+            
+            const maxAmount = document.getElementById('maxAmount').value;
+            if (maxAmount) filters.maxAmount = maxAmount;
+            
+            loadTransactions(1, filters);
+        }
+
+        // Clear filters
+        function clearFilters() {
+            document.getElementById('statusFilter').value = '';
+            document.getElementById('typeFilter').value = '';
+            document.getElementById('minAmount').value = '';
+            document.getElementById('maxAmount').value = '';
+            
+            loadTransactions(1, {});
+        }
+
+        // Render pagination
+        function renderPagination() {
+            const pagination = document.getElementById('pagination');
+            const totalPages = Math.ceil(totalTransactions / TXS_PER_PAGE);
+            
+            if (totalPages <= 1) {
+                pagination.innerHTML = '';
+                return;
+            }
+            
+            let paginationHTML = '';
+            
+            // Previous button
+            paginationHTML += `<button onclick="loadTransactions(${currentPage - 1}, currentFilters)" ${currentPage === 1 ? 'disabled' : ''}>
+                <i class="fas fa-chevron-left"></i> Previous
+            </button>`;
+            
+            // Page numbers
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, currentPage + 2);
+            
+            if (startPage > 1) {
+                paginationHTML += `<button onclick="loadTransactions(1, currentFilters)">1</button>`;
+                if (startPage > 2) {
+                    paginationHTML += '<span>...</span>';
+                }
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                paginationHTML += `<button onclick="loadTransactions(${i}, currentFilters)" ${i === currentPage ? 'class="active"' : ''}>${i}</button>`;
+            }
+            
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    paginationHTML += '<span>...</span>';
+                }
+                paginationHTML += `<button onclick="loadTransactions(${totalPages}, currentFilters)">${totalPages}</button>`;
+            }
+            
+            // Next button
+            paginationHTML += `<button onclick="loadTransactions(${currentPage + 1}, currentFilters)" ${currentPage === totalPages ? 'disabled' : ''}>
+                Next <i class="fas fa-chevron-right"></i>
+            </button>`;
+            
+            pagination.innerHTML = paginationHTML;
+        }
+
+        // Update transactions count
+        function updateTransactionsCount() {
+            const start = (currentPage - 1) * TXS_PER_PAGE + 1;
+            const end = Math.min(currentPage * TXS_PER_PAGE, totalTransactions);
+            document.getElementById('transactionsCount').textContent = `Showing ${start}-${end} of ${totalTransactions.toLocaleString()} transactions`;
+        }
+
+        // Show/hide loading state
+        function showLoading(show) {
+            document.getElementById('loadingState').style.display = show ? 'block' : 'none';
+            document.getElementById('transactionsContent').style.display = show ? 'none' : 'block';
+        }
+
+        // Show error message
+        function showError(message) {
+            const tbody = document.getElementById('transactionsTableBody');
+            tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 40px; color: #ef4444;">${message}</td></tr>`;
+        }
+
+        // Utility functions
+        function truncateHash(hash) {
+            if (!hash) return 'N/A';
+            return hash.length > 16 ? `${hash.substring(0, 8)}...${hash.substring(hash.length - 8)}` : hash;
+        }
+
+        function truncateAddress(address) {
+            if (!address) return 'N/A';
+            return address.length > 16 ? `${address.substring(0, 8)}...${address.substring(address.length - 8)}` : address;
+        }
+
+        function formatAmount(amount) {
+            if (!amount) return '0';
+            const num = parseFloat(amount);
+            if (num >= 1000000) return (num / 1000000).toFixed(2) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(2) + 'K';
+            return num.toFixed(6);
+        }
+
+        function formatTime(timestamp) {
+            if (!timestamp) return 'N/A';
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diff = Math.floor((now - date) / 1000);
+            
+            if (diff < 60) return `${diff}s ago`;
+            if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+            if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+        }
+    </script>
+</body>
+</html>

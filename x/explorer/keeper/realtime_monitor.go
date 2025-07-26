@@ -7,7 +7,7 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/namo/x/explorer/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/explorer/types"
 )
 
 // RealTimeMonitor handles real-time blockchain monitoring and notifications

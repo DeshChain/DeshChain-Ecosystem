@@ -21,7 +21,7 @@ import (
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/dhansetu/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/dhansetu/types"
 )
 
 type msgServer struct {

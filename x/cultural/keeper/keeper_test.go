@@ -21,7 +21,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/cultural/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/cultural/types"
 )
 
 func TestDefaultQuotes(t *testing.T) {

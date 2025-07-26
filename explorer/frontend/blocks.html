@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blocks - DeshChain Explorer</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: #ff6b00;
+            font-weight: 700;
+            font-size: 24px;
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #64748b;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #ff6b00;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, #ff6b00 0%, #ff8533 100%);
+            padding: 40px 0;
+            color: white;
+        }
+
+        .page-title {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        /* Content Section */
+        .content-section {
+            padding: 40px 0;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 24px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        /* Blocks Table */
+        .blocks-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .blocks-table th,
+        .blocks-table td {
+            padding: 16px 24px;
+            text-align: left;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .blocks-table th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #475569;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .blocks-table tr:hover {
+            background: #f8fafc;
+        }
+
+        .block-height {
+            color: #ff6b00;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .block-height:hover {
+            text-decoration: underline;
+        }
+
+        .block-hash {
+            font-family: 'Monaco', monospace;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .block-time {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .block-txs {
+            background: #eff6ff;
+            color: #1d4ed8;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .block-validator {
+            color: #059669;
+            font-weight: 500;
+        }
+
+        .block-size {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            padding: 24px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .pagination button {
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            color: #64748b;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .pagination button:hover:not(:disabled) {
+            background: #ff6b00;
+            color: white;
+            border-color: #ff6b00;
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination .active {
+            background: #ff6b00;
+            color: white;
+            border-color: #ff6b00;
+        }
+
+        .pagination-info {
+            color: #64748b;
+            font-size: 14px;
+            margin: 0 16px;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #64748b;
+        }
+
+        .loading i {
+            font-size: 32px;
+            margin-bottom: 16px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .page-title {
+                font-size: 28px;
+            }
+            
+            .blocks-table {
+                font-size: 14px;
+            }
+            
+            .blocks-table th,
+            .blocks-table td {
+                padding: 12px 16px;
+            }
+        }
+
+        /* Stats Summary */
+        .stats-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .stat-item {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ff6b00;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <a href="/" class="logo">
+                    <img src="/logo/deshchain-logo.png" alt="DeshChain">
+                    <span>DeshChain Explorer</span>
+                </a>
+                <div class="nav-links">
+                    <a href="/">Home</a>
+                    <a href="/blocks" class="active">Blocks</a>
+                    <a href="/transactions">Transactions</a>
+                    <a href="/validators">Validators</a>
+                    <a href="https://faucet.deshchain.com">Faucet</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1 class="page-title">Blocks</h1>
+            <p class="page-subtitle">Explore all blocks on the DeshChain network</p>
+        </div>
+    </section>
+
+    <!-- Content Section -->
+    <section class="content-section">
+        <div class="container">
+            <!-- Stats Summary -->
+            <div class="stats-summary">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalBlocks">Loading...</div>
+                    <div class="stat-label">Total Blocks</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="avgBlockTime">6.2s</div>
+                    <div class="stat-label">Avg Block Time</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="blockReward">50 NAMO</div>
+                    <div class="stat-label">Block Reward</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="networkHashrate">12.5 TH/s</div>
+                    <div class="stat-label">Network Hashrate</div>
+                </div>
+            </div>
+
+            <!-- Blocks Table -->
+            <div class="section-card">
+                <div class="section-header">
+                    <h2 class="section-title">All Blocks</h2>
+                    <span id="blocksCount" class="pagination-info">Loading...</span>
+                </div>
+                
+                <div id="loadingState" class="loading">
+                    <i class="fas fa-spinner"></i>
+                    <div>Loading blocks...</div>
+                </div>
+
+                <div id="blocksContent" style="display: none;">
+                    <table class="blocks-table">
+                        <thead>
+                            <tr>
+                                <th>Height</th>
+                                <th>Hash</th>
+                                <th>Timestamp</th>
+                                <th>Txs</th>
+                                <th>Validator</th>
+                                <th>Size</th>
+                                <th>Gas Used</th>
+                            </tr>
+                        </thead>
+                        <tbody id="blocksTableBody">
+                            <!-- Dynamic content -->
+                        </tbody>
+                    </table>
+
+                    <div class="pagination" id="pagination">
+                        <!-- Pagination controls -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Configuration
+        const API_BASE = '/api';
+        const BLOCKS_PER_PAGE = 25;
+        let currentPage = 1;
+        let totalBlocks = 0;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadBlocks();
+            loadStats();
+        });
+
+        // Load blocks data
+        async function loadBlocks(page = 1) {
+            try {
+                showLoading(true);
+                
+                const response = await fetch(`${API_BASE}/blocks?page=${page}&limit=${BLOCKS_PER_PAGE}`);
+                const data = await response.json();
+                
+                totalBlocks = data.total || 0;
+                currentPage = page;
+                
+                renderBlocks(data.blocks || []);
+                renderPagination();
+                updateBlocksCount();
+                
+                showLoading(false);
+            } catch (error) {
+                console.error('Error loading blocks:', error);
+                showError('Failed to load blocks');
+                showLoading(false);
+            }
+        }
+
+        // Load stats
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_BASE}/stats`);
+                const data = await response.json();
+                
+                document.getElementById('totalBlocks').textContent = (data.latestBlock || 0).toLocaleString();
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        // Render blocks table
+        function renderBlocks(blocks) {
+            const tbody = document.getElementById('blocksTableBody');
+            
+            if (blocks.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px; color: #64748b;">No blocks found</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = blocks.map(block => `
+                <tr>
+                    <td><a href="/block/${block.height}" class="block-height">${block.height}</a></td>
+                    <td><span class="block-hash">${truncateHash(block.hash)}</span></td>
+                    <td><span class="block-time">${formatTime(block.timestamp)}</span></td>
+                    <td><span class="block-txs">${block.tx_count || 0}</span></td>
+                    <td><span class="block-validator">${block.validator || 'Unknown'}</span></td>
+                    <td><span class="block-size">${formatBytes(block.size_bytes || 0)}</span></td>
+                    <td><span class="block-size">${formatGas(block.gas_used || 0)}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        // Render pagination
+        function renderPagination() {
+            const pagination = document.getElementById('pagination');
+            const totalPages = Math.ceil(totalBlocks / BLOCKS_PER_PAGE);
+            
+            if (totalPages <= 1) {
+                pagination.innerHTML = '';
+                return;
+            }
+            
+            let paginationHTML = '';
+            
+            // Previous button
+            paginationHTML += `<button onclick="loadBlocks(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+                <i class="fas fa-chevron-left"></i> Previous
+            </button>`;
+            
+            // Page numbers
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, currentPage + 2);
+            
+            if (startPage > 1) {
+                paginationHTML += `<button onclick="loadBlocks(1)">1</button>`;
+                if (startPage > 2) {
+                    paginationHTML += '<span>...</span>';
+                }
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                paginationHTML += `<button onclick="loadBlocks(${i})" ${i === currentPage ? 'class="active"' : ''}>${i}</button>`;
+            }
+            
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    paginationHTML += '<span>...</span>';
+                }
+                paginationHTML += `<button onclick="loadBlocks(${totalPages})">${totalPages}</button>`;
+            }
+            
+            // Next button
+            paginationHTML += `<button onclick="loadBlocks(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+                Next <i class="fas fa-chevron-right"></i>
+            </button>`;
+            
+            pagination.innerHTML = paginationHTML;
+        }
+
+        // Update blocks count
+        function updateBlocksCount() {
+            const start = (currentPage - 1) * BLOCKS_PER_PAGE + 1;
+            const end = Math.min(currentPage * BLOCKS_PER_PAGE, totalBlocks);
+            document.getElementById('blocksCount').textContent = `Showing ${start}-${end} of ${totalBlocks.toLocaleString()} blocks`;
+        }
+
+        // Show/hide loading state
+        function showLoading(show) {
+            document.getElementById('loadingState').style.display = show ? 'block' : 'none';
+            document.getElementById('blocksContent').style.display = show ? 'none' : 'block';
+        }
+
+        // Show error message
+        function showError(message) {
+            const tbody = document.getElementById('blocksTableBody');
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 40px; color: #ef4444;">${message}</td></tr>`;
+        }
+
+        // Utility functions
+        function truncateHash(hash) {
+            if (!hash) return 'N/A';
+            return hash.length > 16 ? `${hash.substring(0, 8)}...${hash.substring(hash.length - 8)}` : hash;
+        }
+
+        function formatTime(timestamp) {
+            if (!timestamp) return 'N/A';
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diff = Math.floor((now - date) / 1000);
+            
+            if (diff < 60) return `${diff}s ago`;
+            if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+            if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+        }
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+        }
+
+        function formatGas(gas) {
+            if (gas === 0) return '0';
+            if (gas >= 1000000) return (gas / 1000000).toFixed(1) + 'M';
+            if (gas >= 1000) return (gas / 1000).toFixed(1) + 'K';
+            return gas.toString();
+        }
+    </script>
+</body>
+</html>

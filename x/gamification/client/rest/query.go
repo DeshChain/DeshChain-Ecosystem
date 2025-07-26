@@ -25,7 +25,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/types/rest"
 	
-	"github.com/deshchain/deshchain/x/gamification/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/gamification/types"
 )
 
 func registerQueryRoutes(clientCtx client.Context, r *mux.Router) {

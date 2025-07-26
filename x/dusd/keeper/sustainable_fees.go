@@ -4,8 +4,8 @@ import (
 	"fmt"
 	
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/namo/x/dusd/types"
-	taxkeeper "github.com/deshchain/namo/x/tax/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/dusd/types"
+	taxkeeper "github.com/DeshChain/DeshChain-Ecosystem/x/tax/keeper"
 )
 
 // SustainableDUSDFeeStructure defines the sustainable fee structure for DUSD

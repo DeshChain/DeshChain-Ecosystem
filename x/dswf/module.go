@@ -18,9 +18,9 @@ import (
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 
-	"github.com/deshchain/deshchain/x/dswf/client/cli"
-	"github.com/deshchain/deshchain/x/dswf/keeper"
-	"github.com/deshchain/deshchain/x/dswf/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/dswf/client/cli"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/dswf/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/dswf/types"
 )
 
 var (

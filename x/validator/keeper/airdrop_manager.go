@@ -8,7 +8,7 @@ import (
     "bytes"
     
     sdk "github.com/cosmos/cosmos-sdk/types"
-    "github.com/deshchain/namo/x/validator/types"
+    "github.com/DeshChain/DeshChain-Ecosystem/x/validator/types"
 )
 
 // AirdropManager handles token airdrops and distribution campaigns

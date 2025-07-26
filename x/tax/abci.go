@@ -3,8 +3,8 @@ package tax
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	abci "github.com/tendermint/tendermint/abci/types"
-	"github.com/deshchain/deshchain/x/tax/keeper"
-	"github.com/deshchain/deshchain/x/tax/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/tax/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/tax/types"
 )
 
 // BeginBlocker is called at the beginning of every block

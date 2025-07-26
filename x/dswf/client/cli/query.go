@@ -8,7 +8,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/deshchain/deshchain/x/dswf/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/dswf/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module

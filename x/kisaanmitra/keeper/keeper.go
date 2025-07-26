@@ -6,7 +6,7 @@ import (
 	"github.com/tendermint/tendermint/libs/log"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/kisaanmitra/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/kisaanmitra/types"
 )
 
 // Keeper of the kisaanmitra store

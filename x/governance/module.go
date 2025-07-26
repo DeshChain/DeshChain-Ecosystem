@@ -33,8 +33,8 @@ import (
 	"github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/deshchain/namo/x/governance/keeper"
-	"github.com/deshchain/namo/x/governance/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/governance/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/governance/types"
 )
 
 var (

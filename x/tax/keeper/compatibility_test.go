@@ -5,8 +5,8 @@ import (
 	
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
-	"github.com/deshchain/namo/x/tax/keeper"
-	"github.com/deshchain/namo/x/tax/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/tax/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/tax/types"
 )
 
 // TestBackwardCompatibility ensures new fee structure maintains compatibility

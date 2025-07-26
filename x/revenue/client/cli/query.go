@@ -7,7 +7,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
 
-	"github.com/deshchain/deshchain/x/revenue/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/revenue/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module

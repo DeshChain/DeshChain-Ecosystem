@@ -1,0 +1,58 @@
+# DeshChain Node Dockerfile
+FROM golang:1.20-alpine AS builder
+
+# Install build dependencies
+RUN apk add --no-cache make git libc-dev bash gcc linux-headers eudev-dev curl
+
+# Set working directory
+WORKDIR /deshchain
+
+# Copy go mod files
+COPY go.mod go.sum ./
+
+# Download dependencies
+RUN go mod download
+
+# Copy source code
+COPY . .
+
+# Build the blockchain binary
+RUN make build
+
+# Final stage
+FROM alpine:latest
+
+# Install runtime dependencies
+RUN apk add --no-cache ca-certificates jq bash curl
+
+# Create non-root user
+RUN addgroup -g 1000 deshchain && \
+    adduser -u 1000 -G deshchain -s /bin/sh -D deshchain
+
+# Set working directory
+WORKDIR /deshchain
+
+# Copy binary from builder
+COPY --from=builder /deshchain/build/deshchaind /usr/local/bin/deshchaind
+
+# Copy genesis and config files
+COPY --from=builder /deshchain/genesis /deshchain/genesis
+COPY --from=builder /deshchain/scripts /deshchain/scripts
+
+# Create data directory
+RUN mkdir -p /deshchain/data && chown -R deshchain:deshchain /deshchain
+
+# Switch to non-root user
+USER deshchain
+
+# Expose ports
+# 26656 - P2P
+# 26657 - RPC
+# 26658 - Prometheus
+# 1317 - REST API
+# 9090 - gRPC
+# 9091 - gRPC Web
+EXPOSE 26656 26657 26658 1317 9090 9091
+
+# Set entrypoint
+ENTRYPOINT ["deshchaind"]

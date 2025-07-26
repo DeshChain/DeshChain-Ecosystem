@@ -8,7 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/kisaanmitra/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/kisaanmitra/types"
 )
 
 // GetQueryIdentityCmd returns the identity query commands for KisaanMitra module

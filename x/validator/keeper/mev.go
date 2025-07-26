@@ -24,7 +24,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/staking/types"
 	
-	vtypes "github.com/deshchain/deshchain/x/validator/types"
+	vtypes "github.com/DeshChain/DeshChain-Ecosystem/x/validator/types"
 )
 
 // MEVCapture represents captured MEV (Maximum Extractable Value) from block production

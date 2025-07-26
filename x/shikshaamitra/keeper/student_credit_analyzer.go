@@ -5,7 +5,7 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/namo/x/shikshaamitra/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/shikshaamitra/types"
 )
 
 // StudentCreditAnalyzer handles comprehensive student credit analysis

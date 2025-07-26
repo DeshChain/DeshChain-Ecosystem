@@ -51,8 +51,8 @@ import (
 	tmtypes "github.com/cometbft/cometbft/types"
 	dbm "github.com/cometbft/cometbft-db"
 
-	"github.com/deshchain/deshchain/app"
-	"github.com/deshchain/deshchain/app/params"
+	"github.com/DeshChain/DeshChain-Ecosystem/app"
+	"github.com/DeshChain/DeshChain-Ecosystem/app/params"
 )
 
 // NewRootCmd creates a new root command for deshchaind. It is called once in the

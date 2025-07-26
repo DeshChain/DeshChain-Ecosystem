@@ -2,8 +2,8 @@ package oracle
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/oracle/keeper"
-	"github.com/deshchain/deshchain/x/oracle/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/oracle/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/oracle/types"
 )
 
 // InitGenesis initializes the oracle module's state from a provided genesis

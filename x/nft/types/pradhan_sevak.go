@@ -98,7 +98,7 @@ func CreatePradhanSevakNFT(chainID string, genesisHeight int64) *PradhanSevakNFT
 		
 		ImageURI:      "ipfs://QmPradhanSevakMainImage",
 		AnimationURI:  "ipfs://QmPradhanSevakAnimation",
-		ExternalURI:   "https://deshchain.bharat/nft/pradhan-sevak",
+		ExternalURI:   "https://deshchain.com/nft/pradhan-sevak",
 		
 		Transferable:  false, // Cannot be transferred
 		Burnable:      false, // Cannot be burned

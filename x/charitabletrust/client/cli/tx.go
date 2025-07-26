@@ -12,7 +12,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/deshchain/deshchain/x/charitabletrust/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/charitabletrust/types"
 )
 
 // GetTxCmd returns the transaction commands for this module

@@ -5,7 +5,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/dinr/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/dinr/types"
 	"github.com/gogo/protobuf/proto"
 )
 

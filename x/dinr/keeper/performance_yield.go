@@ -4,7 +4,7 @@ import (
 	"fmt"
 	
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/namo/x/dinr/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/dinr/types"
 )
 
 // PerformanceYieldCalculator calculates dynamic yield based on platform performance

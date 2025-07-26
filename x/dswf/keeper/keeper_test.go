@@ -8,9 +8,9 @@ import (
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/app"
-	"github.com/deshchain/deshchain/x/dswf/keeper"
-	"github.com/deshchain/deshchain/x/dswf/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/app"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/dswf/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/dswf/types"
 )
 
 type KeeperTestSuite struct {

@@ -5,8 +5,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/deshchain/deshchain/x/revenue/keeper"
-	"github.com/deshchain/deshchain/x/revenue/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/revenue/keeper"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/revenue/types"
 )
 
 // NewHandler creates an sdk.Handler for all the revenue module's messages

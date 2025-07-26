@@ -8,7 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/deshchain/deshchain/x/kisaanmitra/types"
+	"github.com/DeshChain/DeshChain-Ecosystem/x/kisaanmitra/types"
 )
 
 // GetTxIdentityCmd returns the identity transaction commands for KisaanMitra module
