@@ -40,3 +40,10 @@ type DistributionKeeper interface {
 type GovKeeper interface {
 	GetProposal(ctx sdk.Context, proposalID uint64) (proposal interface{}, found bool)
 }
+
+// RevenueKeeper defines the expected revenue keeper for integration
+type RevenueKeeper interface {
+	RecordRevenueStream(ctx sdk.Context, stream interface{})
+	CalculateAndDistributeRevenue(ctx sdk.Context) error
+	IsRevenueEnabled(ctx sdk.Context) bool
+}

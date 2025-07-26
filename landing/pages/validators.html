@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Become a DeshChain Validator - Genesis Validator Program</title>
+    <meta name="description" content="Join the elite group of DeshChain validators. Calculate your potential returns and secure your slot in the genesis validator auction.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/cultural.css">
+    <link rel="stylesheet" href="./pages.css">
+    <link rel="stylesheet" href="./validators.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="../assets/deshchain-logo.png" alt="DeshChain Logo" class="logo">
+                <span class="logo-text">DeshChain</span>
+            </div>
+            
+            <div class="nav-menu" id="nav-menu">
+                <a href="../index.html" class="nav-link">Home</a>
+                <a href="../docs/index.html" class="nav-link">Documentation</a>
+                <a href="./whitepaper.html" class="nav-link">Whitepaper</a>
+                <a href="#calculator" class="nav-link">ROI Calculator</a>
+            </div>
+            
+            <div class="nav-actions">
+                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">🌙</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="validator-hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span class="badge-icon">🏆</span>
+                    <span>Genesis Validator Program</span>
+                </div>
+                
+                <h1>Become a DeshChain Validator</h1>
+                <p class="hero-subtitle">Join the elite group securing the world's first culturally-rooted blockchain</p>
+                
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-value">21</span>
+                        <span class="stat-label">Genesis Slots</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value">12-18%</span>
+                        <span class="stat-label">Base APY</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value">40%+</span>
+                        <span class="stat-label">Total Revenue Share</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value">$300K+</span>
+                        <span class="stat-label">Min Investment</span>
+                    </div>
+                </div>
+                
+                <div class="hero-actions">
+                    <a href="#calculator" class="btn btn-primary">Calculate ROI</a>
+                    <a href="#apply" class="btn btn-secondary">Apply Now</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Revenue Model Section -->
+    <section class="revenue-model">
+        <div class="container">
+            <h2>📊 Comprehensive Revenue Distribution Model</h2>
+            <p class="section-subtitle">Multiple revenue streams ensuring sustainable validator returns</p>
+            
+            <div class="revenue-table-container">
+                <table class="revenue-table">
+                    <thead>
+                        <tr>
+                            <th>Revenue Source</th>
+                            <th>Platform Fee</th>
+                            <th>Validator Share</th>
+                            <th>Distribution Model</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Transaction Tax</strong></td>
+                            <td>2.5%</td>
+                            <td class="highlight">50% (1.25%)</td>
+                            <td>Based on stake weight</td>
+                        </tr>
+                        <tr>
+                            <td><strong>DEX Trading</strong></td>
+                            <td>0.25%</td>
+                            <td class="highlight">25% (0.0625%)</td>
+                            <td>Pro-rata by stake</td>
+                        </tr>
+                        <tr>
+                            <td><strong>MEV Capture</strong></td>
+                            <td>Variable</td>
+                            <td class="highlight">60%</td>
+                            <td>Performance-based</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sikkebaaz Launchpad</strong></td>
+                            <td>5%</td>
+                            <td class="highlight">20% (1%)</td>
+                            <td>Equal among validators</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Block Rewards</strong></td>
+                            <td>-</td>
+                            <td class="highlight">12-18% APY</td>
+                            <td>Stake-weighted</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="genesis-benefits">
+                <h3>🌟 Genesis Validator Special Benefits</h3>
+                <div class="benefits-grid">
+                    <div class="benefit-card">
+                        <span class="benefit-icon">💎</span>
+                        <h4>Guaranteed Pool Share</h4>
+                        <p>1% minimum of validator pool when >100 validators join</p>
+                    </div>
+                    <div class="benefit-card">
+                        <span class="benefit-icon">🎨</span>
+                        <h4>Bharat Guardian NFTs</h4>
+                        <p>Tradeable NFTs with 5% perpetual royalty on transfers</p>
+                    </div>
+                    <div class="benefit-card">
+                        <span class="benefit-icon">🗳️</span>
+                        <h4>Enhanced Governance</h4>
+                        <p>Up to 3x voting power in protocol decisions</p>
+                    </div>
+                    <div class="benefit-card">
+                        <span class="benefit-icon">🤝</span>
+                        <h4>Referral System</h4>
+                        <p>10-20% commission on referred validators</p>
+                    </div>
+                    <div class="benefit-card">
+                        <span class="benefit-icon">🇮🇳</span>
+                        <h4>India Location Bonus</h4>
+                        <p>Up to 20% extra rewards for India-based validators</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Auction Structure Section -->
+    <section class="auction-structure">
+        <div class="container">
+            <h2>💰 Exclusive Validator Auction - Only 21 Slots Available</h2>
+            <div class="auction-notice" style="background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(255, 215, 0, 0.1)); padding: 2rem; border-radius: var(--radius-xl); margin-bottom: 3rem; text-align: center;">
+                <h3 style="color: var(--primary); margin-bottom: 1rem;">⚡ Premium Genesis Validator Auction</h3>
+                <p style="font-size: 1.125rem; color: var(--text-primary); margin-bottom: 1rem;">
+                    This is a competitive auction for 21 exclusive genesis validator positions. 
+                    <strong>No discounts available</strong> - these are premium slots for serious validators only.
+                </p>
+                <p style="color: var(--text-secondary);">
+                    First come, first served basis. Once a slot is taken, it's gone forever.
+                </p>
+            </div>
+            <h3 style="text-align: center; margin-bottom: 2rem;">Investment Requirements by Tier</h3>
+            
+            <!-- Risk Disclosure -->
+            <div class="risk-disclosure" style="background: rgba(255, 107, 53, 0.1); border: 2px solid rgba(255, 107, 53, 0.3); border-radius: var(--radius-lg); padding: 2rem; margin-bottom: 3rem;">
+                <h4 style="color: var(--primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    ⚠️ Important Risk Disclosure
+                </h4>
+                <ul style="margin: 1rem 0 1rem 1.5rem;">
+                    <li><strong>Contract amounts are NON-REFUNDABLE</strong> and will be used for DeshChain operations and development</li>
+                    <li>Only staking amounts are locked on-chain and subject to vesting schedules</li>
+                    <li>Validator positions require significant technical expertise and infrastructure investment</li>
+                    <li>Returns are projections only - actual returns may vary significantly</li>
+                    <li>Cryptocurrency and blockchain investments carry high risk of total loss</li>
+                    <li>Regulatory changes may impact validator operations and returns</li>
+                    <li>Network security incidents could result in slashing penalties</li>
+                </ul>
+                <p style="margin: 1rem 0 0 0; font-weight: 600; color: var(--text-primary);">
+                    This is a high-risk investment suitable only for sophisticated investors who can afford total loss of invested capital.
+                </p>
+            </div>
+            
+            <!-- Tier 1: Genesis Foundation -->
+            <div class="tier-section">
+                <h3 class="tier-header tier-1">Tier 1: Genesis Foundation (Slots 1-10)</h3>
+                <div class="tier-table-container">
+                    <table class="tier-table">
+                        <thead>
+                            <tr>
+                                <th>Slot</th>
+                                <th>Contract (USD)</th>
+                                <th>Stake (USD)</th>
+                                <th>Total</th>
+                                <th>Lock</th>
+                                <th>Vesting</th>
+                                <th>Performance Bond</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="slot-number">1</td>
+                                <td>$100,000</td>
+                                <td>$200,000</td>
+                                <td class="total-amount">$300,000</td>
+                                <td>6 mo</td>
+                                <td>18 mo</td>
+                                <td>20% ($40K)</td>
+                            </tr>
+                            <tr>
+                                <td class="slot-number">2</td>
+                                <td>$120,000</td>
+                                <td>$220,000</td>
+                                <td class="total-amount">$340,000</td>
+                                <td>6 mo</td>
+                                <td>18 mo</td>
+                                <td>20% ($44K)</td>
+                            </tr>
+                            <tr>
+                                <td class="slot-number">3</td>
+                                <td>$140,000</td>
+                                <td>$240,000</td>
+                                <td class="total-amount">$380,000</td>
+                                <td>6 mo</td>
+                                <td>18 mo</td>
+                                <td>20% ($48K)</td>
+                            </tr>
+                            <tr>
+                                <td class="slot-number">4</td>
+                                <td>$160,000</td>
+                                <td>$260,000</td>
+                                <td class="total-amount">$420,000</td>
+                                <td>6 mo</td>
+                                <td>18 mo</td>
+                                <td>20% ($52K)</td>
+                            </tr>
+                            <tr>
+                                <td class="slot-number">5</td>
+                                <td>$180,000</td>
+                                <td>$280,000</td>
+                                <td class="total-amount">$460,000</td>
+                                <td>6 mo</td>
+                                <td>18 mo</td>
+                                <td>20% ($56K)</td>
+                            </tr>
+                            <tr>
+                                <td class="slot-number">6</td>
+                                <td>$200,000</td>
+                                <td>$300,000</td>
+                                <td class="total-amount">$500,000</td>
+                                <td>6 mo</td>
+                                <td>18 mo</td>
+                                <td>20% ($60K)</td>
+                            </tr>
+                            <tr>
+                                <td class="slot-number">7</td>
+                                <td>$220,000</td>
+                                <td>$320,000</td>
+                                <td class="total-amount">$540,000</td>
+                                <td>6 mo</td>
+                                <td>18 mo</td>
+                                <td>20% ($64K)</td>
+                            </tr>
+                            <tr>
+                                <td class="slot-number">8</td>
+                                <td>$240,000</td>
+                                <td>$340,000</td>
+                                <td class="total-amount">$580,000</td>
+                                <td>6 mo</td>
+                                <td>18 mo</td>
+                                <td>20% ($68K)</td>
+                            </tr>
+                            <tr>
+                                <td class="slot-number">9</td>
+                                <td>$260,000</td>
+                                <td>$360,000</td>
+                                <td class="total-amount">$620,000</td>
+                                <td>6 mo</td>
+                                <td>18 mo</td>
+                                <td>20% ($72K)</td>
+                            </tr>
+                            <tr>
+                                <td class="slot-number">10</td>
+                                <td>$280,000</td>
+                                <td>$380,000</td>
+                                <td class="total-amount">$660,000</td>
+                                <td>6 mo</td>
+                                <td>18 mo</td>
+                                <td>20% ($76K)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tier 2: Growth Leaders -->
+            <div class="tier-section">
+                <h3 class="tier-header tier-2">Tier 2: Growth Leaders (Slots 11-20)</h3>
+                <div class="tier-table-container">
+                    <table class="tier-table">
+                        <thead>
+                            <tr>
+                                <th>Slot</th>
+                                <th>Contract (USD)</th>
+                                <th>Stake (USD)</th>
+                                <th>Total</th>
+                                <th>Lock</th>
+                                <th>Vesting</th>
+                                <th>Performance Bond</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="slot-number">11</td>
+                                <td>$400,000</td>
+                                <td>$800,000</td>
+                                <td class="total-amount">$1,200,000</td>
+                                <td>9 mo</td>
+                                <td>24 mo</td>
+                                <td>25% ($200K)</td>
+                            </tr>
+                            <tr>
+                                <td class="slot-number">12</td>
+                                <td>$420,000</td>
+                                <td>$820,000</td>
+                                <td class="total-amount">$1,240,000</td>
+                                <td>9 mo</td>
+                                <td>24 mo</td>
+                                <td>25% ($205K)</td>
+                            </tr>
+                            <tr>
+                                <td class="slot-number">13</td>
+                                <td>$440,000</td>
+                                <td>$840,000</td>
+                                <td class="total-amount">$1,280,000</td>
+                                <td>9 mo</td>
+                                <td>24 mo</td>
+                                <td>25% ($210K)</td>
+                            </tr>
+                            <tr>
+                                <td class="slot-number">14</td>
+                                <td>$460,000</td>
+                                <td>$860,000</td>
+                                <td class="total-amount">$1,320,000</td>
+                                <td>9 mo</td>
+                                <td>24 mo</td>
+                                <td>25% ($215K)</td>
+                            </tr>
+                            <tr>
+                                <td class="slot-number">15</td>
+                                <td>$480,000</td>
+                                <td>$880,000</td>
+                                <td class="total-amount">$1,360,000</td>
+                                <td>9 mo</td>
+                                <td>24 mo</td>
+                                <td>25% ($220K)</td>
+                            </tr>
+                            <tr>
+                                <td class="slot-number">16</td>
+                                <td>$500,000</td>
+                                <td>$900,000</td>
+                                <td class="total-amount">$1,400,000</td>
+                                <td>9 mo</td>
+                                <td>24 mo</td>
+                                <td>25% ($225K)</td>
+                            </tr>
+                            <tr>
+                                <td class="slot-number">17</td>
+                                <td>$520,000</td>
+                                <td>$920,000</td>
+                                <td class="total-amount">$1,440,000</td>
+                                <td>9 mo</td>
+                                <td>24 mo</td>
+                                <td>25% ($230K)</td>
+                            </tr>
+                            <tr>
+                                <td class="slot-number">18</td>
+                                <td>$540,000</td>
+                                <td>$940,000</td>
+                                <td class="total-amount">$1,480,000</td>
+                                <td>9 mo</td>
+                                <td>24 mo</td>
+                                <td>25% ($235K)</td>
+                            </tr>
+                            <tr>
+                                <td class="slot-number">19</td>
+                                <td>$560,000</td>
+                                <td>$960,000</td>
+                                <td class="total-amount">$1,520,000</td>
+                                <td>9 mo</td>
+                                <td>24 mo</td>
+                                <td>25% ($240K)</td>
+                            </tr>
+                            <tr>
+                                <td class="slot-number">20</td>
+                                <td>$580,000</td>
+                                <td>$980,000</td>
+                                <td class="total-amount">$1,560,000</td>
+                                <td>9 mo</td>
+                                <td>24 mo</td>
+                                <td>25% ($245K)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tier 3: Premium Apex -->
+            <div class="tier-section">
+                <h3 class="tier-header tier-3">Tier 3: Premium Apex (Slot 21)</h3>
+                <div class="tier-table-container">
+                    <table class="tier-table">
+                        <thead>
+                            <tr>
+                                <th>Slot</th>
+                                <th>Contract (USD)</th>
+                                <th>Stake (USD)</th>
+                                <th>Total</th>
+                                <th>Lock</th>
+                                <th>Vesting</th>
+                                <th>Performance Bond</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="premium-slot">
+                                <td class="slot-number">21</td>
+                                <td>$650,000</td>
+                                <td>$1,500,000</td>
+                                <td class="total-amount">$2,150,000</td>
+                                <td>12 mo</td>
+                                <td>36 mo</td>
+                                <td>30% ($450K)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="premium-benefits">
+                    <p><strong>Special:</strong> Slot 21 receives exclusive "Param Rakshak" NFT with unique 2x governance weight</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ROI Calculator Section -->
+    <section id="calculator" class="roi-calculator">
+        <div class="container">
+            <h2>💹 Validator ROI Calculator</h2>
+            <p class="section-subtitle">Calculate your potential returns based on different revenue scenarios</p>
+            
+            <div class="calculator-container">
+                <div class="calculator-inputs">
+                    <h3>Select Your Slot</h3>
+                    <select id="slot-selector" class="slot-select">
+                        <option value="">Choose a slot...</option>
+                        <optgroup label="Tier 1: Genesis Foundation">
+                            <option value="1">Slot 1 - $300,000</option>
+                            <option value="2">Slot 2 - $340,000</option>
+                            <option value="3">Slot 3 - $380,000</option>
+                            <option value="4">Slot 4 - $420,000</option>
+                            <option value="5">Slot 5 - $460,000</option>
+                            <option value="6">Slot 6 - $500,000</option>
+                            <option value="7">Slot 7 - $540,000</option>
+                            <option value="8">Slot 8 - $580,000</option>
+                            <option value="9">Slot 9 - $620,000</option>
+                            <option value="10">Slot 10 - $660,000</option>
+                        </optgroup>
+                        <optgroup label="Tier 2: Growth Leaders">
+                            <option value="11">Slot 11 - $1,200,000</option>
+                            <option value="12">Slot 12 - $1,240,000</option>
+                            <option value="13">Slot 13 - $1,280,000</option>
+                            <option value="14">Slot 14 - $1,320,000</option>
+                            <option value="15">Slot 15 - $1,360,000</option>
+                            <option value="16">Slot 16 - $1,400,000</option>
+                            <option value="17">Slot 17 - $1,440,000</option>
+                            <option value="18">Slot 18 - $1,480,000</option>
+                            <option value="19">Slot 19 - $1,520,000</option>
+                            <option value="20">Slot 20 - $1,560,000</option>
+                        </optgroup>
+                        <optgroup label="Tier 3: Premium Apex">
+                            <option value="21">Slot 21 - $2,150,000 (Param Rakshak)</option>
+                        </optgroup>
+                    </select>
+                    
+                    <h3>Platform Metrics</h3>
+                    <div class="input-group">
+                        <label for="daily-volume">Daily Transaction Volume (USD)</label>
+                        <input type="number" id="daily-volume" value="10000000" step="1000000">
+                        <small>Conservative estimate: $10M daily</small>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="dex-volume">DEX Daily Volume (USD)</label>
+                        <input type="number" id="dex-volume" value="5000000" step="1000000">
+                        <small>Conservative estimate: $5M daily</small>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="mev-revenue">Daily MEV Revenue (USD)</label>
+                        <input type="number" id="mev-revenue" value="50000" step="10000">
+                        <small>Conservative estimate: $50K daily</small>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="launchpad-monthly">Monthly Launchpad Revenue (USD)</label>
+                        <input type="number" id="launchpad-monthly" value="2000000" step="100000">
+                        <small>Conservative estimate: $2M monthly</small>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="india-based">
+                            <input type="checkbox" id="india-based">
+                            India-based validator (20% bonus)
+                        </label>
+                    </div>
+                    
+                    <button class="calculate-btn" onclick="calculateROI()">Calculate Returns</button>
+                </div>
+                
+                <div class="calculator-results" id="calculator-results">
+                    <h3>Projected Returns</h3>
+                    <div class="results-placeholder">
+                        <p>Select a slot and click calculate to see your projected returns</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pre-Mainnet Support Section -->
+    <section class="pre-mainnet">
+        <div class="container">
+            <h2>🏆 Genesis Validator Auction Benefits</h2>
+            <p class="section-subtitle">Limited to 21 premium slots - Secure your position in blockchain history</p>
+            
+            <div class="pre-mainnet-grid">
+                <div class="pre-mainnet-card">
+                    <span class="card-icon">🏆</span>
+                    <h3>Genesis Validator Privileges</h3>
+                    <ul>
+                        <li>Exclusive access to 21 premium genesis validator slots</li>
+                        <li>First-mover advantage in DeshChain ecosystem</li>
+                        <li>Exclusive "Genesis Pioneer" NFT with bonus rewards</li>
+                        <li>Direct access to core development team</li>
+                    </ul>
+                </div>
+                
+                <div class="pre-mainnet-card">
+                    <span class="card-icon">🛠️</span>
+                    <h3>Technical Support</h3>
+                    <ul>
+                        <li>Dedicated DevOps support for node setup</li>
+                        <li>Early access to testnet with rewards</li>
+                        <li>Custom monitoring and alerting tools</li>
+                        <li>Priority bug fixes and feature requests</li>
+                    </ul>
+                </div>
+                
+                <div class="pre-mainnet-card">
+                    <span class="card-icon">📈</span>
+                    <h3>Growth Partnership</h3>
+                    <ul>
+                        <li>Co-marketing opportunities</li>
+                        <li>Whitelist allocation for community</li>
+                        <li>Revenue share from referred validators</li>
+                        <li>Advisory role in ecosystem development</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Fund Utilization Section -->
+    <section class="fund-utilization">
+        <div class="container">
+            <h2>💰 How We Use Validator Funds</h2>
+            <p class="section-subtitle">Complete transparency on fund allocation for DeshChain development</p>
+            
+            <div class="fund-allocation">
+                <h3>Fund Allocation Breakdown</h3>
+                <div class="allocation-chart">
+                    <div class="allocation-item" style="--percentage: 30%">
+                        <div class="allocation-bar"></div>
+                        <div class="allocation-details">
+                            <h4>30% - Core Development</h4>
+                            <p>Blockchain development, smart contracts, security audits, and protocol upgrades</p>
+                        </div>
+                    </div>
+                    <div class="allocation-item" style="--percentage: 25%">
+                        <div class="allocation-bar"></div>
+                        <div class="allocation-details">
+                            <h4>25% - Infrastructure</h4>
+                            <p>Server infrastructure, RPC nodes, explorers, monitoring systems, and DevOps</p>
+                        </div>
+                    </div>
+                    <div class="allocation-item" style="--percentage: 20%">
+                        <div class="allocation-bar"></div>
+                        <div class="allocation-details">
+                            <h4>20% - Liquidity Provision</h4>
+                            <p>DEX liquidity, market making, cross-chain bridges, and trading pairs</p>
+                        </div>
+                    </div>
+                    <div class="allocation-item" style="--percentage: 15%">
+                        <div class="allocation-bar"></div>
+                        <div class="allocation-details">
+                            <h4>15% - Marketing & Adoption</h4>
+                            <p>Community growth, partnerships, events, and educational content</p>
+                        </div>
+                    </div>
+                    <div class="allocation-item" style="--percentage: 10%">
+                        <div class="allocation-bar"></div>
+                        <div class="allocation-details">
+                            <h4>10% - Legal & Compliance</h4>
+                            <p>Regulatory compliance, legal framework, licenses, and jurisdictional requirements</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="transparency-commitment">
+                <h3>🔍 Our Transparency Commitment</h3>
+                <ul>
+                    <li>Monthly financial reports published on-chain</li>
+                    <li>Quarterly validator town halls with fund usage updates</li>
+                    <li>Multi-signature treasury with validator oversight</li>
+                    <li>Real-time fund tracking dashboard</li>
+                    <li>Annual third-party financial audits</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Validator Requirements Section -->
+    <section class="requirements">
+        <div class="container">
+            <h2>📋 Validator Requirements</h2>
+            
+            <div class="requirements-grid">
+                <div class="requirement-card">
+                    <h3>🖥️ Technical Requirements</h3>
+                    <ul>
+                        <li>Dedicated server with 32+ cores</li>
+                        <li>128GB+ RAM</li>
+                        <li>2TB+ NVMe SSD storage</li>
+                        <li>1Gbps+ network connection</li>
+                        <li>99.9% uptime commitment</li>
+                        <li>24/7 monitoring capability</li>
+                    </ul>
+                </div>
+                
+                <div class="requirement-card">
+                    <h3>🏢 Operational Requirements</h3>
+                    <ul>
+                        <li>Legal entity registration</li>
+                        <li>KYC/AML compliance</li>
+                        <li>Professional DevOps team</li>
+                        <li>Disaster recovery plan</li>
+                        <li>Security incident response</li>
+                        <li>Regular security audits</li>
+                    </ul>
+                </div>
+                
+                <div class="requirement-card">
+                    <h3>💎 Financial Requirements</h3>
+                    <ul>
+                        <li>Minimum investment per tier</li>
+                        <li>Performance bond deposit</li>
+                        <li>Operational expense buffer</li>
+                        <li>Insurance coverage</li>
+                        <li>Tax compliance</li>
+                        <li>Financial reporting</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Application Section -->
+    <section id="apply" class="application">
+        <div class="container">
+            <h2>🚀 Apply for Genesis Validator Slot</h2>
+            <p class="section-subtitle">Limited slots available - Secure your position in the DeshChain ecosystem</p>
+            
+            <div class="application-process">
+                <h3>Application Process</h3>
+                <div class="process-steps">
+                    <div class="process-step">
+                        <span class="step-number">1</span>
+                        <h4>Submit Application</h4>
+                        <p>Complete the validator application form with technical and financial details</p>
+                    </div>
+                    <div class="process-step">
+                        <span class="step-number">2</span>
+                        <h4>Technical Review</h4>
+                        <p>Our team reviews your infrastructure and operational capabilities</p>
+                    </div>
+                    <div class="process-step">
+                        <span class="step-number">3</span>
+                        <h4>KYC & Compliance</h4>
+                        <p>Complete identity verification and compliance requirements</p>
+                    </div>
+                    <div class="process-step">
+                        <span class="step-number">4</span>
+                        <h4>Slot Allocation</h4>
+                        <p>Receive your slot allocation and payment instructions</p>
+                    </div>
+                    <div class="process-step">
+                        <span class="step-number">5</span>
+                        <h4>Node Setup</h4>
+                        <p>Deploy your validator node with our technical support</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="application-cta">
+                <a href="https://forms.deshchain.com/validator-application" class="btn btn-primary btn-large" target="_blank">
+                    Start Application Process
+                </a>
+                <p class="cta-note">Applications close when all 21 slots are filled</p>
+            </div>
+            
+            <!-- Final Risk Warning -->
+            <div class="risk-disclosure" style="margin-top: 3rem; background: rgba(255, 107, 53, 0.1); border: 2px solid rgba(255, 107, 53, 0.3); border-radius: var(--radius-lg); padding: 2rem;">
+                <h4 style="color: var(--primary); margin-bottom: 1rem; text-align: center;">
+                    ⚠️ FINAL INVESTMENT WARNING ⚠️
+                </h4>
+                <p style="text-align: center; font-weight: 600; color: var(--text-primary); margin-bottom: 1rem;">
+                    By applying for a validator slot, you acknowledge and accept the following:
+                </p>
+                <ul style="margin: 1rem 2rem;">
+                    <li>The contract portion of your investment (<strong>$100,000 - $650,000</strong>) is <strong>NON-REFUNDABLE</strong></li>
+                    <li>You may lose your entire investment</li>
+                    <li>Past performance and projections do not guarantee future returns</li>
+                    <li>You have the technical capability to operate a validator node 24/7</li>
+                    <li>You understand the risks of blockchain technology and cryptocurrency</li>
+                </ul>
+                <p style="text-align: center; margin-top: 1rem; font-style: italic; color: var(--text-secondary);">
+                    Please consult with financial and legal advisors before making any investment decision.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact">
+        <div class="container">
+            <h2>Get in Touch</h2>
+            <div class="contact-info">
+                <p>For validator inquiries and support:</p>
+                <p><strong>Email:</strong> validators@deshchain.com</p>
+                <p><strong>Telegram:</strong> @DeshChainValidators</p>
+                <p><strong>Discord:</strong> discord.gg/deshchain-validators</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2025 DeshChain Foundation - Powered by Ibda AI LTD. All rights reserved.</p>
+                <p>Building the future of culturally-conscious blockchain technology.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../js/main.js"></script>
+    <script src="./validators.js"></script>
+</body>
+</html>

@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeshChain Documentation - Complete Technical Reference</title>
+    <meta name="description" content="Comprehensive documentation for DeshChain blockchain platform including technical guides, API references, and module documentation">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/cultural.css">
+    <link rel="stylesheet" href="./docs.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="../assets/deshchain-logo.png" alt="DeshChain Logo" class="logo">
+                <span class="logo-text">DeshChain Docs</span>
+            </div>
+            
+            <div class="nav-menu" id="nav-menu">
+                <a href="../index.html" class="nav-link">Home</a>
+                <a href="#quick-start" class="nav-link">Quick Start</a>
+                <a href="#modules" class="nav-link">Modules</a>
+                <a href="#guides" class="nav-link">Guides</a>
+                <a href="#api" class="nav-link">API</a>
+                <a href="https://github.com/DeshChain/DeshChain-Ecosystem" class="nav-link" target="_blank">GitHub</a>
+            </div>
+            
+            <div class="nav-actions">
+                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">🌙</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="docs-hero">
+        <div class="container">
+            <h1>DeshChain Documentation</h1>
+            <p class="hero-subtitle">Everything you need to build on the world's first culturally-rooted blockchain</p>
+            
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Search documentation..." id="doc-search">
+                <button class="search-btn">🔍 Search</button>
+            </div>
+            
+            <div class="quick-links">
+                <a href="#quick-start" class="quick-link">
+                    <span class="icon">🚀</span>
+                    <span>Quick Start</span>
+                </a>
+                <a href="#modules" class="quick-link">
+                    <span class="icon">📦</span>
+                    <span>Modules</span>
+                </a>
+                <a href="./node-setup.html" class="quick-link">
+                    <span class="icon">⚙️</span>
+                    <span>Node Setup</span>
+                </a>
+                <a href="./api-reference.html" class="quick-link">
+                    <span class="icon">🔌</span>
+                    <span>API Reference</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Start Section -->
+    <section id="quick-start" class="docs-section">
+        <div class="container">
+            <h2>🚀 Quick Start</h2>
+            <div class="docs-grid">
+                <div class="doc-card">
+                    <h3>Installation</h3>
+                    <p>Get started with DeshChain in minutes</p>
+                    <pre><code># Install deshchaind
+curl -L https://get.deshchain.com | bash
+
+# Initialize node
+deshchaind init mynode --chain-id deshchain-1
+
+# Start node
+deshchaind start</code></pre>
+                    <a href="./installation.html" class="doc-link">Full Installation Guide →</a>
+                </div>
+                
+                <div class="doc-card">
+                    <h3>Create Your First Transaction</h3>
+                    <p>Send NAMO tokens on DeshChain</p>
+                    <pre><code># Create wallet
+deshchaind keys add mywallet
+
+# Check balance
+deshchaind query bank balances [address]
+
+# Send transaction
+deshchaind tx bank send [from] [to] 100namo</code></pre>
+                    <a href="./first-transaction.html" class="doc-link">Transaction Guide →</a>
+                </div>
+                
+                <div class="doc-card">
+                    <h3>Deploy Smart Contract</h3>
+                    <p>Deploy your first smart contract</p>
+                    <pre><code># Compile contract
+cargo build --target wasm32-unknown-unknown
+
+# Deploy to chain
+deshchaind tx wasm store contract.wasm
+
+# Instantiate
+deshchaind tx wasm instantiate [code-id]</code></pre>
+                    <a href="./smart-contracts.html" class="doc-link">Smart Contract Guide →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Core Concepts -->
+    <section class="docs-section alt-bg">
+        <div class="container">
+            <h2>📚 Core Concepts</h2>
+            <div class="concepts-grid">
+                <a href="./technical-architecture.html" class="concept-card">
+                    <div class="concept-icon">🏗️</div>
+                    <h3>Technical Architecture</h3>
+                    <p>Understand DeshChain's core architecture, consensus mechanism, and design principles</p>
+                </a>
+                
+                <a href="./tokenomics.html" class="concept-card">
+                    <div class="concept-icon">💰</div>
+                    <h3>Tokenomics</h3>
+                    <p>Learn about NAMO token, distribution model, and economic incentives</p>
+                </a>
+                
+                <a href="./governance.html" class="concept-card">
+                    <div class="concept-icon">🏛️</div>
+                    <h3>Governance</h3>
+                    <p>Participate in DeshChain's decentralized governance system</p>
+                </a>
+                
+                <a href="./cultural-heritage.html" class="concept-card">
+                    <div class="concept-icon">🎭</div>
+                    <h3>Cultural Heritage</h3>
+                    <p>Explore how blockchain preserves and celebrates Indian culture</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modules Documentation -->
+    <section id="modules" class="docs-section">
+        <div class="container">
+            <h2>📦 Module Documentation</h2>
+            <p class="section-subtitle">DeshChain's 29+ modules power diverse use cases from DeFi to cultural preservation</p>
+            
+            <div class="modules-tabs">
+                <button class="tab-btn active" data-category="defi">DeFi</button>
+                <button class="tab-btn" data-category="social">Social Impact</button>
+                <button class="tab-btn" data-category="enterprise">Enterprise</button>
+                <button class="tab-btn" data-category="cultural">Cultural</button>
+                <button class="tab-btn" data-category="infrastructure">Infrastructure</button>
+            </div>
+            
+            <div class="modules-content">
+                <!-- DeFi Modules -->
+                <div class="module-category active" id="defi">
+                    <div class="module-grid">
+                        <a href="./modules/namo.html" class="module-doc-card">
+                            <h4>NAMO Token</h4>
+                            <p>Native utility token with deflationary mechanics</p>
+                            <span class="module-tag">Core</span>
+                        </a>
+                        
+                        <a href="./modules/dinr.html" class="module-doc-card">
+                            <h4>DINR Stablecoin</h4>
+                            <p>INR-pegged algorithmic stablecoin</p>
+                            <span class="module-tag">Stable</span>
+                        </a>
+                        
+                        <a href="./modules/dusd.html" class="module-doc-card">
+                            <h4>DUSD Stablecoin</h4>
+                            <p>USD-pegged stablecoin for global markets</p>
+                            <span class="module-tag">Stable</span>
+                        </a>
+                        
+                        <a href="./modules/tradefinance.html" class="module-doc-card regulatory">
+                            <h4>Trade Finance</h4>
+                            <p>Basel III compliant with SWIFT MT processing</p>
+                            <span class="module-tag">Basel III</span>
+                            <span class="module-tag">SWIFT</span>
+                        </a>
+                        
+                        <a href="./modules/moneyorder.html" class="module-doc-card">
+                            <h4>Money Order DEX</h4>
+                            <p>Traditional money order system on blockchain</p>
+                            <span class="module-tag">DEX</span>
+                        </a>
+                        
+                        <a href="./modules/sikkebaaz.html" class="module-doc-card">
+                            <h4>Sikkebaaz</h4>
+                            <p>Desi memecoin launchpad with anti-dump protection</p>
+                            <span class="module-tag">Launchpad</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Social Impact Modules -->
+                <div class="module-category" id="social">
+                    <div class="module-grid">
+                        <a href="./modules/charitabletrust.html" class="module-doc-card">
+                            <h4>Charitable Trust</h4>
+                            <p>Transparent charity fund distribution (40% of fees)</p>
+                            <span class="module-tag">Impact</span>
+                        </a>
+                        
+                        <a href="./modules/grampension.html" class="module-doc-card">
+                            <h4>Gram Pension</h4>
+                            <p>Rural pension with 8% guaranteed returns</p>
+                            <span class="module-tag">Pension</span>
+                        </a>
+                        
+                        <a href="./modules/krishimitra.html" class="module-doc-card">
+                            <h4>Krishi Mitra</h4>
+                            <p>Agricultural loans at 6-9% interest</p>
+                            <span class="module-tag">Agriculture</span>
+                        </a>
+                        
+                        <a href="./modules/shikshamitra.html" class="module-doc-card">
+                            <h4>Shiksha Mitra</h4>
+                            <p>Education loans with income-driven repayment</p>
+                            <span class="module-tag">Education</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Enterprise Modules -->
+                <div class="module-category" id="enterprise">
+                    <div class="module-grid">
+                        <a href="./modules/identity.html" class="module-doc-card">
+                            <h4>Identity System</h4>
+                            <p>W3C DID with India Stack integration</p>
+                            <span class="module-tag">KYC</span>
+                        </a>
+                        
+                        <a href="./modules/oracle.html" class="module-doc-card">
+                            <h4>Oracle</h4>
+                            <p>Real-time price feeds and external data</p>
+                            <span class="module-tag">Data</span>
+                        </a>
+                        
+                        <a href="./modules/dswf.html" class="module-doc-card">
+                            <h4>Sovereign Wealth Fund</h4>
+                            <p>100-year sustainability fund</p>
+                            <span class="module-tag">Fund</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Cultural Modules -->
+                <div class="module-category" id="cultural">
+                    <div class="module-grid">
+                        <a href="./modules/cultural.html" class="module-doc-card">
+                            <h4>Cultural Heritage</h4>
+                            <p>Blockchain-based cultural preservation</p>
+                            <span class="module-tag">Heritage</span>
+                        </a>
+                        
+                        <a href="./modules/gamification.html" class="module-doc-card">
+                            <h4>Gamification</h4>
+                            <p>Bollywood-style developer achievements</p>
+                            <span class="module-tag">Gaming</span>
+                        </a>
+                        
+                        <a href="./modules/nft.html" class="module-doc-card">
+                            <h4>NFT Module</h4>
+                            <p>Cultural NFTs and digital collectibles</p>
+                            <span class="module-tag">NFT</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Infrastructure Modules -->
+                <div class="module-category" id="infrastructure">
+                    <div class="module-grid">
+                        <a href="./modules/validator.html" class="module-doc-card">
+                            <h4>Validator</h4>
+                            <p>Validator management and staking</p>
+                            <span class="module-tag">Core</span>
+                        </a>
+                        
+                        <a href="./modules/governance.html" class="module-doc-card">
+                            <h4>Governance</h4>
+                            <p>On-chain governance system</p>
+                            <span class="module-tag">Core</span>
+                        </a>
+                        
+                        <a href="./modules/revenue.html" class="module-doc-card">
+                            <h4>Revenue Distribution</h4>
+                            <p>Automated revenue sharing</p>
+                            <span class="module-tag">Core</span>
+                        </a>
+                        
+                        <a href="./modules/tax.html" class="module-doc-card">
+                            <h4>Tax Module</h4>
+                            <p>Smart tax system with volume discounts</p>
+                            <span class="module-tag">Core</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Developer Guides -->
+    <section id="guides" class="docs-section alt-bg">
+        <div class="container">
+            <h2>📖 Developer Guides</h2>
+            <div class="guides-grid">
+                <div class="guide-card">
+                    <div class="guide-icon">⚡</div>
+                    <h3>Getting Started</h3>
+                    <ul class="guide-links">
+                        <li><a href="./guides/installation.html">Installation Guide</a></li>
+                        <li><a href="./guides/node-setup.html">Node Setup</a></li>
+                        <li><a href="./guides/validator-guide.html">Become a Validator</a></li>
+                        <li><a href="./guides/wallet-setup.html">Wallet Setup</a></li>
+                    </ul>
+                </div>
+                
+                <div class="guide-card">
+                    <div class="guide-icon">🔧</div>
+                    <h3>Development</h3>
+                    <ul class="guide-links">
+                        <li><a href="./guides/smart-contracts.html">Smart Contract Development</a></li>
+                        <li><a href="./guides/dapp-development.html">DApp Development</a></li>
+                        <li><a href="./guides/sdk-integration.html">SDK Integration</a></li>
+                        <li><a href="./guides/testing.html">Testing Guide</a></li>
+                    </ul>
+                </div>
+                
+                <div class="guide-card">
+                    <div class="guide-icon">🏛️</div>
+                    <h3>Advanced Topics</h3>
+                    <ul class="guide-links">
+                        <li><a href="./guides/governance-proposals.html">Creating Proposals</a></li>
+                        <li><a href="./guides/ibc-integration.html">IBC Integration</a></li>
+                        <li><a href="./guides/custom-modules.html">Building Custom Modules</a></li>
+                        <li><a href="./guides/security-best-practices.html">Security Best Practices</a></li>
+                    </ul>
+                </div>
+                
+                <div class="guide-card">
+                    <div class="guide-icon">💼</div>
+                    <h3>Enterprise</h3>
+                    <ul class="guide-links">
+                        <li><a href="./guides/basel-iii-integration.html">Basel III Integration</a></li>
+                        <li><a href="./guides/swift-mt-processing.html">SWIFT MT Processing</a></li>
+                        <li><a href="./guides/kyc-integration.html">KYC/AML Integration</a></li>
+                        <li><a href="./guides/compliance.html">Regulatory Compliance</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- API Reference -->
+    <section id="api" class="docs-section">
+        <div class="container">
+            <h2>🔌 API Reference</h2>
+            <div class="api-categories">
+                <div class="api-category">
+                    <h3>REST API</h3>
+                    <div class="api-endpoints">
+                        <div class="endpoint">
+                            <span class="method get">GET</span>
+                            <code>/cosmos/bank/v1beta1/balances/{address}</code>
+                            <p>Query account balance</p>
+                        </div>
+                        <div class="endpoint">
+                            <span class="method post">POST</span>
+                            <code>/cosmos/tx/v1beta1/txs</code>
+                            <p>Broadcast transaction</p>
+                        </div>
+                        <div class="endpoint">
+                            <span class="method get">GET</span>
+                            <code>/deshchain/namo/v1/supply</code>
+                            <p>Get NAMO token supply</p>
+                        </div>
+                    </div>
+                    <a href="./api/rest.html" class="api-link">Full REST API Documentation →</a>
+                </div>
+                
+                <div class="api-category">
+                    <h3>gRPC API</h3>
+                    <div class="api-endpoints">
+                        <div class="endpoint">
+                            <span class="method">RPC</span>
+                            <code>cosmos.bank.v1beta1.Query/Balance</code>
+                            <p>Query specific balance</p>
+                        </div>
+                        <div class="endpoint">
+                            <span class="method">RPC</span>
+                            <code>deshchain.tradefinance.v1.Query/LetterOfCredit</code>
+                            <p>Query letter of credit</p>
+                        </div>
+                    </div>
+                    <a href="./api/grpc.html" class="api-link">Full gRPC API Documentation →</a>
+                </div>
+                
+                <div class="api-category">
+                    <h3>WebSocket API</h3>
+                    <div class="api-endpoints">
+                        <div class="endpoint">
+                            <span class="method ws">WS</span>
+                            <code>/websocket</code>
+                            <p>Subscribe to real-time events</p>
+                        </div>
+                    </div>
+                    <a href="./api/websocket.html" class="api-link">WebSocket Documentation →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Resources -->
+    <section class="docs-section alt-bg">
+        <div class="container">
+            <h2>📚 Resources</h2>
+            <div class="resources-grid">
+                <a href="./resources/whitepaper.html" class="resource-card">
+                    <div class="resource-icon">📄</div>
+                    <h3>Whitepaper</h3>
+                    <p>Technical whitepaper and economic model</p>
+                </a>
+                
+                <a href="./resources/glossary.html" class="resource-card">
+                    <div class="resource-icon">📖</div>
+                    <h3>Glossary</h3>
+                    <p>DeshChain terminology and concepts</p>
+                </a>
+                
+                <a href="./resources/faq.html" class="resource-card">
+                    <div class="resource-icon">❓</div>
+                    <h3>FAQ</h3>
+                    <p>Frequently asked questions</p>
+                </a>
+                
+                <a href="https://github.com/DeshChain/DeshChain-Ecosystem" class="resource-card" target="_blank">
+                    <div class="resource-icon">💻</div>
+                    <h3>GitHub</h3>
+                    <p>Source code and contributions</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Documentation</h4>
+                    <ul>
+                        <li><a href="#quick-start">Quick Start</a></li>
+                        <li><a href="#modules">Modules</a></li>
+                        <li><a href="#guides">Guides</a></li>
+                        <li><a href="#api">API Reference</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Community</h4>
+                    <ul>
+                        <li><a href="https://discord.gg/deshchain">Discord</a></li>
+                        <li><a href="https://t.me/deshchain">Telegram</a></li>
+                        <li><a href="https://twitter.com/deshchain">Twitter</a></li>
+                        <li><a href="https://forum.deshchain.com">Forum</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="./resources/whitepaper.html">Whitepaper</a></li>
+                        <li><a href="https://github.com/DeshChain/DeshChain-Ecosystem">GitHub</a></li>
+                        <li><a href="./resources/brand-assets.html">Brand Assets</a></li>
+                        <li><a href="../pages/terms-conditions.html">Terms</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 DeshChain Foundation - Powered by Ibda AI LTD. All rights reserved.</p>
+                <p>Documentation Version: 1.0.0 | Last Updated: July 2025</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../js/main.js"></script>
+    <script src="./docs.js"></script>
+</body>
+</html>

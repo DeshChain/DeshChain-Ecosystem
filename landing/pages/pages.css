@@ -1,0 +1,543 @@
+/* DeshChain Pages - Shared Styles */
+
+/* Legal Pages Layout */
+.legal-page {
+    padding-top: 100px;
+    min-height: 100vh;
+    background: var(--background);
+}
+
+.legal-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid var(--border);
+}
+
+.legal-header h1 {
+    font-size: 2.5rem;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
+.legal-subtitle {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin: 0.25rem 0;
+}
+
+.legal-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.legal-section {
+    margin-bottom: 2.5rem;
+}
+
+.legal-section h2 {
+    font-size: 1.75rem;
+    color: var(--primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.legal-section h3 {
+    font-size: 1.25rem;
+    color: var(--text-primary);
+    margin: 1.5rem 0 0.75rem;
+}
+
+.legal-section p {
+    color: var(--text-secondary);
+    line-height: 1.8;
+    margin-bottom: 1rem;
+}
+
+.legal-section ul {
+    margin: 1rem 0 1rem 2rem;
+    color: var(--text-secondary);
+}
+
+.legal-section li {
+    margin-bottom: 0.5rem;
+    line-height: 1.8;
+}
+
+.legal-section strong {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+/* Contact Info Box */
+.contact-info {
+    background: var(--surface);
+    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    margin: 1rem 0;
+}
+
+.contact-info p {
+    margin: 0.5rem 0;
+}
+
+/* Legal Footer */
+.legal-footer {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 2px solid var(--border);
+    text-align: center;
+}
+
+.legal-footer p {
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+.legal-footer .copyright {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+/* Guidelines Page Specific */
+.guidelines-page {
+    padding-top: 100px;
+    min-height: 100vh;
+    background: var(--background);
+}
+
+.guidelines-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.guidelines-header h1 {
+    font-size: 2.5rem;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
+.guidelines-intro {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.guidelines-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    margin: 3rem 0;
+}
+
+.guideline-card {
+    background: var(--surface);
+    padding: 2rem;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border);
+    transition: var(--transition-base);
+}
+
+.guideline-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: rgba(255, 153, 51, 0.3);
+}
+
+.guideline-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.guideline-card h3 {
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
+.guideline-card p {
+    color: var(--text-secondary);
+    line-height: 1.7;
+}
+
+/* Code Examples */
+.code-example {
+    background: var(--text-primary);
+    color: white;
+    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+    margin: 1.5rem 0;
+    overflow-x: auto;
+}
+
+.code-example pre {
+    margin: 0;
+    font-family: 'Courier New', monospace;
+    font-size: 0.875rem;
+    line-height: 1.6;
+}
+
+.code-example code {
+    color: #61dafb;
+}
+
+/* Best Practices */
+.best-practices {
+    background: linear-gradient(135deg, rgba(255, 153, 51, 0.05), rgba(247, 37, 133, 0.05));
+    padding: 2rem;
+    border-radius: var(--radius-xl);
+    margin: 2rem 0;
+}
+
+.best-practices h3 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+}
+
+.best-practices ul {
+    margin: 0;
+    padding-left: 1.5rem;
+}
+
+.best-practices li {
+    margin-bottom: 0.75rem;
+    color: var(--text-secondary);
+}
+
+/* Warning Box */
+.warning-box {
+    background: rgba(255, 107, 53, 0.1);
+    border: 1px solid rgba(255, 107, 53, 0.3);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.warning-box h4 {
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.warning-box p {
+    margin: 0;
+    color: var(--text-secondary);
+}
+
+/* Success Box */
+.success-box {
+    background: rgba(19, 136, 8, 0.1);
+    border: 1px solid rgba(19, 136, 8, 0.3);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.success-box h4 {
+    color: var(--green);
+    margin-bottom: 0.5rem;
+}
+
+/* Whitepaper Page */
+.whitepaper-page {
+    padding-top: 100px;
+    min-height: 100vh;
+    background: var(--background);
+}
+
+.whitepaper-hero {
+    background: linear-gradient(135deg, rgba(255, 153, 51, 0.1), rgba(247, 37, 133, 0.1));
+    padding: 4rem 0;
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.whitepaper-hero h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    background: var(--gradient-cultural);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.whitepaper-hero p {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.executive-summary {
+    background: var(--surface);
+    padding: 3rem;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border);
+    margin-bottom: 3rem;
+}
+
+.executive-summary h2 {
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.summary-item {
+    text-align: center;
+}
+
+.summary-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary);
+    display: block;
+}
+
+.summary-label {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+/* Table of Contents */
+.toc-section {
+    background: rgba(255, 153, 51, 0.05);
+    padding: 2rem;
+    border-radius: var(--radius-xl);
+    margin-bottom: 3rem;
+}
+
+.toc-section h2 {
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+}
+
+.toc-list {
+    list-style: none;
+    padding: 0;
+}
+
+.toc-list li {
+    margin-bottom: 1rem;
+}
+
+.toc-list a {
+    color: var(--text-primary);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-md);
+    transition: var(--transition-base);
+}
+
+.toc-list a:hover {
+    background: var(--surface);
+    transform: translateX(4px);
+}
+
+.toc-number {
+    font-weight: 600;
+    color: var(--primary);
+}
+
+/* Whitepaper Content Sections */
+.whitepaper-section {
+    margin-bottom: 4rem;
+}
+
+.whitepaper-section h2 {
+    font-size: 2rem;
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--border);
+}
+
+.whitepaper-section h3 {
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    margin: 2rem 0 1rem;
+}
+
+.whitepaper-section h4 {
+    font-size: 1.25rem;
+    color: var(--text-primary);
+    margin: 1.5rem 0 0.75rem;
+}
+
+/* Infographics */
+.infographic-section {
+    margin: 3rem 0;
+    padding: 2rem;
+    background: var(--surface);
+    border-radius: var(--radius-xl);
+    text-align: center;
+}
+
+.infographic-title {
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    margin-bottom: 2rem;
+}
+
+.infographic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+}
+
+.infographic-item {
+    padding: 1.5rem;
+    background: var(--background);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    transition: var(--transition-base);
+}
+
+.infographic-item:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+
+.infographic-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.infographic-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--primary);
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.infographic-label {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+/* Download Section */
+.download-section {
+    background: linear-gradient(135deg, rgba(255, 153, 51, 0.1), rgba(247, 37, 133, 0.1));
+    padding: 3rem;
+    border-radius: var(--radius-xl);
+    text-align: center;
+    margin: 3rem 0;
+}
+
+.download-section h3 {
+    margin-bottom: 1rem;
+}
+
+.download-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+}
+
+.download-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 2rem;
+    background: var(--gradient-primary);
+    color: white;
+    text-decoration: none;
+    border-radius: var(--radius-lg);
+    font-weight: 500;
+    transition: var(--transition-base);
+}
+
+.download-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .legal-header h1,
+    .guidelines-header h1 {
+        font-size: 2rem;
+    }
+    
+    .legal-section h2 {
+        font-size: 1.5rem;
+    }
+    
+    .guidelines-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .whitepaper-hero h1 {
+        font-size: 2rem;
+    }
+    
+    .download-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+/* Dark Mode */
+[data-theme="dark"] .legal-page,
+[data-theme="dark"] .guidelines-page,
+[data-theme="dark"] .whitepaper-page {
+    background: var(--dark-bg);
+}
+
+[data-theme="dark"] .contact-info,
+[data-theme="dark"] .guideline-card,
+[data-theme="dark"] .executive-summary,
+[data-theme="dark"] .infographic-section {
+    background: var(--dark-surface);
+    border-color: var(--dark-border);
+}
+
+[data-theme="dark"] .code-example {
+    background: #1a1a2e;
+}
+
+[data-theme="dark"] .best-practices {
+    background: rgba(255, 153, 51, 0.05);
+}
+
+/* Print Styles */
+@media print {
+    .navbar,
+    .download-section,
+    .theme-toggle {
+        display: none;
+    }
+    
+    .legal-page,
+    .guidelines-page,
+    .whitepaper-page {
+        padding-top: 0;
+    }
+    
+    .legal-section,
+    .whitepaper-section {
+        page-break-inside: avoid;
+    }
+}

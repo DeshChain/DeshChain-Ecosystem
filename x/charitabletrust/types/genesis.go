@@ -18,14 +18,14 @@ func DefaultGenesis() *GenesisState {
 			ApprovalThreshold: sdk.MustNewDecFromStr("0.571"), // 4/7 = 57.1%
 			AdvisoryCommittee: []AdvisoryMember{},
 			TransparencyOfficer: "", // To be appointed
-			NextElection: time.Now().Add(365 * 24 * time.Hour), // 1 year from genesis
+			NextElection: time.Time{}, // Will be set during genesis initialization
 		},
 		TrustFundBalance: TrustFundBalance{
 			TotalBalance:     sdk.NewCoin("unamo", sdk.ZeroInt()),
 			AllocatedAmount:  sdk.NewCoin("unamo", sdk.ZeroInt()),
 			AvailableAmount:  sdk.NewCoin("unamo", sdk.ZeroInt()),
 			TotalDistributed: sdk.NewCoin("unamo", sdk.ZeroInt()),
-			LastUpdated:      time.Now(),
+			LastUpdated:      time.Time{}, // Will be set during genesis initialization
 		},
 		Allocations:     []CharitableAllocation{},
 		Proposals:       []AllocationProposal{},

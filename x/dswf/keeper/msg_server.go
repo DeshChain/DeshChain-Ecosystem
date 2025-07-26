@@ -25,14 +25,19 @@ var _ types.MsgServer = msgServer{}
 func (k msgServer) ProposeAllocation(goCtx context.Context, msg *types.MsgProposeAllocation) (*types.MsgProposeAllocationResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	
-	// Validate the proposal
-	if err := k.ValidateAllocationProposal(ctx, msg.Amount, msg.Category); err != nil {
+	// Operational safety check
+	if err := k.ValidateOperationalSafety(ctx, "allocation", msg.Amount); err != nil {
 		return nil, err
 	}
 	
-	// Verify proposer is a fund manager
-	if !k.IsFundManager(ctx, msg.Proposer) {
-		return nil, types.ErrUnauthorized.Wrapf("proposer %s is not a fund manager", msg.Proposer)
+	// Validate the proposal
+	if err := k.ValidateAllocationProposal(ctx, msg.Amount, msg.Category); err != nil {
+		return nil, types.ErrInvalidProposal.Wrapf("allocation proposal validation failed: %v", err)
+	}
+	
+	// Verify multi-signature requirement for fund managers
+	if !k.ValidateMultiSignature(ctx, msg.Proposers) {
+		return nil, types.ErrInsufficientSignatures.Wrap("allocation requires multiple fund manager signatures")
 	}
 	
 	// Create new allocation
@@ -43,9 +48,9 @@ func (k msgServer) ProposeAllocation(goCtx context.Context, msg *types.MsgPropos
 		Category:         msg.Category,
 		Amount:           msg.Amount,
 		Recipient:        msg.Recipient,
-		ApprovedBy:       []string{msg.Proposer}, // Auto-approve by proposer
-		ProposalId:       0, // TODO: Link to governance proposal if needed
-		AllocatedAt:      time.Now(),
+		ApprovedBy:       msg.Proposers, // All proposers who signed
+		ProposalId:       0, // Will be set when governance integration is complete
+		AllocatedAt:      ctx.BlockTime(),
 		ExpectedOutcomes: msg.ExpectedOutcomes,
 		Disbursements:    msg.DisbursementSchedule,
 		Status:           "pending",
@@ -67,6 +72,9 @@ func (k msgServer) ProposeAllocation(goCtx context.Context, msg *types.MsgPropos
 	// Save allocation
 	k.SetFundAllocation(ctx, allocation)
 	
+	// Record revenue activity for DSWF allocation proposal
+	k.RecordDSWFRevenueActivity(ctx, "allocation_proposed", msg.Amount)
+	
 	// Emit event
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
@@ -80,7 +88,7 @@ func (k msgServer) ProposeAllocation(goCtx context.Context, msg *types.MsgPropos
 	
 	return &types.MsgProposeAllocationResponse{
 		AllocationId: allocationID,
-		ProposalId:   0, // TODO: Return governance proposal ID if created
+		ProposalId:   0, // Governance proposal ID will be implemented in governance integration
 	}, nil
 }
 
@@ -91,6 +99,12 @@ func (k msgServer) ApproveAllocation(goCtx context.Context, msg *types.MsgApprov
 	// Verify approver is a fund manager
 	if !k.IsFundManager(ctx, msg.Approver) {
 		return nil, types.ErrUnauthorized.Wrapf("approver %s is not a fund manager", msg.Approver)
+	}
+	
+	// Additional validation: Check if allocation still needs approval
+	governance, found := k.GetFundGovernance(ctx)
+	if !found {
+		return nil, types.ErrGovernanceNotFound
 	}
 	
 	// Get allocation
@@ -148,7 +162,24 @@ func (k msgServer) ApproveAllocation(goCtx context.Context, msg *types.MsgApprov
 func (k msgServer) ExecuteDisbursement(goCtx context.Context, msg *types.MsgExecuteDisbursement) (*types.MsgExecuteDisbursementResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	
-	// Get allocation
+	// Get allocation to check disbursement amount for safety validation
+	allocation, found := k.GetFundAllocation(ctx, msg.AllocationId)
+	if !found {
+		return nil, types.ErrAllocationNotFound
+	}
+	
+	if int(msg.DisbursementIndex) >= len(allocation.Disbursements) {
+		return nil, types.ErrInvalidProposal.Wrap("invalid disbursement index")
+	}
+	
+	disbursementAmount := allocation.Disbursements[msg.DisbursementIndex].Amount
+	
+	// Operational safety check
+	if err := k.ValidateOperationalSafety(ctx, "disbursement", disbursementAmount); err != nil {
+		return nil, err
+	}
+	
+	// Get allocation (again for consistency)
 	allocation, found := k.GetFundAllocation(ctx, msg.AllocationId)
 	if !found {
 		return nil, types.ErrAllocationNotFound
@@ -172,11 +203,16 @@ func (k msgServer) ExecuteDisbursement(goCtx context.Context, msg *types.MsgExec
 	}
 	
 	// Check if scheduled date has passed
-	if disbursement.ScheduledDate.After(time.Now()) {
+	if disbursement.ScheduledDate.After(ctx.BlockTime()) {
 		return nil, types.ErrDisbursementNotReady
 	}
 	
-	// TODO: Verify milestone proof
+	// Verify milestone proof if required
+	if disbursement.MilestoneProof != "" {
+		if err := k.ValidateMilestoneProof(ctx, disbursement.MilestoneProof); err != nil {
+			return nil, types.ErrInvalidProof.Wrap("milestone proof validation failed")
+		}
+	}
 	
 	// Execute disbursement
 	recipientAddr, err := sdk.AccAddressFromBech32(allocation.Recipient)
@@ -188,9 +224,12 @@ func (k msgServer) ExecuteDisbursement(goCtx context.Context, msg *types.MsgExec
 		return nil, sdkerrors.Wrap(err, "failed to execute disbursement")
 	}
 	
+	// Record revenue activity for DSWF disbursement
+	k.RecordDSWFRevenueActivity(ctx, "funds_disbursed", disbursement.Amount)
+	
 	// Update disbursement status
 	disbursement.Status = "disbursed"
-	disbursement.DisbursedAt = time.Now()
+	disbursement.DisbursedAt = ctx.BlockTime()
 	disbursement.TxHash = fmt.Sprintf("%X", ctx.TxBytes()) // Simplified, use actual tx hash
 	
 	// Update allocation status
@@ -265,9 +304,9 @@ func (k msgServer) UpdateInvestmentStrategy(goCtx context.Context, msg *types.Ms
 func (k msgServer) RebalancePortfolio(goCtx context.Context, msg *types.MsgRebalancePortfolio) (*types.MsgRebalancePortfolioResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	
-	// Verify authority
-	if msg.Authority != k.GetAuthority() {
-		return nil, types.ErrUnauthorized.Wrapf("invalid authority; expected %s, got %s", k.GetAuthority(), msg.Authority)
+	// Verify authority has permission to rebalance
+	if err := k.ValidateRebalanceAuthority(ctx, msg.Authority); err != nil {
+		return nil, types.ErrUnauthorized.Wrapf("rebalance authority validation failed: %v", err)
 	}
 	
 	// Get current portfolio
@@ -283,18 +322,16 @@ func (k msgServer) RebalancePortfolio(goCtx context.Context, msg *types.MsgRebal
 			TotalReturns:     sdk.NewCoin("unamo", sdk.ZeroInt()),
 			AnnualReturnRate: sdk.ZeroDec(),
 			RiskScore:        5,
-			LastRebalanced:   time.Now(),
+			LastRebalanced:   ctx.BlockTime(),
 		}
 	}
 	
-	// TODO: Implement actual rebalancing logic
-	// This would involve:
-	// 1. Calculating current allocations
-	// 2. Determining target allocations based on strategy
-	// 3. Executing trades/transfers to reach targets
-	// 4. Updating portfolio components
+	// Implement portfolio rebalancing logic
+	if err := k.ExecutePortfolioRebalancing(ctx, &portfolio); err != nil {
+		return nil, types.ErrInvalidInvestmentStrategy.Wrapf("portfolio rebalancing execution failed: %v", err)
+	}
 	
-	portfolio.LastRebalanced = time.Now()
+	portfolio.LastRebalanced = ctx.BlockTime()
 	k.SetInvestmentPortfolio(ctx, portfolio)
 	
 	// Emit event

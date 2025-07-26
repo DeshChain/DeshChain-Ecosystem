@@ -35,7 +35,7 @@ func (k msgServer) CreateAllocationProposal(goCtx context.Context, msg *types.Ms
 	for _, alloc := range msg.Allocations {
 		// Validate organization
 		if err := k.ValidateCharitableOrganization(ctx, alloc.CharitableOrgWalletId); err != nil {
-			return nil, err
+			return nil, types.ErrOrganizationNotVerified.Wrapf("organization validation failed for ID %d: %v", alloc.CharitableOrgWalletId, err)
 		}
 		
 		totalAllocated = totalAllocated.Add(alloc.Amount)
@@ -193,7 +193,18 @@ func (k msgServer) VoteOnProposal(goCtx context.Context, msg *types.MsgVoteOnPro
 func (k msgServer) ExecuteAllocation(goCtx context.Context, msg *types.MsgExecuteAllocation) (*types.MsgExecuteAllocationResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	
-	// Get proposal
+	// Get proposal to validate total amount for safety check
+	proposal, found := k.GetAllocationProposal(ctx, msg.ProposalId)
+	if !found {
+		return nil, types.ErrInvalidProposal.Wrap("proposal not found")
+	}
+	
+	// Operational safety check
+	if err := k.ValidateOperationalSafety(ctx, "distribution", proposal.TotalAmount); err != nil {
+		return nil, err
+	}
+	
+	// Get proposal (again for consistency)
 	proposal, found := k.GetAllocationProposal(ctx, msg.ProposalId)
 	if !found {
 		return nil, types.ErrInvalidProposal.Wrap("proposal not found")
@@ -244,13 +255,21 @@ func (k msgServer) ExecuteAllocation(goCtx context.Context, msg *types.MsgExecut
 			}
 		}
 		
-		// TODO: Get actual organization wallet address from donation module
-		// For now, using a placeholder
-		recipientAddr := sdk.AccAddress([]byte(fmt.Sprintf("org%d", proposedAlloc.CharitableOrgWalletId)))
+		// Verify organization is not under fraud investigation
+		if err := k.ValidateOrganizationFraudStatus(ctx, proposedAlloc.CharitableOrgWalletId); err != nil {
+			return nil, types.ErrOrganizationUnderInvestigation.Wrapf("fraud status validation failed for organization %d: %v", proposedAlloc.CharitableOrgWalletId, err)
+		}
+		
+		// Get organization wallet address from donation module
+		orgWalletAddr, err := k.GetOrganizationWalletAddress(ctx, proposedAlloc.CharitableOrgWalletId)
+		if err != nil {
+			return nil, types.ErrInvalidOrganization.Wrapf("failed to get wallet address for organization %d: %v", proposedAlloc.CharitableOrgWalletId, err)
+		}
+		recipientAddr := orgWalletAddr
 		
 		// Transfer funds
 		if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, recipientAddr, sdk.NewCoins(proposedAlloc.Amount)); err != nil {
-			return nil, sdkerrors.Wrap(err, "failed to transfer funds")
+			return nil, types.ErrInsufficientFunds.Wrapf("failed to transfer %s to organization %d (%s): %v", proposedAlloc.Amount.String(), proposedAlloc.CharitableOrgWalletId, recipientAddr.String(), err)
 		}
 		
 		// Set distribution details
@@ -262,6 +281,9 @@ func (k msgServer) ExecuteAllocation(goCtx context.Context, msg *types.MsgExecut
 		
 		k.SetCharitableAllocation(ctx, allocation)
 		allocationIDs = append(allocationIDs, allocationID)
+		
+		// Record revenue activity for charitable allocation distribution
+		k.RecordCharitableTrustRevenueActivity(ctx, "funds_distributed", proposedAlloc.Amount)
 		
 		// Update fund balance
 		balance, _ := k.GetTrustFundBalance(ctx)
@@ -310,7 +332,10 @@ func (k msgServer) SubmitImpactReport(goCtx context.Context, msg *types.MsgSubmi
 		return nil, types.ErrAllocationNotFound
 	}
 	
-	// TODO: Verify submitter is authorized (org representative)
+	// Verify submitter is authorized organization representative
+	if err := k.ValidateOrganizationRepresentative(ctx, msg.OrganizationId, msg.Submitter); err != nil {
+		return nil, types.ErrUnauthorized.Wrap("submitter is not authorized for this organization")
+	}
 	
 	// Create impact report
 	reportID := k.GetAllocationCount(ctx) + 1000000 // Simple ID generation

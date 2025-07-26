@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Developer Guidelines - DeshChain</title>
+    <meta name="description" content="Comprehensive developer guidelines for building on DeshChain blockchain platform">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/cultural.css">
+    <link rel="stylesheet" href="./pages.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="../assets/deshchain-logo.png" alt="DeshChain Logo" class="logo">
+                <span class="logo-text">DeshChain</span>
+            </div>
+            
+            <div class="nav-menu" id="nav-menu">
+                <a href="../index.html" class="nav-link">Home</a>
+                <a href="../docs/index.html" class="nav-link">Documentation</a>
+                <a href="./terms-conditions.html" class="nav-link">Terms</a>
+                <a href="./legal-disclaimer.html" class="nav-link">Legal</a>
+            </div>
+            
+            <div class="nav-actions">
+                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">🌙</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Content -->
+    <main class="guidelines-page">
+        <div class="container">
+            <div class="guidelines-header">
+                <h1>Developer Guidelines</h1>
+                <p class="guidelines-intro">
+                    Welcome to the DeshChain developer community! These guidelines will help you build amazing applications on the world's first culturally-rooted blockchain. 
+                    Whether you're creating DeFi protocols, social impact solutions, or cultural preservation tools, we're here to support your journey.
+                </p>
+            </div>
+
+            <!-- Core Principles -->
+            <section class="guidelines-section">
+                <h2>🌟 Core Development Principles</h2>
+                <div class="guidelines-grid">
+                    <div class="guideline-card">
+                        <span class="guideline-icon">🏛️</span>
+                        <h3>Cultural Consciousness</h3>
+                        <p>Respect and integrate Indian cultural values in your applications. Consider multi-language support, festival themes, and cultural sensitivities.</p>
+                    </div>
+                    
+                    <div class="guideline-card">
+                        <span class="guideline-icon">❤️</span>
+                        <h3>Social Impact First</h3>
+                        <p>Design with social good in mind. Consider how your application can contribute to financial inclusion, education, or charitable causes.</p>
+                    </div>
+                    
+                    <div class="guideline-card">
+                        <span class="guideline-icon">🔒</span>
+                        <h3>Security by Design</h3>
+                        <p>Implement robust security measures from the start. Follow best practices for smart contract development and key management.</p>
+                    </div>
+                    
+                    <div class="guideline-card">
+                        <span class="guideline-icon">♿</span>
+                        <h3>Accessibility</h3>
+                        <p>Build inclusive applications that work for users with different abilities, languages, and technical expertise levels.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Getting Started -->
+            <section class="guidelines-section">
+                <h2>🚀 Getting Started</h2>
+                
+                <div class="best-practices">
+                    <h3>Prerequisites</h3>
+                    <ul>
+                        <li>Basic understanding of blockchain technology and Cosmos SDK</li>
+                        <li>Proficiency in Go, Rust, or JavaScript/TypeScript</li>
+                        <li>Familiarity with smart contract development</li>
+                        <li>Understanding of DeFi concepts and protocols</li>
+                    </ul>
+                </div>
+
+                <h3>Environment Setup</h3>
+                <div class="code-example">
+                    <pre><code># Install DeshChain CLI
+curl -L https://get.deshchain.com | bash
+
+# Initialize your development environment
+deshchaind init mynode --chain-id deshchain-testnet-1
+
+# Create a new wallet
+deshchaind keys add developer
+
+# Get testnet tokens from faucet
+curl -X POST https://faucet.testnet.deshchain.com/credit \
+  -d '{"address": "your_address_here"}'</code></pre>
+                </div>
+            </section>
+
+            <!-- Development Standards -->
+            <section class="guidelines-section">
+                <h2>📋 Development Standards</h2>
+                
+                <h3>1. Code Quality Standards</h3>
+                <ul>
+                    <li><strong>Clean Code</strong>: Write readable, maintainable, and well-documented code</li>
+                    <li><strong>Testing</strong>: Minimum 80% test coverage for all smart contracts</li>
+                    <li><strong>Gas Optimization</strong>: Optimize for minimal transaction costs</li>
+                    <li><strong>Error Handling</strong>: Implement comprehensive error handling with meaningful messages</li>
+                </ul>
+
+                <h3>2. Smart Contract Guidelines</h3>
+                <div class="code-example">
+                    <pre><code>// Example: Cultural naming convention
+contract GramPensionScheme {
+    // Use descriptive Indian language names where appropriate
+    mapping(address => uint256) public pensionBalance;
+    uint256 public constant MINIMUM_GUARANTEE = 8; // 8% guaranteed returns
+    
+    // Events should be descriptive
+    event PensionDeposited(address indexed user, uint256 amount, uint256 timestamp);
+    
+    // Follow checks-effects-interactions pattern
+    function depositPension() external payable {
+        require(msg.value > 0, "Amount must be greater than zero");
+        
+        // Effects
+        pensionBalance[msg.sender] += msg.value;
+        
+        // Interactions
+        emit PensionDeposited(msg.sender, msg.value, block.timestamp);
+    }
+}</code></pre>
+                </div>
+
+                <h3>3. API Development Standards</h3>
+                <ul>
+                    <li>Use RESTful principles for HTTP APIs</li>
+                    <li>Implement proper versioning (e.g., /api/v1/)</li>
+                    <li>Return consistent JSON responses with proper error codes</li>
+                    <li>Include comprehensive API documentation using OpenAPI/Swagger</li>
+                </ul>
+            </section>
+
+            <!-- Module Integration -->
+            <section class="guidelines-section">
+                <h2>🔧 Module Integration Guidelines</h2>
+                
+                <h3>Working with DeshChain Modules</h3>
+                <div class="guidelines-grid">
+                    <div class="guideline-card">
+                        <span class="guideline-icon">💰</span>
+                        <h3>NAMO Token Integration</h3>
+                        <p>Use the NAMO token for all fee payments. Implement proper decimal handling (18 decimals) and always validate balances before transactions.</p>
+                    </div>
+                    
+                    <div class="guideline-card">
+                        <span class="guideline-icon">🆔</span>
+                        <h3>Identity Module</h3>
+                        <p>Integrate with our W3C DID-compliant identity system. Support India Stack integration for KYC when required.</p>
+                    </div>
+                    
+                    <div class="guideline-card">
+                        <span class="guideline-icon">🏦</span>
+                        <h3>Trade Finance</h3>
+                        <p>When building financial applications, ensure Basel III compliance and support for SWIFT MT message formats.</p>
+                    </div>
+                    
+                    <div class="guideline-card">
+                        <span class="guideline-icon">❤️</span>
+                        <h3>Charitable Trust</h3>
+                        <p>Applications can integrate with the charitable trust module to automatically donate a portion of fees to verified causes.</p>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h4>⚠️ Important: Fee Structure</h4>
+                    <p>Remember that 40% of all platform fees are automatically allocated to charity. Design your fee models accordingly to ensure sustainability while supporting social causes.</p>
+                </div>
+            </section>
+
+            <!-- Security Guidelines -->
+            <section class="guidelines-section">
+                <h2>🔐 Security Guidelines</h2>
+                
+                <h3>Smart Contract Security</h3>
+                <ul>
+                    <li><strong>Audits</strong>: Get your contracts audited before mainnet deployment</li>
+                    <li><strong>Reentrancy</strong>: Use checks-effects-interactions pattern and reentrancy guards</li>
+                    <li><strong>Integer Overflow</strong>: Use SafeMath libraries or Solidity 0.8+ built-in protections</li>
+                    <li><strong>Access Control</strong>: Implement proper role-based access control</li>
+                    <li><strong>Upgradability</strong>: Use proxy patterns carefully, with time locks for upgrades</li>
+                </ul>
+
+                <h3>Key Management</h3>
+                <div class="best-practices">
+                    <h3>Best Practices</h3>
+                    <ul>
+                        <li>Never store private keys in code or version control</li>
+                        <li>Use hardware security modules (HSMs) for production keys</li>
+                        <li>Implement multi-signature wallets for treasury management</li>
+                        <li>Educate users about seed phrase security</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Performance Guidelines -->
+            <section class="guidelines-section">
+                <h2>⚡ Performance Guidelines</h2>
+                
+                <h3>Optimization Strategies</h3>
+                <ul>
+                    <li><strong>Batch Operations</strong>: Group multiple operations to reduce gas costs</li>
+                    <li><strong>Storage Optimization</strong>: Minimize on-chain storage usage</li>
+                    <li><strong>Event Logging</strong>: Use events for data that doesn't need on-chain storage</li>
+                    <li><strong>Query Optimization</strong>: Implement efficient indexing for off-chain queries</li>
+                </ul>
+
+                <div class="code-example">
+                    <pre><code>// Gas-efficient batch transfer example
+function batchTransfer(address[] calldata recipients, uint256[] calldata amounts) external {
+    require(recipients.length == amounts.length, "Arrays must match");
+    
+    uint256 totalAmount = 0;
+    for (uint256 i = 0; i < amounts.length; i++) {
+        totalAmount += amounts[i];
+    }
+    
+    require(balanceOf[msg.sender] >= totalAmount, "Insufficient balance");
+    
+    for (uint256 i = 0; i < recipients.length; i++) {
+        _transfer(msg.sender, recipients[i], amounts[i]);
+    }
+}</code></pre>
+                </div>
+            </section>
+
+            <!-- Testing Guidelines -->
+            <section class="guidelines-section">
+                <h2>🧪 Testing Guidelines</h2>
+                
+                <h3>Testing Requirements</h3>
+                <ul>
+                    <li><strong>Unit Tests</strong>: Test individual functions and components</li>
+                    <li><strong>Integration Tests</strong>: Test module interactions</li>
+                    <li><strong>Stress Tests</strong>: Test under high load conditions</li>
+                    <li><strong>Security Tests</strong>: Include fuzzing and formal verification where possible</li>
+                </ul>
+
+                <div class="success-box">
+                    <h4>✅ Testing Checklist</h4>
+                    <ul>
+                        <li>All happy paths tested</li>
+                        <li>Edge cases and error conditions covered</li>
+                        <li>Gas consumption measured and optimized</li>
+                        <li>Security vulnerabilities checked</li>
+                        <li>Cross-module interactions verified</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Deployment Guidelines -->
+            <section class="guidelines-section">
+                <h2>🚢 Deployment Guidelines</h2>
+                
+                <h3>Testnet Deployment</h3>
+                <ol>
+                    <li>Deploy and test thoroughly on testnet first</li>
+                    <li>Run for at least 2 weeks on testnet</li>
+                    <li>Gather community feedback and iterate</li>
+                    <li>Conduct security audit if handling significant value</li>
+                </ol>
+
+                <h3>Mainnet Deployment</h3>
+                <ol>
+                    <li>Ensure all tests pass with 100% success rate</li>
+                    <li>Have emergency pause mechanisms in place</li>
+                    <li>Deploy with conservative parameters initially</li>
+                    <li>Monitor closely for the first 48 hours</li>
+                    <li>Have an incident response plan ready</li>
+                </ol>
+            </section>
+
+            <!-- Community Guidelines -->
+            <section class="guidelines-section">
+                <h2>🤝 Community Guidelines</h2>
+                
+                <h3>Contributing to DeshChain</h3>
+                <ul>
+                    <li><strong>Open Source</strong>: We encourage open source development</li>
+                    <li><strong>Documentation</strong>: Document your code and APIs thoroughly</li>
+                    <li><strong>Support</strong>: Help other developers in our community forums</li>
+                    <li><strong>Feedback</strong>: Share your experiences and suggestions</li>
+                </ul>
+
+                <h3>Getting Help</h3>
+                <div class="contact-info">
+                    <p><strong>Developer Resources</strong></p>
+                    <p>Discord: <a href="https://discord.gg/deshchain">discord.gg/deshchain</a></p>
+                    <p>Forum: <a href="https://forum.deshchain.com">forum.deshchain.com</a></p>
+                    <p>GitHub: <a href="https://github.com/DeshChain/DeshChain-Ecosystem">github.com/DeshChain</a></p>
+                    <p>Email: developers@deshchain.com</p>
+                </div>
+            </section>
+
+            <!-- Bollywood Gamification -->
+            <section class="guidelines-section">
+                <h2>🎬 Bollywood Gamification System</h2>
+                
+                <h3>Developer Achievements</h3>
+                <p>Earn Bollywood-themed achievements as you contribute to the ecosystem:</p>
+                
+                <div class="guidelines-grid">
+                    <div class="guideline-card">
+                        <span class="guideline-icon">🐛</span>
+                        <h3>Bug Buster Bahubali</h3>
+                        <p>Find and fix critical bugs in the ecosystem</p>
+                    </div>
+                    
+                    <div class="guideline-card">
+                        <span class="guideline-icon">⭐</span>
+                        <h3>Feature Khan</h3>
+                        <p>Implement major new features</p>
+                    </div>
+                    
+                    <div class="guideline-card">
+                        <span class="guideline-icon">📚</span>
+                        <h3>Documentation Devdas</h3>
+                        <p>Create comprehensive documentation</p>
+                    </div>
+                    
+                    <div class="guideline-card">
+                        <span class="guideline-icon">🏆</span>
+                        <h3>Code Sultan</h3>
+                        <p>Deploy successful mainnet applications</p>
+                    </div>
+                </div>
+            </section>
+
+            <div class="legal-footer">
+                <p><strong>Happy Building! Together, we're creating a blockchain that serves humanity.</strong></p>
+                <p class="copyright">&copy; 2025 DeshChain Foundation - Powered by Ibda AI LTD. All rights reserved.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="../js/main.js"></script>
+</body>
+</html>

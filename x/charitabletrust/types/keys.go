@@ -40,6 +40,7 @@ var (
 	ReportByAllocationKey       = []byte{0x13}
 	AlertByAllocationKey        = []byte{0x14}
 	ProposalByStatusKey         = []byte{0x15}
+	AlertByOrgKey               = []byte{0x16}
 )
 
 // GetCharitableAllocationKey returns the key for a charitable allocation
@@ -105,4 +106,15 @@ func GetUint64Bytes(value uint64) []byte {
 // GetUint64FromBytes returns uint64 from bytes
 func GetUint64FromBytes(bz []byte) uint64 {
 	return binary.BigEndian.Uint64(bz)
+}
+
+// GetAlertByOrgPrefix returns the prefix for fraud alerts by organization
+func GetAlertByOrgPrefix(orgID uint64) []byte {
+	return append(AlertByOrgKey, GetUint64Bytes(orgID)...)
+}
+
+// GetAlertByOrgKey returns the key for fraud alerts by organization index
+func GetAlertByOrgKey(orgID uint64, alertID uint64) []byte {
+	key := append(AlertByOrgKey, GetUint64Bytes(orgID)...)
+	return append(key, GetUint64Bytes(alertID)...)
 }

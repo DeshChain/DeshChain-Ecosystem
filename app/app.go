@@ -719,19 +719,30 @@ func New(
 	// Initialize DSWF (DeshChain Sovereign Wealth Fund) Keeper
 	app.DSWFKeeper = dswfkeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(keys[dswftypes.StoreKey]),
+		keys[dswftypes.StoreKey],
+		memKeys[dswftypes.MemStoreKey],
 		app.GetSubspace(dswftypes.ModuleName),
+		app.AccountKeeper,
 		app.BankKeeper,
+		app.StakingKeeper,
+		app.DistrKeeper,
+		app.GovKeeper,
+		app.RevenueKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
 	// Initialize CharitableTrust Keeper
 	app.CharitableTrustKeeper = charitabletrustkeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(keys[charitabletrusttypes.StoreKey]),
+		keys[charitabletrusttypes.StoreKey],
+		memKeys[charitabletrusttypes.MemStoreKey],
 		app.GetSubspace(charitabletrusttypes.ModuleName),
+		app.AccountKeeper,
 		app.BankKeeper,
+		app.StakingKeeper,
 		app.DonationKeeper,
+		app.GovKeeper,
+		app.RevenueKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
