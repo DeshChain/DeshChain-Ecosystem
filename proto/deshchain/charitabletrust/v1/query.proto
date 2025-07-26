@@ -1,0 +1,201 @@
+syntax = "proto3";
+package deshchain.charitabletrust.v1;
+
+option go_package = "github.com/deshchain/deshchain/x/charitabletrust/types";
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "deshchain/charitabletrust/v1/charitabletrust.proto";
+
+// Query defines the gRPC querier service for CharitableTrust module
+service Query {
+  // TrustFundBalance returns the current trust fund balance
+  rpc TrustFundBalance(QueryTrustFundBalanceRequest) returns (QueryTrustFundBalanceResponse) {
+    option (google.api.http).get = "/deshchain/charitabletrust/v1/fund_balance";
+  }
+  
+  // Allocation returns details of a specific allocation
+  rpc Allocation(QueryAllocationRequest) returns (QueryAllocationResponse) {
+    option (google.api.http).get = "/deshchain/charitabletrust/v1/allocations/{allocation_id}";
+  }
+  
+  // Allocations returns all allocations with pagination
+  rpc Allocations(QueryAllocationsRequest) returns (QueryAllocationsResponse) {
+    option (google.api.http).get = "/deshchain/charitabletrust/v1/allocations";
+  }
+  
+  // AllocationProposal returns a specific proposal
+  rpc AllocationProposal(QueryAllocationProposalRequest) returns (QueryAllocationProposalResponse) {
+    option (google.api.http).get = "/deshchain/charitabletrust/v1/proposals/{proposal_id}";
+  }
+  
+  // AllocationProposals returns all proposals
+  rpc AllocationProposals(QueryAllocationProposalsRequest) returns (QueryAllocationProposalsResponse) {
+    option (google.api.http).get = "/deshchain/charitabletrust/v1/proposals";
+  }
+  
+  // ImpactReport returns a specific impact report
+  rpc ImpactReport(QueryImpactReportRequest) returns (QueryImpactReportResponse) {
+    option (google.api.http).get = "/deshchain/charitabletrust/v1/reports/{report_id}";
+  }
+  
+  // ImpactReports returns impact reports for an allocation
+  rpc ImpactReports(QueryImpactReportsRequest) returns (QueryImpactReportsResponse) {
+    option (google.api.http).get = "/deshchain/charitabletrust/v1/allocations/{allocation_id}/reports";
+  }
+  
+  // FraudAlert returns a specific fraud alert
+  rpc FraudAlert(QueryFraudAlertRequest) returns (QueryFraudAlertResponse) {
+    option (google.api.http).get = "/deshchain/charitabletrust/v1/alerts/{alert_id}";
+  }
+  
+  // FraudAlerts returns all fraud alerts
+  rpc FraudAlerts(QueryFraudAlertsRequest) returns (QueryFraudAlertsResponse) {
+    option (google.api.http).get = "/deshchain/charitabletrust/v1/alerts";
+  }
+  
+  // TrustGovernance returns the governance configuration
+  rpc TrustGovernance(QueryTrustGovernanceRequest) returns (QueryTrustGovernanceResponse) {
+    option (google.api.http).get = "/deshchain/charitabletrust/v1/governance";
+  }
+  
+  // AllocationsByOrganization returns allocations for a specific organization
+  rpc AllocationsByOrganization(QueryAllocationsByOrganizationRequest) returns (QueryAllocationsByOrganizationResponse) {
+    option (google.api.http).get = "/deshchain/charitabletrust/v1/organizations/{org_wallet_id}/allocations";
+  }
+  
+  // Params queries all parameters
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/deshchain/charitabletrust/v1/params";
+  }
+}
+
+// QueryTrustFundBalanceRequest is request type for TrustFundBalance RPC
+message QueryTrustFundBalanceRequest {}
+
+// QueryTrustFundBalanceResponse is response type for TrustFundBalance RPC
+message QueryTrustFundBalanceResponse {
+  TrustFundBalance balance = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryAllocationRequest is request type for Allocation RPC
+message QueryAllocationRequest {
+  uint64 allocation_id = 1;
+}
+
+// QueryAllocationResponse is response type for Allocation RPC
+message QueryAllocationResponse {
+  CharitableAllocation allocation = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryAllocationsRequest is request type for Allocations RPC
+message QueryAllocationsRequest {
+  string status = 1;
+  string category = 2;
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
+}
+
+// QueryAllocationsResponse is response type for Allocations RPC
+message QueryAllocationsResponse {
+  repeated CharitableAllocation allocations = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryAllocationProposalRequest is request type for AllocationProposal RPC
+message QueryAllocationProposalRequest {
+  uint64 proposal_id = 1;
+}
+
+// QueryAllocationProposalResponse is response type for AllocationProposal RPC
+message QueryAllocationProposalResponse {
+  AllocationProposal proposal = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryAllocationProposalsRequest is request type for AllocationProposals RPC
+message QueryAllocationProposalsRequest {
+  string status = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+// QueryAllocationProposalsResponse is response type for AllocationProposals RPC
+message QueryAllocationProposalsResponse {
+  repeated AllocationProposal proposals = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryImpactReportRequest is request type for ImpactReport RPC
+message QueryImpactReportRequest {
+  uint64 report_id = 1;
+}
+
+// QueryImpactReportResponse is response type for ImpactReport RPC
+message QueryImpactReportResponse {
+  ImpactReport report = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryImpactReportsRequest is request type for ImpactReports RPC
+message QueryImpactReportsRequest {
+  uint64 allocation_id = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+// QueryImpactReportsResponse is response type for ImpactReports RPC
+message QueryImpactReportsResponse {
+  repeated ImpactReport reports = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryFraudAlertRequest is request type for FraudAlert RPC
+message QueryFraudAlertRequest {
+  uint64 alert_id = 1;
+}
+
+// QueryFraudAlertResponse is response type for FraudAlert RPC
+message QueryFraudAlertResponse {
+  FraudAlert alert = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryFraudAlertsRequest is request type for FraudAlerts RPC
+message QueryFraudAlertsRequest {
+  string status = 1;
+  string severity = 2;
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
+}
+
+// QueryFraudAlertsResponse is response type for FraudAlerts RPC
+message QueryFraudAlertsResponse {
+  repeated FraudAlert alerts = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryTrustGovernanceRequest is request type for TrustGovernance RPC
+message QueryTrustGovernanceRequest {}
+
+// QueryTrustGovernanceResponse is response type for TrustGovernance RPC
+message QueryTrustGovernanceResponse {
+  TrustGovernance governance = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryAllocationsByOrganizationRequest is request type for AllocationsByOrganization RPC
+message QueryAllocationsByOrganizationRequest {
+  uint64 org_wallet_id = 1;
+  string status = 2;
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
+}
+
+// QueryAllocationsByOrganizationResponse is response type for AllocationsByOrganization RPC
+message QueryAllocationsByOrganizationResponse {
+  repeated CharitableAllocation allocations = 1 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin total_allocated = 2 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin monthly_allocated = 3 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 4;
+}
+
+// QueryParamsRequest is request type for Params RPC
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for Params RPC
+message QueryParamsResponse {
+  Params params = 1 [(gogoproto.nullable) = false];
+}

@@ -1,0 +1,189 @@
+syntax = "proto3";
+package deshchain.charitabletrust.v1;
+
+option go_package = "github.com/deshchain/deshchain/x/charitabletrust/types";
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos_proto/cosmos.proto";
+import "cosmos/msg/v1/msg.proto";
+import "amino/amino.proto";
+import "deshchain/charitabletrust/v1/charitabletrust.proto";
+
+// Msg defines the CharitableTrust Msg service
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+
+  // CreateAllocationProposal creates a new allocation proposal
+  rpc CreateAllocationProposal(MsgCreateAllocationProposal) returns (MsgCreateAllocationProposalResponse);
+  
+  // VoteOnProposal allows trustees to vote on allocation proposals
+  rpc VoteOnProposal(MsgVoteOnProposal) returns (MsgVoteOnProposalResponse);
+  
+  // ExecuteAllocation executes an approved allocation proposal
+  rpc ExecuteAllocation(MsgExecuteAllocation) returns (MsgExecuteAllocationResponse);
+  
+  // SubmitImpactReport submits an impact report for an allocation
+  rpc SubmitImpactReport(MsgSubmitImpactReport) returns (MsgSubmitImpactReportResponse);
+  
+  // VerifyImpactReport verifies a submitted impact report
+  rpc VerifyImpactReport(MsgVerifyImpactReport) returns (MsgVerifyImpactReportResponse);
+  
+  // ReportFraud reports potential fraud or misuse
+  rpc ReportFraud(MsgReportFraud) returns (MsgReportFraudResponse);
+  
+  // InvestigateFraud initiates or updates fraud investigation
+  rpc InvestigateFraud(MsgInvestigateFraud) returns (MsgInvestigateFraudResponse);
+  
+  // UpdateTrustees updates the board of trustees
+  rpc UpdateTrustees(MsgUpdateTrustees) returns (MsgUpdateTrusteesResponse);
+  
+  // UpdateParams updates the module parameters
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+}
+
+// MsgCreateAllocationProposal creates a new allocation proposal
+message MsgCreateAllocationProposal {
+  option (cosmos.msg.v1.signer) = "proposer";
+  option (amino.name) = "deshchain/charitabletrust/CreateAllocationProposal";
+  
+  string proposer = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string title = 2;
+  string description = 3;
+  cosmos.base.v1beta1.Coin total_amount = 4 [(gogoproto.nullable) = false];
+  repeated ProposedAllocation allocations = 5 [(gogoproto.nullable) = false];
+  string justification = 6;
+  repeated string expected_impact = 7;
+  repeated string documents = 8; // IPFS hashes
+}
+
+message MsgCreateAllocationProposalResponse {
+  uint64 proposal_id = 1;
+}
+
+// MsgVoteOnProposal allows trustees to vote
+message MsgVoteOnProposal {
+  option (cosmos.msg.v1.signer) = "voter";
+  option (amino.name) = "deshchain/charitabletrust/VoteOnProposal";
+  
+  string voter = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  uint64 proposal_id = 2;
+  string vote = 3; // yes, no, abstain
+  string reason = 4;
+}
+
+message MsgVoteOnProposalResponse {
+  bool success = 1;
+  string status = 2;
+}
+
+// MsgExecuteAllocation executes an approved proposal
+message MsgExecuteAllocation {
+  option (cosmos.msg.v1.signer) = "executor";
+  option (amino.name) = "deshchain/charitabletrust/ExecuteAllocation";
+  
+  string executor = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  uint64 proposal_id = 2;
+}
+
+message MsgExecuteAllocationResponse {
+  bool success = 1;
+  repeated uint64 allocation_ids = 2;
+}
+
+// MsgSubmitImpactReport submits impact report
+message MsgSubmitImpactReport {
+  option (cosmos.msg.v1.signer) = "submitter";
+  option (amino.name) = "deshchain/charitabletrust/SubmitImpactReport";
+  
+  string submitter = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  uint64 allocation_id = 2;
+  string period = 3;
+  int32 beneficiaries_reached = 4;
+  cosmos.base.v1beta1.Coin funds_utilized = 5 [(gogoproto.nullable) = false];
+  repeated ImpactMetric metrics = 6 [(gogoproto.nullable) = false];
+  repeated string documents = 7; // IPFS hashes
+  repeated string media = 8; // IPFS hashes
+  repeated string challenges = 9;
+}
+
+message MsgSubmitImpactReportResponse {
+  uint64 report_id = 1;
+}
+
+// MsgVerifyImpactReport verifies a report
+message MsgVerifyImpactReport {
+  option (cosmos.msg.v1.signer) = "verifier";
+  option (amino.name) = "deshchain/charitabletrust/VerifyImpactReport";
+  
+  string verifier = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  uint64 report_id = 2;
+  bool verified = 3;
+  string notes = 4;
+  bool site_visit_conducted = 5;
+  bool financial_audit_conducted = 6;
+}
+
+message MsgVerifyImpactReportResponse {
+  bool success = 1;
+}
+
+// MsgReportFraud reports potential fraud
+message MsgReportFraud {
+  option (cosmos.msg.v1.signer) = "reporter";
+  option (amino.name) = "deshchain/charitabletrust/ReportFraud";
+  
+  string reporter = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  uint64 allocation_id = 2;
+  string alert_type = 3; // misuse, fraud, non_compliance
+  string severity = 4; // low, medium, high, critical
+  string description = 5;
+  repeated string evidence = 6; // IPFS hashes
+}
+
+message MsgReportFraudResponse {
+  uint64 alert_id = 1;
+}
+
+// MsgInvestigateFraud handles fraud investigation
+message MsgInvestigateFraud {
+  option (cosmos.msg.v1.signer) = "investigator";
+  option (amino.name) = "deshchain/charitabletrust/InvestigateFraud";
+  
+  string investigator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  uint64 alert_id = 2;
+  repeated string findings = 3;
+  string recommendation = 4;
+  string report = 5; // IPFS hash
+  bool investigation_complete = 6;
+}
+
+message MsgInvestigateFraudResponse {
+  bool success = 1;
+  string status = 2;
+}
+
+// MsgUpdateTrustees updates board of trustees
+message MsgUpdateTrustees {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "deshchain/charitabletrust/UpdateTrustees";
+  
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  repeated Trustee new_trustees = 2 [(gogoproto.nullable) = false];
+  string justification = 3;
+}
+
+message MsgUpdateTrusteesResponse {
+  bool success = 1;
+}
+
+// MsgUpdateParams updates module parameters
+message MsgUpdateParams {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "deshchain/charitabletrust/UpdateParams";
+  
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  Params params = 2 [(gogoproto.nullable) = false];
+}
+
+message MsgUpdateParamsResponse {}

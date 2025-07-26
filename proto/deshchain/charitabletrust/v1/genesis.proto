@@ -1,0 +1,43 @@
+syntax = "proto3";
+package deshchain.charitabletrust.v1;
+
+option go_package = "github.com/deshchain/deshchain/x/charitabletrust/types";
+
+import "gogoproto/gogo.proto";
+import "deshchain/charitabletrust/v1/charitabletrust.proto";
+
+// GenesisState defines the CharitableTrust module's genesis state
+message GenesisState {
+  // Module parameters
+  Params params = 1 [(gogoproto.nullable) = false];
+  
+  // Trust governance configuration
+  TrustGovernance trust_governance = 2 [(gogoproto.nullable) = false];
+  
+  // Trust fund balance
+  TrustFundBalance trust_fund_balance = 3 [(gogoproto.nullable) = false];
+  
+  // All charitable allocations
+  repeated CharitableAllocation allocations = 4 [(gogoproto.nullable) = false];
+  
+  // All allocation proposals
+  repeated AllocationProposal proposals = 5 [(gogoproto.nullable) = false];
+  
+  // All impact reports
+  repeated ImpactReport impact_reports = 6 [(gogoproto.nullable) = false];
+  
+  // All fraud alerts
+  repeated FraudAlert fraud_alerts = 7 [(gogoproto.nullable) = false];
+  
+  // Current allocation count
+  uint64 allocation_count = 8;
+  
+  // Current proposal count
+  uint64 proposal_count = 9;
+  
+  // Current report ID count
+  uint64 report_count = 10;
+  
+  // Current alert ID count
+  uint64 alert_count = 11;
+}

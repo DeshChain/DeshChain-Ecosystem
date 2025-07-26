@@ -1,0 +1,28 @@
+syntax = "proto3";
+package deshchain.dswf.v1;
+
+option go_package = "github.com/deshchain/deshchain/x/dswf/types";
+
+import "gogoproto/gogo.proto";
+import "deshchain/dswf/v1/dswf.proto";
+
+// GenesisState defines the DSWF module's genesis state
+message GenesisState {
+  // Module parameters
+  Params params = 1 [(gogoproto.nullable) = false];
+  
+  // Fund governance configuration
+  FundGovernance fund_governance = 2 [(gogoproto.nullable) = false];
+  
+  // Current investment portfolio
+  InvestmentPortfolio investment_portfolio = 3 [(gogoproto.nullable) = false];
+  
+  // All fund allocations
+  repeated FundAllocation allocations = 4 [(gogoproto.nullable) = false];
+  
+  // All monthly reports
+  repeated MonthlyReport monthly_reports = 5 [(gogoproto.nullable) = false];
+  
+  // Current allocation count
+  uint64 allocation_count = 6;
+}
