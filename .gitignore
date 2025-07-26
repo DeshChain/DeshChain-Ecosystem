@@ -1,0 +1,206 @@
+# Build artifacts
+build/
+bin/
+*.exe
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Go specific
+vendor/
+go.sum
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# Local configuration
+.env
+.env.local
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# Node modules (for frontend)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Distribution
+dist/
+*.tar.gz
+
+# Coverage
+coverage/
+*.cover
+*.coverage
+.coverage
+
+# Business/Financial Analysis Documents (Not for GitHub)
+*FOUNDER*.md
+*WEALTH*.md
+*REVENUE*.md
+*ECONOMICS*.md
+*FINANCIAL*.md
+*INVESTMENT*.md
+*SUSTAINABILITY*.md
+*MONTE_CARLO*.md
+*MONTE_CARLO*.py
+*monte_carlo*.py
+*monte_carlo*.json
+*BALANCED*.md
+*CREATOR*.md
+*ROADMAP*.md
+*TOKENOMICS*.md
+*ALLOCATION*.md
+*PROJECTION*.md
+*SIMULATION*.md
+*ANALYSIS*.md
+*PROPOSAL*.md
+*ARCHITECTURE*.md
+*BLUEPRINT*.md
+*TRANSFORMATION*.md
+*PENSION*.md
+*VALIDATOR_ECONOMICS*.md
+*VALIDATOR_REVENUE*.md
+SOCIAL_IMPACT_INVESTORS.csv
+*MINIMUM_INVESTMENT*.md
+*RISK*.md
+*REPORT*.md
+*STRATEGY*.md
+*COMPARISON*.md
+*LEGACY*.md
+*GOVERNANCE*.md
+*ACTUAL*.md
+*DETAILED*.md
+*UPDATED*.md
+*PERSONAL*.md
+*IMPLEMENTATION*.md
+*COMPLETION*.md
+*APPENDIX*.md
+*CULTURAL_ROADMAP*.md
+*BACKWARD_COMPATIBILITY*.md
+*FILE_TREE*.md
+*FILE_MAPPING*.md
+*CODEBASE_ANALYSIS*.md
+*SPRINT_PLAN*.md
+*TASKS*.md
+*INSTRUCTIONS*.md
+*REFACTOR*.md
+*UPDATE*.md
+*CLEAN*.md
+*LENDING_TESTS*.md
+
+# DhanSetu specific planning docs
+*DHANSETU*.md
+*UNIFIED_APP*.md
+*COMPREHENSIVE*.md
+*TECHNICAL*.md
+
+# Keep only essential documentation
+!README.md
+!CONTRIBUTING.md
+!LICENSE
+!LICENSE-CULTURAL
+!CHANGELOG.md
+!CODE_OF_CONDUCT.md
+!SECURITY.md
+
+# Keep essential technical docs
+!docs/**/*.md
+!x/**/README.md
+
+# Keep Claude instructions
+!CLAUDE.md
+
+# Temporary downloaded files
+*.tar.gz
+go*.linux-amd64.tar.gz
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Backup files
+*-BACKUP.md
+*-UPDATED.md
+README-*.md
+
+# Research and analysis files
+*RESEARCH*.md
+*KYC_SOLUTIONS*.md
+*LAUNCHPAD*.md
+*FEE_MODEL*.md
+*CELEBRATION*.md
+*FESTIVAL*.md
+
+# Generated documentation that shouldn't be in repo
+DOCUMENTATION_*.md
+ECOSYSTEM_*.md
+PROJECT_*.md
+PLATFORM_*.md
+
+# Python scripts for analysis
+*.py
+!scripts/**/*.py
+
+# JSON result files
+*results.json
+!package.json
+!tsconfig.json
+!genesis/*.json
+
+# CSV files
+*.csv
+
+# Keep whitepaper
+!*WHITEPAPER*.md
+
+# Production file tree (local only)
+PRODUCTION_FILE_TREE.md
+
+# Additional sensitive files to exclude
+DESHCHAIN_SOCIAL_IMPACT_MODEL.md
+DESHCHAIN_ECONOMIC_MODEL_FINAL.md
+FINAL_PROJECT_SUMMARY.md
+DEPLOYMENT.md
+DeshChain_Whitepaper.md
+
+# Exclude all whitepapers from public repo
+DESHCHAIN_WHITEPAPER*.md
+*WHITEPAPER*.md
+
+# Internal documentation
+*MODEL*.md
+*SUMMARY*.md
+*DEPLOYMENT*.md
+
+# Claude AI files
+.claude/
+
+# Mock implementations
+*mock*.go
+Dockerfile.mock
+
+# Test configurations that might have sensitive data
+docker-compose.quick.yml
+docker-compose.testnet.yml
+scripts/docker-testnet-init.sh
