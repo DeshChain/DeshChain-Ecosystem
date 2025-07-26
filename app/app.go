@@ -178,6 +178,16 @@ import (
 	governance "github.com/deshchain/namo/x/governance"
 	governancekeeper "github.com/deshchain/namo/x/governance/keeper"
 	governancetypes "github.com/deshchain/namo/x/governance/types"
+
+	// DSWF Module imports
+	dswf "github.com/deshchain/deshchain/x/dswf"
+	dswfkeeper "github.com/deshchain/deshchain/x/dswf/keeper"
+	dswftypes "github.com/deshchain/deshchain/x/dswf/types"
+
+	// CharitableTrust Module imports
+	charitabletrust "github.com/deshchain/deshchain/x/charitabletrust"
+	charitabletrustkeeper "github.com/deshchain/deshchain/x/charitabletrust/keeper"
+	charitabletrusttypes "github.com/deshchain/deshchain/x/charitabletrust/types"
 )
 
 const (
@@ -233,6 +243,8 @@ var (
 		donation.AppModuleBasic{},
 		grampension.AppModuleBasic{},
 		governance.AppModuleBasic{},
+		dswf.AppModuleBasic{},
+		charitabletrust.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -309,6 +321,9 @@ var (
 		taxtypes.StrategicReserve:       nil, // Strategic reserve (10%)
 		taxtypes.CoFoundersPool:         nil, // Co-founders (5%)
 		taxtypes.AngelInvestorsPool:     nil, // Angel investors (5%)
+		// DSWF and CharitableTrust Module Accounts
+		dswftypes.ModuleName:            nil, // DeshChain Sovereign Wealth Fund
+		charitabletrusttypes.ModuleName: nil, // DeshChain Charitable Trust
 	}
 )
 
@@ -375,6 +390,8 @@ type DeshChainApp struct {
 	DonationKeeper        donationkeeper.Keeper
 	GramSurakshaKeeper    gramsurakshakeep.Keeper
 	GovernanceKeeper      governancekeeper.Keeper
+	DSWFKeeper            dswfkeeper.Keeper
+	CharitableTrustKeeper charitabletrustkeeper.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -418,6 +435,7 @@ func New(
 		moneyordertypes.StoreKey, culturaltypes.StoreKey, namotypes.StoreKey, dhansettypes.StoreKey,
 		dinrtypes.StoreKey, tradefinancetypes.StoreKey, oracletypes.StoreKey, sikkebaaztypes.StoreKey, krishimitratypes.StoreKey, vyavasayamitratypes.StoreKey, 
 		shikshamitratypes.StoreKey, taxtypes.StoreKey, revenuetypes.StoreKey, donationtypes.StoreKey, gramsurakshatypes.StoreKey, governancetypes.StoreKey,
+		dswftypes.StoreKey, charitabletrusttypes.StoreKey,
 	)
 	tkeys := storetypes.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := storetypes.NewMemoryStoreKeys(
@@ -698,6 +716,25 @@ func New(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
+	// Initialize DSWF (DeshChain Sovereign Wealth Fund) Keeper
+	app.DSWFKeeper = dswfkeeper.NewKeeper(
+		appCodec,
+		runtime.NewKVStoreService(keys[dswftypes.StoreKey]),
+		app.GetSubspace(dswftypes.ModuleName),
+		app.BankKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
+	// Initialize CharitableTrust Keeper
+	app.CharitableTrustKeeper = charitabletrustkeeper.NewKeeper(
+		appCodec,
+		runtime.NewKVStoreService(keys[charitabletrusttypes.StoreKey]),
+		app.GetSubspace(charitabletrusttypes.ModuleName),
+		app.BankKeeper,
+		app.DonationKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
 
 	// NOTE: we may consider parsing `appOpts` inside module constructors. For the moment
 	// we prefer to be more strict in what arguments the modules expect.
@@ -741,6 +778,8 @@ func New(
 		donation.NewAppModule(appCodec, app.DonationKeeper, app.AccountKeeper, app.BankKeeper),
 		grampension.NewAppModule(appCodec, app.GramSurakshaKeeper, app.AccountKeeper, app.BankKeeper),
 		governance.NewAppModule(appCodec, app.GovernanceKeeper, app.GovKeeper, app.AccountKeeper, app.BankKeeper),
+		dswf.NewAppModule(appCodec, app.DSWFKeeper, app.AccountKeeper, app.BankKeeper),
+		charitabletrust.NewAppModule(appCodec, app.CharitableTrustKeeper, app.AccountKeeper, app.BankKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -772,6 +811,8 @@ func New(
 		donationtypes.ModuleName,
 		gramsurakshatypes.ModuleName,
 		governancetypes.ModuleName,
+		dswftypes.ModuleName,
+		charitabletrusttypes.ModuleName,
 	)
 
 	app.mm.SetOrderEndBlockers(
@@ -796,6 +837,8 @@ func New(
 		donationtypes.ModuleName,
 		gramsurakshatypes.ModuleName,
 		governancetypes.ModuleName,
+		dswftypes.ModuleName,
+		charitabletrusttypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -836,6 +879,8 @@ func New(
 		donationtypes.ModuleName,
 		gramsurakshatypes.ModuleName,
 		governancetypes.ModuleName,
+		dswftypes.ModuleName,
+		charitabletrusttypes.ModuleName,
 	}
 	app.mm.SetOrderInitGenesis(genesisModuleOrder...)
 	app.mm.SetOrderExportGenesis(genesisModuleOrder...)
