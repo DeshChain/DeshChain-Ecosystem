@@ -25,23 +25,29 @@ import (
 
 // Revenue distribution shares for all platform revenues
 const (
-	// Development Fund - 30% of platform revenues
-	RevenueDevelopmentShare = "0.30"
+	// Development Fund - 20% of platform revenues
+	RevenueDevelopmentShare = "0.20"
 	
-	// Community Treasury - 25% of platform revenues
-	RevenueCommunityShare = "0.25"
+	// Community Treasury - 20% of platform revenues
+	RevenueCommunityShare = "0.20"
 	
-	// Liquidity Provision - 20% of platform revenues
-	RevenueLiquidityShare = "0.20"
+	// Liquidity Provision - 15% of platform revenues
+	RevenueLiquidityShare = "0.15"
 	
-	// NGO Donations - 10% of platform revenues
-	RevenueNGOShare = "0.10"
+	// DeshChain Charitable Trust - 10% of platform revenues
+	RevenueCharitableTrustShare = "0.10"
 	
 	// Emergency Reserve - 10% of platform revenues
 	RevenueEmergencyShare = "0.10"
 	
 	// Founder Royalty - 5% of platform revenues
 	RevenueFounderShare = "0.05"
+	
+	// DeshChain Sovereign Wealth Fund - 20% of platform revenues
+	RevenueDSWFShare = "0.20"
+	
+	// DEPRECATED: Use RevenueCharitableTrustShare
+	RevenueNGOShare = "0.10"
 )
 
 // Module account names for revenue distribution
@@ -55,7 +61,13 @@ const (
 	// LiquidityProvisionPool for providing liquidity
 	LiquidityProvisionPool = "revenue_liquidity_provision"
 	
-	// NGODonationPool for charitable donations
+	// CharitableTrustPool for charitable trust distributions
+	CharitableTrustPool = "revenue_charitable_trust"
+	
+	// DSWFPool for sovereign wealth fund
+	DSWFPool = "revenue_dswf"
+	
+	// DEPRECATED: Use CharitableTrustPool
 	NGODonationPool = "revenue_ngo_donation"
 	
 	// EmergencyReservePool for emergency situations
@@ -100,7 +112,13 @@ type RevenueDistribution struct {
 	// Liquidity provision allocation
 	Liquidity sdk.Coin `json:"liquidity"`
 	
-	// NGO donation allocation
+	// DeshChain Charitable Trust allocation
+	CharitableTrust sdk.Coin `json:"charitable_trust"`
+	
+	// DeshChain Sovereign Wealth Fund allocation
+	DSWF sdk.Coin `json:"dswf"`
+	
+	// DEPRECATED: Use CharitableTrust
 	NGODonation sdk.Coin `json:"ngo_donation"`
 	
 	// Emergency reserve allocation
@@ -200,9 +218,10 @@ func CalculateDistribution(totalRevenue sdk.Coin) (RevenueDistribution, error) {
 	devShare, _ := sdk.NewDecFromStr(RevenueDevelopmentShare)
 	communityShare, _ := sdk.NewDecFromStr(RevenueCommunityShare)
 	liquidityShare, _ := sdk.NewDecFromStr(RevenueLiquidityShare)
-	ngoShare, _ := sdk.NewDecFromStr(RevenueNGOShare)
+	charitableShare, _ := sdk.NewDecFromStr(RevenueCharitableTrustShare)
 	emergencyShare, _ := sdk.NewDecFromStr(RevenueEmergencyShare)
 	founderShare, _ := sdk.NewDecFromStr(RevenueFounderShare)
+	dswfShare, _ := sdk.NewDecFromStr(RevenueDSWFShare)
 	
 	// Calculate distributions
 	distribution := RevenueDistribution{
@@ -212,21 +231,27 @@ func CalculateDistribution(totalRevenue sdk.Coin) (RevenueDistribution, error) {
 			communityShare.MulInt(totalRevenue.Amount).TruncateInt()),
 		Liquidity: sdk.NewCoin(totalRevenue.Denom, 
 			liquidityShare.MulInt(totalRevenue.Amount).TruncateInt()),
-		NGODonation: sdk.NewCoin(totalRevenue.Denom, 
-			ngoShare.MulInt(totalRevenue.Amount).TruncateInt()),
+		CharitableTrust: sdk.NewCoin(totalRevenue.Denom, 
+			charitableShare.MulInt(totalRevenue.Amount).TruncateInt()),
 		Emergency: sdk.NewCoin(totalRevenue.Denom, 
 			emergencyShare.MulInt(totalRevenue.Amount).TruncateInt()),
 		FounderRoyalty: sdk.NewCoin(totalRevenue.Denom, 
 			founderShare.MulInt(totalRevenue.Amount).TruncateInt()),
+		DSWF: sdk.NewCoin(totalRevenue.Denom, 
+			dswfShare.MulInt(totalRevenue.Amount).TruncateInt()),
+		// For backward compatibility
+		NGODonation: sdk.NewCoin(totalRevenue.Denom, 
+			charitableShare.MulInt(totalRevenue.Amount).TruncateInt()),
 	}
 	
 	// Verify total equals input (accounting for rounding)
 	total := distribution.Development.
 		Add(distribution.Community).
 		Add(distribution.Liquidity).
-		Add(distribution.NGODonation).
+		Add(distribution.CharitableTrust).
 		Add(distribution.Emergency).
-		Add(distribution.FounderRoyalty)
+		Add(distribution.FounderRoyalty).
+		Add(distribution.DSWF)
 	
 	// Handle any rounding difference by adding to development fund
 	if !total.IsEqual(totalRevenue) {
@@ -240,12 +265,14 @@ func CalculateDistribution(totalRevenue sdk.Coin) (RevenueDistribution, error) {
 // GetDistributionPools returns the mapping of distribution to pool names
 func GetDistributionPools() map[string]string {
 	return map[string]string{
-		"development":     DevelopmentFundPool,
-		"community":       CommunityTreasuryPool,
-		"liquidity":       LiquidityProvisionPool,
-		"ngo_donation":    NGODonationPool,
-		"emergency":       EmergencyReservePool,
-		"founder_royalty": FounderRoyaltyPool,
+		"development":       DevelopmentFundPool,
+		"community":         CommunityTreasuryPool,
+		"liquidity":         LiquidityProvisionPool,
+		"charitable_trust":  CharitableTrustPool,
+		"emergency":         EmergencyReservePool,
+		"founder_royalty":   FounderRoyaltyPool,
+		"dswf":              DSWFPool,
+		"ngo_donation":      NGODonationPool, // For backward compatibility
 	}
 }
 
@@ -314,9 +341,10 @@ func (d RevenueDistribution) GetTotalDistributed() sdk.Coin {
 	return d.Development.
 		Add(d.Community).
 		Add(d.Liquidity).
-		Add(d.NGODonation).
+		Add(d.CharitableTrust).
 		Add(d.Emergency).
-		Add(d.FounderRoyalty)
+		Add(d.FounderRoyalty).
+		Add(d.DSWF)
 }
 
 // Platform revenue sources with expected annual revenues (Year 5 projections)

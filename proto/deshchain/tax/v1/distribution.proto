@@ -9,35 +9,35 @@ import "cosmos_proto/cosmos.proto";
 
 // TaxDistribution represents the distribution of transaction tax
 message TaxDistribution {
-  // NGO Donation - 30% of base tax (0.75% of transaction)
-  string ngo_donation = 1 [
+  // DeshChain Charitable Trust - 25% of base tax (0.625% of transaction)
+  string charitable_trust = 1 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
   
-  // Community Rewards - 20% of base tax (0.50% of transaction)
+  // Community Rewards - 15% of base tax (0.375% of transaction)
   string community_rewards = 2 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
   
-  // Development - 18% of base tax (0.45% of transaction)
+  // Development - 15% of base tax (0.375% of transaction)
   string development = 3 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
   
-  // Operations - 18% of base tax (0.45% of transaction)
+  // Operations - 15% of base tax (0.375% of transaction)
   string operations = 4 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
   
-  // Token Burn - 10% of base tax (0.25% of transaction)
+  // Token Burn - 5% of base tax (0.125% of transaction)
   string token_burn = 5 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
@@ -46,6 +46,20 @@ message TaxDistribution {
   
   // Founder Royalty - 4% of base tax (0.10% of transaction)
   string founder_royalty = 6 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // DeshChain Sovereign Wealth Fund - 20% of base tax (0.50% of transaction)
+  string dswf = 7 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // NGO Donation - DEPRECATED: Use charitable_trust instead
+  string ngo_donation = 8 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
@@ -65,12 +79,14 @@ message TaxDistributionParams {
   TaxDistribution distribution = 2 [(gogoproto.nullable) = false];
   
   // Module account names for distribution
-  string ngo_pool_name = 3;
+  string charitable_trust_pool_name = 3;
+  string ngo_pool_name = 10; // DEPRECATED: Use charitable_trust_pool_name
   string community_pool_name = 4;
   string development_pool_name = 5;
   string operations_pool_name = 6;
   string burn_pool_name = 7;
   string founder_pool_name = 8;
+  string dswf_pool_name = 9;
   
   // Minimum tax amount before distribution
   cosmos.base.v1beta1.Coin minimum_distribution_amount = 9 [(gogoproto.nullable) = false];
@@ -115,8 +131,8 @@ message TaxDistributionRecord {
   // Total tax amount distributed
   cosmos.base.v1beta1.Coin total_amount = 2 [(gogoproto.nullable) = false];
   
-  // NGO donation amount
-  cosmos.base.v1beta1.Coin ngo_amount = 3 [(gogoproto.nullable) = false];
+  // DeshChain Charitable Trust amount
+  cosmos.base.v1beta1.Coin charitable_trust_amount = 3 [(gogoproto.nullable) = false];
   
   // Community rewards amount
   cosmos.base.v1beta1.Coin community_amount = 4 [(gogoproto.nullable) = false];
@@ -132,6 +148,12 @@ message TaxDistributionRecord {
   
   // Founder royalty amount
   cosmos.base.v1beta1.Coin founder_amount = 8 [(gogoproto.nullable) = false];
+  
+  // DeshChain Sovereign Wealth Fund amount
+  cosmos.base.v1beta1.Coin dswf_amount = 11 [(gogoproto.nullable) = false];
+  
+  // NGO amount - DEPRECATED: Use charitable_trust_amount
+  cosmos.base.v1beta1.Coin ngo_amount = 12 [(gogoproto.nullable) = false];
   
   // Distribution timestamp
   int64 timestamp = 9;

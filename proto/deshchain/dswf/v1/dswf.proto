@@ -1,0 +1,314 @@
+syntax = "proto3";
+package deshchain.dswf.v1;
+
+option go_package = "github.com/deshchain/deshchain/x/dswf/types";
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos_proto/cosmos.proto";
+import "google/protobuf/timestamp.proto";
+
+// FundAllocation represents an allocation from the DSWF
+message FundAllocation {
+  // Unique identifier
+  uint64 id = 1;
+  
+  // Purpose of allocation
+  string purpose = 2;
+  
+  // Category (infrastructure, ecosystem, marketing, research, etc.)
+  string category = 3;
+  
+  // Amount allocated
+  cosmos.base.v1beta1.Coin amount = 4 [(gogoproto.nullable) = false];
+  
+  // Recipient address
+  string recipient = 5 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // Approved by (list of approver addresses)
+  repeated string approved_by = 6 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // Proposal ID that approved this allocation
+  uint64 proposal_id = 7;
+  
+  // Allocated at timestamp
+  google.protobuf.Timestamp allocated_at = 8 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // Disbursement schedule
+  repeated DisbursementSchedule disbursements = 9 [(gogoproto.nullable) = false];
+  
+  // Status (pending, active, completed, cancelled)
+  string status = 10;
+  
+  // Expected outcomes
+  repeated string expected_outcomes = 11;
+  
+  // Actual outcomes (filled after completion)
+  repeated string actual_outcomes = 12;
+  
+  // Performance metrics
+  repeated PerformanceMetric metrics = 13;
+  
+  // Return on investment (if applicable)
+  string roi = 14 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// DisbursementSchedule represents a scheduled disbursement
+message DisbursementSchedule {
+  // Amount to disburse
+  cosmos.base.v1beta1.Coin amount = 1 [(gogoproto.nullable) = false];
+  
+  // Scheduled date
+  google.protobuf.Timestamp scheduled_date = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // Milestone to achieve before disbursement
+  string milestone = 3;
+  
+  // Status (pending, disbursed, cancelled)
+  string status = 4;
+  
+  // Actual disbursement date
+  google.protobuf.Timestamp disbursed_at = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // Transaction hash of disbursement
+  string tx_hash = 6;
+}
+
+// PerformanceMetric tracks performance of allocations
+message PerformanceMetric {
+  // Metric name
+  string name = 1;
+  
+  // Target value
+  string target = 2;
+  
+  // Actual value
+  string actual = 3;
+  
+  // Measurement date
+  google.protobuf.Timestamp measured_at = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // Status (on_track, at_risk, off_track)
+  string status = 5;
+}
+
+// InvestmentPortfolio represents the DSWF investment portfolio
+message InvestmentPortfolio {
+  // Total fund value
+  cosmos.base.v1beta1.Coin total_value = 1 [(gogoproto.nullable) = false];
+  
+  // Liquid assets (immediately available)
+  cosmos.base.v1beta1.Coin liquid_assets = 2 [(gogoproto.nullable) = false];
+  
+  // Invested assets
+  cosmos.base.v1beta1.Coin invested_assets = 3 [(gogoproto.nullable) = false];
+  
+  // Reserved for allocations
+  cosmos.base.v1beta1.Coin reserved_assets = 4 [(gogoproto.nullable) = false];
+  
+  // Portfolio components
+  repeated PortfolioComponent components = 5 [(gogoproto.nullable) = false];
+  
+  // Total returns to date
+  cosmos.base.v1beta1.Coin total_returns = 6 [(gogoproto.nullable) = false];
+  
+  // Annual return rate
+  string annual_return_rate = 7 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Risk score (1-10)
+  int32 risk_score = 8;
+  
+  // Last rebalanced
+  google.protobuf.Timestamp last_rebalanced = 9 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+// PortfolioComponent represents a component of the investment portfolio
+message PortfolioComponent {
+  // Component type (staking, defi, bonds, etc.)
+  string type = 1;
+  
+  // Description
+  string description = 2;
+  
+  // Amount invested
+  cosmos.base.v1beta1.Coin amount = 3 [(gogoproto.nullable) = false];
+  
+  // Current value
+  cosmos.base.v1beta1.Coin current_value = 4 [(gogoproto.nullable) = false];
+  
+  // Return rate
+  string return_rate = 5 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Risk level (low, medium, high)
+  string risk_level = 6;
+  
+  // Maturity date (if applicable)
+  google.protobuf.Timestamp maturity_date = 7 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // Liquidity (immediate, 30_days, 90_days, locked)
+  string liquidity = 8;
+}
+
+// FundGovernance defines governance parameters for DSWF
+message FundGovernance {
+  // Minimum proposal deposit
+  cosmos.base.v1beta1.Coin min_proposal_deposit = 1 [(gogoproto.nullable) = false];
+  
+  // Voting period in seconds
+  int64 voting_period = 2;
+  
+  // Quorum percentage
+  string quorum = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Threshold percentage for approval
+  string threshold = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Maximum allocation per proposal
+  cosmos.base.v1beta1.Coin max_allocation = 5 [(gogoproto.nullable) = false];
+  
+  // Fund managers (multisig addresses)
+  repeated string fund_managers = 6 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // Required signatures for emergency actions
+  int32 emergency_signatures_required = 7;
+  
+  // Allocation categories and limits
+  repeated AllocationCategory categories = 8 [(gogoproto.nullable) = false];
+}
+
+// AllocationCategory defines categories and their limits
+message AllocationCategory {
+  // Category name
+  string name = 1;
+  
+  // Description
+  string description = 2;
+  
+  // Maximum percentage of fund
+  string max_percentage = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Current allocation
+  cosmos.base.v1beta1.Coin current_allocation = 4 [(gogoproto.nullable) = false];
+  
+  // Number of active projects
+  int32 active_projects = 5;
+}
+
+// Params defines the parameters for the DSWF module
+message Params {
+  // Enable DSWF
+  bool enabled = 1;
+  
+  // Minimum fund balance before allocations allowed
+  cosmos.base.v1beta1.Coin minimum_fund_balance = 2 [(gogoproto.nullable) = false];
+  
+  // Maximum allocation percentage per proposal
+  string max_allocation_percentage = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Investment strategy parameters
+  InvestmentStrategy investment_strategy = 4 [(gogoproto.nullable) = false];
+  
+  // Reporting frequency (in blocks)
+  int64 reporting_frequency = 5;
+  
+  // Authorized auditors
+  repeated string authorized_auditors = 6 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+}
+
+// InvestmentStrategy defines the investment strategy parameters
+message InvestmentStrategy {
+  // Conservative portfolio percentage (low risk)
+  string conservative_percentage = 1 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Moderate portfolio percentage (medium risk)
+  string moderate_percentage = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Aggressive portfolio percentage (high risk)
+  string aggressive_percentage = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Rebalancing frequency (in days)
+  int32 rebalancing_frequency = 4;
+  
+  // Minimum return target
+  string min_return_target = 5 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Maximum risk score
+  int32 max_risk_score = 6;
+}
+
+// MonthlyReport represents monthly DSWF performance report
+message MonthlyReport {
+  // Report period (YYYY-MM)
+  string period = 1;
+  
+  // Opening balance
+  cosmos.base.v1beta1.Coin opening_balance = 2 [(gogoproto.nullable) = false];
+  
+  // Total inflows
+  cosmos.base.v1beta1.Coin total_inflows = 3 [(gogoproto.nullable) = false];
+  
+  // Total allocations
+  cosmos.base.v1beta1.Coin total_allocations = 4 [(gogoproto.nullable) = false];
+  
+  // Investment returns
+  cosmos.base.v1beta1.Coin investment_returns = 5 [(gogoproto.nullable) = false];
+  
+  // Closing balance
+  cosmos.base.v1beta1.Coin closing_balance = 6 [(gogoproto.nullable) = false];
+  
+  // New allocations made
+  repeated FundAllocation new_allocations = 7 [(gogoproto.nullable) = false];
+  
+  // Portfolio performance
+  InvestmentPortfolio portfolio_snapshot = 8 [(gogoproto.nullable) = false];
+  
+  // Key metrics
+  map<string, string> metrics = 9;
+  
+  // Generated at
+  google.protobuf.Timestamp generated_at = 10 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}

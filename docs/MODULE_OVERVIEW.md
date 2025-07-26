@@ -2,7 +2,7 @@
 
 ## Complete Module Architecture
 
-DeshChain consists of 29 specialized modules that work together to create a comprehensive blockchain ecosystem. Each module serves specific functions while integrating seamlessly with others.
+DeshChain consists of 31 specialized modules that work together to create a comprehensive blockchain ecosystem. Each module serves specific functions while integrating seamlessly with others.
 
 ## Module Categories
 
@@ -13,6 +13,8 @@ DeshChain consists of 29 specialized modules that work together to create a comp
 - **[Tax](./modules/TAX_MODULE.md)** - Smart taxation system
 - **[Revenue](./modules/REVENUE_MODULE.md)** - Revenue sharing mechanism
 - **[Royalty](./modules/ROYALTY_MODULE.md)** - Perpetual royalty system
+- **[DSWF](./modules/DSWF_MODULE.md)** - DeshChain Sovereign Wealth Fund
+- **[CharitableTrust](./modules/CHARITABLETRUST_MODULE.md)** - DeshChain Charitable Trust governance
 
 ### 2. Payment & Remittance Modules
 - **[MoneyOrder](./modules/MONEYORDER_MODULE.md)** - Traditional money order on blockchain
@@ -35,7 +37,7 @@ DeshChain consists of 29 specialized modules that work together to create a comp
 ### 5. Governance & Community Modules
 - **[Governance](./modules/GOVERNANCE_MODULE.md)** - On-chain governance
 - **[Validator](./modules/VALIDATOR_MODULE.md)** - Validator management
-- **[Donation](./modules/DONATION_MODULE.md)** - NGO donation system
+- **[Donation](./modules/DONATION_MODULE.md)** - Charitable organization management
 
 ### 6. Cultural & Social Modules
 - **[Cultural](./modules/CULTURAL_MODULE.md)** - Heritage preservation

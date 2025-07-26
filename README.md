@@ -4,10 +4,10 @@
 [![Cultural License: CC BY-NC-SA 4.0](https://img.shields.io/badge/Cultural%20License-CC%20BY--NC--SA%204.0-green.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 [![Go Report Card](https://goreportcard.com/badge/github.com/deshchain/deshchain)](https://goreportcard.com/report/github.com/deshchain/deshchain)
 [![Documentation](https://img.shields.io/badge/docs-comprehensive-brightgreen)](./docs)
-[![Modules](https://img.shields.io/badge/modules-29-orange)](./docs/MODULE_OVERVIEW.md)
+[![Modules](https://img.shields.io/badge/modules-31-orange)](./docs/MODULE_OVERVIEW.md)
 [![GitHub release](https://img.shields.io/github/release/deshchain/deshchain.svg)](https://github.com/deshchain/deshchain/releases)
 
-> **The world's first culturally-integrated blockchain ecosystem with 29 specialized modules including revolutionary blockchain identity, serving every financial need while preserving Indian heritage and creating unprecedented social impact**
+> **The world's first culturally-integrated blockchain ecosystem with 31 specialized modules including revolutionary blockchain identity, sovereign wealth fund for 100-year sustainability, and transparent charitable trust governance, serving every financial need while preserving Indian heritage and creating unprecedented social impact**
 
 ## 🙏 NAMO Token: A Tribute to Leadership
 
@@ -41,7 +41,7 @@ make build
 
 ## 📚 Complete Documentation
 
-- **[Module Overview](./docs/MODULE_OVERVIEW.md)** - Comprehensive guide to all 29 modules
+- **[Module Overview](./docs/MODULE_OVERVIEW.md)** - Comprehensive guide to all 31 modules
 - **[Individual Module Docs](./docs/modules/)** - Detailed documentation for each module
 - **[Genesis Validator NFTs](./docs/GENESIS_VALIDATOR_NFT_SYSTEM.md)** - Bharat Guardians NFT collection
 - **[API Reference](#api-reference)** - REST and gRPC endpoints
@@ -66,7 +66,9 @@ DeshChain Architecture
 │   ├── Treasury - Multi-pool treasury management
 │   ├── Tax - Progressive taxation (FREE-0.5% with ₹1,000 cap)
 │   ├── Revenue - Platform revenue tracking
-│   └── Royalty - Perpetual founder royalties
+│   ├── Royalty - Perpetual founder royalties
+│   ├── DSWF - DeshChain Sovereign Wealth Fund
+│   └── CharitableTrust - DeshChain Charitable Trust governance
 │
 ├── Investment & Lending Modules
 │   ├── GramSuraksha - Village insurance pools
@@ -107,8 +109,16 @@ DeshChain Architecture
 │   │   └── Insurance pool protection
 │   └── ValidatorNFT - Bharat Guardians genesis NFT collection
 │
-├── Social Impact
-│   └── Donation - 28% of taxes + 10% of platform revenue to charity
+├── Social Impact & Sustainability
+│   ├── Donation - Individual charitable organizations management
+│   ├── CharitableTrust - DeshChain Charitable Trust governance body
+│   │   ├── Transparent fund distribution to verified charities
+│   │   ├── Impact reporting and fraud prevention
+│   │   └── Community-driven charity selection
+│   └── DSWF - DeshChain Sovereign Wealth Fund
+│       ├── 20% of platform revenues for 100-year sustainability
+│       ├── Conservative investment strategy (30% stable assets)
+│       └── Funds ecosystem development and innovation
 │
 ├── Payment & Remittance
 │   ├── MoneyOrder - P2P exchange DEX
@@ -415,22 +425,55 @@ type UniversalFeeSystem struct {
 ### Revenue Distribution Model
 
 #### From Transaction Taxes:
-- **NGO Donations**: 28% (largest share for social impact)
+- **DeshChain Charitable Trust**: 25% (largest share for social impact)
 - **Validators**: 25% (network security)
-- **Community Rewards**: 18% (user incentives)
-- **Development**: 14% (platform growth)
-- **Founder Royalty**: 5% (sustainable leadership)
-- **NAMO Burn**: 2% (deflationary mechanism)
+- **DeshChain Sovereign Wealth Fund**: 20% (100-year sustainability)
+- **Community Rewards**: 15% (user incentives)
+- **Development**: 10% (platform growth)
+- **Founder Royalty**: 4% (sustainable leadership)
+- **NAMO Burn**: 1% (deflationary mechanism)
 
 #### From Platform Revenues:
-- **Development Fund**: 25%
-- **Community Treasury**: 24%
-- **Liquidity**: 18%
-- **NGO Donations**: 10%
-- **Validators**: 8%
-- **Emergency Reserve**: 8%
+- **Development Fund**: 20%
+- **Community Treasury**: 20%
+- **DeshChain Sovereign Wealth Fund**: 20% (long-term investment)
+- **Liquidity**: 15%
+- **DeshChain Charitable Trust**: 10% (transparent charity governance)
+- **Emergency Reserve**: 10%
 - **Founder Royalty**: 5%
-- **NAMO Burn**: 2%
+
+### DeshChain Sovereign Wealth Fund (DSWF)
+
+**Mission**: Ensure DeshChain's 100-year sustainability through strategic investments
+
+**Fund Structure**:
+- **Stabilization Portfolio (30%)**: Government bonds, stable assets
+- **Growth Portfolio (40%)**: Blue-chip equities, mutual funds
+- **Innovation Portfolio (20%)**: Blockchain projects, startups
+- **Strategic Reserve (10%)**: Emergency liquidity
+
+**Projected Impact** (10-year horizon):
+- **Fund Size**: ₹50,000+ Crores
+- **Annual Returns**: 8-12% conservative estimate
+- **Ecosystem Funding**: ₹5,000 Cr/year for development
+- **Innovation Grants**: ₹1,000 Cr/year for startups
+
+### DeshChain Charitable Trust
+
+**Purpose**: Transparent governance body ensuring charitable funds reach genuine beneficiaries
+
+**Key Features**:
+- **Multi-Signature Governance**: 7-member board of trustees
+- **Fraud Prevention**: AI-powered monitoring and verification
+- **Impact Tracking**: Real-time beneficiary impact metrics
+- **Community Oversight**: Public voting on major allocations
+
+**Distribution Categories**:
+- **Education**: 30% - Schools, scholarships, digital literacy
+- **Healthcare**: 25% - Hospitals, medical camps, medicines
+- **Rural Development**: 20% - Infrastructure, sanitation, water
+- **Women Empowerment**: 15% - Skills, entrepreneurship, safety
+- **Emergency Relief**: 10% - Natural disasters, pandemic response
 
 ### Module-Specific Fees (All in NAMO)
 

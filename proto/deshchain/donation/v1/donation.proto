@@ -9,24 +9,24 @@ import "amino/amino.proto";
 
 option go_package = "github.com/deshchain/deshchain/x/donation/types";
 
-// NGOWallet represents a verified NGO wallet for donations
-message NGOWallet {
+// CharitableTrustWallet represents a verified charitable organization wallet for donations
+message CharitableTrustWallet {
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
   // id is the unique identifier for the NGO wallet
   uint64 id = 1;
 
-  // name is the name of the NGO
+  // name is the name of the charitable organization
   string name = 2;
 
   // address is the multi-signature wallet address
   string address = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
-  // category defines the type of NGO work
+  // category defines the type of charitable work
   string category = 4;
 
-  // description provides details about the NGO's mission
+  // description provides details about the charitable organization's mission
   string description = 5;
 
   // registration_number is the official registration number
@@ -44,19 +44,19 @@ message NGOWallet {
   // required_signatures is the minimum number of signatures required
   uint32 required_signatures = 10;
 
-  // is_verified indicates if the NGO has been verified
+  // is_verified indicates if the charitable organization has been verified
   bool is_verified = 11;
 
-  // is_active indicates if the NGO is currently active
+  // is_active indicates if the charitable organization is currently active
   bool is_active = 12;
 
-  // total_received is the total amount received by this NGO
+  // total_received is the total amount received by this charitable organization
   cosmos.base.v1beta1.Coin total_received = 13 [
     (gogoproto.nullable) = false,
     (amino.dont_omitempty) = true
   ];
 
-  // total_distributed is the total amount distributed by this NGO
+  // total_distributed is the total amount distributed by this charitable organization
   cosmos.base.v1beta1.Coin total_distributed = 14 [
     (gogoproto.nullable) = false,
     (amino.dont_omitempty) = true
@@ -80,10 +80,10 @@ message NGOWallet {
   // fcra_number is the FCRA registration number for foreign donations
   string fcra_number = 19;
 
-  // created_at is the timestamp when the NGO was registered
+  // created_at is the timestamp when the charitable organization was registered
   int64 created_at = 20;
 
-  // updated_at is the timestamp when the NGO was last updated
+  // updated_at is the timestamp when the charitable organization was last updated
   int64 updated_at = 21;
 
   // verified_by is the address of the verifier
@@ -110,7 +110,7 @@ message NGOWallet {
   // regions_served are the geographical regions served
   repeated string regions_served = 29;
 
-  // priority_areas are the focus areas of the NGO
+  // priority_areas are the focus areas of the charitable organization
   repeated string priority_areas = 30;
 }
 
@@ -152,8 +152,8 @@ message DonationRecord {
   // donor_address is the address of the donor
   string donor_address = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
-  // ngo_wallet_id is the ID of the NGO wallet that received the donation
-  uint64 ngo_wallet_id = 4;
+  // charitable_trust_wallet_id is the ID of the charitable organization wallet that received the donation
+  uint64 charitable_trust_wallet_id = 4;
 
   // amount is the donated amount
   cosmos.base.v1beta1.Coin amount = 5 [
@@ -204,7 +204,7 @@ message DonationRecord {
   uint64 cultural_quote_id = 18;
 }
 
-// DistributionRecord represents a distribution of funds by an NGO
+// DistributionRecord represents a distribution of funds by a charitable organization
 message DistributionRecord {
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
@@ -215,8 +215,8 @@ message DistributionRecord {
   // transaction_hash is the hash of the distribution transaction
   string transaction_hash = 2;
 
-  // ngo_wallet_id is the ID of the NGO wallet making the distribution
-  uint64 ngo_wallet_id = 3;
+  // charitable_trust_wallet_id is the ID of the charitable organization wallet making the distribution
+  uint64 charitable_trust_wallet_id = 3;
 
   // recipient_address is the address of the recipient
   string recipient_address = 4 [(cosmos_proto.scalar) = "cosmos.AddressString"];
@@ -291,7 +291,7 @@ message DistributionRecord {
   bool public_visibility = 26;
 }
 
-// AuditReport represents an audit report for an NGO
+// AuditReport represents an audit report for a charitable organization
 message AuditReport {
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
@@ -299,8 +299,8 @@ message AuditReport {
   // id is the unique identifier for the audit report
   uint64 id = 1;
 
-  // ngo_wallet_id is the ID of the NGO wallet being audited
-  uint64 ngo_wallet_id = 2;
+  // charitable_trust_wallet_id is the ID of the charitable organization wallet being audited
+  uint64 charitable_trust_wallet_id = 2;
 
   // audit_period_start is the start of the audit period
   int64 audit_period_start = 3;
@@ -407,8 +407,8 @@ message BeneficiaryTestimonial {
   // id is the unique identifier for the testimonial
   uint64 id = 1;
 
-  // ngo_wallet_id is the ID of the NGO wallet
-  uint64 ngo_wallet_id = 2;
+  // charitable_trust_wallet_id is the ID of the charitable organization wallet
+  uint64 charitable_trust_wallet_id = 2;
 
   // distribution_id is the ID of the related distribution
   uint64 distribution_id = 3;

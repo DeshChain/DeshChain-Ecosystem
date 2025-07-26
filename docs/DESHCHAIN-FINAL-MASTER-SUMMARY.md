@@ -119,26 +119,24 @@ DhanPata Virtual Addresses:
 ### Transaction Tax Distribution (2.5%)
 ```
 ┌─────────────────────────────────────┐
-│ NGO Donations      │ 30.0% │ ₹0.750 │ ← Highest in industry
+│ Charitable Trust   │ 25.0% │ ₹0.625 │ ← Transparent charity governance
 │ Validators         │ 25.0% │ ₹0.625 │
-│ Community Rewards  │ 20.0% │ ₹0.500 │
-│ Tech Innovation    │  6.0% │ ₹0.150 │
-│ Operations         │  5.0% │ ₹0.125 │
-│ Talent Acquisition │  4.0% │ ₹0.100 │
-│ Strategic Reserve  │  4.0% │ ₹0.100 │
-│ Founder           │  3.5% │ ₹0.0875│ ← Perpetual & Inheritable
-│ Co-Founders       │  1.8% │ ₹0.045 │ ← Perpetual & Inheritable
-│ Angel Investors   │  0.7% │ ₹0.0175│ ← Perpetual & Inheritable
+│ DSWF              │ 20.0% │ ₹0.500 │ ← 100-year sustainability fund
+│ Community Rewards  │ 15.0% │ ₹0.375 │
+│ Development       │ 10.0% │ ₹0.250 │
+│ Founder           │  4.0% │ ₹0.100 │ ← Perpetual & Inheritable
+│ NAMO Burn         │  1.0% │ ₹0.025 │ ← Deflationary
 └─────────────────────────────────────┘
 ```
 
 ### Platform Revenue Distribution
 ```
 ┌─────────────────────────────────────┐
-│ Development Fund   │ 30% │          │
-│ Community Treasury │ 25% │          │
-│ Liquidity Provision│ 20% │          │
-│ NGO Donations     │ 10% │          │ ← Additional charity
+│ Development Fund   │ 20% │          │
+│ Community Treasury │ 20% │          │
+│ DSWF              │ 20% │          │ ← Sovereign Wealth Fund
+│ Liquidity Provision│ 15% │          │
+│ Charitable Trust  │ 10% │          │ ← Transparent charity
 │ Emergency Reserve │ 10% │          │
 │ Founder Royalty   │  5% │          │ ← Perpetual & Inheritable
 └─────────────────────────────────────┘
@@ -161,13 +159,80 @@ Year 5: ₹11,906 Crore [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓]
 
 ### Stakeholder Benefits (5-Year Total)
 ```yaml
-NGO Donations:        ₹5,715 Crore (20.0%) 🏛️
+Charitable Trust:     ₹5,715 Crore (20.0%) 🏛️
+DSWF:                ₹5,715 Crore (20.0%) 💎
 Community (All):      ₹7,871 Crore (27.5%) 👥
 Validators:           ₹3,417 Crore (11.9%) 🔐
 Development & Ops:    ₹7,928 Crore (27.7%) 🛠️
 Founders & Team:      ₹1,808 Crore (6.3%)  👨‍💼
 Reserves:             ₹2,682 Crore (9.4%)  💰
 ```
+
+---
+
+## 🏦 DeshChain Sovereign Wealth Fund (DSWF)
+
+**Mission**: Ensure 100-year sustainability through strategic wealth management
+
+### Investment Strategy
+```yaml
+Conservative Portfolio (30%):
+  - Government bonds
+  - Fixed deposits
+  - Blue-chip stocks
+  - Target return: 6-8%
+
+Growth Portfolio (40%):
+  - Equity mutual funds
+  - Index funds
+  - Corporate bonds
+  - Target return: 10-15%
+
+Innovation Portfolio (20%):
+  - Blockchain projects
+  - Startup investments
+  - DeFi protocols
+  - Target return: 20-30%
+
+Strategic Reserve (10%):
+  - Emergency liquidity
+  - Market opportunities
+  - Crisis management
+```
+
+### Projected Growth
+- **Year 5**: ₹5,715 Crore
+- **Year 10**: ₹50,000+ Crore
+- **Year 25**: ₹5,00,000+ Crore
+- **Annual Yield**: ₹50,000 Cr (Year 25)
+
+---
+
+## 🤝 DeshChain Charitable Trust
+
+**Purpose**: Transparent governance ensuring maximum social impact
+
+### Governance Structure
+```yaml
+Board of Trustees:
+  - 7 elected members
+  - 2-year terms
+  - Community voting
+  - Multi-sig control
+
+Fraud Prevention:
+  - AI monitoring
+  - Real-time tracking
+  - Impact verification
+  - Public audits
+```
+
+### Distribution Framework
+- **Education**: 30% - Digital literacy, scholarships
+- **Healthcare**: 25% - Rural health, medicines
+- **Rural Development**: 20% - Infrastructure, water
+- **Women Empowerment**: 15% - Skills, safety
+- **Emergency Relief**: 10% - Disasters, crises
 
 ---
 
@@ -181,7 +246,8 @@ Reserves:             ₹2,682 Crore (9.4%)  💰
 - **Market Cap Potential**: ₹100,000 Crore
 
 ### Social Impact
-- **NGO Funding**: ₹5,715 Crore
+- **Charitable Funding**: ₹5,715 Crore
+- **DSWF Balance**: ₹50,000+ Crore (10-year)
 - **Users Served**: 10M+ Indians
 - **SMEs Funded**: 250,000+
 - **Villages Connected**: 50,000+
@@ -304,7 +370,7 @@ Between profit and purpose."
 
 ### For Partners:
 - Banks: White-label opportunities
-- NGOs: Transparent funding
+- Charities: Transparent funding via Charitable Trust
 - Government: Digital India alignment
 - Enterprises: API integration
 

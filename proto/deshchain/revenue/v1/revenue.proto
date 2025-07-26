@@ -34,23 +34,26 @@ message RevenueStream {
 
 // RevenueDistribution represents how platform revenue is distributed
 message RevenueDistribution {
-  // Development fund allocation (30%)
+  // Development fund allocation (20%)
   cosmos.base.v1beta1.Coin development = 1 [(gogoproto.nullable) = false];
   
-  // Community treasury allocation (25%)
+  // Community treasury allocation (20%)
   cosmos.base.v1beta1.Coin community = 2 [(gogoproto.nullable) = false];
   
-  // Liquidity provision allocation (20%)
+  // Liquidity provision allocation (15%)
   cosmos.base.v1beta1.Coin liquidity = 3 [(gogoproto.nullable) = false];
   
-  // NGO donation allocation (10%)
-  cosmos.base.v1beta1.Coin ngo_donation = 4 [(gogoproto.nullable) = false];
+  // DeshChain Charitable Trust allocation (10%)
+  cosmos.base.v1beta1.Coin charitable_trust = 4 [(gogoproto.nullable) = false];
   
   // Emergency reserve allocation (10%)
   cosmos.base.v1beta1.Coin emergency = 5 [(gogoproto.nullable) = false];
   
   // Founder royalty allocation (5%)
   cosmos.base.v1beta1.Coin founder_royalty = 6 [(gogoproto.nullable) = false];
+  
+  // DeshChain Sovereign Wealth Fund allocation (20%)
+  cosmos.base.v1beta1.Coin dswf = 7 [(gogoproto.nullable) = false];
 }
 
 // FounderRoyaltyConfig represents the founder's royalty configuration
@@ -110,28 +113,28 @@ message DistributionRecord {
 
 // RevenueParams defines the parameters for the revenue module
 message RevenueParams {
-  // Development fund percentage (default: 30%)
+  // Development fund percentage (default: 20%)
   string development_percentage = 1 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
   
-  // Community treasury percentage (default: 25%)
+  // Community treasury percentage (default: 20%)
   string community_percentage = 2 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
   
-  // Liquidity provision percentage (default: 20%)
+  // Liquidity provision percentage (default: 15%)
   string liquidity_percentage = 3 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
   
-  // NGO donation percentage (default: 10%)
+  // NGO donation percentage (default: 10%) - DEPRECATED: Use charitable_trust_percentage
   string ngo_percentage = 4 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
@@ -157,6 +160,20 @@ message RevenueParams {
   
   // Claim cooldown period in seconds
   int64 claim_cooldown_seconds = 8;
+  
+  // DeshChain Charitable Trust percentage (default: 10%)
+  string charitable_trust_percentage = 9 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // DeshChain Sovereign Wealth Fund percentage (default: 20%)
+  string dswf_percentage = 10 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
 }
 
 // MonthlyRevenueReport represents monthly revenue summary

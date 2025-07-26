@@ -1,0 +1,431 @@
+syntax = "proto3";
+package deshchain.charitabletrust.v1;
+
+option go_package = "github.com/deshchain/deshchain/x/charitabletrust/types";
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos_proto/cosmos.proto";
+import "google/protobuf/timestamp.proto";
+
+// TrustFundBalance represents the DeshChain Charitable Trust's fund balance
+message TrustFundBalance {
+  // Total balance in the trust
+  cosmos.base.v1beta1.Coin total_balance = 1 [(gogoproto.nullable) = false];
+  
+  // Allocated but not yet distributed
+  cosmos.base.v1beta1.Coin allocated_amount = 2 [(gogoproto.nullable) = false];
+  
+  // Available for distribution
+  cosmos.base.v1beta1.Coin available_amount = 3 [(gogoproto.nullable) = false];
+  
+  // Total distributed lifetime
+  cosmos.base.v1beta1.Coin total_distributed = 4 [(gogoproto.nullable) = false];
+  
+  // Last updated
+  google.protobuf.Timestamp last_updated = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+// CharitableAllocation represents an allocation from the trust to a charitable organization
+message CharitableAllocation {
+  // Unique identifier
+  uint64 id = 1;
+  
+  // Charitable organization wallet ID (from donation module)
+  uint64 charitable_org_wallet_id = 2;
+  
+  // Organization name (denormalized for convenience)
+  string organization_name = 3;
+  
+  // Amount allocated
+  cosmos.base.v1beta1.Coin amount = 4 [(gogoproto.nullable) = false];
+  
+  // Purpose of allocation
+  string purpose = 5;
+  
+  // Category
+  string category = 6;
+  
+  // Proposal ID that approved this
+  uint64 proposal_id = 7;
+  
+  // Board members who approved
+  repeated string approved_by = 8 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // Allocated date
+  google.protobuf.Timestamp allocated_at = 9 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // Expected impact
+  repeated string expected_impact = 10;
+  
+  // Monitoring requirements
+  MonitoringRequirements monitoring = 11 [(gogoproto.nullable) = false];
+  
+  // Status (pending, distributed, monitoring, completed, cancelled)
+  string status = 12;
+  
+  // Distribution details
+  DistributionDetails distribution = 13;
+}
+
+// MonitoringRequirements defines monitoring for an allocation
+message MonitoringRequirements {
+  // Reporting frequency (in days)
+  int32 reporting_frequency = 1;
+  
+  // Required reports
+  repeated string required_reports = 2;
+  
+  // Key performance indicators
+  repeated string kpis = 3;
+  
+  // Monitoring duration (in days)
+  int32 monitoring_duration = 4;
+  
+  // Site visits required
+  bool site_visits_required = 5;
+  
+  // Financial audit required
+  bool financial_audit_required = 6;
+}
+
+// DistributionDetails contains distribution information
+message DistributionDetails {
+  // Transaction hash
+  string tx_hash = 1;
+  
+  // Distributed date
+  google.protobuf.Timestamp distributed_at = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // Distributed by
+  string distributed_by = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // Receipt confirmation
+  string receipt_confirmation = 4;
+}
+
+// ImpactReport represents impact reporting from charitable organizations
+message ImpactReport {
+  // Report ID
+  uint64 id = 1;
+  
+  // Allocation ID this report is for
+  uint64 allocation_id = 2;
+  
+  // Reporting period
+  string period = 3;
+  
+  // Beneficiaries reached
+  int32 beneficiaries_reached = 4;
+  
+  // Funds utilized
+  cosmos.base.v1beta1.Coin funds_utilized = 5 [(gogoproto.nullable) = false];
+  
+  // Impact metrics
+  repeated ImpactMetric metrics = 6 [(gogoproto.nullable) = false];
+  
+  // Supporting documents (IPFS hashes)
+  repeated string documents = 7;
+  
+  // Photos/videos (IPFS hashes)
+  repeated string media = 8;
+  
+  // Challenges faced
+  repeated string challenges = 9;
+  
+  // Submitted by
+  string submitted_by = 10 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // Submitted date
+  google.protobuf.Timestamp submitted_at = 11 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // Verification status
+  VerificationStatus verification = 12 [(gogoproto.nullable) = false];
+}
+
+// ImpactMetric represents a measurable impact
+message ImpactMetric {
+  // Metric name
+  string name = 1;
+  
+  // Target value
+  string target = 2;
+  
+  // Achieved value
+  string achieved = 3;
+  
+  // Unit of measurement
+  string unit = 4;
+  
+  // Percentage of target achieved
+  string achievement_percentage = 5 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// VerificationStatus for reports and investigations
+message VerificationStatus {
+  // Is verified
+  bool is_verified = 1;
+  
+  // Verified by
+  string verified_by = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // Verification date
+  google.protobuf.Timestamp verified_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // Verification notes
+  string notes = 4;
+  
+  // Site visit conducted
+  bool site_visit_conducted = 5;
+  
+  // Financial audit conducted
+  bool financial_audit_conducted = 6;
+}
+
+// FraudAlert represents potential fraud or misuse
+message FraudAlert {
+  // Alert ID
+  uint64 id = 1;
+  
+  // Allocation ID related to the fraud
+  uint64 allocation_id = 2;
+  
+  // Alert type (misuse, fraud, non_compliance, etc.)
+  string alert_type = 3;
+  
+  // Severity (low, medium, high, critical)
+  string severity = 4;
+  
+  // Description
+  string description = 5;
+  
+  // Evidence (IPFS hashes)
+  repeated string evidence = 6;
+  
+  // Reported by (can be anonymous)
+  string reported_by = 7 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // Reported date
+  google.protobuf.Timestamp reported_at = 8 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // Investigation
+  Investigation investigation = 9;
+  
+  // Status (reported, investigating, substantiated, dismissed, resolved)
+  string status = 10;
+  
+  // Action taken
+  ActionTaken action = 11;
+}
+
+// Investigation details
+message Investigation {
+  // Investigator
+  string investigator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // Started date
+  google.protobuf.Timestamp started_at = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // Findings
+  repeated string findings = 3;
+  
+  // Completed date
+  google.protobuf.Timestamp completed_at = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // Investigation report (IPFS hash)
+  string report = 5;
+  
+  // Recommendation
+  string recommendation = 6;
+}
+
+// ActionTaken represents actions taken on fraud alerts
+message ActionTaken {
+  // Action type (warning, suspension, blacklist, legal_action)
+  string action_type = 1;
+  
+  // Description
+  string description = 2;
+  
+  // Taken by
+  string taken_by = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // Date
+  google.protobuf.Timestamp taken_at = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // Recovery amount (if any)
+  cosmos.base.v1beta1.Coin recovery_amount = 5 [(gogoproto.nullable) = false];
+}
+
+// TrustGovernance represents the charitable trust governance structure
+message TrustGovernance {
+  // Board of trustees
+  repeated Trustee trustees = 1 [(gogoproto.nullable) = false];
+  
+  // Quorum required for decisions
+  int32 quorum = 2;
+  
+  // Approval threshold (percentage)
+  string approval_threshold = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // Advisory committee members
+  repeated AdvisoryMember advisory_committee = 4 [(gogoproto.nullable) = false];
+  
+  // Transparency officer
+  string transparency_officer = 5 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // Next election date
+  google.protobuf.Timestamp next_election = 6 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+// Trustee represents a board member
+message Trustee {
+  // Address
+  string address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // Name
+  string name = 2;
+  
+  // Role (chairman, secretary, treasurer, member)
+  string role = 3;
+  
+  // Expertise area
+  string expertise = 4;
+  
+  // Term start
+  google.protobuf.Timestamp term_start = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // Term end
+  google.protobuf.Timestamp term_end = 6 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // Active status
+  bool is_active = 7;
+}
+
+// AdvisoryMember represents an advisory committee member
+message AdvisoryMember {
+  // Name
+  string name = 1;
+  
+  // Expertise
+  string expertise = 2;
+  
+  // Organization
+  string organization = 3;
+  
+  // Contact
+  string contact = 4;
+}
+
+// AllocationProposal for new charitable allocations
+message AllocationProposal {
+  // Proposal ID
+  uint64 id = 1;
+  
+  // Proposer
+  string proposer = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // Title
+  string title = 3;
+  
+  // Description
+  string description = 4;
+  
+  // Total amount requested
+  cosmos.base.v1beta1.Coin total_amount = 5 [(gogoproto.nullable) = false];
+  
+  // Allocation details
+  repeated ProposedAllocation allocations = 6 [(gogoproto.nullable) = false];
+  
+  // Justification
+  string justification = 7;
+  
+  // Expected impact
+  repeated string expected_impact = 8;
+  
+  // Supporting documents (IPFS hashes)
+  repeated string documents = 9;
+  
+  // Voting start time
+  google.protobuf.Timestamp voting_start = 10 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // Voting end time
+  google.protobuf.Timestamp voting_end = 11 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  
+  // Votes
+  repeated Vote votes = 12 [(gogoproto.nullable) = false];
+  
+  // Status (pending, approved, rejected, executed)
+  string status = 13;
+}
+
+// ProposedAllocation within a proposal
+message ProposedAllocation {
+  // Charitable organization wallet ID
+  uint64 charitable_org_wallet_id = 1;
+  
+  // Organization name
+  string organization_name = 2;
+  
+  // Amount
+  cosmos.base.v1beta1.Coin amount = 3 [(gogoproto.nullable) = false];
+  
+  // Purpose
+  string purpose = 4;
+  
+  // Category
+  string category = 5;
+}
+
+// Vote on allocation proposal
+message Vote {
+  // Voter (trustee)
+  string voter = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // Vote (yes, no, abstain)
+  string vote = 2;
+  
+  // Reason
+  string reason = 3;
+  
+  // Voted at
+  google.protobuf.Timestamp voted_at = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+// Params defines module parameters
+message Params {
+  // Enable charitable trust
+  bool enabled = 1;
+  
+  // Minimum allocation amount
+  cosmos.base.v1beta1.Coin min_allocation_amount = 2 [(gogoproto.nullable) = false];
+  
+  // Maximum allocation amount per organization per month
+  cosmos.base.v1beta1.Coin max_monthly_allocation_per_org = 3 [(gogoproto.nullable) = false];
+  
+  // Proposal voting period (in seconds)
+  int64 proposal_voting_period = 4;
+  
+  // Fraud investigation period (in days)
+  int32 fraud_investigation_period = 5;
+  
+  // Required impact report frequency (in days)
+  int32 impact_report_frequency = 6;
+  
+  // Authorized investigators
+  repeated string authorized_investigators = 7 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // Distribution categories
+  repeated string distribution_categories = 8;
+  
+  // Emergency pause authorities
+  repeated string emergency_pause_authorities = 9 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+}

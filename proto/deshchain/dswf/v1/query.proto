@@ -1,0 +1,168 @@
+syntax = "proto3";
+package deshchain.dswf.v1;
+
+option go_package = "github.com/deshchain/deshchain/x/dswf/types";
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "deshchain/dswf/v1/dswf.proto";
+
+// Query defines the gRPC querier service for DSWF module
+service Query {
+  // FundStatus returns the current status of the DSWF
+  rpc FundStatus(QueryFundStatusRequest) returns (QueryFundStatusResponse) {
+    option (google.api.http).get = "/deshchain/dswf/v1/fund_status";
+  }
+  
+  // Allocation returns details of a specific allocation
+  rpc Allocation(QueryAllocationRequest) returns (QueryAllocationResponse) {
+    option (google.api.http).get = "/deshchain/dswf/v1/allocations/{allocation_id}";
+  }
+  
+  // Allocations returns all allocations with pagination
+  rpc Allocations(QueryAllocationsRequest) returns (QueryAllocationsResponse) {
+    option (google.api.http).get = "/deshchain/dswf/v1/allocations";
+  }
+  
+  // Portfolio returns the current investment portfolio
+  rpc Portfolio(QueryPortfolioRequest) returns (QueryPortfolioResponse) {
+    option (google.api.http).get = "/deshchain/dswf/v1/portfolio";
+  }
+  
+  // MonthlyReports returns monthly reports
+  rpc MonthlyReports(QueryMonthlyReportsRequest) returns (QueryMonthlyReportsResponse) {
+    option (google.api.http).get = "/deshchain/dswf/v1/reports/monthly";
+  }
+  
+  // Governance returns governance parameters
+  rpc Governance(QueryGovernanceRequest) returns (QueryGovernanceResponse) {
+    option (google.api.http).get = "/deshchain/dswf/v1/governance";
+  }
+  
+  // AllocationsByCategory returns allocations filtered by category
+  rpc AllocationsByCategory(QueryAllocationsByCategoryRequest) returns (QueryAllocationsByCategoryResponse) {
+    option (google.api.http).get = "/deshchain/dswf/v1/allocations/category/{category}";
+  }
+  
+  // PendingDisbursements returns pending disbursements
+  rpc PendingDisbursements(QueryPendingDisbursementsRequest) returns (QueryPendingDisbursementsResponse) {
+    option (google.api.http).get = "/deshchain/dswf/v1/disbursements/pending";
+  }
+  
+  // Params queries all parameters
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/deshchain/dswf/v1/params";
+  }
+}
+
+// QueryFundStatusRequest is request type for FundStatus RPC
+message QueryFundStatusRequest {}
+
+// QueryFundStatusResponse is response type for FundStatus RPC
+message QueryFundStatusResponse {
+  cosmos.base.v1beta1.Coin total_balance = 1 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin allocated_amount = 2 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin available_amount = 3 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin invested_amount = 4 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin total_returns = 5 [(gogoproto.nullable) = false];
+  string annual_return_rate = 6;
+  int32 active_allocations = 7;
+  int32 completed_allocations = 8;
+  google.protobuf.Timestamp last_updated = 9 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+// QueryAllocationRequest is request type for Allocation RPC
+message QueryAllocationRequest {
+  uint64 allocation_id = 1;
+}
+
+// QueryAllocationResponse is response type for Allocation RPC
+message QueryAllocationResponse {
+  FundAllocation allocation = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryAllocationsRequest is request type for Allocations RPC
+message QueryAllocationsRequest {
+  string status = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+// QueryAllocationsResponse is response type for Allocations RPC
+message QueryAllocationsResponse {
+  repeated FundAllocation allocations = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryPortfolioRequest is request type for Portfolio RPC
+message QueryPortfolioRequest {}
+
+// QueryPortfolioResponse is response type for Portfolio RPC
+message QueryPortfolioResponse {
+  InvestmentPortfolio portfolio = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryMonthlyReportsRequest is request type for MonthlyReports RPC
+message QueryMonthlyReportsRequest {
+  string from_period = 1; // YYYY-MM format
+  string to_period = 2;   // YYYY-MM format
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
+}
+
+// QueryMonthlyReportsResponse is response type for MonthlyReports RPC
+message QueryMonthlyReportsResponse {
+  repeated MonthlyReport reports = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryGovernanceRequest is request type for Governance RPC
+message QueryGovernanceRequest {}
+
+// QueryGovernanceResponse is response type for Governance RPC
+message QueryGovernanceResponse {
+  FundGovernance governance = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryAllocationsByCategoryRequest is request type for AllocationsByCategory RPC
+message QueryAllocationsByCategoryRequest {
+  string category = 1;
+  string status = 2;
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
+}
+
+// QueryAllocationsByCategoryResponse is response type for AllocationsByCategory RPC
+message QueryAllocationsByCategoryResponse {
+  repeated FundAllocation allocations = 1 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin total_allocated = 2 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 3;
+}
+
+// QueryPendingDisbursementsRequest is request type for PendingDisbursements RPC
+message QueryPendingDisbursementsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+// QueryPendingDisbursementsResponse is response type for PendingDisbursements RPC
+message QueryPendingDisbursementsResponse {
+  message PendingDisbursement {
+    uint64 allocation_id = 1;
+    string allocation_purpose = 2;
+    uint32 disbursement_index = 3;
+    cosmos.base.v1beta1.Coin amount = 4 [(gogoproto.nullable) = false];
+    google.protobuf.Timestamp scheduled_date = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+    string milestone = 6;
+    string recipient = 7;
+  }
+  
+  repeated PendingDisbursement disbursements = 1 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin total_pending = 2 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 3;
+}
+
+// QueryParamsRequest is request type for Params RPC
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for Params RPC
+message QueryParamsResponse {
+  Params params = 1 [(gogoproto.nullable) = false];
+}
