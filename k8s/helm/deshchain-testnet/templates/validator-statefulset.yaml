@@ -1,0 +1,204 @@
+{{- if .Values.validators.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "deshchain-testnet.fullname" . }}-validator
+  labels:
+    {{- include "deshchain-testnet.validatorLabels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.validators.replicas }}
+  serviceName: {{ include "deshchain-testnet.fullname" . }}-validator
+  selector:
+    matchLabels:
+      {{- include "deshchain-testnet.validatorSelectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "deshchain-testnet.validatorLabels" . | nindent 8 }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/validator-config.yaml") . | sha256sum }}
+    spec:
+      {{- include "deshchain-testnet.imagePullSecrets" . | nindent 6 }}
+      serviceAccountName: {{ include "deshchain-testnet.serviceAccountName" . }}
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+      initContainers:
+        - name: init-genesis
+          image: "{{ include "deshchain-testnet.imageRegistry" . }}/{{ include "deshchain-testnet.imageRepository" . }}:{{ include "deshchain-testnet.imageTag" . }}"
+          imagePullPolicy: {{ include "deshchain-testnet.imagePullPolicy" . }}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
+              echo "Initializing validator node..."
+              
+              # Initialize node if not already done
+              if [ ! -f /deshchain/.deshchaind/config/node_key.json ]; then
+                echo "Creating new validator node..."
+                deshchaind init $MONIKER --chain-id $CHAIN_ID --home /deshchain/.deshchaind
+              fi
+              
+              # Copy genesis file
+              cp /genesis/genesis.json /deshchain/.deshchaind/config/genesis.json
+              
+              # Copy validator keys if provided
+              if [ -f /validator-keys/priv_validator_key.json ]; then
+                cp /validator-keys/priv_validator_key.json /deshchain/.deshchaind/config/
+              fi
+              
+              # Set permissions
+              chown -R 1000:1000 /deshchain/.deshchaind
+              chmod -R 755 /deshchain/.deshchaind
+              
+              echo "Validator initialization complete"
+          env:
+            {{- include "deshchain-testnet.commonEnv" . | nindent 12 }}
+          volumeMounts:
+            - name: validator-data
+              mountPath: /deshchain/.deshchaind
+            - name: genesis-config
+              mountPath: /genesis
+            - name: validator-keys
+              mountPath: /validator-keys
+              readOnly: true
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+      containers:
+        - name: validator
+          image: "{{ include "deshchain-testnet.imageRegistry" . }}/{{ include "deshchain-testnet.imageRepository" . }}:{{ include "deshchain-testnet.imageTag" . }}"
+          imagePullPolicy: {{ include "deshchain-testnet.imagePullPolicy" . }}
+          command:
+            - deshchaind
+            - start
+            - --home
+            - /deshchain/.deshchaind
+            - --log_level
+            - info
+            - --p2p.laddr
+            - tcp://0.0.0.0:26656
+            - --rpc.laddr
+            - tcp://0.0.0.0:26657
+            - --api.enable
+            - "true"
+            - --api.enabled-unsafe-cors
+            - "true"
+            - --api.address
+            - tcp://0.0.0.0:1317
+            - --grpc.enable
+            - "true"
+            - --grpc.address
+            - 0.0.0.0:9090
+            - --grpc-web.enable
+            - "true"
+            - --grpc-web.address
+            - 0.0.0.0:9091
+            - --pruning
+            - custom
+            - --pruning-keep-recent
+            - "100"
+            - --pruning-keep-every
+            - "0"
+            - --pruning-interval
+            - "10"
+            - --minimum-gas-prices
+            - 0.01namo
+          ports:
+            - name: p2p
+              containerPort: 26656
+              protocol: TCP
+            - name: rpc
+              containerPort: 26657
+              protocol: TCP
+            - name: api
+              containerPort: 1317
+              protocol: TCP
+            - name: grpc
+              containerPort: 9090
+              protocol: TCP
+            - name: grpc-web
+              containerPort: 9091
+              protocol: TCP
+            - name: prometheus
+              containerPort: 26660
+              protocol: TCP
+          env:
+            {{- include "deshchain-testnet.commonEnv" . | nindent 12 }}
+            - name: PERSISTENT_PEERS
+              value: {{ include "deshchain-testnet.persistentPeers" . | quote }}
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 26657
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /status
+              port: 26657
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          resources:
+            {{- toYaml .Values.validators.resources | nindent 12 }}
+          volumeMounts:
+            - name: validator-data
+              mountPath: /deshchain/.deshchaind
+            - name: node-config
+              mountPath: /deshchain/.deshchaind/config/config.toml
+              subPath: config.toml
+              readOnly: true
+            - name: node-config
+              mountPath: /deshchain/.deshchaind/config/app.toml
+              subPath: app.toml
+              readOnly: true
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            capabilities:
+              drop:
+                - ALL
+      {{- with .Values.validators.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.validators.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.validators.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        - name: genesis-config
+          configMap:
+            name: {{ include "deshchain-testnet.genesisConfigName" . }}
+        - name: node-config
+          configMap:
+            name: {{ include "deshchain-testnet.nodeConfigName" . }}
+        - name: validator-keys
+          secret:
+            secretName: {{ include "deshchain-testnet.validatorKeysSecretName" . }}
+            defaultMode: 0600
+  volumeClaimTemplates:
+    - metadata:
+        name: validator-data
+        labels:
+          {{- include "deshchain-testnet.validatorLabels" . | nindent 10 }}
+      spec:
+        accessModes: {{ .Values.validators.persistence.accessModes }}
+        storageClassName: {{ .Values.validators.persistence.storageClass }}
+        resources:
+          requests:
+            storage: {{ .Values.validators.persistence.size }}
+{{- end }}

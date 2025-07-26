@@ -760,7 +760,7 @@ func FindOptimalMatch(order Order) Match {
 ## Gram Suraksha Pool - Village Security Fund (Regulatory Compliant)
 
 ### Revolutionary Community Savings Protocol
-- **Guaranteed 50% returns**: ₹12,000 contribution → ₹18,000 payout
+- **Up to 50% returns**: Minimum 8% guaranteed, up to 50% based on DeshChain platform performance
 - **13-month cycle**: 12 months contribution + 1 month maturity
 - **Monthly contributions**: ₹1,000 worth of NAMO tokens
 - **NOT a pension scheme**: Designed as wealth protection pool to avoid PFRDA regulatory requirements

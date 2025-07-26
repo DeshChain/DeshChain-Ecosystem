@@ -2,7 +2,7 @@
 
 ## Complete Module Architecture
 
-DeshChain consists of 27 specialized modules that work together to create a comprehensive blockchain ecosystem. Each module serves specific functions while integrating seamlessly with others.
+DeshChain consists of 29 specialized modules that work together to create a comprehensive blockchain ecosystem. Each module serves specific functions while integrating seamlessly with others.
 
 ## Module Categories
 
@@ -42,7 +42,11 @@ DeshChain consists of 27 specialized modules that work together to create a comp
 - **[Gamification](./modules/GAMIFICATION_MODULE.md)** - Achievement system
 - **[NFT](./modules/NFT_MODULE.md)** - Non-fungible tokens
 
-### 7. Platform & Integration Modules
+### 7. Identity & Security Modules
+- **[Identity](./modules/IDENTITY_MODULE.md)** - Decentralized identity with W3C DID support
+- **[DUSD](./modules/DUSD_MODULE.md)** - USD stablecoin for global trade
+
+### 8. Platform & Integration Modules
 - **[DhanSetu](./modules/DHANSETU_MODULE.md)** - Super app integration
 - **[Explorer](./modules/EXPLORER_MODULE.md)** - Blockchain explorer
 - **[Launchpad](./modules/LAUNCHPAD_MODULE.md)** - Project launch platform
@@ -59,6 +63,7 @@ graph TB
     
     subgraph Financial
         DINR[DINR Stablecoin]
+        DUSD[DUSD Stablecoin]
         MO[Money Order]
         REM[Remittance]
         TF[Trade Finance]
@@ -83,6 +88,10 @@ graph TB
         DON[Donation]
     end
     
+    subgraph Security
+        ID[Identity]
+    end
+    
     NAMO --> TAX
     TAX --> TREASURY
     TREASURY --> DON
@@ -96,11 +105,17 @@ graph TB
     MO --> US
     
     ORACLE --> DINR
+    ORACLE --> DUSD
     ORACLE --> SIK
     ORACLE --> LM
     
     CULT --> GAM
     GAM --> NAMO
+    
+    ID --> TF
+    ID --> MO
+    ID --> GS
+    ID --> US
 ```
 
 ## Key Integration Points
@@ -129,12 +144,21 @@ graph TB
 - Asset valuation for loans
 - Market data for trading
 
+### 5. Identity Module Integration
+- W3C DID-based identity for all users
+- KYC verification for TradeFinance
+- Biometric authentication for MoneyOrder
+- Verifiable Credentials for compliance
+- Privacy-preserving authentication
+- India Stack integration (Aadhaar, DigiLocker, UPI)
+
 ## Module Development Status
 
 | Module | Status | Test Coverage | Documentation |
 |--------|--------|---------------|---------------|
 | NAMO | ✅ Production | 85% | Complete |
 | DINR | ✅ Production | 80% | Complete |
+| DUSD | ✅ Production | 82% | Complete |
 | MoneyOrder | ✅ Production | 90% | Complete |
 | Remittance | ✅ Production | 85% | Complete |
 | TradeFinance | ✅ Production | 95% | Complete |
@@ -142,6 +166,7 @@ graph TB
 | Cultural | ✅ Production | 75% | Complete |
 | Tax | ✅ Production | 90% | Complete |
 | Treasury | ✅ Production | 85% | Complete |
+| Identity | ✅ Production | 88% | Complete |
 | Others | 🚧 Development | Varies | In Progress |
 
 ## Getting Started

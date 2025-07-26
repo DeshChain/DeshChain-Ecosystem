@@ -31,7 +31,7 @@ class _SurakshaSchemeScreenState extends ConsumerState<SurakshaSchemeScreen>
       expectedReturns: 50.0,
       duration: 20,
       features: [
-        'Guaranteed 50% returns',
+        'Minimum 8% guaranteed, up to 50% returns based on platform performance',
         'KYC verified',
         'Cultural bonus rewards',
         'Monthly payouts',

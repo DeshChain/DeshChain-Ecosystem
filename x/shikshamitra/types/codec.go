@@ -29,6 +29,8 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgDisburseLoan{}, "shikshamitra/DisburseLoan", nil)
 	cdc.RegisterConcrete(&MsgRepayLoan{}, "shikshamitra/RepayLoan", nil)
 	cdc.RegisterConcrete(&MsgStartMoratorium{}, "shikshamitra/StartMoratorium", nil)
+	cdc.RegisterConcrete(&MsgMigrateStudentsToIdentity{}, "shikshamitra/MigrateStudentsToIdentity", nil)
+	cdc.RegisterConcrete(&MsgCreateStudentCredential{}, "shikshamitra/CreateStudentCredential", nil)
 }
 
 // RegisterInterfaces registers the x/shikshamitra interfaces types with the interface registry
@@ -43,6 +45,8 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgDisburseLoan{},
 		&MsgRepayLoan{},
 		&MsgStartMoratorium{},
+		&MsgMigrateStudentsToIdentity{},
+		&MsgCreateStudentCredential{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)

@@ -1,0 +1,485 @@
+# DeshChain Testnet Helm Chart Values
+
+global:
+  imageRegistry: ""
+  imagePullSecrets: []
+  storageClass: ""
+
+# DeshChain Node Configuration
+deshchain:
+  image:
+    registry: docker.io
+    repository: deshchain/node
+    tag: "testnet-v1.0.0"
+    pullPolicy: IfNotPresent
+  
+  chain:
+    id: "deshchain-testnet-1"
+    name: "DeshChain Testnet"
+    
+  # Genesis Configuration
+  genesis:
+    genesisTime: "2024-01-01T00:00:00.000000000Z"
+    validators:
+      - name: "validator-0"
+        address: "deshchain1genesis1..."
+        initialBalance: "1000000000000namo"
+      - name: "validator-1"
+        address: "deshchain1genesis2..."
+        initialBalance: "1000000000000namo"
+      - name: "validator-2"
+        address: "deshchain1genesis3..."
+        initialBalance: "1000000000000namo"
+      - name: "validator-3"
+        address: "deshchain1genesis4..."
+        initialBalance: "1000000000000namo"
+
+# Validator Nodes Configuration
+validators:
+  enabled: true
+  replicas: 4
+  
+  image:
+    registry: ""
+    repository: ""
+    tag: ""
+    pullPolicy: ""
+  
+  resources:
+    requests:
+      memory: "16Gi"
+      cpu: "4"
+    limits:
+      memory: "32Gi"
+      cpu: "8"
+  
+  persistence:
+    enabled: true
+    storageClass: "validator-storage"
+    size: "1Ti"
+    accessModes:
+      - ReadWriteOnce
+  
+  nodeSelector:
+    node-type: validator
+  
+  tolerations:
+    - key: validator
+      operator: Equal
+      value: "true"
+      effect: NoSchedule
+  
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                  - deshchain-validator
+          topologyKey: kubernetes.io/hostname
+
+# Sentry Nodes Configuration
+sentries:
+  enabled: true
+  replicas: 2
+  
+  image:
+    registry: ""
+    repository: ""
+    tag: ""
+    pullPolicy: ""
+  
+  resources:
+    requests:
+      memory: "8Gi"
+      cpu: "2"
+    limits:
+      memory: "16Gi"
+      cpu: "4"
+  
+  persistence:
+    enabled: false
+    storageClass: "standard"
+    size: "500Gi"
+  
+  nodeSelector:
+    node-type: service
+  
+  service:
+    type: LoadBalancer
+    rpc:
+      port: 26657
+      targetPort: 26657
+    api:
+      port: 1317
+      targetPort: 1317
+    grpc:
+      port: 9090
+      targetPort: 9090
+  
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 6
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 80
+
+# Frontend Applications
+frontend:
+  enabled: true
+  replicas: 3
+  
+  image:
+    registry: docker.io
+    repository: deshchain/frontend
+    tag: "testnet-v1.0.0"
+    pullPolicy: IfNotPresent
+  
+  env:
+    REACT_APP_API_URL: "https://testnet-api.deshchain.com"
+    REACT_APP_RPC_URL: "https://testnet-rpc.deshchain.com"
+    REACT_APP_CHAIN_ID: "deshchain-testnet-1"
+  
+  resources:
+    requests:
+      memory: "2Gi"
+      cpu: "0.5"
+    limits:
+      memory: "4Gi"
+      cpu: "1"
+  
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 3000
+  
+  autoscaling:
+    enabled: true
+    minReplicas: 3
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 70
+
+# Blockchain Explorer
+explorer:
+  enabled: true
+  replicas: 2
+  
+  image:
+    registry: docker.io
+    repository: deshchain/explorer
+    tag: "testnet-v1.0.0"
+    pullPolicy: IfNotPresent
+  
+  env:
+    RPC_ENDPOINT: "http://deshchain-sentry:26657"
+    API_ENDPOINT: "http://deshchain-sentry:1317"
+  
+  resources:
+    requests:
+      memory: "4Gi"
+      cpu: "1"
+    limits:
+      memory: "8Gi"
+      cpu: "2"
+  
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 3001
+
+# Testnet Faucet
+faucet:
+  enabled: true
+  replicas: 2
+  
+  image:
+    registry: docker.io
+    repository: deshchain/faucet
+    tag: "testnet-v1.0.0"
+    pullPolicy: IfNotPresent
+  
+  config:
+    rateLimit: "1000000namo"
+    rateLimitWindow: "24h"
+    mnemonic: ""  # Set via secret
+  
+  resources:
+    requests:
+      memory: "2Gi"
+      cpu: "0.5"
+    limits:
+      memory: "4Gi"
+      cpu: "1"
+  
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 8080
+
+# Ingress Configuration
+ingress:
+  enabled: true
+  className: nginx
+  
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/rate-limit: "100"
+    nginx.ingress.kubernetes.io/rate-limit-window: "1m"
+  
+  hosts:
+    - host: testnet.deshchain.com
+      paths:
+        - path: /
+          pathType: Prefix
+          service: deshchain-frontend
+          port: 80
+    - host: testnet-api.deshchain.com
+      paths:
+        - path: /
+          pathType: Prefix
+          service: deshchain-sentry
+          port: 1317
+    - host: testnet-rpc.deshchain.com
+      paths:
+        - path: /
+          pathType: Prefix
+          service: deshchain-sentry
+          port: 26657
+    - host: explorer.testnet.deshchain.com
+      paths:
+        - path: /
+          pathType: Prefix
+          service: deshchain-explorer
+          port: 80
+    - host: faucet.testnet.deshchain.com
+      paths:
+        - path: /
+          pathType: Prefix
+          service: deshchain-faucet
+          port: 80
+  
+  tls:
+    - secretName: deshchain-tls
+      hosts:
+        - testnet.deshchain.com
+        - testnet-api.deshchain.com
+        - testnet-rpc.deshchain.com
+        - explorer.testnet.deshchain.com
+        - faucet.testnet.deshchain.com
+
+# PostgreSQL Database (via Bitnami chart)
+postgresql:
+  enabled: true
+  auth:
+    postgresPassword: "changeMe123!"
+    username: "deshchain"
+    password: "changeMe123!"
+    database: "deshchain_explorer"
+  
+  primary:
+    persistence:
+      enabled: true
+      storageClass: "database-storage"
+      size: "200Gi"
+    
+    resources:
+      requests:
+        memory: "8Gi"
+        cpu: "2"
+      limits:
+        memory: "16Gi"
+        cpu: "4"
+
+# Redis Cache (via Bitnami chart)
+redis:
+  enabled: true
+  auth:
+    enabled: true
+    password: "changeMe123!"
+  
+  master:
+    persistence:
+      enabled: true
+      storageClass: "standard"
+      size: "10Gi"
+    
+    resources:
+      requests:
+        memory: "4Gi"
+        cpu: "1"
+      limits:
+        memory: "8Gi"
+        cpu: "2"
+
+# IPFS Storage
+ipfs:
+  enabled: true
+  replicas: 3
+  
+  image:
+    registry: docker.io
+    repository: ipfs/kubo
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  
+  persistence:
+    enabled: true
+    storageClass: "standard"
+    size: "100Gi"
+  
+  resources:
+    requests:
+      memory: "4Gi"
+      cpu: "1"
+    limits:
+      memory: "8Gi"
+      cpu: "2"
+
+# Monitoring Stack
+monitoring:
+  enabled: true
+  
+  prometheus:
+    enabled: true
+    server:
+      persistentVolume:
+        enabled: true
+        storageClass: "standard"
+        size: "100Gi"
+      
+      resources:
+        requests:
+          memory: "4Gi"
+          cpu: "1"
+        limits:
+          memory: "8Gi"
+          cpu: "2"
+  
+  grafana:
+    enabled: true
+    persistence:
+      enabled: true
+      storageClassName: "standard"
+      size: "10Gi"
+    
+    adminPassword: "admin123!"
+    
+    resources:
+      requests:
+        memory: "2Gi"
+        cpu: "0.5"
+      limits:
+        memory: "4Gi"
+        cpu: "1"
+    
+    dashboards:
+      default:
+        deshchain-overview:
+          gnetId: 1860
+          revision: 27
+          datasource: Prometheus
+    
+    datasources:
+      datasources.yaml:
+        apiVersion: 1
+        datasources:
+          - name: Prometheus
+            type: prometheus
+            url: http://{{ include "deshchain-testnet.fullname" . }}-prometheus-server
+            access: proxy
+            isDefault: true
+
+# Logging Stack
+logging:
+  enabled: true
+  
+  elasticsearch:
+    enabled: true
+    replicas: 3
+    
+    persistence:
+      enabled: true
+      storageClass: "database-storage"
+      size: "100Gi"
+    
+    resources:
+      requests:
+        memory: "4Gi"
+        cpu: "1"
+      limits:
+        memory: "8Gi"
+        cpu: "2"
+  
+  logstash:
+    enabled: true
+    replicas: 2
+    
+    resources:
+      requests:
+        memory: "2Gi"
+        cpu: "1"
+      limits:
+        memory: "4Gi"
+        cpu: "2"
+  
+  kibana:
+    enabled: true
+    
+    resources:
+      requests:
+        memory: "2Gi"
+        cpu: "0.5"
+      limits:
+        memory: "4Gi"
+        cpu: "1"
+
+# Security Configuration
+security:
+  podSecurityPolicy:
+    enabled: true
+  
+  networkPolicy:
+    enabled: true
+  
+  rbac:
+    create: true
+  
+  serviceAccount:
+    create: true
+    name: ""
+
+# Backup Configuration
+backup:
+  enabled: true
+  
+  schedule: "0 2 * * *"  # Daily at 2 AM
+  
+  storage:
+    type: "s3"  # or "gcs", "azure"
+    bucket: "deshchain-backups"
+    region: "us-east-1"
+    
+  retention:
+    days: 30
+  
+  resources:
+    requests:
+      memory: "1Gi"
+      cpu: "0.5"
+    limits:
+      memory: "2Gi"
+      cpu: "1"
+
+# Development/Testing
+development:
+  enabled: false
+  
+  # Seed data for testing
+  seedData:
+    enabled: true
+    accounts: []
+    validators: []

@@ -101,7 +101,7 @@ export const HomeScreen: React.FC = () => {
     {
       id: 'suraksha',
       title: 'Gram Suraksha',
-      subtitle: '50% guaranteed returns',
+      subtitle: 'Min 8% guaranteed, up to 50% returns',
       icon: 'shield-check',
       gradient: [COLORS.green, COLORS.darkGreen],
     },

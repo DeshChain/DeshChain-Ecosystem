@@ -1,0 +1,154 @@
+{{- if .Values.monitoring.enabled }}
+---
+# ServiceMonitor for Prometheus scraping
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "deshchain-testnet.fullname" . }}-validator
+  labels:
+    {{- include "deshchain-testnet.validatorLabels" . | nindent 4 }}
+    prometheus: kube-prometheus
+spec:
+  selector:
+    matchLabels:
+      {{- include "deshchain-testnet.validatorSelectorLabels" . | nindent 6 }}
+  endpoints:
+    - port: prometheus
+      interval: 30s
+      path: /metrics
+      honorLabels: true
+
+---
+# ServiceMonitor for Sentry nodes
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "deshchain-testnet.fullname" . }}-sentry
+  labels:
+    {{- include "deshchain-testnet.sentryLabels" . | nindent 4 }}
+    prometheus: kube-prometheus
+spec:
+  selector:
+    matchLabels:
+      {{- include "deshchain-testnet.sentrySelectorLabels" . | nindent 6 }}
+  endpoints:
+    - port: prometheus
+      interval: 30s
+      path: /metrics
+      honorLabels: true
+
+---
+# PrometheusRule for DeshChain alerts
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ include "deshchain-testnet.fullname" . }}-alerts
+  labels:
+    {{- include "deshchain-testnet.labels" . | nindent 4 }}
+    prometheus: kube-prometheus
+spec:
+  groups:
+    - name: deshchain.validators
+      rules:
+        - alert: ValidatorDown
+          expr: up{job=~".*validator.*"} == 0
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            summary: "DeshChain validator is down"
+            description: "Validator {{ $labels.instance }} has been down for more than 1 minute."
+        
+        - alert: ValidatorMissedBlocks
+          expr: increase(tendermint_consensus_validator_missed_blocks[5m]) > 5
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Validator missing blocks"
+            description: "Validator {{ $labels.instance }} has missed {{ $value }} blocks in the last 5 minutes."
+        
+        - alert: ValidatorHighMemoryUsage
+          expr: (container_memory_usage_bytes{pod=~".*validator.*"} / container_spec_memory_limit_bytes) > 0.9
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "High memory usage on validator"
+            description: "Validator {{ $labels.pod }} is using {{ $value | humanizePercentage }} of available memory."
+        
+        - alert: ValidatorHighCPUUsage
+          expr: rate(container_cpu_usage_seconds_total{pod=~".*validator.*"}[5m]) > 0.8
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "High CPU usage on validator"
+            description: "Validator {{ $labels.pod }} is using {{ $value | humanizePercentage }} CPU."
+        
+        - alert: ValidatorDiskSpaceLow
+          expr: (node_filesystem_avail_bytes{mountpoint="/deshchain/.deshchaind"} / node_filesystem_size_bytes{mountpoint="/deshchain/.deshchaind"}) < 0.1
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Low disk space on validator"
+            description: "Validator has less than 10% disk space remaining."
+
+    - name: deshchain.sentries
+      rules:
+        - alert: SentryDown
+          expr: up{job=~".*sentry.*"} == 0
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            summary: "DeshChain sentry is down"
+            description: "Sentry {{ $labels.instance }} has been down for more than 1 minute."
+        
+        - alert: SentryHighLatency
+          expr: histogram_quantile(0.95, rate(tendermint_rpc_request_duration_seconds_bucket[5m])) > 1
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "High RPC latency on sentry"
+            description: "95th percentile RPC latency is {{ $value }}s on sentry {{ $labels.instance }}."
+        
+        - alert: SentryConnectionsHigh
+          expr: tendermint_p2p_peers > 80
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "High number of peer connections"
+            description: "Sentry {{ $labels.instance }} has {{ $value }} peer connections."
+
+    - name: deshchain.blockchain
+      rules:
+        - alert: BlockProductionSlow
+          expr: increase(tendermint_consensus_block_height[10m]) < 10
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Slow block production"
+            description: "Only {{ $value }} blocks produced in the last 10 minutes."
+        
+        - alert: NetworkPartition
+          expr: count(up{job=~".*validator.*"} == 1) < 3
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Potential network partition"
+            description: "Less than 3 validators are online, potential network partition detected."
+        
+        - alert: ValidatorSetChange
+          expr: changes(tendermint_consensus_validators[1h]) > 0
+          labels:
+            severity: info
+          annotations:
+            summary: "Validator set changed"
+            description: "The validator set has changed in the last hour."
+{{- end }}

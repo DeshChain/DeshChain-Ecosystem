@@ -11,7 +11,7 @@ The Gram Pension scheme is a revolutionary liquidity-generation mechanism that p
 - **Contribution Period**: 12 months
 - **Total Contributions**: ₹12,000 worth of NAMO tokens
 - **Maturity Payout**: ₹18,000 worth of NAMO tokens
-- **Bonus Amount**: ₹6,000 worth of NAMO tokens (50% return)
+- **Bonus Amount**: Minimum ₹960 (8% return), up to ₹6,000 worth of NAMO tokens (50% return) based on platform performance
 - **Scheme Duration**: 13 months (12 contributions + 1 maturity month)
 
 ### Participant Journey
@@ -186,7 +186,7 @@ The Gram Pension scheme is a revolutionary liquidity-generation mechanism that p
 ## Competitive Advantage
 
 ### 1. **Unique Value Proposition**
-- **Guaranteed Returns**: 50% return in 13 months
+- **Performance-Based Returns**: Minimum 8% guaranteed, up to 50% return in 13 months based on platform performance
 - **Cultural Integration**: Patriotic investment opportunity
 - **Blockchain Transparency**: All transactions visible
 - **Community Building**: Network effect benefits
@@ -278,7 +278,7 @@ The Gram Pension scheme represents a revolutionary approach to combining financi
 
 ### Key Success Factors:
 1. **Strong Revenue Model**: Multiple income streams with 80%+ margins
-2. **Attractive Participant Benefits**: 50% guaranteed returns
+2. **Attractive Participant Benefits**: Minimum 8% guaranteed, up to 50% returns based on platform performance
 3. **Scalable Architecture**: Marginal costs decrease with scale
 4. **Risk Management**: Comprehensive mitigation strategies
 5. **Regulatory Compliance**: Designed within legal frameworks

@@ -1,0 +1,130 @@
+{{- if .Values.ipfs.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "deshchain-testnet.fullname" . }}-ipfs
+  labels:
+    {{- include "deshchain-testnet.ipfsLabels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.ipfs.replicas }}
+  serviceName: {{ include "deshchain-testnet.fullname" . }}-ipfs
+  selector:
+    matchLabels:
+      {{- include "deshchain-testnet.ipfsSelectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "deshchain-testnet.ipfsLabels" . | nindent 8 }}
+    spec:
+      {{- include "deshchain-testnet.imagePullSecrets" . | nindent 6 }}
+      serviceAccountName: {{ include "deshchain-testnet.serviceAccountName" . }}
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+      initContainers:
+        - name: init-ipfs
+          image: "{{ .Values.ipfs.image.registry }}/{{ .Values.ipfs.image.repository }}:{{ .Values.ipfs.image.tag }}"
+          imagePullPolicy: {{ .Values.ipfs.image.pullPolicy }}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
+              if [ ! -f /data/ipfs/config ]; then
+                echo "Initializing IPFS node..."
+                ipfs init --profile server
+                
+                # Configure IPFS for cluster mode
+                ipfs config Addresses.API /ip4/0.0.0.0/tcp/5001
+                ipfs config Addresses.Gateway /ip4/0.0.0.0/tcp/8080
+                ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '["*"]'
+                ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '["PUT", "GET", "POST"]'
+                
+                # Enable experimental features
+                ipfs config --json Experimental.Libp2pStreamMounting true
+                ipfs config --json Experimental.P2pHttpProxy true
+                
+                # Set up swarm key for private network
+                echo "/key/swarm/psk/1.0.0/" > /data/ipfs/swarm.key
+                echo "/base16/" >> /data/ipfs/swarm.key
+                echo "$(head -c 64 /dev/urandom | xxd -p -c 256)" >> /data/ipfs/swarm.key
+                
+                chown -R 1000:1000 /data/ipfs
+              fi
+          volumeMounts:
+            - name: ipfs-data
+              mountPath: /data/ipfs
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+      containers:
+        - name: ipfs
+          image: "{{ .Values.ipfs.image.registry }}/{{ .Values.ipfs.image.repository }}:{{ .Values.ipfs.image.tag }}"
+          imagePullPolicy: {{ .Values.ipfs.image.pullPolicy }}
+          command:
+            - /sbin/tini
+            - --
+            - /usr/local/bin/start_ipfs
+            - daemon
+            - --migrate=true
+            - --agent-version-suffix=docker
+          ports:
+            - name: swarm
+              containerPort: 4001
+              protocol: TCP
+            - name: swarm-udp
+              containerPort: 4001
+              protocol: UDP
+            - name: api
+              containerPort: 5001
+              protocol: TCP
+            - name: gateway
+              containerPort: 8080
+              protocol: TCP
+          env:
+            - name: IPFS_PROFILE
+              value: server
+          livenessProbe:
+            httpGet:
+              path: /api/v0/id
+              port: api
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /api/v0/id
+              port: api
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          resources:
+            {{- toYaml .Values.ipfs.resources | nindent 12 }}
+          volumeMounts:
+            - name: ipfs-data
+              mountPath: /data/ipfs
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            capabilities:
+              drop:
+                - ALL
+  volumeClaimTemplates:
+    - metadata:
+        name: ipfs-data
+        labels:
+          {{- include "deshchain-testnet.ipfsLabels" . | nindent 10 }}
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: {{ .Values.ipfs.persistence.storageClass }}
+        resources:
+          requests:
+            storage: {{ .Values.ipfs.persistence.size }}
+{{- end }}

@@ -70,7 +70,7 @@ Gram Suraksha Pool (Rural):
 
 Udyamitra (Urban):
   - ₹2,500/month × 18 months
-  - 35-50% returns
+  - Minimum 8% guaranteed, up to 50% returns based on platform performance
   - Multiple revenue sources
   - Year 5: ₹400 Crore
 ```

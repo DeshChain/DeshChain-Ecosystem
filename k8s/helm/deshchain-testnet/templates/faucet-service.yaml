@@ -1,0 +1,17 @@
+{{- if .Values.faucet.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "deshchain-testnet.fullname" . }}-faucet
+  labels:
+    {{- include "deshchain-testnet.faucetLabels" . | nindent 4 }}
+spec:
+  type: {{ .Values.faucet.service.type }}
+  ports:
+    - name: http
+      port: {{ .Values.faucet.service.port }}
+      targetPort: {{ .Values.faucet.service.targetPort }}
+      protocol: TCP
+  selector:
+    {{- include "deshchain-testnet.faucetSelectorLabels" . | nindent 4 }}
+{{- end }}

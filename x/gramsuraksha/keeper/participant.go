@@ -44,7 +44,20 @@ func (k Keeper) EnrollParticipant(ctx sdk.Context, participant types.SurakshaPar
 
 	// Check KYC if required
 	if scheme.KYCRequired {
-		if k.kycKeeper != nil && !k.kycKeeper.IsKYCVerified(ctx, participant.Address) {
+		// First try identity-based KYC
+		if k.identityAdapter != nil {
+			identityStatus, err := k.identityAdapter.VerifyParticipantIdentity(ctx, participant.Address, participant.SchemeID)
+			if err == nil && identityStatus.IsKYCVerified {
+				// Update participant age from verified credential if available
+				if identityStatus.Age > 0 {
+					participant.Age = identityStatus.Age
+				}
+			} else if k.kycKeeper != nil && !k.kycKeeper.IsKYCVerified(ctx, participant.Address) {
+				// Fall back to traditional KYC
+				return types.ErrKYCNotVerified
+			}
+		} else if k.kycKeeper != nil && !k.kycKeeper.IsKYCVerified(ctx, participant.Address) {
+			// Only traditional KYC available
 			return types.ErrKYCNotVerified
 		}
 	}
@@ -87,6 +100,14 @@ func (k Keeper) EnrollParticipant(ctx sdk.Context, participant types.SurakshaPar
 	// Create indexes
 	k.SetParticipantByAddress(ctx, participant.Address, participant.SchemeID, participant.ParticipantID)
 	k.SetParticipantByScheme(ctx, participant.SchemeID, participant.ParticipantID)
+
+	// Create identity credential for participant
+	if k.identityAdapter != nil {
+		if err := k.identityAdapter.CreateParticipantCredential(ctx, participant, scheme); err != nil {
+			k.Logger(ctx).Error("Failed to create participant credential", "error", err)
+			// Don't fail enrollment if credential creation fails
+		}
+	}
 
 	// Get cultural quote if enabled
 	culturalQuote := ""

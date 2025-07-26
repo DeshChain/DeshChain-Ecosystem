@@ -1,0 +1,153 @@
+{{- if .Values.backup.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "deshchain-testnet.fullname" . }}-backup
+  labels:
+    {{- include "deshchain-testnet.labels" . | nindent 4 }}
+spec:
+  schedule: {{ .Values.backup.schedule | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            {{- include "deshchain-testnet.labels" . | nindent 12 }}
+            app.kubernetes.io/component: backup
+        spec:
+          {{- include "deshchain-testnet.imagePullSecrets" . | nindent 10 }}
+          serviceAccountName: {{ include "deshchain-testnet.serviceAccountName" . }}
+          securityContext:
+            fsGroup: 1000
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+          restartPolicy: OnFailure
+          containers:
+            - name: backup
+              image: "docker.io/deshchain/backup:latest"
+              imagePullPolicy: IfNotPresent
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  set -e
+                  echo "Starting DeshChain backup at $(date)"
+                  
+                  # Create backup directory with timestamp
+                  BACKUP_DIR="/tmp/backup-$(date +%Y%m%d-%H%M%S)"
+                  mkdir -p $BACKUP_DIR
+                  
+                  # Backup validator data from all validators
+                  {{- range $i := until (int .Values.validators.replicas) }}
+                  echo "Backing up validator-{{ $i }}..."
+                  kubectl exec {{ include "deshchain-testnet.fullname" $ }}-validator-{{ $i }} -- tar czf - \
+                    -C /deshchain/.deshchaind \
+                    config/genesis.json \
+                    config/node_key.json \
+                    config/priv_validator_key.json \
+                    data/priv_validator_state.json \
+                    > $BACKUP_DIR/validator-{{ $i }}-data.tar.gz
+                  {{- end }}
+                  
+                  # Backup PostgreSQL database
+                  echo "Backing up PostgreSQL database..."
+                  PGPASSWORD="{{ .Values.postgresql.auth.password }}" pg_dump \
+                    -h {{ include "deshchain-testnet.fullname" . }}-postgresql \
+                    -U {{ .Values.postgresql.auth.username }} \
+                    -d {{ .Values.postgresql.auth.database }} \
+                    --no-password \
+                    --format=custom \
+                    --compress=9 \
+                    > $BACKUP_DIR/database.dump
+                  
+                  # Create metadata file
+                  cat > $BACKUP_DIR/backup-metadata.json << EOF
+                  {
+                    "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+                    "chain_id": "{{ .Values.deshchain.chain.id }}",
+                    "validator_count": {{ .Values.validators.replicas }},
+                    "backup_type": "full",
+                    "version": "{{ .Chart.AppVersion }}"
+                  }
+                  EOF
+                  
+                  # Compress entire backup
+                  BACKUP_FILE="deshchain-backup-$(date +%Y%m%d-%H%M%S).tar.gz"
+                  tar czf /tmp/$BACKUP_FILE -C /tmp $(basename $BACKUP_DIR)
+                  
+                  {{- if eq .Values.backup.storage.type "s3" }}
+                  # Upload to S3
+                  echo "Uploading backup to S3..."
+                  aws s3 cp /tmp/$BACKUP_FILE s3://{{ .Values.backup.storage.bucket }}/deshchain-testnet/$BACKUP_FILE
+                  
+                  # Cleanup old backups (keep only recent ones based on retention)
+                  aws s3 ls s3://{{ .Values.backup.storage.bucket }}/deshchain-testnet/ \
+                    | grep "deshchain-backup-" \
+                    | sort -k1,2 \
+                    | head -n -{{ .Values.backup.retention.days }} \
+                    | awk '{print $4}' \
+                    | xargs -I {} aws s3 rm s3://{{ .Values.backup.storage.bucket }}/deshchain-testnet/{}
+                  {{- end }}
+                  
+                  # Cleanup local files
+                  rm -rf $BACKUP_DIR /tmp/$BACKUP_FILE
+                  
+                  echo "Backup completed successfully at $(date)"
+              env:
+                - name: KUBECONFIG
+                  value: /var/run/secrets/kubernetes.io/serviceaccount
+                {{- if eq .Values.backup.storage.type "s3" }}
+                - name: AWS_DEFAULT_REGION
+                  value: {{ .Values.backup.storage.region | quote }}
+                - name: AWS_ACCESS_KEY_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ include "deshchain-testnet.fullname" . }}-backup-secret
+                      key: aws-access-key-id
+                - name: AWS_SECRET_ACCESS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ include "deshchain-testnet.fullname" . }}-backup-secret
+                      key: aws-secret-access-key
+                {{- end }}
+              resources:
+                {{- toYaml .Values.backup.resources | nindent 16 }}
+              securityContext:
+                allowPrivilegeEscalation: false
+                runAsNonRoot: true
+                runAsUser: 1000
+                runAsGroup: 1000
+                capabilities:
+                  drop:
+                    - ALL
+              volumeMounts:
+                - name: backup-tmp
+                  mountPath: /tmp
+          volumes:
+            - name: backup-tmp
+              emptyDir:
+                sizeLimit: 100Gi
+
+---
+{{- if eq .Values.backup.storage.type "s3" }}
+# Secret for backup storage credentials
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ include "deshchain-testnet.fullname" . }}-backup-secret
+  labels:
+    {{- include "deshchain-testnet.labels" . | nindent 4 }}
+  annotations:
+    helm.sh/resource-policy: keep
+type: Opaque
+data:
+  # These must be set manually before enabling backups
+  # Base64 encoded AWS credentials
+  aws-access-key-id: ""
+  aws-secret-access-key: ""
+{{- end }}
+{{- end }}

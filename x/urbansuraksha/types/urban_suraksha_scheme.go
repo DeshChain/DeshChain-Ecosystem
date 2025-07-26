@@ -319,12 +319,17 @@ func (ups UrbanSurakshaScheme) Validate() error {
 
 // CalculateExpectedReturn calculates expected return based on pool performance
 func (ups UrbanSurakshaScheme) CalculateExpectedReturn(poolPerformance sdk.Dec) sdk.Coin {
+	// Minimum 8% guaranteed, up to 50% based on DeshChain platform performance
+	minReturn := sdk.NewDecWithPrec(8, 2) // 8% minimum guaranteed
 	baseReturn := sdk.NewDecWithPrec(30, 2) // 30% base return
-	performanceBonus := poolPerformance.Mul(sdk.NewDecWithPrec(10, 2)) // Up to 10% performance bonus
+	performanceBonus := poolPerformance.Mul(sdk.NewDecWithPrec(20, 2)) // Up to 20% performance bonus
 	totalReturnRate := baseReturn.Add(performanceBonus)
 	
-	// Cap at 45% maximum return
-	maxReturn := sdk.NewDecWithPrec(45, 2)
+	// Ensure minimum 8% and cap at 50% maximum return
+	if totalReturnRate.LT(minReturn) {
+		totalReturnRate = minReturn
+	}
+	maxReturn := sdk.NewDecWithPrec(50, 2)
 	if totalReturnRate.GT(maxReturn) {
 		totalReturnRate = maxReturn
 	}

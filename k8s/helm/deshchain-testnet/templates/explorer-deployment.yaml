@@ -1,0 +1,74 @@
+{{- if .Values.explorer.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "deshchain-testnet.fullname" . }}-explorer
+  labels:
+    {{- include "deshchain-testnet.explorerLabels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.explorer.replicas }}
+  selector:
+    matchLabels:
+      {{- include "deshchain-testnet.explorerSelectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "deshchain-testnet.explorerLabels" . | nindent 8 }}
+    spec:
+      {{- include "deshchain-testnet.imagePullSecrets" . | nindent 6 }}
+      serviceAccountName: {{ include "deshchain-testnet.serviceAccountName" . }}
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+      containers:
+        - name: explorer
+          image: "{{ .Values.explorer.image.registry }}/{{ .Values.explorer.image.repository }}:{{ .Values.explorer.image.tag }}"
+          imagePullPolicy: {{ .Values.explorer.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 3001
+              protocol: TCP
+          env:
+            {{- range $key, $value := .Values.explorer.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "deshchain-testnet.fullname" . }}-database
+                  key: database-url
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "deshchain-testnet.fullname" . }}-redis
+                  key: redis-url
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          resources:
+            {{- toYaml .Values.explorer.resources | nindent 12 }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            capabilities:
+              drop:
+                - ALL
+{{- end }}

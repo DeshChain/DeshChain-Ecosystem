@@ -1,0 +1,44 @@
+apiVersion: v2
+name: deshchain-testnet
+description: A Helm chart for DeshChain Testnet deployment on Kubernetes
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+
+keywords:
+  - blockchain
+  - deshchain
+  - cosmos
+  - testnet
+  - indian-blockchain
+
+home: https://deshchain.com
+sources:
+  - https://github.com/deshchain/deshchain
+
+maintainers:
+  - name: DeshChain Team
+    email: team@deshchain.com
+    url: https://deshchain.com
+
+dependencies:
+  - name: postgresql
+    version: "12.12.10"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: postgresql.enabled
+  - name: redis
+    version: "18.1.5"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: redis.enabled
+  - name: prometheus
+    version: "25.6.0"
+    repository: "https://prometheus-community.github.io/helm-charts"
+    condition: monitoring.prometheus.enabled
+  - name: grafana
+    version: "7.0.19"
+    repository: "https://grafana.github.io/helm-charts"
+    condition: monitoring.grafana.enabled
+
+annotations:
+  category: Blockchain
+  licenses: Apache-2.0

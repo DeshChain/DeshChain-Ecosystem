@@ -167,7 +167,7 @@ batua/
 
 ### 2. **Gram Pension Scheme**
 - Revolutionary blockchain pension system
-- Guaranteed 50% returns
+- Minimum 8% guaranteed, up to 50% returns based on platform performance
 - KYC integration with cultural bonuses
 - Referral rewards and loyalty programs
 - Comprehensive risk management

@@ -210,7 +210,7 @@ Manual Overrides:
 
 ### What We Won't Promise
 ❌ "Get rich quick"
-❌ "Guaranteed 50% returns"
+❌ "Guaranteed unrealistic returns without risk"
 ❌ "No risk investment"
 ❌ "Beat all competition"
 

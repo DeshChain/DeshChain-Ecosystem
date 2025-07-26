@@ -79,8 +79,8 @@ DeshChain operates **15 revenue streams** creating the most diversified blockcha
 - **Processing Fees**: 1% (₹2,500 cap)
 
 #### 4. **Investment Products** (₹900 Cr by Year 5)
-- **Gram Suraksha Pool (Rural)**: ₹1,000/month, 50% returns
-- **Udyamitra (Urban)**: ₹2,500/month, 35-50% returns
+- **Gram Suraksha Pool (Rural)**: ₹1,000/month, min 8% guaranteed, up to 50% returns
+- **Udyamitra (Urban)**: ₹2,500/month, min 8% guaranteed, up to 50% returns
 - **Platform Margin**: 30.6% on guaranteed returns
 
 #### 5. **Creator Economy** (₹500 Cr by Year 5)

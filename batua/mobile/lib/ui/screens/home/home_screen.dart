@@ -457,7 +457,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Secure your future with guaranteed 50% returns',
+                  'Secure your future with minimum 8% guaranteed returns, up to 50% based on platform performance',
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.9),
                     fontSize: 16,
@@ -532,7 +532,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           
           // Pension Features
           _buildFeatureList([
-            'Guaranteed 50% returns',
+            'Minimum 8% guaranteed, up to 50% returns',
             'KYC verified platform',
             'Cultural bonus rewards',
             'Monthly payout options',

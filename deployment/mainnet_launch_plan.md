@@ -66,7 +66,7 @@ deshchaind start --home /root/.deshchain
 - [ ] **Wallet Release**: Batua Wallet available on App Store and Play Store
 - [ ] **DEX Launch**: Money Order DEX live with initial liquidity
 - [ ] **Sikkebaaz**: Memecoin launchpad active with anti-pump protections
-- [ ] **Gram Pension**: Pension scheme enrollment with 50% guaranteed returns
+- [ ] **Gram Pension**: Pension scheme enrollment with minimum 8% guaranteed, up to 50% returns based on platform performance
 - [ ] **Public Explorer**: Blockchain explorer publicly accessible
 
 ## 💰 Economic Parameters

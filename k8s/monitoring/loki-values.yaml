@@ -1,0 +1,393 @@
+# Loki configuration for DeshChain log aggregation
+# This file customizes the Grafana Loki Helm chart
+
+loki:
+  # Image configuration
+  image:
+    repository: grafana/loki
+    tag: "2.9.0"
+    pullPolicy: IfNotPresent
+  
+  # Configuration
+  config:
+    # Authentication (disable for internal use)
+    auth_enabled: false
+    
+    # HTTP server configuration
+    server:
+      http_listen_port: 3100
+      grpc_listen_port: 9096
+      log_level: info
+    
+    # Distributor configuration
+    distributor:
+      ring:
+        kvstore:
+          store: memberlist
+    
+    # Ingester configuration
+    ingester:
+      lifecycler:
+        ring:
+          kvstore:
+            store: memberlist
+          replication_factor: 1
+        final_sleep: 0s
+      chunk_idle_period: 5m
+      chunk_retain_period: 30s
+      max_transfer_retries: 0
+      wal:
+        dir: /loki/wal
+    
+    # Schema configuration
+    schema_config:
+      configs:
+        - from: 2020-10-24
+          store: boltdb-shipper
+          object_store: filesystem
+          schema: v11
+          index:
+            prefix: index_
+            period: 24h
+    
+    # Storage configuration
+    storage_config:
+      boltdb_shipper:
+        active_index_directory: /loki/boltdb-shipper-active
+        cache_location: /loki/boltdb-shipper-cache
+        shared_store: filesystem
+      filesystem:
+        directory: /loki/chunks
+    
+    # Limits configuration
+    limits_config:
+      enforce_metric_name: false
+      reject_old_samples: true
+      reject_old_samples_max_age: 168h
+      ingestion_rate_mb: 16
+      ingestion_burst_size_mb: 32
+      max_streams_per_user: 10000
+      max_line_size: 256000
+    
+    # Query range configuration
+    query_range:
+      results_cache:
+        cache:
+          embedded_cache:
+            enabled: true
+            max_size_mb: 100
+    
+    # Frontend configuration
+    frontend:
+      compress_responses: true
+      log_queries_longer_than: 5s
+    
+    # Query scheduler configuration
+    query_scheduler:
+      max_outstanding_requests_per_tenant: 2048
+    
+    # Ruler configuration
+    ruler:
+      storage:
+        type: local
+        local:
+          directory: /loki/rules
+      rule_path: /loki/rules
+      alertmanager_url: http://deshchain-prometheus-alertmanager:9093
+      ring:
+        kvstore:
+          store: memberlist
+      enable_api: true
+      enable_alertmanager_v2: true
+    
+    # Analytics configuration
+    analytics:
+      reporting_enabled: false
+
+  # Service configuration
+  service:
+    type: ClusterIP
+    port: 3100
+    annotations: {}
+  
+  # Ingress configuration (for external access)
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    annotations:
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+      nginx.ingress.kubernetes.io/auth-type: basic
+      nginx.ingress.kubernetes.io/auth-secret: loki-basic-auth
+      nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required'
+    hosts:
+      - host: logs.testnet.deshchain.com
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - secretName: loki-tls
+        hosts:
+          - logs.testnet.deshchain.com
+  
+  # Persistence configuration
+  persistence:
+    enabled: true
+    storageClassName: "standard"
+    size: 50Gi
+    accessModes:
+      - ReadWriteOnce
+  
+  # Resource configuration
+  resources:
+    requests:
+      memory: "2Gi"
+      cpu: "0.5"
+    limits:
+      memory: "4Gi"
+      cpu: "1"
+  
+  # Security context
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 10001
+    runAsGroup: 10001
+    fsGroup: 10001
+  
+  # Node selector and tolerations
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  
+  # Service monitor for Prometheus
+  serviceMonitor:
+    enabled: true
+    interval: 30s
+    additionalLabels:
+      prometheus: kube-prometheus
+
+# Promtail configuration for log collection
+promtail:
+  enabled: true
+  
+  # Image configuration
+  image:
+    repository: grafana/promtail
+    tag: "2.9.0"
+    pullPolicy: IfNotPresent
+  
+  # Configuration
+  config:
+    # Clients configuration
+    clients:
+      - url: http://loki:3100/loki/api/v1/push
+        tenant_id: 1
+    
+    # Positions configuration
+    positions:
+      filename: /run/promtail/positions.yaml
+    
+    # Server configuration
+    server:
+      http_listen_port: 3101
+      grpc_listen_port: 0
+    
+    # Target configuration
+    target_config:
+      sync_period: 10s
+    
+    # Scrape configuration
+    scrape_configs:
+      # Kubernetes pod logs
+      - job_name: kubernetes-pods
+        kubernetes_sd_configs:
+          - role: pod
+        pipeline_stages:
+          - cri: {}
+        relabel_configs:
+          - source_labels:
+              - __meta_kubernetes_pod_controller_name
+            regex: ([0-9a-z-.]+?)(-[0-9a-f]{8,10})?
+            target_label: __tmp_controller_name
+          - source_labels:
+              - __meta_kubernetes_pod_label_app_kubernetes_io_name
+              - __meta_kubernetes_pod_label_app
+              - __tmp_controller_name
+              - __meta_kubernetes_pod_name
+            regex: ^;*([^;]+)(;.*)?$
+            target_label: app
+          - source_labels:
+              - __meta_kubernetes_pod_label_app_kubernetes_io_instance
+              - __meta_kubernetes_pod_label_release
+            regex: ^;*([^;]+)(;.*)?$
+            target_label: instance
+          - source_labels:
+              - __meta_kubernetes_pod_label_app_kubernetes_io_component
+              - __meta_kubernetes_pod_label_component
+            regex: ^;*([^;]+)(;.*)?$
+            target_label: component
+          - action: replace
+            source_labels:
+            - __meta_kubernetes_pod_node_name
+            target_label: node_name
+          - action: replace
+            source_labels:
+            - __meta_kubernetes_namespace
+            target_label: namespace
+          - action: replace
+            replacement: $1
+            separator: /
+            source_labels:
+            - namespace
+            - app
+            target_label: job
+          - action: replace
+            source_labels:
+            - __meta_kubernetes_pod_name
+            target_label: pod
+          - action: replace
+            source_labels:
+            - __meta_kubernetes_pod_container_name
+            target_label: container
+          - action: replace
+            replacement: /var/log/pods/*$1/*.log
+            separator: /
+            source_labels:
+            - __meta_kubernetes_pod_uid
+            - __meta_kubernetes_pod_container_name
+            target_label: __path__
+          - action: replace
+            regex: true/(.*)
+            replacement: /var/log/pods/*$1/*.log
+            separator: /
+            source_labels:
+            - __meta_kubernetes_pod_annotationpresent_kubernetes_io_config_hash
+            - __meta_kubernetes_pod_annotation_kubernetes_io_config_hash
+            - __meta_kubernetes_pod_container_name
+            target_label: __path__
+      
+      # DeshChain specific logs
+      - job_name: deshchain-validators
+        kubernetes_sd_configs:
+          - role: pod
+            namespaces:
+              names:
+                - default
+        pipeline_stages:
+          - cri: {}
+          - regex:
+              expression: '^(?P<timestamp>\S+)\s+(?P<level>\S+)\s+(?P<module>\S+)\s+(?P<message>.*)'
+          - labels:
+              level:
+              module:
+          - timestamp:
+              source: timestamp
+              format: '2006-01-02T15:04:05.000000Z'
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_component]
+            action: keep
+            regex: validator
+          - source_labels: [__meta_kubernetes_pod_name]
+            target_label: validator
+          - target_label: chain
+            replacement: deshchain-testnet
+      
+      - job_name: deshchain-sentries
+        kubernetes_sd_configs:
+          - role: pod
+            namespaces:
+              names:
+                - default
+        pipeline_stages:
+          - cri: {}
+          - regex:
+              expression: '^(?P<timestamp>\S+)\s+(?P<level>\S+)\s+(?P<module>\S+)\s+(?P<message>.*)'
+          - labels:
+              level:
+              module:
+          - timestamp:
+              source: timestamp
+              format: '2006-01-02T15:04:05.000000Z'
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_component]
+            action: keep
+            regex: sentry
+          - source_labels: [__meta_kubernetes_pod_name]
+            target_label: sentry
+          - target_label: chain
+            replacement: deshchain-testnet
+      
+      # System logs
+      - job_name: journal
+        journal:
+          max_age: 12h
+          labels:
+            job: systemd-journal
+        relabel_configs:
+          - source_labels: ['__journal__systemd_unit']
+            target_label: 'unit'
+          - source_labels: ['__journal__hostname']
+            target_label: 'hostname'
+  
+  # Resources
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "0.2"
+    limits:
+      memory: "512Mi"
+      cpu: "0.5"
+  
+  # Security context
+  securityContext:
+    runAsNonRoot: false
+    runAsUser: 0
+    readOnlyRootFilesystem: true
+    capabilities:
+      drop:
+        - ALL
+      add:
+        - DAC_OVERRIDE
+  
+  # Volumes for log access
+  extraVolumes:
+    - name: varlog
+      hostPath:
+        path: /var/log
+    - name: varlibdockercontainers
+      hostPath:
+        path: /var/lib/docker/containers
+  
+  extraVolumeMounts:
+    - name: varlog
+      mountPath: /var/log
+      readOnly: true
+    - name: varlibdockercontainers
+      mountPath: /var/lib/docker/containers
+      readOnly: true
+  
+  # Service monitor
+  serviceMonitor:
+    enabled: true
+    interval: 30s
+    additionalLabels:
+      prometheus: kube-prometheus
+  
+  # Tolerations to run on all nodes
+  tolerations:
+    - effect: NoSchedule
+      operator: Exists
+    - effect: NoExecute
+      operator: Exists
+  
+  # Run on all nodes
+  daemonset:
+    enabled: true
+
+# Fluent Bit configuration for additional log processing
+fluent-bit:
+  enabled: false  # Disabled as we're using Promtail
+
+# Grafana Enterprise Logs (GEL) configuration
+enterprise:
+  enabled: false

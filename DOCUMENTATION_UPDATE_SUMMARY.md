@@ -20,7 +20,7 @@ This document summarizes all the documentation updates made to reflect the major
 - Revolutionary Tax and Revenue System
 - Social Impact Revolution
 - Batua Wallet - Native Flutter Implementation
-- Gram Pension Scheme - Guaranteed 50% Returns
+- Gram Pension Scheme - Minimum 8% Guaranteed, Up to 50% Returns
 - Krishi Mitra - Agricultural Finance Platform
 - Gamification Module - Bollywood-Style Developer Experience
 - Advanced Founder Protection & Governance

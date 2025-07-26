@@ -1,0 +1,385 @@
+# Prometheus configuration for DeshChain monitoring
+# This file customizes the kube-prometheus-stack Helm chart
+
+nameOverride: "deshchain-prometheus"
+fullnameOverride: "deshchain-prometheus"
+
+# Prometheus Server Configuration
+prometheus:
+  prometheusSpec:
+    # Storage configuration
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: "ssd-storage"
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 100Gi
+    
+    # Resource allocation
+    resources:
+      requests:
+        memory: "4Gi"
+        cpu: "1"
+      limits:
+        memory: "8Gi"
+        cpu: "2"
+    
+    # Data retention
+    retention: "30d"
+    retentionSize: "90GB"
+    
+    # Scrape configuration
+    scrapeInterval: "30s"
+    evaluationInterval: "30s"
+    
+    # Security
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 65534
+      fsGroup: 65534
+    
+    # Service monitor selectors
+    serviceMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelector:
+      matchLabels:
+        prometheus: kube-prometheus
+    
+    # Rule selectors
+    ruleSelectorNilUsesHelmValues: false
+    ruleSelector:
+      matchLabels:
+        prometheus: kube-prometheus
+    
+    # Additional scrape configs for DeshChain
+    additionalScrapeConfigs:
+      - job_name: 'deshchain-validators'
+        static_configs:
+          - targets:
+            - 'deshchain-testnet-validator-0.deshchain-testnet-validator:26660'
+            - 'deshchain-testnet-validator-1.deshchain-testnet-validator:26660'
+            - 'deshchain-testnet-validator-2.deshchain-testnet-validator:26660'
+            - 'deshchain-testnet-validator-3.deshchain-testnet-validator:26660'
+        metrics_path: /metrics
+        scrape_interval: 15s
+        relabel_configs:
+          - source_labels: [__address__]
+            target_label: instance
+          - target_label: job
+            replacement: deshchain-validator
+      
+      - job_name: 'deshchain-sentries'
+        kubernetes_sd_configs:
+          - role: endpoints
+            namespaces:
+              names:
+                - default
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_service_name]
+            action: keep
+            regex: deshchain-testnet-sentry
+          - source_labels: [__meta_kubernetes_endpoint_port_name]
+            action: keep
+            regex: prometheus
+          - source_labels: [__meta_kubernetes_pod_name]
+            target_label: instance
+          - target_label: job
+            replacement: deshchain-sentry
+      
+      - job_name: 'deshchain-ipfs'
+        kubernetes_sd_configs:
+          - role: pod
+            namespaces:
+              names:
+                - default
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_component]
+            action: keep
+            regex: ipfs
+          - source_labels: [__meta_kubernetes_pod_ip]
+            target_label: __address__
+            replacement: '${1}:5001'
+          - source_labels: [__meta_kubernetes_pod_name]
+            target_label: instance
+        metrics_path: /debug/metrics/prometheus
+
+# Grafana Configuration
+grafana:
+  enabled: true
+  
+  # Admin credentials
+  adminPassword: "deshchain-admin-2024!"
+  
+  # Persistence
+  persistence:
+    enabled: true
+    storageClassName: "standard"
+    size: "10Gi"
+  
+  # Resources
+  resources:
+    requests:
+      memory: "2Gi"
+      cpu: "0.5"
+    limits:
+      memory: "4Gi"
+      cpu: "1"
+  
+  # Security
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 472
+    fsGroup: 472
+  
+  # Service configuration
+  service:
+    type: ClusterIP
+    port: 80
+  
+  # Ingress configuration
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    annotations:
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    hosts:
+      - monitoring.testnet.deshchain.com
+    tls:
+      - secretName: grafana-tls
+        hosts:
+          - monitoring.testnet.deshchain.com
+  
+  # Grafana configuration
+  grafana.ini:
+    server:
+      root_url: "https://monitoring.testnet.deshchain.com"
+    security:
+      admin_user: admin
+      admin_password: "${ADMIN_PASSWORD}"
+    auth.anonymous:
+      enabled: false
+    dashboards:
+      default_home_dashboard_path: /tmp/dashboards/deshchain-overview.json
+  
+  # Data sources
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+        - name: Prometheus
+          type: prometheus
+          url: http://deshchain-prometheus-server:80
+          access: proxy
+          isDefault: true
+          editable: true
+        - name: Loki
+          type: loki
+          url: http://loki:3100
+          access: proxy
+  
+  # Dashboard providers
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+        - name: 'deshchain'
+          orgId: 1
+          folder: 'DeshChain'
+          type: file
+          disableDeletion: false
+          editable: true
+          options:
+            path: /var/lib/grafana/dashboards/deshchain
+        - name: 'kubernetes'
+          orgId: 1
+          folder: 'Kubernetes'
+          type: file
+          disableDeletion: false
+          editable: true
+          options:
+            path: /var/lib/grafana/dashboards/kubernetes
+  
+  # Dashboard configs
+  dashboards:
+    deshchain:
+      deshchain-overview:
+        gnetId: 1860
+        revision: 27
+        datasource: Prometheus
+      deshchain-validators:
+        url: https://raw.githubusercontent.com/cosmos/cosmos-sdk/main/contrib/grafana/cosmos-sdk.json
+        datasource: Prometheus
+      deshchain-tendermint:
+        url: https://raw.githubusercontent.com/tendermint/tendermint/master/docs/tendermint-core.json
+        datasource: Prometheus
+    kubernetes:
+      k8s-cluster-overview:
+        gnetId: 7249
+        revision: 1
+        datasource: Prometheus
+      k8s-node-exporter:
+        gnetId: 1860
+        revision: 27
+        datasource: Prometheus
+
+# Alertmanager Configuration
+alertmanager:
+  enabled: true
+  
+  alertmanagerSpec:
+    # Storage
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: "standard"
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: "10Gi"
+    
+    # Resources
+    resources:
+      requests:
+        memory: "1Gi"
+        cpu: "0.2"
+      limits:
+        memory: "2Gi"
+        cpu: "0.5"
+    
+    # Security
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 65534
+      fsGroup: 65534
+    
+    # Retention
+    retention: "120h"
+  
+  # Alertmanager configuration
+  config:
+    global:
+      smtp_smarthost: 'localhost:587'
+      smtp_from: 'alerts@deshchain.com'
+    
+    route:
+      group_by: ['alertname', 'cluster', 'service']
+      group_wait: 10s
+      group_interval: 10s
+      repeat_interval: 1h
+      receiver: 'web.hook'
+      routes:
+        - match:
+            severity: critical
+          receiver: 'critical-alerts'
+        - match:
+            severity: warning
+          receiver: 'warning-alerts'
+    
+    receivers:
+      - name: 'web.hook'
+        webhook_configs:
+          - url: 'http://alertmanager-webhook:5001/'
+      
+      - name: 'critical-alerts'
+        slack_configs:
+          - api_url: 'YOUR_SLACK_WEBHOOK_URL'
+            channel: '#deshchain-alerts'
+            title: 'DeshChain Critical Alert'
+            text: 'Alert: {{ range .Alerts }}{{ .Annotations.summary }}{{ end }}'
+        email_configs:
+          - to: 'team@deshchain.com'
+            subject: 'DeshChain Critical Alert'
+            body: |
+              Alert Details:
+              {{ range .Alerts }}
+              - Alert: {{ .Annotations.summary }}
+              - Description: {{ .Annotations.description }}
+              - Severity: {{ .Labels.severity }}
+              {{ end }}
+      
+      - name: 'warning-alerts'
+        slack_configs:
+          - api_url: 'YOUR_SLACK_WEBHOOK_URL'
+            channel: '#deshchain-monitoring'
+            title: 'DeshChain Warning'
+            text: 'Warning: {{ range .Alerts }}{{ .Annotations.summary }}{{ end }}'
+
+# Node Exporter
+nodeExporter:
+  enabled: true
+  
+  # Service monitor
+  serviceMonitor:
+    enabled: true
+    interval: "30s"
+  
+  # Resources
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "0.1"
+    limits:
+      memory: "256Mi"
+      cpu: "0.2"
+
+# kube-state-metrics
+kubeStateMetrics:
+  enabled: true
+  
+  # Resources
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "0.1"
+    limits:
+      memory: "256Mi"
+      cpu: "0.2"
+
+# Prometheus Operator
+prometheusOperator:
+  enabled: true
+  
+  # Resources
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "0.2"
+    limits:
+      memory: "512Mi"
+      cpu: "0.5"
+  
+  # Security
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 65534
+
+# Additional monitoring components
+defaultRules:
+  create: true
+  rules:
+    alertmanager: true
+    etcd: true
+    general: true
+    k8s: true
+    kubeApiserver: true
+    kubeApiserverAvailability: true
+    kubeApiserverError: true
+    kubeApiserverSlos: true
+    kubelet: true
+    kubePrometheusGeneral: true
+    kubePrometheusNodeAlerting: true
+    kubePrometheusNodeRecording: true
+    kubernetesAbsent: true
+    kubernetesApps: true
+    kubernetesResources: true
+    kubernetesStorage: true
+    kubernetesSystem: true
+    kubeScheduler: true
+    kubeStateMetrics: true
+    network: true
+    node: true
+    prometheus: true
+    prometheusOperator: true
+    time: true

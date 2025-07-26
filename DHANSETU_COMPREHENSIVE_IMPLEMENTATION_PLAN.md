@@ -212,7 +212,7 @@ DhanSetu will be the world's most culturally-integrated DeFi super app, serving 
   - [ ] Feedback mechanism
 
 #### 6. Gram Suraksha Pool (Pension System)
-**Goal**: Provide 50% guaranteed returns through DeFi
+**Goal**: Provide minimum 8% guaranteed returns, up to 50% based on DeshChain platform performance through DeFi
 
 ##### 6.1 Pool Mechanics
 - [ ] Build staking pools

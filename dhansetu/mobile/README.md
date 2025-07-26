@@ -25,7 +25,7 @@ DhanSetu is a comprehensive React Native mobile application that brings the powe
 - Cultural integration with local festivals
 
 ### 🛡️ Gram Suraksha Pension
-- Revolutionary 50% guaranteed returns
+- Revolutionary minimum 8% guaranteed returns, up to 50% based on platform performance
 - Community-pooled pension system
 - Transparent on-chain management
 - Early maturity options

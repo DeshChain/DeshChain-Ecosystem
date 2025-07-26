@@ -1,0 +1,405 @@
+name: Build Docker Images
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    tags:
+      - 'v*'
+    paths:
+      - 'Dockerfile*'
+      - 'docker/**'
+      - 'x/**'
+      - 'app/**'
+      - 'cmd/**'
+      - 'go.mod'
+      - 'go.sum'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'Dockerfile*'
+      - 'docker/**'
+      - 'x/**'
+      - 'app/**'
+      - 'cmd/**'
+      - 'go.mod'
+      - 'go.sum'
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  BASE_IMAGE_NAME: deshchain
+
+jobs:
+  # Build the main DeshChain node image
+  build-node:
+    name: Build Node Image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      image-digest: ${{ steps.build.outputs.digest }}
+      image-tag: ${{ steps.meta.outputs.tags }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata for node image
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.BASE_IMAGE_NAME }}/node
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=testnet-v1.0.0,enable={{is_default_branch}}
+
+      - name: Build and push node image
+        id: build
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            VERSION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
+            COMMIT=${{ github.sha }}
+            BUILD_DATE=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}
+
+  # Build the frontend application image
+  build-frontend:
+    name: Build Frontend Image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata for frontend image
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.BASE_IMAGE_NAME }}/frontend
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=testnet-v1.0.0,enable={{is_default_branch}}
+
+      - name: Build and push frontend image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          file: ./frontend/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            VERSION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
+
+  # Build the explorer application image
+  build-explorer:
+    name: Build Explorer Image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata for explorer image
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.BASE_IMAGE_NAME }}/explorer
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=testnet-v1.0.0,enable={{is_default_branch}}
+
+      - name: Build and push explorer image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./explorer
+          file: ./explorer/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            VERSION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
+
+  # Build the faucet application image
+  build-faucet:
+    name: Build Faucet Image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata for faucet image
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.BASE_IMAGE_NAME }}/faucet
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=testnet-v1.0.0,enable={{is_default_branch}}
+
+      - name: Build and push faucet image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./faucet
+          file: ./faucet/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            VERSION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
+
+  # Build backup utility image
+  build-backup:
+    name: Build Backup Image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata for backup image
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.BASE_IMAGE_NAME }}/backup
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push backup image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./docker/backup
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # Sign all built images
+  sign-images:
+    name: Sign Container Images
+    runs-on: ubuntu-latest
+    needs: [build-node, build-frontend, build-explorer, build-faucet, build-backup]
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    steps:
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Sign node image
+        env:
+          COSIGN_EXPERIMENTAL: 1
+        run: |
+          cosign sign --yes ${{ env.REGISTRY }}/${{ env.BASE_IMAGE_NAME }}/node@${{ needs.build-node.outputs.image-digest }}
+
+      - name: Sign all images with latest tags
+        if: github.ref == 'refs/heads/main'
+        env:
+          COSIGN_EXPERIMENTAL: 1
+        run: |
+          cosign sign --yes ${{ env.REGISTRY }}/${{ env.BASE_IMAGE_NAME }}/node:latest
+          cosign sign --yes ${{ env.REGISTRY }}/${{ env.BASE_IMAGE_NAME }}/frontend:latest
+          cosign sign --yes ${{ env.REGISTRY }}/${{ env.BASE_IMAGE_NAME }}/explorer:latest
+          cosign sign --yes ${{ env.REGISTRY }}/${{ env.BASE_IMAGE_NAME }}/faucet:latest
+          cosign sign --yes ${{ env.REGISTRY }}/${{ env.BASE_IMAGE_NAME }}/backup:latest
+
+  # Run security scans on built images
+  security-scan:
+    name: Security Scan Images
+    runs-on: ubuntu-latest
+    needs: [build-node]
+    permissions:
+      contents: read
+      packages: read
+      security-events: write
+    steps:
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run Trivy vulnerability scanner on node image
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.REGISTRY }}/${{ env.BASE_IMAGE_NAME }}/node@${{ needs.build-node.outputs.image-digest }}
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+  # Create multi-arch manifest and update documentation
+  finalize:
+    name: Finalize Release
+    runs-on: ubuntu-latest
+    needs: [build-node, build-frontend, build-explorer, build-faucet, build-backup, sign-images]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Update deployment documentation
+        run: |
+          echo "# DeshChain Docker Images" > DOCKER_IMAGES.md
+          echo "" >> DOCKER_IMAGES.md
+          echo "## Available Images" >> DOCKER_IMAGES.md
+          echo "" >> DOCKER_IMAGES.md
+          echo "- **Node**: \`${{ env.REGISTRY }}/${{ env.BASE_IMAGE_NAME }}/node:latest\`" >> DOCKER_IMAGES.md
+          echo "- **Frontend**: \`${{ env.REGISTRY }}/${{ env.BASE_IMAGE_NAME }}/frontend:latest\`" >> DOCKER_IMAGES.md
+          echo "- **Explorer**: \`${{ env.REGISTRY }}/${{ env.BASE_IMAGE_NAME }}/explorer:latest\`" >> DOCKER_IMAGES.md
+          echo "- **Faucet**: \`${{ env.REGISTRY }}/${{ env.BASE_IMAGE_NAME }}/faucet:latest\`" >> DOCKER_IMAGES.md
+          echo "- **Backup**: \`${{ env.REGISTRY }}/${{ env.BASE_IMAGE_NAME }}/backup:latest\`" >> DOCKER_IMAGES.md
+          echo "" >> DOCKER_IMAGES.md
+          echo "## Last Updated" >> DOCKER_IMAGES.md
+          echo "$(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> DOCKER_IMAGES.md
+          echo "" >> DOCKER_IMAGES.md
+          echo "## Git Commit" >> DOCKER_IMAGES.md
+          echo "${{ github.sha }}" >> DOCKER_IMAGES.md
+
+      - name: Commit updated documentation
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add DOCKER_IMAGES.md
+          git diff --staged --quiet || git commit -m "Update Docker images documentation [skip ci]"
+          git push
+
+  # Cleanup old images
+  cleanup:
+    name: Cleanup Old Images
+    runs-on: ubuntu-latest
+    needs: finalize
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Delete old container images
+        uses: actions/delete-package-versions@v4
+        with:
+          package-name: '${{ env.BASE_IMAGE_NAME }}/node'
+          package-type: 'container'
+          min-versions-to-keep: 10
+          delete-only-untagged-versions: false

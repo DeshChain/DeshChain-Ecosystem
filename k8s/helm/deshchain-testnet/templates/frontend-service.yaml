@@ -1,0 +1,17 @@
+{{- if .Values.frontend.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "deshchain-testnet.fullname" . }}-frontend
+  labels:
+    {{- include "deshchain-testnet.frontendLabels" . | nindent 4 }}
+spec:
+  type: {{ .Values.frontend.service.type }}
+  ports:
+    - name: http
+      port: {{ .Values.frontend.service.port }}
+      targetPort: {{ .Values.frontend.service.targetPort }}
+      protocol: TCP
+  selector:
+    {{- include "deshchain-testnet.frontendSelectorLabels" . | nindent 4 }}
+{{- end }}

@@ -147,7 +147,7 @@ export const SurakshaScreen: React.FC = () => {
               India's first blockchain-powered pension scheme
             </Text>
             <View style={styles.guaranteeBox}>
-              <GradientText style={styles.guaranteeText}>50% GUARANTEED RETURNS</GradientText>
+              <GradientText style={styles.guaranteeText}>MINIMUM 8% GUARANTEED, UP TO 50% RETURNS</GradientText>
             </View>
           </LinearGradient>
 
@@ -160,7 +160,7 @@ export const SurakshaScreen: React.FC = () => {
                 <Icon name="percent" size={24} color={COLORS.green} />
               </View>
               <View style={styles.featureContent}>
-                <Text style={styles.featureTitle}>50% Guaranteed Returns</Text>
+                <Text style={styles.featureTitle}>Minimum 8% Guaranteed, Up to 50% Returns</Text>
                 <Text style={styles.featureDescription}>
                   Fixed returns backed by DeshChain protocol
                 </Text>
@@ -258,7 +258,7 @@ export const SurakshaScreen: React.FC = () => {
       <View style={styles.calculatorContainer}>
         <Text style={styles.calculatorTitle}>Pension Calculator</Text>
         <Text style={styles.calculatorSubtitle}>
-          See how your savings grow with 50% guaranteed returns
+          See how your savings grow with minimum 8% guaranteed, up to 50% returns
         </Text>
 
         {/* Monthly Contribution */}

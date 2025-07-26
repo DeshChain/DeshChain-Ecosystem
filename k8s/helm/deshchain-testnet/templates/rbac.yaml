@@ -1,0 +1,108 @@
+{{- if .Values.security.rbac.create }}
+---
+# ServiceAccount
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "deshchain-testnet.serviceAccountName" . }}
+  labels:
+    {{- include "deshchain-testnet.labels" . | nindent 4 }}
+  {{- with .Values.security.serviceAccount.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+---
+# ClusterRole for DeshChain testnet operations
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "deshchain-testnet.fullname" . }}-cluster-role
+  labels:
+    {{- include "deshchain-testnet.labels" . | nindent 4 }}
+rules:
+  # Allow reading nodes for peer discovery
+  - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["get", "list", "watch"]
+  
+  # Allow reading endpoints for service discovery
+  - apiGroups: [""]
+    resources: ["endpoints"]
+    verbs: ["get", "list", "watch"]
+  
+  # Allow reading services for networking
+  - apiGroups: [""]
+    resources: ["services"]
+    verbs: ["get", "list", "watch"]
+
+---
+# Role for namespace-specific operations
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ include "deshchain-testnet.fullname" . }}-role
+  labels:
+    {{- include "deshchain-testnet.labels" . | nindent 4 }}
+rules:
+  # Allow managing pods
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  
+  # Allow managing configmaps
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  
+  # Allow reading secrets
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list", "watch"]
+  
+  # Allow managing persistent volume claims
+  - apiGroups: [""]
+    resources: ["persistentvolumeclaims"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  
+  # Allow managing events
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["create", "patch"]
+
+---
+# ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "deshchain-testnet.fullname" . }}-cluster-role-binding
+  labels:
+    {{- include "deshchain-testnet.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "deshchain-testnet.fullname" . }}-cluster-role
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "deshchain-testnet.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+
+---
+# RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "deshchain-testnet.fullname" . }}-role-binding
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "deshchain-testnet.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ include "deshchain-testnet.fullname" . }}-role
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "deshchain-testnet.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+{{- end }}

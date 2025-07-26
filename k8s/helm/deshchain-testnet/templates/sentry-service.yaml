@@ -1,0 +1,37 @@
+{{- if .Values.sentries.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "deshchain-testnet.fullname" . }}-sentry
+  labels:
+    {{- include "deshchain-testnet.sentryLabels" . | nindent 4 }}
+spec:
+  type: {{ .Values.sentries.service.type }}
+  ports:
+    - name: p2p
+      port: 26656
+      targetPort: 26656
+      protocol: TCP
+    - name: rpc
+      port: {{ .Values.sentries.service.rpc.port }}
+      targetPort: {{ .Values.sentries.service.rpc.targetPort }}
+      protocol: TCP
+    - name: api
+      port: {{ .Values.sentries.service.api.port }}
+      targetPort: {{ .Values.sentries.service.api.targetPort }}
+      protocol: TCP
+    - name: grpc
+      port: {{ .Values.sentries.service.grpc.port }}
+      targetPort: {{ .Values.sentries.service.grpc.targetPort }}
+      protocol: TCP
+    - name: grpc-web
+      port: 9091
+      targetPort: 9091
+      protocol: TCP
+    - name: prometheus
+      port: 26660
+      targetPort: 26660
+      protocol: TCP
+  selector:
+    {{- include "deshchain-testnet.sentrySelectorLabels" . | nindent 4 }}
+{{- end }}

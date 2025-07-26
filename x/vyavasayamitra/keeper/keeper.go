@@ -7,6 +7,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/store/prefix"
 	"github.com/deshchain/x/vyavasayamitra/types"
 )
 
@@ -632,4 +633,33 @@ func (k Keeper) CalculateDefaultRate(ctx sdk.Context) string {
 	rate := sdk.NewDec(defaultedLoans).Mul(sdk.NewDec(100)).Quo(sdk.NewDec(totalLoans))
 	return rate.String() + "%"
 }
-EOF < /dev/null
+
+// GetAllBusinessProfiles retrieves all business profiles
+func (k Keeper) GetAllBusinessProfiles(ctx sdk.Context) []types.BusinessProfile {
+	store := ctx.KVStore(k.storeKey)
+	iterator := store.Iterator(types.BusinessProfilePrefix, nil)
+	defer iterator.Close()
+
+	var profiles []types.BusinessProfile
+	for ; iterator.Valid(); iterator.Next() {
+		var profile types.BusinessProfile
+		k.cdc.MustUnmarshal(iterator.Value(), &profile)
+		profiles = append(profiles, profile)
+	}
+	return profiles
+}
+
+// GetAllBusinessLoans retrieves all business loans
+func (k Keeper) GetAllBusinessLoans(ctx sdk.Context) []types.BusinessLoan {
+	store := ctx.KVStore(k.storeKey)
+	iterator := store.Iterator(types.LoanKeyPrefix, nil)
+	defer iterator.Close()
+
+	var loans []types.BusinessLoan
+	for ; iterator.Valid(); iterator.Next() {
+		var loan types.BusinessLoan
+		k.cdc.MustUnmarshal(iterator.Value(), &loan)
+		loans = append(loans, loan)
+	}
+	return loans
+}

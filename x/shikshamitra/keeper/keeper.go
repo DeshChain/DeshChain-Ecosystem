@@ -1335,6 +1335,36 @@ func (k Keeper) GetStudentProfile(ctx sdk.Context, studentID string) (profile ty
 	return profile, true
 }
 
+// GetAllStudentProfiles retrieves all student profiles
+func (k Keeper) GetAllStudentProfiles(ctx sdk.Context) []types.StudentProfile {
+	store := ctx.KVStore(k.storeKey)
+	iterator := store.Iterator(types.StudentProfilePrefix, nil)
+	defer iterator.Close()
+
+	var profiles []types.StudentProfile
+	for ; iterator.Valid(); iterator.Next() {
+		var profile types.StudentProfile
+		k.cdc.MustUnmarshal(iterator.Value(), &profile)
+		profiles = append(profiles, profile)
+	}
+	return profiles
+}
+
+// GetAllEducationLoans retrieves all education loans
+func (k Keeper) GetAllEducationLoans(ctx sdk.Context) []types.EducationLoan {
+	store := ctx.KVStore(k.storeKey)
+	iterator := store.Iterator(types.LoanKeyPrefix, nil)
+	defer iterator.Close()
+
+	var loans []types.EducationLoan
+	for ; iterator.Valid(); iterator.Next() {
+		var loan types.EducationLoan
+		k.cdc.MustUnmarshal(iterator.Value(), &loan)
+		loans = append(loans, loan)
+	}
+	return loans
+}
+
 // SetInstitution stores an institution
 func (k Keeper) SetInstitution(ctx sdk.Context, institution types.Institution) {
 	store := ctx.KVStore(k.storeKey)

@@ -28,7 +28,9 @@ export interface SurakshaAccount {
   maturityDate: string;
   lastContributionDate?: string;
   tenureYears: number;
-  guaranteedReturn: number; // Percentage (50)
+  minimumReturn: number; // Minimum 8% guaranteed
+  maximumReturn: number; // Up to 50% based on performance
+  projectedReturn: number; // Current projected return based on platform performance
   currentValue: string;
   contributionsMade: number;
   totalContributions: number;
@@ -108,7 +110,9 @@ const initialState: SurakshaState = {
   globalStats: {
     totalPoolSize: '0',
     totalAccounts: 0,
-    averageReturn: 50,
+    averageReturn: 30, // Average returns based on performance
+    minimumReturn: 8,  // Minimum guaranteed
+    maximumReturn: 50, // Maximum possible
     totalMaturedAccounts: 0,
     totalPaidOut: '0',
     currentYieldRate: 8.5,
@@ -134,8 +138,12 @@ export const createSurakshaAccount = createAsyncThunk(
     // Calculate maturity details
     const totalMonths = params.tenureYears * 12;
     const totalInvestment = monthlyAmount * totalMonths;
-    const guaranteedReturn = 0.5; // 50%
-    const returns = totalInvestment * guaranteedReturn;
+    // Returns: minimum 8% guaranteed, up to 50% based on performance
+    const minimumReturn = 0.08; // 8% minimum guaranteed
+    const averageReturn = 0.30; // 30% average expected
+    const maximumReturn = 0.50; // 50% maximum possible
+    const projectedReturn = averageReturn; // Use average for projection
+    const returns = totalInvestment * projectedReturn;
     const maturityAmount = totalInvestment + returns;
 
     // Create account on blockchain
@@ -178,7 +186,9 @@ export const createSurakshaAccount = createAsyncThunk(
       startDate: new Date().toISOString(),
       maturityDate: new Date(Date.now() + params.tenureYears * 365 * 24 * 60 * 60 * 1000).toISOString(),
       tenureYears: params.tenureYears,
-      guaranteedReturn: 50,
+      minimumReturn: 8,
+      maximumReturn: 50,
+      projectedReturn: 30, // Average expected
       currentValue: initialAmount,
       contributionsMade: 1,
       totalContributions: totalMonths,
@@ -277,7 +287,9 @@ export const fetchSurakshaStats = createAsyncThunk(
     const stats: SurakshaStats = {
       totalPoolSize: '125000000', // ₹12.5 Crore
       totalAccounts: 15678,
-      averageReturn: 50,
+      averageReturn: 30, // Average returns based on performance
+    minimumReturn: 8,  // Minimum guaranteed
+    maximumReturn: 50, // Maximum possible
       totalMaturedAccounts: 234,
       totalPaidOut: '5600000', // ₹56 Lakh
       currentYieldRate: 8.5,
@@ -292,10 +304,11 @@ export const calculatePension = createAsyncThunk(
   async ({ monthlyAmount, tenureYears }: { monthlyAmount: string; tenureYears: number }) => {
     const monthly = parseFloat(monthlyAmount);
     const totalMonths = tenureYears * 12;
-    const guaranteedReturn = 0.5; // 50%
+    // Returns: minimum 8% guaranteed, up to 50% based on performance
+    const projectedReturn = 0.30; // 30% average expected return
     
     const totalInvestment = monthly * totalMonths;
-    const returns = totalInvestment * guaranteedReturn;
+    const returns = totalInvestment * projectedReturn;
     const maturityAmount = totalInvestment + returns;
     
     // Calculate monthly pension (20 years payout)

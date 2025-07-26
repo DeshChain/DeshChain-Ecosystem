@@ -1,0 +1,51 @@
+{{- if .Values.ipfs.enabled }}
+---
+# Headless service for IPFS StatefulSet
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "deshchain-testnet.fullname" . }}-ipfs
+  labels:
+    {{- include "deshchain-testnet.ipfsLabels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  clusterIP: None
+  publishNotReadyAddresses: true
+  ports:
+    - name: swarm
+      port: 4001
+      targetPort: 4001
+      protocol: TCP
+    - name: swarm-udp
+      port: 4001
+      targetPort: 4001
+      protocol: UDP
+    - name: api
+      port: 5001
+      targetPort: 5001
+      protocol: TCP
+    - name: gateway
+      port: 8080
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    {{- include "deshchain-testnet.ipfsSelectorLabels" . | nindent 4 }}
+
+---
+# External service for IPFS Gateway
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "deshchain-testnet.fullname" . }}-ipfs-gateway
+  labels:
+    {{- include "deshchain-testnet.ipfsLabels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - name: gateway
+      port: 8080
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    {{- include "deshchain-testnet.ipfsSelectorLabels" . | nindent 4 }}
+{{- end }}

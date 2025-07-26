@@ -2,7 +2,7 @@
 
 ## 🚀 **Beyond Member Returns: Building a Self-Sustaining Revenue Empire**
 
-While guaranteeing 35-50% returns to our pension members, we're simultaneously creating multiple revenue streams that fuel continuous ecosystem growth and expansion.
+While providing minimum 8% guaranteed returns and up to 50% returns based on platform performance to our pension members, we're simultaneously creating multiple revenue streams that fuel continuous ecosystem growth and expansion.
 
 ---
 

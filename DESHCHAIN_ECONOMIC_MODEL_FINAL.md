@@ -286,7 +286,7 @@ contract BharatKalaNFT {
 
 ### 4. Gram Pension Scheme
 
-**Economics**: 80.6% profit margin on guaranteed 50% returns
+**Economics**: Minimum 8% guaranteed returns, up to 50% based on DeshChain platform performance
 
 ```python
 class GramPensionScheme:

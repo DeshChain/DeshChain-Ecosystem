@@ -42,6 +42,9 @@ type Keeper struct {
 	kycKeeper        types.KYCKeeper
 	revenueKeeper    types.RevenueKeeper
 
+	// Identity integration
+	identityAdapter *IdentityAdapter
+
 	// Hooks
 	hooks types.GramPensionHooks
 
@@ -98,6 +101,25 @@ func (k *Keeper) SetHooks(gh types.GramPensionHooks) {
 		panic("cannot set gram pension hooks twice")
 	}
 	k.hooks = gh
+}
+
+// SetIdentityKeeper sets the identity keeper for integration
+func (k *Keeper) SetIdentityKeeper(identityKeeper interface{}) {
+	// Type assertion to avoid circular imports
+	if ik, ok := identityKeeper.(interface {
+		GetIdentity(sdk.Context, string) (interface{}, bool)
+		SetIdentity(sdk.Context, interface{})
+		GetCredential(sdk.Context, string) (interface{}, bool)
+		SetCredential(sdk.Context, interface{})
+		GetCredentialsBySubject(sdk.Context, string) []string
+		AddCredentialToSubject(sdk.Context, string, string)
+		UpdateCredentialStatus(sdk.Context, string, interface{}) error
+	}); ok {
+		// Create wrapper that implements our expected interface
+		wrapper := &identityKeeperWrapper{keeper: ik}
+		k.identityAdapter = NewIdentityAdapter(k, wrapper)
+	}
+}
 }
 
 // GetHooks returns the gram pension hooks

@@ -12,7 +12,7 @@
 
 ### 🥇 World's First Blockchain Platform With:
 - **40% Charity Allocation**: Industry-leading social impact commitment
-- **Guaranteed 50% Returns**: Blockchain-backed pension scheme
+- **Up to 50% Returns**: Minimum 8% guaranteed, up to 50% based on DeshChain platform performance
 - **Cultural Heritage Integration**: 10,000+ quotes, 22 languages, festivals
 - **Comprehensive Lending Ecosystem**: Agriculture, business, and education
 - **Enterprise Treasury Management**: 8 specialized pools with automated rebalancing
@@ -142,7 +142,7 @@
 - **Agricultural Lending**: 6-9% rates vs 12-18% traditional banks
 - **Business Loans**: Comprehensive credit analysis for MSMEs
 - **Education Finance**: Income-driven repayment with forgiveness
-- **Pension Security**: 50% guaranteed returns through blockchain
+- **Pension Security**: Minimum 8% guaranteed, up to 50% returns based on DeshChain platform performance
 - **Cultural Relevance**: Traditional concepts reimagined for blockchain
 
 ---

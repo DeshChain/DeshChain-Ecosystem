@@ -1,0 +1,17 @@
+{{- if .Values.explorer.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "deshchain-testnet.fullname" . }}-explorer
+  labels:
+    {{- include "deshchain-testnet.explorerLabels" . | nindent 4 }}
+spec:
+  type: {{ .Values.explorer.service.type }}
+  ports:
+    - name: http
+      port: {{ .Values.explorer.service.port }}
+      targetPort: {{ .Values.explorer.service.targetPort }}
+      protocol: TCP
+  selector:
+    {{- include "deshchain-testnet.explorerSelectorLabels" . | nindent 4 }}
+{{- end }}

@@ -110,7 +110,7 @@ export const OnboardingScreen: React.FC = () => {
     {
       id: 'suraksha',
       title: 'Gram Suraksha Pool',
-      subtitle: '50% guaranteed returns',
+      subtitle: 'Minimum 8% guaranteed, up to 50% returns',
       description: 'India\'s first blockchain pension with guaranteed returns. Start with just ₹100/month and secure your future.',
       icon: 'shield-check',
       gradient: [COLORS.navy, COLORS.sky],

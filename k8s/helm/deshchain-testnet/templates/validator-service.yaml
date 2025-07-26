@@ -1,0 +1,84 @@
+{{- if .Values.validators.enabled }}
+---
+# Headless service for validator StatefulSet
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "deshchain-testnet.fullname" . }}-validator
+  labels:
+    {{- include "deshchain-testnet.validatorLabels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  clusterIP: None
+  publishNotReadyAddresses: true
+  ports:
+    - name: p2p
+      port: 26656
+      targetPort: 26656
+      protocol: TCP
+    - name: rpc
+      port: 26657
+      targetPort: 26657
+      protocol: TCP
+    - name: api
+      port: 1317
+      targetPort: 1317
+      protocol: TCP
+    - name: grpc
+      port: 9090
+      targetPort: 9090
+      protocol: TCP
+    - name: grpc-web
+      port: 9091
+      targetPort: 9091
+      protocol: TCP
+    - name: prometheus
+      port: 26660
+      targetPort: 26660
+      protocol: TCP
+  selector:
+    {{- include "deshchain-testnet.validatorSelectorLabels" . | nindent 4 }}
+
+---
+# Individual services for each validator (for external access)
+{{- range $i := until (int .Values.validators.replicas) }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "deshchain-testnet.fullname" $ }}-validator-{{ $i }}
+  labels:
+    {{- include "deshchain-testnet.validatorLabels" $ | nindent 4 }}
+    validator-index: "{{ $i }}"
+spec:
+  type: ClusterIP
+  ports:
+    - name: p2p
+      port: 26656
+      targetPort: 26656
+      protocol: TCP
+    - name: rpc
+      port: 26657
+      targetPort: 26657
+      protocol: TCP
+    - name: api
+      port: 1317
+      targetPort: 1317
+      protocol: TCP
+    - name: grpc
+      port: 9090
+      targetPort: 9090
+      protocol: TCP
+    - name: grpc-web
+      port: 9091
+      targetPort: 9091
+      protocol: TCP
+    - name: prometheus
+      port: 26660
+      targetPort: 26660
+      protocol: TCP
+  selector:
+    {{- include "deshchain-testnet.validatorSelectorLabels" $ | nindent 4 }}
+    statefulset.kubernetes.io/pod-name: {{ include "deshchain-testnet.fullname" $ }}-validator-{{ $i }}
+---
+{{- end }}
+{{- end }}
